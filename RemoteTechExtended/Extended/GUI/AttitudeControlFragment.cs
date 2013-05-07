@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
-    public class AttitudeControlFragment : IUIFragment {
+    public class AttitudeControlFragment : AbstractFragment {
 
         public enum Action {
             KillRot,
@@ -15,36 +15,36 @@ namespace RemoteTechExtended
             RadialMinus,
             ManeuverNode,
             Surface,
-            SurfaceSend,
-            ToggleRoll,
+            Send,
+            Roll,
         }
 
         Button<Action>[] mSimpleCommandButtons;
         Button<Action>[] mCollapsableCommandButtons;
-        DelayedToggleButton<Action> mSurfaceButton;
+        DelayedStateButton<Action> mSurfaceButton;
         InputButton<Action> mPitchButton;
-        InputButton<Action> mHeadingInclinationButton;
+        InputButton<Action> mHeadingButton;
         InputToggleButton<Action> mRollButton;
         bool mFoldSurface = true;
 
-        public AttitudeControlFragment() {
+        public AttitudeControlFragment(SPUPartModule attachedTo) : base(attachedTo) {
             mSimpleCommandButtons = new Button<Action>[] {
-                new DelayedToggleButton<Action>(OnClick, "KillRot", Action.KillRot),
-                new DelayedToggleButton<Action>(OnClick, "Prograde", Action.Prograde),
-                new DelayedToggleButton<Action>(OnClick, "Retrograde", Action.Retrograde),
-                new DelayedToggleButton<Action>(OnClick, "Normal+", Action.NormalPlus),
-                new DelayedToggleButton<Action>(OnClick, "Normal-", Action.NormalMinus),
-                new DelayedToggleButton<Action>(OnClick, "Radial+", Action.RadialPlus),
-                new DelayedToggleButton<Action>(OnClick, "Radial-", Action.RadialMinus),
-                new DelayedToggleButton<Action>(OnClick, "Maneuver", Action.ManeuverNode),
-                mSurfaceButton = new DelayedToggleButton<Action>(OnClick, "Surface", Action.Surface),
+                new DelayedStateButton<Action>(OnClick, "KillRot", Action.KillRot),
+                new DelayedStateButton<Action>(OnClick, "Prograde", Action.Prograde),
+                new DelayedStateButton<Action>(OnClick, "Retrograde", Action.Retrograde),
+                new DelayedStateButton<Action>(OnClick, "Normal+", Action.NormalPlus),
+                new DelayedStateButton<Action>(OnClick, "Normal-", Action.NormalMinus),
+                new DelayedStateButton<Action>(OnClick, "Radial+", Action.RadialPlus),
+                new DelayedStateButton<Action>(OnClick, "Radial-", Action.RadialMinus),
+                new DelayedStateButton<Action>(OnClick, "Maneuver", Action.ManeuverNode),
+                mSurfaceButton = new DelayedStateButton<Action>(OnClick, "Surface", Action.Surface),
             };
             mCollapsableCommandButtons = new Button<Action>[] {
-                mPitchButton = new InputButton<Action>(null, "Pitch:", null),
-                mHeadingInclinationButton = new InputButton<Action>(null, "Heading:", null),
-                mRollButton = new InputToggleButton<Action>(OnClick, "Roll:", Action.ToggleRoll),
-                new Button<Action>(OnClick, "Send", Action.SurfaceSend),
-            }
+                mPitchButton = new InputButton<Action>(null, "Pitch:", Action.KillRot, 90, -180, 180),
+                mHeadingButton = new InputButton<Action>(null, "Heading:", Action.KillRot, 90, -180, 180),
+                mRollButton = new InputToggleButton<Action>(OnClick, "Roll:", Action.Roll, 0, -180, 180, false),
+                new Button<Action>(OnClick, "Send", Action.Send),
+            };
         }
 
         public void Draw() {
@@ -63,14 +63,27 @@ namespace RemoteTechExtended
         public void OnClick(Action action) {
             switch (action) {
                 case Action.Surface:
-                    mFoldSurface = ~mFoldSurface;
+                    mFoldSurface = !mFoldSurface;
                     break;
-                case Action.SurfaceSend:
+                case Action.Send:
+                    if (mRollButton.IsActive) {
+                        Module.Enqueue(new AttitudeChange(Attitude.Surface, 
+                                                          mPitchButton.Value,
+                                                          mHeadingButton.Value,
+                                                          mRollButton.Value));
+                    } else {
+                        Module.Enqueue(new AttitudeChange(Attitude.Surface, 
+                                                          mPitchButton.Value,
+                                                          mHeadingButton.Value));
+                    }
                     break;
-                case Action.ToggleRoll:
+                case Action.Roll:
+                    mRollButton.IsActive = false;
                     break;
                 default:
                     mFoldSurface = true;
+                    Module.Enqueue(new AttitudeChange((Attitude)Enum.Parse(typeof(Attitude), ((int)action).ToString())));
+                    break;
 
             }
         }

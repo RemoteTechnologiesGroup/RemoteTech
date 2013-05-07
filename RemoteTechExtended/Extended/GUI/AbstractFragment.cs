@@ -1,16 +1,16 @@
-namespace RemoteTechExtended
+namespace RemoteTech
 {
-    public abstract class AbtractFragment {
+    public abstract class AbstractFragment {
 
         // Properties
-        protected RemoteCommandModule Module { 
+        protected SPUPartModule Module { 
             get { return mAttachedCommandModule; }
         }
 
         // Fields
-        RemoteCommandModule mAttachedCommandModule;
+        SPUPartModule mAttachedCommandModule;
 
-        public AbtractFragment(RemoteCommandModule attachedTo) {
+        public AbstractFragment(SPUPartModule attachedTo) {
             this.mAttachedCommandModule = attachedTo;
         }
 

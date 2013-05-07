@@ -1,21 +1,43 @@
 using System;
 using System.Collections.Generic;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
-    public class RemoteCommandModule : PartModule {
+    public class SPUPartModule : PartModule, ISatellite {
 
+        // Properties
+        public IAntenna[] Antennas { get { return FindAntennas(); } }
+        public Vector3d Position { get { return this.WorldPosition; } }
+
+        // Fields
         SatelliteNetwork mNetwork;
 
-        public RemoteCommandModule() {
+        // Constructor
+        public SPUPartModule() {
             mNetwork = SatelliteNetwork.Instance;
         }
 
-        /// <summary>
-        /// Enqueue a change in Attitude 
-        /// </summary>
-        /// <param name="change">Change.</param>
-        /// <returns>When the action will be applied, in game time.</returns>
+        // Interface Methods
+        IAntenna[] FindAntennas() {
+            List<IAntenna> antennas = new List<IAntenna>();
+            foreach (Part p in vessel.parts) {
+                if (p.Modules.Contains(typeof(AntennaPartModule).ToString())) {
+                    antennas.Add(p.Modules[typeof(AntennaPartModule).ToString()] as IAntenna);
+                }
+            }
+            return antennas.ToArray();
+        }
+        
+        public float FindMaxOmniRange() {
+            float maxOmniRange = 0.0f;
+            foreach (IAntenna a in Antennas) {
+                if (a.OmniRange > maxOmniRange) {
+                    maxOmniRange = a.OmniRange;
+                }
+            }
+            return maxOmniRange;
+        }
+
         public long Enqueue(AttitudeChange change) {
             return 0;
         }
@@ -24,20 +46,24 @@ namespace RemoteTechExtended
             return 0;
         }
 
-        List<AntennaPartModule> GetAntennas() {
-            List<AntennaPartModule> antennas = new List<AntennaPartModule>();
-            foreach (Part p in this.vessel.Parts) {
-                if (p.Modules.Contains(typeof(AntennaPartModule).ToString())) {
-                    antennas.Add(p);
+        // Misc
+        public override int GetHashCode() {
+            return this.vessel.GetInstanceID();
+        }
+    }
+
+    public static class SPUExtensions {
+        // Vessel extensions
+        public static SPUPartModule FindSPU(this Vessel vessel) {
+            foreach (Part p in vessel.parts) {
+                if (p.Modules.Contains(typeof(SPUPartModule).ToString())) {
+                    return p.Modules[typeof(SPUPartModule).ToString()] as SPUPartModule;
                 }
             }
-            return antennas; 
+            return null;
         }
-
-        void Hook() {
-            // Override right-click properties of all other modules to add delays?
-        }
-
     }
 }
+
+
 

@@ -82,7 +82,7 @@ namespace RemoteTech
                 AdvInfo;
 
 
-                KSP.IO.File.WriteAllText<RemoteCore>(s, "Data.dat");
+                KSP.IO.File.WriteAllText<RemoteCore>(s, "Data.dat", null);
         }
 
         public static bool LoadedData = false;
@@ -90,11 +90,11 @@ namespace RemoteTech
         {
             if (LoadedData) return;
             LoadedData = true;
-            if (KSP.IO.File.Exists<RemoteCore>("Data.dat"))
+            if (KSP.IO.File.Exists<RemoteCore>("Data.dat", null))
             {
                 try
                 {
-                    string[] ls = KSP.IO.File.ReadAllLines<RemoteCore>("Data.dat");
+                    string[] ls = KSP.IO.File.ReadAllLines<RemoteCore>("Data.dat", null);
                     windowPos.xMin = Mathf.Clamp(float.Parse(ls[0]), 0, 1) * Screen.width;
                     windowPos.yMin = Mathf.Clamp(float.Parse(ls[1]), 0, 1) * Screen.height;
                     SettingPos.xMin = Mathf.Clamp(float.Parse(ls[2]), 0, 1) * Screen.width;
@@ -118,9 +118,9 @@ namespace RemoteTech
 
         public static void Load()
         {
-            if (KSP.IO.File.Exists<RemoteCore>("Settings.cfg"))
+            if (KSP.IO.File.Exists<RemoteCore>("Settings.cfg", null))
             {
-                string[] ls = KSP.IO.File.ReadAllLines<RemoteCore>("Settings.cfg");
+                string[] ls = KSP.IO.File.ReadAllLines<RemoteCore>("Settings.cfg", null);
                 string
                     SPEEDOFLIGHT = "",
                     RCC = "",
@@ -220,7 +220,7 @@ namespace RemoteTech
     "\n\n//Here you can edit the required crew for a command station (Minimum: 1, Default: 3)\nRemoteCommand Crew = " + "3" +
     "\n\n//Here you can toggle extended control range for unfocused vessels. If on, this could cause a bit of lag if you try to control an unfocused vessel when there are a lot of vessels in your immediate viscinity (default on)\nExtended Loading Range = " + "on" +
     "\n\n//Here you can toggle coulourblind friendly mode (default off)\nColourblind friendly mode = " + "off"
-    , "Settings.cfg");
+    , "Settings.cfg",null);
         }
 
     }

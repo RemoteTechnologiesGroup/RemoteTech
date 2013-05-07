@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{70477E5D-A9B6-42EE-B3BE-1CBECDA01B8A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>RemoteTech</RootNamespace>
+    <AssemblyName>RemoteTechExtended</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework" />
+    <Reference Include="System.Core">
+      <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\System.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Extended\GUIControls\InputButton.cs" />
+    <Compile Include="Extended\GUIControls\InputToggleButton.cs" />
+    <Compile Include="Extended\GUIControls\Button.cs" />
+    <Compile Include="Extended\GUI\AttitudeControlFragment.cs" />
+    <Compile Include="Extended\GUI\ControlGUI.cs" />
+    <Compile Include="Extended\Modules\AntennaPartModule.cs" />
+    <Compile Include="Extended\GUI\AbstractFragment.cs" />
+    <Compile Include="Extended\GUIControls\DelayedStateButton.cs" />
+    <Compile Include="Extended\SimpleTypes\AttitudeChange.cs" />
+    <Compile Include="Extended\SimpleTypes\Attitude.cs" />
+    <Compile Include="Extended\Common.cs" />
+    <Compile Include="Extended\SimpleTypes\TrottleChange.cs" />
+    <Compile Include="Extended\Core\FlightComputer.cs" />
+    <Compile Include="Extended\Core\SatelliteNetwork.cs" />
+    <Compile Include="Extended\Modules\SPUPartModule.cs" />
+    <Compile Include="Extended\Modules\IAntenna.cs" />
+    <Compile Include="Extended\Modules\CommandSPUPartModule.cs" />
+    <Compile Include="Extended\SimpleTypes\PriorityQueue.cs" />
+    <Compile Include="Extended\Tests\PriorityQueueTest.cs" />
+    <Compile Include="Extended\Core\Pathfinder.cs" />
+    <Compile Include="Extended\Modules\ISatellite.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Extended\" />
+    <Folder Include="Extended\GUIControls\" />
+    <Folder Include="Extended\Modules\" />
+    <Folder Include="Extended\GUI\" />
+    <Folder Include="Extended\SimpleTypes\" />
+    <Folder Include="Extended\Core\" />
+    <Folder Include="Extended\Tests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AdvAeronautics.cs" />
+    <None Include="CorePartModules.cs" />
+    <None Include="FlightComputer.cs" />
+    <None Include="FlightComputerGUI.cs" />
+    <None Include="FlightCtrlStateBuffer.cs" />
+    <None Include="ModuleRTAnimatedAntenna.cs" />
+    <None Include="ModuleRTAnimatedWing.cs" />
+    <None Include="ModuleRTLoopAnimAntenna.cs" />
+    <None Include="ModuleRTModalAntenna.cs" />
+    <None Include="RelayNetwork.cs" />
+    <None Include="RelayNode.cs" />
+    <None Include="RelayPath.cs" />
+    <None Include="RemoteCore.cs" />
+    <None Include="RoverPidController.cs" />
+    <None Include="RTGlobals.cs" />
+    <None Include="RTUtils.cs" />
+    <None Include="SatSettings.cs" />
+    <None Include="StructsAndEnums.cs" />
+    <None Include="SupportClasses.cs" />
+    <None Include="AssemblyInfo.cs" />
+  </ItemGroup>
+</Project>

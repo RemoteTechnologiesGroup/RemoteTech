@@ -349,8 +349,8 @@ namespace RemoteTech
                 RTGlobals.Manager.distantPartUnpackThreshold = 200;
             }
 
-            if (KSP.IO.File.Exists<RemoteCore>("Settings.cfg"))
-                KSP.IO.File.Delete<RemoteCore>("Settings.cfg");
+            if (KSP.IO.File.Exists<RemoteCore>("Settings.cfg", null))
+                KSP.IO.File.Delete<RemoteCore>("Settings.cfg", null);
 
             KSP.IO.File.WriteAllText<RemoteCore>(
                 "//Here you can edit key used to access the RemoteTech settings (modifier key + settings key) (Default: f11):\nSettings Key = " + RTGlobals.settingsKey + 
@@ -358,7 +358,7 @@ namespace RemoteTech
                 "\n\n//Here you can edit the required crew for a command station (Minimum: 1, Default: 3)\nRemoteCommand Crew = " + RcCrew + 
                 "\n\n//Here you can toggle extended control range for unfocused vessels. If on, this could cause a bit of lag if you try to control an unfocused vessel when there are a lot of vessels in your immediate viscinity (default on)\nExtended Loading Range = " + (expack ? "on" : "off") +
                 "\n\n//Here you can toggle Coulourblind friendly mode (default off)\nColourblind friendly mode = " + (colfriend ? "on" : "off")
-                , "Settings.cfg");
+                , "Settings.cfg", null);
         }
 
         public void GUI(int windowID)

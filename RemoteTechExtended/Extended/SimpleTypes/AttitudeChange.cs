@@ -1,6 +1,6 @@
 using System;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
     public class AttitudeChange {
         public readonly Attitude Attitude;
@@ -24,7 +24,7 @@ namespace RemoteTechExtended
         
         public AttitudeChange(Attitude attitude) { 
             if (attitude == Attitude.Surface) {
-                throw new ArgumentException("This constructor can not be used with AttitudeState.Surface.");
+                throw new ArgumentException("This constructor can not be used with Attitude.Surface.");
             }
             this.Attitude = attitude;
             this.Pitch = Double.NaN;

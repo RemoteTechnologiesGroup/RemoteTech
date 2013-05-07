@@ -1,9 +1,8 @@
 using System;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
-    public class ControlGUI
-    {
+    public class ControlGUI {
         public ControlGUI() {
         }
     }

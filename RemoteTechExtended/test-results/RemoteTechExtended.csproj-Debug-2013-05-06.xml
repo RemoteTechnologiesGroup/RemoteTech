@@ -1,0 +1,1791 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:15:11</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:17:03</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>1</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:19:58</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:20:26</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:22:02</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:22:47</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Couldn't create a remote process.</Message>
+      <StackTrace>   at MonoDevelop.Core.Execution.ProcessHostController.CreateInstance(String assemblyPath, String typeName, String[] addins, IList`1 userAssemblyPaths)
+   at MonoDevelop.Core.Execution.ProcessService.CreateExternalProcessObject(Type type, IExecutionHandler executionHandler, IList`1 userAssemblyPaths)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:23:08</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:25:29</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:26:15</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:26:16</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:26:18</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:27:44</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>1</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:30:44</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>1</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:31:05</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:34:19</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>1</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:34:32</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:36:55</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:38:09</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:39:29</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:40:00</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:41:48</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:02</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:43</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:44</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:46</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:47</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:48</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:50</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T09:42:57</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-06T12:39:14</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+      <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+    </UnitTestResult>
+  </Results>
+  <Tests>
+    <TestRecord Name="RemoteTechExtended">
+      <Results>
+        <UnitTestResult>
+          <TestDate>2013-05-06T09:17:03</TestDate>
+          <Passed>0</Passed>
+          <Errors>0</Errors>
+          <Failures>1</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2013-05-06T09:27:44</TestDate>
+          <Passed>0</Passed>
+          <Errors>0</Errors>
+          <Failures>1</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2013-05-06T09:30:44</TestDate>
+          <Passed>0</Passed>
+          <Errors>0</Errors>
+          <Failures>1</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2013-05-06T09:34:19</TestDate>
+          <Passed>0</Passed>
+          <Errors>0</Errors>
+          <Failures>1</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+        </UnitTestResult>
+      </Results>
+      <Tests>
+        <TestRecord Name="PriorityQueueTest">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2013-05-06T09:17:03</TestDate>
+              <Passed>0</Passed>
+              <Errors>0</Errors>
+              <Failures>1</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-06T09:23:42</TestDate>
+              <Passed>0</Passed>
+              <Errors>0</Errors>
+              <Failures>0</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+              <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-06T09:24:26</TestDate>
+              <Passed>0</Passed>
+              <Errors>0</Errors>
+              <Failures>0</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+              <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-06T09:27:44</TestDate>
+              <Passed>0</Passed>
+              <Errors>0</Errors>
+              <Failures>1</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-06T09:30:44</TestDate>
+              <Passed>0</Passed>
+              <Errors>0</Errors>
+              <Failures>1</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-06T09:34:19</TestDate>
+              <Passed>0</Passed>
+              <Errors>0</Errors>
+              <Failures>1</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="TestCase">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:17:03</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>1</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>  Expected: not same as &lt;RemoteTechExtended.PriorityQueueTest+Node&gt;
+  But was:  &lt;RemoteTechExtended.PriorityQueueTest+Node&gt;
+</Message>
+                  <StackTrace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
+   at RemoteTechExtended.PriorityQueueTest.TestCase() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PriorityQueueTest.cs:line 42</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:19:58</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:20:26</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:22:02</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:23:08</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:23:42</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:24:26</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:25:29</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:26:15</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:26:16</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:26:18</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+              </Results>
+              <Tests />
+            </TestRecord>
+            <TestRecord Name="TestEnqueueDequeue">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:27:44</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>1</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>  Expected: same as &lt;RemoteTechExtended.PriorityQueueTest+Node&gt;
+  But was:  &lt;RemoteTechExtended.PriorityQueueTest+Node&gt;
+</Message>
+                  <StackTrace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
+   at RemoteTechExtended.PriorityQueueTest.TestEnqueueDequeue() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PriorityQueueTest.cs:line 43</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:30:44</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>1</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>  At ID: 0
+  Expected: same as &lt;Node(2119937497)&gt;
+  But was:  &lt;Node(8167388)&gt;
+</Message>
+                  <StackTrace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
+   at RemoteTechExtended.PriorityQueueTest.TestEnqueueDequeue() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PriorityQueueTest.cs:line 48</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:31:05</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:34:19</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>1</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>  At ID: 0
+  Expected: not same as &lt;Node(32542146)&gt;
+  But was:  &lt;Node(32542146)&gt;
+</Message>
+                  <StackTrace>   at NUnit.Framework.Assert.That(Object actual, IResolveConstraint expression, String message, Object[] args)
+   at RemoteTechExtended.PriorityQueueTest.TestEnqueueDequeue() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PriorityQueueTest.cs:line 47</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:34:32</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:36:55</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:38:09</TestDate>
+                  <Passed>1</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>Passed Enqueue/Dequeue test.</Message>
+                  <StackTrace>   at NUnit.Framework.Assert.Pass(String message, Object[] args)
+   at RemoteTechExtended.PriorityQueueTest.TestEnqueueDequeue() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PriorityQueueTest.cs:line 50</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:39:29</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:40:00</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:40:12</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitTestCase.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:41:38</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitTestCase.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:41:48</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:02</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:43</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:44</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:46</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:47</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:48</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:50</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T09:42:57</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-06T12:39:14</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>The type initializer for 'Mono.Unix.Native.Stdlib' threw an exception.</Message>
+                  <StackTrace>
+Server stack trace: 
+   at Mono.Unix.Native.Stdlib.malloc(UInt64 size)
+   at Mono.Unix.UnixMarshal.StringToHeap(String s, Int32 index, Int32 count, Encoding encoding)
+   at Mono.Unix.Catalog.GetString(String s)
+   at MonoDevelop.Core.GettextCatalog.GetString(String phrase)
+   at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult(TestResult t)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.NUnit.External.ExternalTestRunner.Run(IRemoteEventListener listener, ITestFilter filter, String path, String suiteName, List`1 supportAssemblies, String testRunnerType, String testRunnerAssembly)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)</StackTrace>
+                </UnitTestResult>
+              </Results>
+              <Tests />
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+      </Tests>
+    </TestRecord>
+  </Tests>
+</TestRecord>

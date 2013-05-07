@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
     public class InputButton<T> : Button<T> {
 
@@ -34,12 +34,12 @@ namespace RemoteTechExtended
             this.MaxValue = maxVal;
         }
 
-        public virtual void Draw() {
+        public override void Draw() {
             GUILayout.BeginHorizontal();
             if (GUILayout.Button(Name, GUI.skin.textField, GUILayout.Width(100.0f))) {
                 Fire();
             }
-            GUILayout.Label(Value, GUI.skin.textField, GUILayout.Width(50.0f));
+            GUILayout.Label(Value.ToString(), GUI.skin.textField, GUILayout.Width(50.0f));
             if (GUILayout.Button("+", GUI.skin.textField, GUILayout.Width(21.0f))) {
                 Value = Value++;
             }

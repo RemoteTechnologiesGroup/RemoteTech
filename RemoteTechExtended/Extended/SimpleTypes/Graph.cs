@@ -1,8 +1,11 @@
-using System;
+using System.Collections.Generic;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
-    public class Graph {
+    public class Graph<T> {
+
+        public List<Vertex>
+
         public Graph() {
         }
     }

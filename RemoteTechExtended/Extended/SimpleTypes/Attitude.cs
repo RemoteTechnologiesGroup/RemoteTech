@@ -1,6 +1,6 @@
 using System;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
     public enum Attitude {
         KillRot,

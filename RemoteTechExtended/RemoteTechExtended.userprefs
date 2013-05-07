@@ -1,0 +1,37 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Extended\Core\SatelliteNetwork.cs">
+    <Files>
+      <File FileName="Extended\Core\SatelliteNetwork.cs" Line="51" Column="36" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="RemoteTech" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="Extended" expanded="True">
+              <Node name="Core" expanded="True" />
+              <Node name="Modules" expanded="True" />
+              <Node name="SimpleTypes" expanded="True" />
+              <Node name="Tests" expanded="True" />
+            </Node>
+            <Node name="CorePartModules.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -1,9 +1,14 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
     static public class Common {
+
+        static public long Now() {
+            return GetGameTime();
+        }
 
         static public long GetGameTime() {
             return (long)(Planetarium.GetUniversalTime() * 1000);
@@ -49,6 +54,12 @@ namespace RemoteTechExtended
 
             return result.ToString();
         }
+
+        static public long ReverseFormatTime(int days, int hours, int minutes, int seconds) {
+            return 1000 * (seconds + 60 * (minutes + 60 * (hours + 24 * days)));
+        }
     }
+
+
 }
 

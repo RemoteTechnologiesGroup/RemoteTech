@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
     public class Button<T> {
         public delegate void ClickDelegate<TAction>(TAction action);
