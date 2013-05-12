@@ -58,7 +58,14 @@ namespace RemoteTech
         static public long ReverseFormatTime(int days, int hours, int minutes, int seconds) {
             return 1000 * (seconds + 60 * (minutes + 60 * (hours + 24 * days)));
         }
+
+        static public readonly Dictionary<String, String> PlanetColourMap = new Dictionary<String, String> {
+            { "Kerbin", "blue" }, { "Mün", "grey" }, { "Minmus", "cyan" }, { "Duna", "orange" }, { "Eve", "purple" },
+            { "Jool", "green" }, { null, "grey" },
+        };
     }
+
+
 
 
 }

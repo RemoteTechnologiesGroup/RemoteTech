@@ -38,9 +38,7 @@
       <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework" />
-    <Reference Include="System.Core">
-      <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\System.Core.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extended\GUIControls\InputButton.cs" />
@@ -58,12 +56,14 @@
     <Compile Include="Extended\Core\FlightComputer.cs" />
     <Compile Include="Extended\Core\SatelliteNetwork.cs" />
     <Compile Include="Extended\Modules\SPUPartModule.cs" />
-    <Compile Include="Extended\Modules\IAntenna.cs" />
     <Compile Include="Extended\Modules\CommandSPUPartModule.cs" />
     <Compile Include="Extended\SimpleTypes\PriorityQueue.cs" />
     <Compile Include="Extended\Tests\PriorityQueueTest.cs" />
     <Compile Include="Extended\Core\Pathfinder.cs" />
-    <Compile Include="Extended\Modules\ISatellite.cs" />
+    <Compile Include="Extended\Core\IAntenna.cs" />
+    <Compile Include="Extended\Core\ISatellite.cs" />
+    <Compile Include="Extended\Core\IControlStation.cs" />
+    <Compile Include="Extended\Tests\PathfinderTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

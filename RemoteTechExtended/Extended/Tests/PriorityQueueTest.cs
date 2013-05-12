@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
     [TestFixture]
     public class PriorityQueueTest {

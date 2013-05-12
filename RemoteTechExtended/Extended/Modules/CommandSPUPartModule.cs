@@ -2,9 +2,9 @@ using System;
 
 namespace RemoteTech
 {
-    public class CommandSPUPartModule : SPUPartModule {
+    public class CommandSPUPartModule : SPUPartModule, IControlStation {
 
-        public int Crew { get { this.vessel.GetCrewCount(); } }
+        public bool Active { get { return this.vessel.GetCrewCount() > 0; } }
 
         public CommandSPUPartModule() {
         }

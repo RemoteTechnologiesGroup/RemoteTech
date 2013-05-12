@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RemoteTechExtended
+namespace RemoteTech
 {
     public class PriorityQueue<T> where T : class, IComparable {
 

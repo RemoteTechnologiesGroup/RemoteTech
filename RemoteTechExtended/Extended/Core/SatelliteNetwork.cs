@@ -1,5 +1,7 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
+using KSP.IO;
 
 namespace RemoteTech
 {
@@ -19,27 +21,32 @@ namespace RemoteTech
         IList<ISatellite> mSatelliteCache;
 
         public static float Euclidean(ISatellite a, ISatellite b) {
-            return Vector3d.Distance(a.Position, b.Position);
+            return (float)Vector3d.Distance(a.Position, b.Position);
         }
 
-        public IList<ISatellite> FindNeighbours(ISatellite a) {
-
+        public IList<ISatellite> FindNeighbours(ISatellite start) {
+            if (mSatelliteCache == null) {
+                throw new ArgumentException();
+            }
+            List<ISatellite> neighbours = new List<ISatellite>();
+            float startOmni = start.FindMaxOmniRange();
+            foreach (ISatellite s in mSatelliteCache) {
+                float distance = Euclidean(start, s);
+                if (distance < startOmni && distance < s.FindMaxOmniRange()) {
+                    neighbours.Add(s);
+                }
+            }
+            return neighbours;
         }
 
-        public static float FindEdgeCost(ISatellite a, ISatellite b) {
-            // Euclidean + Line of sight
-        }
-
-
-        public void FindShortestCommandPath(ISatellite goal) {
+        public IList<ISatellite> FindShortestCommandPath(ISatellite goal) {
 
             List<ISatellite> sats = new List<ISatellite>();
-            List<CommandSPUPartModule> commands = new List<CommandSPUPartModule>();
+            List<IControlStation> commands = new List<IControlStation>();
 
-
-            foreach (Vessel v in FlightGlobals.vessels) {
+            foreach (Vessel v in FlightGlobals.Vessels) {
                 ISatellite sat = v.FindSPU();
-                CommandSPUPartModule command = v.FindCommandSPU();
+                IControlStation command = v.FindCommandSPU();
                 if (command != null) {
                     commands.Add(command);
                     sat = command;
@@ -48,14 +55,26 @@ namespace RemoteTech
                     sats.Add(sat);
                 }
             }
+
             mSatelliteCache = sats;
 
-            foreach (CommandSPUPartModule c in commands) {
-                if (c.Crew > 0) {
-                    List<ISatellite> path = Pathfinder.Solve(c, goal, FindNeighbours, FindEdgeCost, Euclidean);
+            IList<ISatellite> minPath = null;
+            foreach (IControlStation c in commands) {
+                float minCost = (float)Double.PositiveInfinity;
+                if (c.Active) {
+                    float cost;
+                    IList<ISatellite> path = Pathfinder.Solve(c, goal, out cost, 
+                            new Pathfinder.NeighbourDelegate<ISatellite>(FindNeighbours),
+                            new Pathfinder.CostDelegate<ISatellite>(Euclidean),
+                            new Pathfinder.HeuristicDelegate<ISatellite>(Euclidean)
+                    );
+                    if (cost < minCost) {
+                        minPath = path;
+                        minCost = cost;
+                    }
                 }
             }
-
+            return minPath;
         }
 
 //        Dictionary<String,List<List<SPUPartModule>>> ConstructCelestialBins() {

@@ -7,7 +7,7 @@ namespace RemoteTech
 
         // Properties
         public IAntenna[] Antennas { get { return FindAntennas(); } }
-        public Vector3d Position { get { return this.WorldPosition; } }
+        public Vector3d Position { get { return this.vessel.GetWorldPos3D(); } }
 
         // Fields
         SatelliteNetwork mNetwork;
