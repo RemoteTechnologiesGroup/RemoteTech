@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:40:49</TestDate>
+      <Passed>2</Passed>
+      <Errors>1</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:41:15</TestDate>
+      <Passed>2</Passed>
+      <Errors>1</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:42:39</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Couldn't create a remote process.</Message>
+      <StackTrace>   at MonoDevelop.Core.Execution.ProcessHostController.CreateInstance(String assemblyPath, String typeName, String[] addins, IList`1 userAssemblyPaths)
+   at MonoDevelop.Core.Execution.ProcessService.CreateExternalProcessObject(Type type, IExecutionHandler executionHandler, IList`1 userAssemblyPaths)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:43:19</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Couldn't create a remote process.</Message>
+      <StackTrace>   at MonoDevelop.Core.Execution.ProcessHostController.CreateInstance(String assemblyPath, String typeName, String[] addins, IList`1 userAssemblyPaths)
+   at MonoDevelop.Core.Execution.ProcessService.CreateExternalProcessObject(Type type, IExecutionHandler executionHandler, IList`1 userAssemblyPaths)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:45:13</TestDate>
+      <Passed>2</Passed>
+      <Errors>1</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:46:25</TestDate>
+      <Passed>2</Passed>
+      <Errors>1</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:48:47</TestDate>
+      <Passed>2</Passed>
+      <Errors>1</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:49:45</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Couldn't create a remote process.</Message>
+      <StackTrace>   at MonoDevelop.Core.Execution.ProcessHostController.CreateInstance(String assemblyPath, String typeName, String[] addins, IList`1 userAssemblyPaths)
+   at MonoDevelop.Core.Execution.ProcessService.CreateExternalProcessObject(Type type, IExecutionHandler executionHandler, IList`1 userAssemblyPaths)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:54:05</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>No connection could be made because the target machine actively refused it 127.0.0.1:51681</Message>
+      <StackTrace>
+Server stack trace: 
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.Sockets.Socket.Connect(EndPoint remoteEP)
+   at System.Runtime.Remoting.Channels.RemoteConnection.CreateNewSocket(EndPoint ipEndPoint)
+   at System.Runtime.Remoting.Channels.RemoteConnection.CreateNewSocket()
+   at System.Runtime.Remoting.Channels.RemoteConnection.GetSocket()
+   at System.Runtime.Remoting.Channels.SocketCache.GetSocket(String machinePortAndSid, Boolean openNew)
+   at System.Runtime.Remoting.Channels.Tcp.TcpClientTransportSink.SendRequestWithRetry(IMessage msg, ITransportHeaders requestHeaders, Stream requestStream)
+   at System.Runtime.Remoting.Channels.Tcp.TcpClientTransportSink.ProcessMessage(IMessage msg, ITransportHeaders requestHeaders, Stream requestStream, ITransportHeaders&amp; responseHeaders, Stream&amp; responseStream)
+   at System.Runtime.Remoting.Channels.BinaryClientFormatterSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)
+   at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)
+   at MonoDevelop.Core.Execution.RemoteProcessObject.Dispose()
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:55:17</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Object reference not set to an instance of an object</Message>
+      <StackTrace>
+Server stack trace: 
+  at NUnit.Util.ResultSummarizer.Summarize (NUnit.Core.TestResult result) [0x00000] in &lt;filename unknown&gt;:0 
+  at NUnit.Util.ResultSummarizer..ctor (NUnit.Core.TestResult result) [0x00000] in &lt;filename unknown&gt;:0 
+  at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult (NUnit.Core.TestResult t) [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper remoting-invoke-with-check) MonoDevelop.NUnit.External.EventListenerWrapper:GetLocalTestResult (NUnit.Core.TestResult)
+  at MonoDevelop.NUnit.External.ExternalTestRunner.Run (IRemoteEventListener listener, ITestFilter filter, System.String path, System.String suiteName, System.Collections.Generic.List`1 supportAssemblies, System.String testRunnerType, System.String testRunnerAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Runtime.Remoting.RemotingServices:InternalExecute (System.Reflection.MethodBase,object,object[],object[]&amp;)
+  at System.Runtime.Remoting.RemotingServices.InternalExecuteMessage (System.MarshalByRefObject target, IMethodCallMessage reqMsg) [0x000c2] in C:\cygwin\tmp\monobuild\build\BUILD\mono-2.10.9\mcs\class\corlib\System.Runtime.Remoting\RemotingServices.cs:138 
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:55:43</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Object reference not set to an instance of an object</Message>
+      <StackTrace>
+Server stack trace: 
+  at NUnit.Util.ResultSummarizer.Summarize (NUnit.Core.TestResult result) [0x00000] in &lt;filename unknown&gt;:0 
+  at NUnit.Util.ResultSummarizer..ctor (NUnit.Core.TestResult result) [0x00000] in &lt;filename unknown&gt;:0 
+  at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult (NUnit.Core.TestResult t) [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper remoting-invoke-with-check) MonoDevelop.NUnit.External.EventListenerWrapper:GetLocalTestResult (NUnit.Core.TestResult)
+  at MonoDevelop.NUnit.External.ExternalTestRunner.Run (IRemoteEventListener listener, ITestFilter filter, System.String path, System.String suiteName, System.Collections.Generic.List`1 supportAssemblies, System.String testRunnerType, System.String testRunnerAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Runtime.Remoting.RemotingServices:InternalExecute (System.Reflection.MethodBase,object,object[],object[]&amp;)
+  at System.Runtime.Remoting.RemotingServices.InternalExecuteMessage (System.MarshalByRefObject target, IMethodCallMessage reqMsg) [0x000c2] in C:\cygwin\tmp\monobuild\build\BUILD\mono-2.10.9\mcs\class\corlib\System.Runtime.Remoting\RemotingServices.cs:138 
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:59:31</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Couldn't create a remote process.</Message>
+      <StackTrace>   at MonoDevelop.Core.Execution.ProcessHostController.CreateInstance(String assemblyPath, String typeName, String[] addins, IList`1 userAssemblyPaths)
+   at MonoDevelop.Core.Execution.ProcessService.CreateExternalProcessObject(Type type, IExecutionHandler executionHandler, IList`1 userAssemblyPaths)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T13:00:25</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Couldn't create a remote process.</Message>
+      <StackTrace>   at MonoDevelop.Core.Execution.ProcessHostController.CreateInstance(String assemblyPath, String typeName, String[] addins, IList`1 userAssemblyPaths)
+   at MonoDevelop.Core.Execution.ProcessService.CreateExternalProcessObject(Type type, IExecutionHandler executionHandler, IList`1 userAssemblyPaths)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T13:00:48</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Couldn't create a remote process.</Message>
+      <StackTrace>   at MonoDevelop.Core.Execution.ProcessHostController.CreateInstance(String assemblyPath, String typeName, String[] addins, IList`1 userAssemblyPaths)
+   at MonoDevelop.Core.Execution.ProcessService.CreateExternalProcessObject(Type type, IExecutionHandler executionHandler, IList`1 userAssemblyPaths)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T13:01:23</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>Object reference not set to an instance of an object</Message>
+      <StackTrace>
+Server stack trace: 
+  at NUnit.Util.ResultSummarizer.Summarize (NUnit.Core.TestResult result) [0x00000] in &lt;filename unknown&gt;:0 
+  at NUnit.Util.ResultSummarizer..ctor (NUnit.Core.TestResult result) [0x00000] in &lt;filename unknown&gt;:0 
+  at MonoDevelop.NUnit.External.EventListenerWrapper.GetLocalTestResult (NUnit.Core.TestResult t) [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper remoting-invoke-with-check) MonoDevelop.NUnit.External.EventListenerWrapper:GetLocalTestResult (NUnit.Core.TestResult)
+  at MonoDevelop.NUnit.External.ExternalTestRunner.Run (IRemoteEventListener listener, ITestFilter filter, System.String path, System.String suiteName, System.Collections.Generic.List`1 supportAssemblies, System.String testRunnerType, System.String testRunnerAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Runtime.Remoting.RemotingServices:InternalExecute (System.Reflection.MethodBase,object,object[],object[]&amp;)
+  at System.Runtime.Remoting.RemotingServices.InternalExecuteMessage (System.MarshalByRefObject target, IMethodCallMessage reqMsg) [0x000c2] in C:\cygwin\tmp\monobuild\build\BUILD\mono-2.10.9\mcs\class\corlib\System.Runtime.Remoting\RemotingServices.cs:138 
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+    <UnitTestResult>
+      <TestDate>2013-05-10T12:56:39</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>0</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>An existing connection was forcibly closed by the remote host</Message>
+      <StackTrace>
+Server stack trace: 
+   at System.Net.Sockets.Socket.Receive(Byte[] buffer, Int32 offset, Int32 size, SocketFlags socketFlags)
+   at System.Runtime.Remoting.Channels.SocketStream.Read(Byte[] buffer, Int32 offset, Int32 size)
+   at System.Runtime.Remoting.Channels.SocketHandler.ReadFromSocket(Byte[] buffer, Int32 offset, Int32 count)
+   at System.Runtime.Remoting.Channels.SocketHandler.Read(Byte[] buffer, Int32 offset, Int32 count)
+   at System.Runtime.Remoting.Channels.SocketHandler.ReadAndMatchFourBytes(Byte[] buffer)
+   at System.Runtime.Remoting.Channels.Tcp.TcpSocketHandler.ReadAndMatchPreamble()
+   at System.Runtime.Remoting.Channels.Tcp.TcpSocketHandler.ReadVersionAndOperation(UInt16&amp; operation)
+   at System.Runtime.Remoting.Channels.Tcp.TcpClientSocketHandler.ReadHeaders()
+   at System.Runtime.Remoting.Channels.Tcp.TcpClientTransportSink.ProcessMessage(IMessage msg, ITransportHeaders requestHeaders, Stream requestStream, ITransportHeaders&amp; responseHeaders, Stream&amp; responseStream)
+   at System.Runtime.Remoting.Channels.BinaryClientFormatterSink.SyncProcessMessage(IMessage msg)
+
+Exception rethrown at [0]: 
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.RunUnitTest(UnitTest test, String suiteName, String pathName, String testName, TestContext testContext)
+   at MonoDevelop.NUnit.NUnitAssemblyTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.NUnitProjectTestSuite.OnRun(TestContext testContext)
+   at MonoDevelop.NUnit.UnitTest.Run(TestContext testContext)</StackTrace>
+    </UnitTestResult>
+  </Results>
+  <Tests>
+    <TestRecord Name="RemoteTech">
+      <Results>
+        <UnitTestResult>
+          <TestDate>2013-05-10T12:40:49</TestDate>
+          <Passed>2</Passed>
+          <Errors>1</Errors>
+          <Failures>0</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+          <ConsoleOutput />
+          <ConsoleError />
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2013-05-10T12:41:15</TestDate>
+          <Passed>2</Passed>
+          <Errors>1</Errors>
+          <Failures>0</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+          <ConsoleOutput />
+          <ConsoleError />
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2013-05-10T12:45:13</TestDate>
+          <Passed>2</Passed>
+          <Errors>1</Errors>
+          <Failures>0</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+          <ConsoleOutput />
+          <ConsoleError />
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2013-05-10T12:46:25</TestDate>
+          <Passed>2</Passed>
+          <Errors>1</Errors>
+          <Failures>0</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+          <ConsoleOutput />
+          <ConsoleError />
+        </UnitTestResult>
+        <UnitTestResult>
+          <TestDate>2013-05-10T12:48:47</TestDate>
+          <Passed>2</Passed>
+          <Errors>1</Errors>
+          <Failures>0</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+          <ConsoleOutput />
+          <ConsoleError />
+        </UnitTestResult>
+      </Results>
+      <Tests>
+        <TestRecord Name="PathfinderTest">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2013-05-10T12:40:49</TestDate>
+              <Passed>1</Passed>
+              <Errors>1</Errors>
+              <Failures>0</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-10T12:41:15</TestDate>
+              <Passed>1</Passed>
+              <Errors>1</Errors>
+              <Failures>0</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-10T12:45:13</TestDate>
+              <Passed>1</Passed>
+              <Errors>1</Errors>
+              <Failures>0</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-10T12:46:25</TestDate>
+              <Passed>1</Passed>
+              <Errors>1</Errors>
+              <Failures>0</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+            <UnitTestResult>
+              <TestDate>2013-05-10T12:48:47</TestDate>
+              <Passed>1</Passed>
+              <Errors>1</Errors>
+              <Failures>0</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="TestPathfinder">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2013-05-10T12:40:49</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>1</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+                  <StackTrace>   at RemoteTech.PathfinderTest.TestPathfinder() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PathfinderTest.cs:line 62</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-10T12:41:15</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>1</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+                  <StackTrace>   at RemoteTech.PathfinderTest.TestPathfinder() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PathfinderTest.cs:line 62</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-10T12:45:13</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>1</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>System.ArgumentOutOfRangeException : Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index</Message>
+                  <StackTrace>   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at RemoteTech.PathfinderTest.TestPathfinder() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PathfinderTest.cs:line 63</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-10T12:46:25</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>1</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>System.ArgumentOutOfRangeException : Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index</Message>
+                  <StackTrace>   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at RemoteTech.PathfinderTest.TestPathfinder() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PathfinderTest.cs:line 63</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+                <UnitTestResult>
+                  <TestDate>2013-05-10T12:48:47</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>1</Errors>
+                  <Failures>0</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>System.ArgumentOutOfRangeException : Index was out of range. Must be non-negative and less than the size of the collection.
+Parameter name: index</Message>
+                  <StackTrace>   at System.Collections.Generic.List`1.get_Item(Int32 index)
+   at RemoteTech.PathfinderTest.TestPathfinder() in c:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Tests\PathfinderTest.cs:line 64</StackTrace>
+                  <ConsoleOutput />
+                  <ConsoleError />
+                </UnitTestResult>
+              </Results>
+              <Tests />
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+      </Tests>
+    </TestRecord>
+  </Tests>
+</TestRecord>

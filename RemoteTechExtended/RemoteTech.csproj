@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,6 +10,12 @@
     <RootNamespace>RemoteTech</RootNamespace>
     <AssemblyName>RemoteTechExtended</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -58,43 +64,13 @@
     <Compile Include="Extended\Modules\SPUPartModule.cs" />
     <Compile Include="Extended\Modules\CommandSPUPartModule.cs" />
     <Compile Include="Extended\SimpleTypes\PriorityQueue.cs" />
-    <Compile Include="Extended\Tests\PriorityQueueTest.cs" />
     <Compile Include="Extended\Core\Pathfinder.cs" />
     <Compile Include="Extended\Core\IAntenna.cs" />
     <Compile Include="Extended\Core\ISatellite.cs" />
     <Compile Include="Extended\Core\IControlStation.cs" />
-    <Compile Include="Extended\Tests\PathfinderTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Extended\" />
-    <Folder Include="Extended\GUIControls\" />
-    <Folder Include="Extended\Modules\" />
-    <Folder Include="Extended\GUI\" />
-    <Folder Include="Extended\SimpleTypes\" />
-    <Folder Include="Extended\Core\" />
     <Folder Include="Extended\Tests\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="AdvAeronautics.cs" />
-    <None Include="CorePartModules.cs" />
-    <None Include="FlightComputer.cs" />
-    <None Include="FlightComputerGUI.cs" />
-    <None Include="FlightCtrlStateBuffer.cs" />
-    <None Include="ModuleRTAnimatedAntenna.cs" />
-    <None Include="ModuleRTAnimatedWing.cs" />
-    <None Include="ModuleRTLoopAnimAntenna.cs" />
-    <None Include="ModuleRTModalAntenna.cs" />
-    <None Include="RelayNetwork.cs" />
-    <None Include="RelayNode.cs" />
-    <None Include="RelayPath.cs" />
-    <None Include="RemoteCore.cs" />
-    <None Include="RoverPidController.cs" />
-    <None Include="RTGlobals.cs" />
-    <None Include="RTUtils.cs" />
-    <None Include="SatSettings.cs" />
-    <None Include="StructsAndEnums.cs" />
-    <None Include="SupportClasses.cs" />
-    <None Include="AssemblyInfo.cs" />
   </ItemGroup>
 </Project>

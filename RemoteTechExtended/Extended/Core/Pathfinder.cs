@@ -12,18 +12,24 @@ namespace RemoteTech
         public delegate float CostDelegate<T>(T a,T b);
         public delegate float HeuristicDelegate<T>(T a,T b);
 
-        public class Node<T> : IComparable {
+        public enum Flag {
+            Closed,
+            Open,
+        }
 
+        public class Node<T> : IComparable {
             public T Item { get; private set; }
             public float Cost { get; set; }
             public float Heuristic { get; set; }
             public Node<T> From { get; set; }
+            public Flag State { get; set; }
 
-            public Node(T item, float cost, float heuristic, Node<T> from) {
+            public Node(T item, float cost, float heuristic, Node<T> from, Flag state) {
                 this.Item = item;
                 this.Cost = cost;
                 this.Heuristic = heuristic;
                 this.From = from;
+                this.State = state;
             }
 
             public override bool Equals(Object obj) {
@@ -63,21 +69,20 @@ namespace RemoteTech
 
             // We don't have SortedSet<T> in Unity's Mono so we use a custom PriorityQueue
             // A node is in the closed set if it is in the nodeMap but not in openQueue;
-            PriorityQueue<Node<T>> openQueue = new PriorityQueue<Node<T>>();
+            MutablePriorityQueue<Node<T>> openQueue = new MutablePriorityQueue<Node<T>>();
 
-            Node<T> nStart = new Node<T>(start, 0, heuristicFunction(start, goal), null);
-            Node<T> nGoal = new Node<T>(goal, 0, 0, null);
+            Node<T> nStart = new Node<T>(start, 0, heuristicFunction(start, goal), null, Flag.Open);
             nodeMap[start] = nStart;
-            nodeMap[goal] = nGoal;
             openQueue.Enqueue(nStart);
             cost = 0;
             while (openQueue.Count > 0) {
                 Node<T> current = openQueue.Dequeue();
-                if (current == nGoal) {
-                    nGoal.From = current;
+                System.Diagnostics.Debug.Write("current = " + current.Item.ToString());
+                current.State = Flag.Closed;
+                if (current.Item.Equals(goal)) {
                     // Return path and cost
                     List<T> reversePath = new List<T>();
-                    for (Node<T> node = nGoal; node.Item != null; node = node.From) {
+                    for (Node<T> node = current; node != null; node = node.From) {
                         reversePath.Add(node.Item);
                         cost += node.Cost;
                     }
@@ -93,10 +98,18 @@ namespace RemoteTech
                             // Cost via current is better than the old one
                             n.From = current;
                             n.Cost = new_cost;
+                            if(n.State == Flag.Open) {
+                                // Update priority queue
+                                openQueue.Increase(n);
+                            } else if(n.State == Flag.Closed) {
+                                // Re-open node
+                                n.State = Flag.Open;
+                                openQueue.Enqueue(n);
+                            }
                         }
                     } else {
                         // It is not in the openSet, create a node and add it
-                        Node<T> n = new Node<T>(item, new_cost, heuristicFunction(item, goal), current);
+                        Node<T> n = new Node<T>(item, new_cost, heuristicFunction(item, goal), current, Flag.Open);
                         openQueue.Enqueue(n);
                         nodeMap[item] = n;
                     }

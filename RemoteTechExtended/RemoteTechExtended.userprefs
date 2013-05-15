@@ -1,21 +1,22 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Extended\Core\SatelliteNetwork.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Extended\Core\Pathfinder.cs">
     <Files>
-      <File FileName="Extended\Core\SatelliteNetwork.cs" Line="51" Column="36" />
+      <File FileName="Extended\Core\Pathfinder.cs" Line="55" Column="13" />
+      <File FileName="Extended\Tests\PathfinderTest.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="RemoteTech" expanded="True">
+          <Node name="RemoteTech" expanded="True" selected="True">
             <Node name="References" expanded="True" />
             <Node name="Extended" expanded="True">
               <Node name="Core" expanded="True" />
+              <Node name="GUIControls" expanded="True" />
               <Node name="Modules" expanded="True" />
               <Node name="SimpleTypes" expanded="True" />
               <Node name="Tests" expanded="True" />
             </Node>
-            <Node name="CorePartModules.cs" selected="True" />
           </Node>
         </State>
       </Pad>
@@ -31,7 +32,9 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\Sander Hoksbergen\git\RemoteTechExtended\RemoteTechExtended\Extended\Core\Pathfinder.cs" line="68" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
