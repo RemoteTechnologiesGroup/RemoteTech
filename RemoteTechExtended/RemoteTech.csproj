@@ -55,6 +55,7 @@
     <Compile Include="Extended\Core\RTSettings.cs" />
     <Compile Include="Extended\Core\Satellite.cs" />
     <Compile Include="Extended\Datatypes\BinaryHeap.cs" />
+    <Compile Include="Extended\Datatypes\WeakReference.cs" />
     <Compile Include="Extended\GUI\AttitudeControlFragment.cs" />
     <Compile Include="Extended\GUI\ControlGUI.cs" />
     <Compile Include="Extended\Modules\AntennaPartModule.cs" />

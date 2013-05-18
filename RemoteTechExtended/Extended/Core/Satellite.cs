@@ -9,7 +9,9 @@ namespace RemoteTech {
 
         public Satellite Instance(Vessel vessel) {
             if (!mSingletons.ContainsKey(vessel.GetInstanceID()) || mSingletons[vessel.GetInstanceID()] == null) {
-                mSingletons[vessel.GetInstanceID()] = new WeakReference<Satellite>(new Satellite(vessel));
+                Satellite newSatellite = new Satellite(vessel);
+                mSingletons[vessel.GetInstanceID()] = new WeakReference<Satellite>(newSatellite);
+                return newSatellite;
             }
             return mSingletons[vessel.GetInstanceID()].Target;
         }
