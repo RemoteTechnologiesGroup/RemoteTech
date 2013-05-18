@@ -23,9 +23,6 @@ namespace RemoteTech
         }
         
         public AttitudeChange(Attitude attitude) { 
-            if (attitude == Attitude.Surface) {
-                throw new ArgumentException("This constructor can not be used with Attitude.Surface.");
-            }
             this.Attitude = attitude;
             this.Pitch = Double.NaN;
             this.Heading = Double.NaN;

@@ -6,88 +6,65 @@ namespace RemoteTech
     public class AttitudeControlFragment : AbstractFragment {
 
         public enum Action {
-            KillRot,
-            Prograde,
-            Retrograde,
-            NormalPlus,
-            NormalMinus,
-            RadialPlus,
-            RadialMinus,
-            ManeuverNode,
-            Surface,
-            Send,
-            Roll,
+            BtnClickOff,
+            BtnClickKillRot,
+            BtnClickNode,
+            BtnClickSurf,
+            BtnClickOrb,
         }
 
-        Button<Action>[] mSimpleCommandButtons;
-        Button<Action>[] mCollapsableCommandButtons;
-        DelayedStateButton<Action> mSurfaceButton;
-        InputButton<Action> mPitchButton;
-        InputButton<Action> mHeadingButton;
-        InputToggleButton<Action> mRollButton;
         bool mFoldSurface = true;
+        bool mRollEnabled = false;
 
-        public AttitudeControlFragment(SPUPartModule attachedTo) : base(attachedTo) {
-            mSimpleCommandButtons = new Button<Action>[] {
-                new DelayedStateButton<Action>(OnClick, "KillRot", Action.KillRot),
-                new DelayedStateButton<Action>(OnClick, "Prograde", Action.Prograde),
-                new DelayedStateButton<Action>(OnClick, "Retrograde", Action.Retrograde),
-                new DelayedStateButton<Action>(OnClick, "Normal+", Action.NormalPlus),
-                new DelayedStateButton<Action>(OnClick, "Normal-", Action.NormalMinus),
-                new DelayedStateButton<Action>(OnClick, "Radial+", Action.RadialPlus),
-                new DelayedStateButton<Action>(OnClick, "Radial-", Action.RadialMinus),
-                new DelayedStateButton<Action>(OnClick, "Maneuver", Action.ManeuverNode),
-                mSurfaceButton = new DelayedStateButton<Action>(OnClick, "Surface", Action.Surface),
-            };
-            mCollapsableCommandButtons = new Button<Action>[] {
-                mPitchButton = new InputButton<Action>(null, "Pitch:", Action.KillRot, 90, -180, 180),
-                mHeadingButton = new InputButton<Action>(null, "Heading:", Action.KillRot, 90, -180, 180),
-                mRollButton = new InputToggleButton<Action>(OnClick, "Roll:", Action.Roll, 0, -180, 180, false),
-                new Button<Action>(OnClick, "Send", Action.Send),
-            };
+        int[] mToggleGroupStates = { 0, 0, 0, 0 };
+
+        public AttitudeControlFragment(SPUPartModule attachedTo)
+            : base(attachedTo) {
+
         }
 
         public void Draw() {
             GUILayout.BeginVertical();
-            foreach (Button<Action> b in mSimpleCommandButtons) {
-                b.Draw();
-            }
-            if (!mFoldSurface) {
-                foreach (Button<Action> b in mCollapsableCommandButtons) {
-                    b.Draw();
-                }
-            }
+
+            GUILayout.BeginHorizontal();
+
             GUILayout.EndVertical();
         }
 
         public void OnClick(Action action) {
-            switch (action) {
-                case Action.Surface:
-                    mFoldSurface = !mFoldSurface;
-                    break;
-                case Action.Send:
-                    if (mRollButton.IsActive) {
-                        Module.Enqueue(new AttitudeChange(Attitude.Surface, 
-                                                          mPitchButton.Value,
-                                                          mHeadingButton.Value,
-                                                          mRollButton.Value));
-                    } else {
-                        Module.Enqueue(new AttitudeChange(Attitude.Surface, 
-                                                          mPitchButton.Value,
-                                                          mHeadingButton.Value));
-                    }
-                    break;
-                case Action.Roll:
-                    mRollButton.IsActive = false;
-                    break;
-                default:
-                    mFoldSurface = true;
-                    Module.Enqueue(new AttitudeChange((Attitude)Enum.Parse(typeof(Attitude), ((int)action).ToString())));
-                    break;
 
+        }
+
+        public void OnClick(Attitude attitude) {
+
+        }
+
+        void DrawStateButton(String name, Action action, ref int state, int stateVal,
+                                                                         float height,
+                                                                         float width) {
+            if (GUILayout.Toggle(state == stateVal, name, GUI.skin.button,
+                                                          GUILayout.Width(width),
+                                                          GUILayout.Height(height))) {
             }
         }
-        
+
+        void DrawInput(String name, Action action, ref double value) {
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button(name, GUI.skin.textField, GUILayout.Width(200.0f))) {
+                OnClick(action);
+            }
+            GUILayout.Label(value.ToString(), GUI.skin.textField, GUILayout.Width(50.0f));
+            if (GUILayout.Button("+", GUI.skin.textField, GUILayout.Width(21.0f))) {
+                value++;
+            }
+            if (GUILayout.Button("-", GUI.skin.textField, GUILayout.Width(21.0f))) {
+                value--;
+            }
+            GUILayout.EndHorizontal();
+        }
     }
+
+
 }
 

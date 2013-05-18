@@ -8,7 +8,7 @@ namespace RemoteTech
 
         String Target { get; }
     
-        bool IsActive { get; }
+        bool Active { get; }
         
         float DishRange { get; }
         float DishInactiveRange { get; }

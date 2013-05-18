@@ -7,17 +7,6 @@ namespace RemoteTech
 {
     public class SatelliteNetwork {
 
-        public static SatelliteNetwork Instance {
-            get {
-                if (mSingleton == null) {
-                    mSingleton = new SatelliteNetwork();
-                }
-                return mSingleton;
-            }
-        }
-
-        static SatelliteNetwork mSingleton;
-
         IList<ISatellite> mSatelliteCache;
 
         public static float Euclidean(ISatellite a, ISatellite b) {
@@ -60,17 +49,17 @@ namespace RemoteTech
 
             IList<ISatellite> minPath = null;
             foreach (IControlStation c in commands) {
-                float minCost = (float)Double.PositiveInfinity;
+                double minCost = Double.PositiveInfinity;
                 if (c.Active) {
-                    float cost;
-                    IList<ISatellite> path = Pathfinder.Solve(c, goal, out cost, 
+                    double cost;
+                    Pair<IList<ISatellite>, double> result = Pathfinder.Solve(c, goal, 
                             new Pathfinder.NeighbourDelegate<ISatellite>(FindNeighbours),
                             new Pathfinder.CostDelegate<ISatellite>(Euclidean),
                             new Pathfinder.HeuristicDelegate<ISatellite>(Euclidean)
                     );
-                    if (cost < minCost) {
-                        minPath = path;
-                        minCost = cost;
+                    if (result.Second < minCost) {
+                        minPath = result.First;
+                        minCost = result.Second;
                     }
                 }
             }

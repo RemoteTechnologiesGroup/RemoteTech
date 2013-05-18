@@ -27,7 +27,7 @@ namespace Tests
             }
 
             public override String ToString() {
-                return "Node(" + Priority + ")";
+                return "Priority = " + Priority;
             }
 
         }
@@ -35,7 +35,7 @@ namespace Tests
         public void TestEnqueueDequeue() {
             PriorityQueue<Node> testQueue = new PriorityQueue<Node>();
             List<Node> testList = new List<Node>();
-            Random rng = new Random();
+            Random rng = new Random(42);
 
             for (int i = 0; i < 100; i++) {
                 Node n = new Node(rng.Next());
@@ -55,7 +55,7 @@ namespace Tests
             PriorityQueue<Node> testQueue = new PriorityQueue<Node>();
             List<Node> testList = new List<Node>();
 
-            Random rng = new Random();
+            Random rng = new Random(42);
 
             for (int i = 0; i < 100; i++) {
                 Node n = new Node(rng.Next());
@@ -68,7 +68,11 @@ namespace Tests
             for (int i = 0; i < 100; i++) {
                 int old_priority = testList[i].Priority;
                 testList[i].Priority = rng.Next();
-                testQueue.Update(testList[i]);
+                if (testList[i].Priority.CompareTo(old_priority) < 0) {
+                    testQueue.Increase(testList[i]);
+                } else {
+                    testQueue.Decrease(testList[i]);
+                }
             }
 
             testList.Sort();

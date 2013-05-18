@@ -19,7 +19,7 @@ namespace Tests
             new int[]{0, 0, 0, 0, 0, 0, 3, 0},
         };
 
-        public List<int> TestExpected1 = new List<int> {0,1,2,3,4,5,6,7};
+        public List<int> TestExpected1 = new List<int> {0,1,2,3,4,7};
 
         public class Scenario {
 
@@ -29,9 +29,8 @@ namespace Tests
                 this.AdjacencyMatrix = matrix;
             }
 
-            public IList<int> Run() {
-                float cost;
-                return Pathfinder.Solve<int>(0, AdjacencyMatrix.Length - 1, out cost, new Pathfinder.NeighbourDelegate<int>(FindNeighbours),
+            public Pair<IList<int>, double> Run() {
+                return Pathfinder.Solve<int>(0, AdjacencyMatrix.Length - 1, new Pathfinder.NeighbourDelegate<int>(FindNeighbours),
                                                                      new Pathfinder.CostDelegate<int>(FindCost),
                                                                      new Pathfinder.HeuristicDelegate<int>(FindHeuristic));
             }
@@ -61,9 +60,9 @@ namespace Tests
         [Test()]
         public void TestPathfinder() {
             Scenario first = new Scenario(TestMatrix1);
-            IList<int> firstPath = first.Run();
+            IList<int> firstPath = first.Run().First;
             for (int i = 0; i < TestExpected1.Count; i++) {
-                Assert.AreEqual(firstPath[i], TestExpected1[i]);
+                Assert.AreEqual(TestExpected1[i], firstPath[i]);
             }
         }
 

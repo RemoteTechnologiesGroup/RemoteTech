@@ -12,40 +12,20 @@ namespace RemoteTech
         public delegate float CostDelegate<T>(T a,T b);
         public delegate float HeuristicDelegate<T>(T a,T b);
 
-        public enum Flag {
-            Closed,
-            Open,
-        }
-
+        // All sorting related data is immutable.
         public class Node<T> : IComparable {
-            public T Item { get; private set; }
-            public float Cost { get; set; }
-            public float Heuristic { get; set; }
+            public readonly T Item;
+            public readonly float Cost;
+            public readonly float Heuristic;
             public Node<T> From { get; set; }
-            public Flag State { get; set; }
+            public bool Closed { get; set; }
 
-            public Node(T item, float cost, float heuristic, Node<T> from, Flag state) {
+            public Node(T item, float cost, float heuristic, Node<T> from, bool closed) {
                 this.Item = item;
                 this.Cost = cost;
                 this.Heuristic = heuristic;
                 this.From = from;
-                this.State = state;
-            }
-
-            public override bool Equals(Object obj) {
-                if (obj == null) {
-                    return false;
-                }
-                Node<T> node = obj as Node<T>;
-                if (node == null) {
-                    return false;
-                }
-                return Item.Equals(node.Item);
-            }
-
-            // Based solely on immutable Item, the rest of the parameters may safely change inside a hashed container
-            public override int GetHashCode() {
-                return Item.GetHashCode();
+                this.Closed = closed;
             }
 
             public int CompareTo(Object obj) {
@@ -61,24 +41,24 @@ namespace RemoteTech
 
         }
 
-        public static IList<T> Solve<T>(T start, T goal, out float cost, NeighbourDelegate<T> neighboursFunction,
-                                                                         CostDelegate<T> costFunction,
-                                                                         HeuristicDelegate<T> heuristicFunction) {
+        public static Pair<IList<T>, double> Solve<T>(T start, T goal, NeighbourDelegate<T> neighboursFunction,
+                                                                       CostDelegate<T> costFunction,
+                                                                       HeuristicDelegate<T> heuristicFunction) {
 
             Dictionary<T, Node<T>> nodeMap = new Dictionary<T, Node<T>>();
+            PriorityQueue<Node<T>> priorityQueue = new PriorityQueue<Node<T>>();
 
-            // We don't have SortedSet<T> in Unity's Mono so we use a custom PriorityQueue
-            // A node is in the closed set if it is in the nodeMap but not in openQueue;
-            MutablePriorityQueue<Node<T>> openQueue = new MutablePriorityQueue<Node<T>>();
-
-            Node<T> nStart = new Node<T>(start, 0, heuristicFunction(start, goal), null, Flag.Open);
+            Node<T> nStart = new Node<T>(start, 0, heuristicFunction(start, goal), null, false);
             nodeMap[start] = nStart;
-            openQueue.Enqueue(nStart);
-            cost = 0;
-            while (openQueue.Count > 0) {
-                Node<T> current = openQueue.Dequeue();
-                System.Diagnostics.Debug.Write("current = " + current.Item.ToString());
-                current.State = Flag.Closed;
+            priorityQueue.Enqueue(nStart);
+            double cost = 0;
+
+            while (priorityQueue.Count > 0) {
+                Node<T> current = priorityQueue.Dequeue();
+                if (current.Closed == true)
+                    continue;
+                current.Closed = true;
+
                 if (current.Item.Equals(goal)) {
                     // Return path and cost
                     List<T> reversePath = new List<T>();
@@ -87,35 +67,30 @@ namespace RemoteTech
                         cost += node.Cost;
                     }
                     reversePath.Reverse();
-                    return reversePath;
+                    return new Pair<IList<T>, double>(reversePath, cost);
                 }
+
                 foreach (T item in neighboursFunction(current.Item)) {
                     float new_cost = current.Cost + costFunction(current.Item, item);
                     // If the item has a node, it will either be in the closedSet, or the openSet
                     if (nodeMap.ContainsKey(item)) {
                         Node<T> n = nodeMap[item];
                         if (new_cost < n.Cost) {
-                            // Cost via current is better than the old one
-                            n.From = current;
-                            n.Cost = new_cost;
-                            if(n.State == Flag.Open) {
-                                // Update priority queue
-                                openQueue.Increase(n);
-                            } else if(n.State == Flag.Closed) {
-                                // Re-open node
-                                n.State = Flag.Open;
-                                openQueue.Enqueue(n);
-                            }
+                            // Cost via current is better than the old one, discard old node, queue new one.
+                            Node<T> new_node = new Node<T>(n.Item, new_cost, n.Heuristic, current, false);
+                            n.Closed = true;
+                            nodeMap[item] = new_node;
+                            priorityQueue.Enqueue(new_node);
                         }
                     } else {
                         // It is not in the openSet, create a node and add it
-                        Node<T> n = new Node<T>(item, new_cost, heuristicFunction(item, goal), current, Flag.Open);
-                        openQueue.Enqueue(n);
-                        nodeMap[item] = n;
+                        Node<T> new_node = new Node<T>(item, new_cost, heuristicFunction(item, goal), current, false);
+                        priorityQueue.Enqueue(new_node);
+                        nodeMap[item] = new_node;
                     }
                 }
             }
-            return new List<T>();
+            return new Pair<IList<T>, double>(new List<T>(), Double.PositiveInfinity);
         }
 
         public static void GenerateGraphDescription<T>(String fileName, T start, NeighbourDelegate<T> neighboursFunction,
