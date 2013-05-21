@@ -47,7 +47,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RemoteTechExtended\RemoteTech.csproj">
+    <ProjectReference Include="..\RemoteTech\RemoteTech.csproj">
       <Project>{70477E5D-A9B6-42EE-B3BE-1CBECDA01B8A}</Project>
       <Name>RemoteTech</Name>
     </ProjectReference>

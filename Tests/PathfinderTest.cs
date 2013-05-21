@@ -46,11 +46,11 @@ namespace Tests
                 return neighbours;
             }
 
-            public float FindCost(int a, int b) {
+            public double FindCost(int a, int b) {
                 return AdjacencyMatrix[a][b];
             }
 
-            public float FindHeuristic(int a, int goal) {
+            public double FindHeuristic(int a, int goal) {
                 return 0;
             }
 

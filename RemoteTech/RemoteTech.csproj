@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{70477E5D-A9B6-42EE-B3BE-1CBECDA01B8A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>RemoteTech</RootNamespace>
+    <AssemblyName>RemoteTech</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\Plugins\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Plugin\Core\FlightComputer.cs" />
+    <Compile Include="Plugin\Core\IAntenna.cs" />
+    <Compile Include="Plugin\Core\IControlStation.cs" />
+    <Compile Include="Plugin\Core\ISatellite.cs" />
+    <Compile Include="Plugin\Core\MissionControlSatellite.cs" />
+    <Compile Include="Plugin\Core\Pathfinder.cs" />
+    <Compile Include="Plugin\Core\PathRenderer.cs" />
+    <Compile Include="Plugin\Core\RTAssets.cs" />
+    <Compile Include="Plugin\Core\RTCore.cs" />
+    <Compile Include="Plugin\Core\RTSettings.cs" />
+    <Compile Include="Plugin\Core\RTUtil.cs" />
+    <Compile Include="Plugin\Core\Satellite.cs" />
+    <Compile Include="Plugin\Core\SatelliteNetwork.cs" />
+    <Compile Include="Plugin\Datatypes\BinaryHeap.cs" />
+    <Compile Include="Plugin\Datatypes\PriorityQueue.cs" />
+    <Compile Include="Plugin\Datatypes\WeakReference.cs" />
+    <Compile Include="Plugin\GUI\AttitudeControlFragment.cs" />
+    <Compile Include="Plugin\GUI\ControlGUI.cs" />
+    <Compile Include="Plugin\GUI\MissionControlGUI.cs" />
+    <Compile Include="Plugin\GUI\SatelliteListFragment.cs" />
+    <Compile Include="Plugin\Modules\AntennaPartModule.cs" />
+    <Compile Include="Plugin\Modules\CommandSPUPartModule.cs" />
+    <Compile Include="Plugin\Modules\SPUPartModule.cs" />
+    <Compile Include="Plugin\SimpleTypes\Attitude.cs" />
+    <Compile Include="Plugin\SimpleTypes\AttitudeChange.cs" />
+    <Compile Include="Plugin\SimpleTypes\Pair.cs" />
+    <Compile Include="Plugin\SimpleTypes\TrottleChange.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Plugin\Tests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PluginData\RemoteTech\button_vessel_probe.png" />
+  </ItemGroup>
+</Project>
