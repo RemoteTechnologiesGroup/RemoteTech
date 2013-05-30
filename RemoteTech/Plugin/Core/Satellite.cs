@@ -1,80 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech {
     public class Satellite : ISatellite {
-        static Dictionary<int, Satellite> mSingletons = new Dictionary<int, Satellite>();
 
-        public static Satellite Instance(PartModule part) {
-            int id = part.vessel.GetInstanceID();
-            if (!mSingletons.ContainsKey(id) || mSingletons[id] == null) {
-                mSingletons[id] = new Satellite(part);
-            }
-            return mSingletons[id];
-        }
-
-        public static void Unclaim(Vessel v, PartModule p) {
-            if(mSingletons[v.GetInstanceID()].Owner == p){
-                mSingletons.Remove(v.GetInstanceID());
-            }
-        }
-
-        public static IEnumerable<Satellite> FindAll() {
-            return mSingletons.Values;
-        }
-
-        public String Name { get { return Owner.vessel.vesselName; } }
-        public IAntenna[] Antennas { get { return FindAntennas(); } }
-        public Vector3d Position { 
+        public String Name { get { return mParent.vesselName; } }
+        public Guid Guid {
             get {
-                return Owner.vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime());
-            }
-        }
-
-        public PartModule Owner { get; private set; }
-
-        Satellite(PartModule parent) {
-            Owner = parent;
-        }
-
-        IAntenna[] FindAntennas() {
-            List<IAntenna> antennas = new List<IAntenna>();
-            foreach (Part p in Owner.vessel.parts) {
-                if (p.Modules.Contains(typeof(AntennaPartModule).Name)) {
-                    antennas.Add(p.Modules[typeof(AntennaPartModule).Name] as IAntenna);
+                if (!mParent.loaded) {
+                    return mParent.protoVessel.vesselID;
+                } else {
+                    return mParent.id;
                 }
             }
-            return antennas.ToArray();
         }
+        public Vector3 Position {
+            get { return mParent.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime()); }
+        }
+        public Vessel Vessel { get { return mParent; } }
 
-        public double FindMaxOmniRange() {
-            double maxOmniRange = 0.0;
-            foreach (IAntenna a in Antennas) {
-                if (a.OmniRange > maxOmniRange) {
-                    maxOmniRange = a.OmniRange;
+        public IEnumerable<Pair<Guid, float>> DishRange {
+            get {
+                foreach (IAntenna a in RTCore.Instance.Antennas.For(mParent)) {
+                    yield return new Pair<Guid, float>(a.Target, a.DishRange);
                 }
             }
-            return maxOmniRange;
         }
 
-        public double IsPointingAt(ISatellite a) {
-            double range = 0.0;
-            foreach (IAntenna antenna in Antennas) {
-                if(antenna.Target.Equals(a.Name)) {
-                    range = antenna.DishRange;
-                }
-            }
-            return range;
+        public float OmniRange {
+            get { return RTCore.Instance.Antennas.For(mParent).Max(a => a.OmniRange); }
+        }
+
+        Vessel mParent;
+
+        public Satellite(Vessel parent) {
+            mParent = parent;
         }
 
         public override int GetHashCode() {
-            return Owner.GetInstanceID();
+            return mParent.GetInstanceID();
         }
 
         public override string ToString() {
-            return "{ " + Name + " }";
+            return mParent.id.ToString();
         }
     }
 }

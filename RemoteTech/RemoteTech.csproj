@@ -21,7 +21,7 @@
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>True</Optimize>
-    <OutputPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\Plugins\</OutputPath>
+    <OutputPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\GameData\RemoteTech\Plugins\</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -57,11 +57,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Plugin\Core\FlightComputer.cs" />
-    <Compile Include="Plugin\Core\IAntenna.cs" />
-    <Compile Include="Plugin\Core\IControlStation.cs" />
-    <Compile Include="Plugin\Core\ISatellite.cs" />
-    <Compile Include="Plugin\Core\MissionControlSatellite.cs" />
+    <Compile Include="Plugin\Core\ProtoAntenna.cs" />
+    <Compile Include="Plugin\Core\RTAntennaManager.cs" />
+    <Compile Include="Plugin\GUI\AntennaConfigFragment.cs" />
+    <Compile Include="Plugin\GUI\RTGUIManager.cs" />
+    <Compile Include="Plugin\GUI\SatelliteConfigFragment.cs" />
+    <Compile Include="Plugin\Interfaces\IAntenna.cs" />
+    <Compile Include="Plugin\Interfaces\IGUIFragment.cs" />
+    <Compile Include="Plugin\Interfaces\IGUIWindow.cs" />
+    <Compile Include="Plugin\Interfaces\ISatellite.cs" />
+    <Compile Include="Plugin\Core\RTSatelliteManager.cs" />
+    <Compile Include="Plugin\Interfaces\ISignalProcessor.cs" />
+    <Compile Include="Plugin\Modules\MissionControlSatellite.cs" />
     <Compile Include="Plugin\Core\Pathfinder.cs" />
     <Compile Include="Plugin\Core\PathRenderer.cs" />
     <Compile Include="Plugin\Core\RTAssets.cs" />
@@ -69,14 +76,10 @@
     <Compile Include="Plugin\Core\RTSettings.cs" />
     <Compile Include="Plugin\Core\RTUtil.cs" />
     <Compile Include="Plugin\Core\Satellite.cs" />
-    <Compile Include="Plugin\Core\SatelliteNetwork.cs" />
+    <Compile Include="Plugin\Core\RTSatelliteNetwork.cs" />
     <Compile Include="Plugin\Datatypes\BinaryHeap.cs" />
     <Compile Include="Plugin\Datatypes\PriorityQueue.cs" />
     <Compile Include="Plugin\Datatypes\WeakReference.cs" />
-    <Compile Include="Plugin\GUI\AttitudeControlFragment.cs" />
-    <Compile Include="Plugin\GUI\ControlGUI.cs" />
-    <Compile Include="Plugin\GUI\MissionControlGUI.cs" />
-    <Compile Include="Plugin\GUI\SatelliteListFragment.cs" />
     <Compile Include="Plugin\Modules\AntennaPartModule.cs" />
     <Compile Include="Plugin\Modules\CommandSPUPartModule.cs" />
     <Compile Include="Plugin\Modules\SPUPartModule.cs" />
@@ -91,5 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="PluginData\RemoteTech\button_vessel_probe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>

@@ -4,29 +4,29 @@ namespace RemoteTech
 {
     public class AttitudeChange {
         public readonly Attitude Attitude;
-        public readonly double Pitch;
-        public readonly double Heading;
-        public readonly double Roll;
+        public readonly float Pitch;
+        public readonly float Heading;
+        public readonly float Roll;
 
-        public AttitudeChange(Attitude attitude, double pitch, double heading, double roll) {
+        public AttitudeChange(Attitude attitude, float pitch, float heading, float roll) {
             this.Attitude = attitude;
             this.Pitch = pitch;
             this.Heading = heading;
             this.Roll = roll;
         }
 
-        public AttitudeChange(Attitude attitude, double pitch, double heading) {
+        public AttitudeChange(Attitude attitude, float pitch, float heading) {
             this.Attitude = attitude;
             this.Pitch = pitch;
             this.Heading = heading;
-            this.Roll = Double.NaN;
+            this.Roll = Single.NaN;
         }
         
         public AttitudeChange(Attitude attitude) { 
             this.Attitude = attitude;
-            this.Pitch = Double.NaN;
-            this.Heading = Double.NaN;
-            this.Roll = Double.NaN;
+            this.Pitch = Single.NaN;
+            this.Heading = Single.NaN;
+            this.Roll = Single.NaN;
         }
 
     }

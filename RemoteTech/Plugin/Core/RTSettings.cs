@@ -6,7 +6,14 @@ using System.Text;
 namespace RemoteTech {
     public class RTSettings {
 
-        public double SignalSpeed = 299792458.0;
+        public float SignalSpeed = 299792458.0f;
+
+        RTCore mCore;
+
+        public RTSettings(RTCore core) {
+            mCore = core;
+            Load();
+        }
 
         public void Save() {
 

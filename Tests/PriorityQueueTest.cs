@@ -8,21 +8,14 @@ namespace Tests
     [TestFixture]
     public class PriorityQueueTest {
 
-        public class Node : IComparable {
+        public class Node : IComparable<Node> {
             public int Priority { get; set; }
 
             public Node(int priority) {
                 this.Priority = priority;
             }
 
-            public int CompareTo(Object obj) {
-                if (obj == null) {
-                    return 1;
-                }
-                Node node = obj as Node;
-                if (node == null) {
-                    throw new ArgumentException();
-                }
+            public int CompareTo(Node node) {
                 return Priority.CompareTo(node.Priority);
             }
 

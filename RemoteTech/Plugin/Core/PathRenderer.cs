@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace RemoteTech {
@@ -8,38 +6,49 @@ namespace RemoteTech {
     public class PathRenderer {
 
         VectorLine mLineCache;
-        SatelliteNetwork mNetwork;
+        RTSatelliteNetwork mNetwork;
+        Vector3[] mLinePoints;
+        bool mEnabled;
 
-        public PathRenderer(SatelliteNetwork satelliteNetwork) {
+        public PathRenderer(RTSatelliteNetwork satelliteNetwork) {
             mNetwork = satelliteNetwork;
         }
 
-        public void Update() {
+        public void Show() {
+            mEnabled = true;
+        }
+
+        public void Hide() {
+            Vector.DestroyLine(ref mLineCache);
+            mEnabled = false;
+        }
+
+        public void UpdateLineCache() {
             if(mNetwork.Path.Count > 0) {
-                Vector3[] points = new Vector3[mNetwork.Path.Count];
+                mLinePoints = new Vector3[mNetwork.Path.Count];
                 for (int i = 0; i < mNetwork.Path.Count; i++) {
-                    Vector3 scaled = ScaledSpace.LocalToScaledSpace(mNetwork.Path[i].Position);
-                    points[i] = scaled;
+                    mLinePoints[i] = ScaledSpace.LocalToScaledSpace(mNetwork.Path[i].Position);
                 }
                 if(mLineCache == null) {
-                    mLineCache = new VectorLine("Path", points,
+                    mLineCache = new VectorLine("Path", mLinePoints,
                         XKCDColors.Amber,
                         MapView.fetch.orbitLinesMaterial,
                         5.0f,
                         LineType.Continuous);
-                    mLineCache.layer = 0x1f;
+                    mLineCache.layer = 31;
                 } else {
-                    mLineCache.points3 = points;
+                    mLineCache.Resize(mLinePoints);
                 }
-                
+            } else {
+                Vector.DestroyLine(ref mLineCache);
             }
         }
 
         public void Draw() {
-            if (mLineCache == null)
+            if (!mEnabled)
                 return;
-            Vector.Active(mLineCache, mLineCache != null && FlightGlobals.fetch != null && FlightGlobals.ActiveVessel != null && MapView.MapIsEnabled);
-            if(mLineCache.active) {
+            UpdateLineCache();
+            if(mLineCache != null) {
                 Vector.DrawLine3D(mLineCache);
             }
         }

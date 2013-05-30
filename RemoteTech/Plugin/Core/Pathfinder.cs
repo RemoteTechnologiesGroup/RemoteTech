@@ -8,19 +8,19 @@ using KSP.IO;
 namespace RemoteTech
 {
     public static class Pathfinder {
-        public delegate IList<T> NeighbourDelegate<T>(T a);
-        public delegate double CostDelegate<T>(T a,T b);
-        public delegate double HeuristicDelegate<T>(T a,T b);
+        public delegate List<T> NeighbourDelegate<T>(T a);
+        public delegate float CostDelegate<T>(T a,T b);
+        public delegate float HeuristicDelegate<T>(T a,T b);
 
         // All sorting related data is immutable.
-        public class Node<T> : IComparable {
+        public class Node<T> : IComparable<Node<T>> {
             public readonly T Item;
-            public readonly double Cost;
-            public readonly double Heuristic;
+            public readonly float Cost;
+            public readonly float Heuristic;
             public Node<T> From { get; set; }
             public bool Closed { get; set; }
 
-            public Node(T item, double cost, double heuristic, Node<T> from, bool closed) {
+            public Node(T item, float cost, float heuristic, Node<T> from, bool closed) {
                 this.Item = item;
                 this.Cost = cost;
                 this.Heuristic = heuristic;
@@ -28,20 +28,13 @@ namespace RemoteTech
                 this.Closed = closed;
             }
 
-            public int CompareTo(Object obj) {
-                if (obj == null) {
-                    return 1;
-                }
-                Node<T> node = obj as Node<T>;
-                if (node == null) {
-                    throw new ArgumentException();
-                }
+            public int CompareTo(Node<T> node) {
                 return (Cost + Heuristic).CompareTo(node.Cost + node.Heuristic);
             }
 
         }
 
-        public static Pair<IList<T>, double> Solve<T>(T start, T goal, NeighbourDelegate<T> neighboursFunction,
+        public static Pair<List<T>, float> Solve<T>(T start, T goal, NeighbourDelegate<T> neighboursFunction,
                                                                        CostDelegate<T> costFunction,
                                                                        HeuristicDelegate<T> heuristicFunction) {
 
@@ -51,7 +44,7 @@ namespace RemoteTech
             Node<T> nStart = new Node<T>(start, 0, heuristicFunction(start, goal), null, false);
             nodeMap[start] = nStart;
             priorityQueue.Enqueue(nStart);
-            double cost = 0;
+            float cost = 0;
 
             while (priorityQueue.Count > 0) {
                 Node<T> current = priorityQueue.Dequeue();
@@ -67,11 +60,11 @@ namespace RemoteTech
                         cost += node.Cost;
                     }
                     reversePath.Reverse();
-                    return new Pair<IList<T>, double>(reversePath, cost);
+                    return new Pair<List<T>, float>(reversePath, cost);
                 }
 
                 foreach (T item in neighboursFunction(current.Item)) {
-                    double new_cost = current.Cost + costFunction(current.Item, item);
+                    float new_cost = current.Cost + costFunction(current.Item, item);
                     // If the item has a node, it will either be in the closedSet, or the openSet
                     if (nodeMap.ContainsKey(item)) {
                         Node<T> n = nodeMap[item];
@@ -90,7 +83,7 @@ namespace RemoteTech
                     }
                 }
             }
-            return new Pair<IList<T>, double>(new List<T>(), Double.PositiveInfinity);
+            return new Pair<List<T>, float>(new List<T>(), Single.PositiveInfinity);
         }
 
         public static void GenerateGraphDescription<T>(String fileName, T start, NeighbourDelegate<T> neighboursFunction,
@@ -110,7 +103,7 @@ namespace RemoteTech
                 open.Remove(current);
                 closed.Add(current);
 
-                IList<T> neighbours = neighboursFunction(current);
+                List<T> neighbours = neighboursFunction(current);
                 foreach (T n in neighbours) {
                     dotGraph.Append('\t')
                         .Append("\"" + current.ToString() + "\"")

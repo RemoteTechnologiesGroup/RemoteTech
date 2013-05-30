@@ -2,77 +2,91 @@
 using UnityEngine;
 
 namespace RemoteTech {
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public sealed class RTCore : MonoBehaviour {
 
-        static RTCore mSingleton;
-
-        public static RTCore Instance() {
-            if (mSingleton == null) {
-                GameObject obj = GameObject.Find("RTCore") ?? new GameObject("RTCore", typeof(RTCore));
-                mSingleton = obj.GetComponent<RTCore>();
-            }
-            return mSingleton;
-        }
+        public static RTCore Instance { get; private set; }
 
         public RTSettings Settings { get; private set; }
         public RTAssets Assets { get; private set; }
+        public RTSatelliteNetwork Network { get; private set; }
+        public RTSatelliteManager Satellites { get; private set; }
+        public RTAntennaManager Antennas { get; private set; }
 
-        MissionControlGUI mMissionControl;
-        SatelliteNetwork mSatelliteNetwork;
         PathRenderer mPathRenderer;
+
+        Vessel mCurrentActiveVessel;
 
         int mCounter = 0;
 
-        public void Awake() {
+        void Init() {
+            Instance = GameObject.Find("RTCore").GetComponent<RTCore>();
+            if (Instance != this) {
+                DestroyImmediate(this);
+                return;
+            }
+
             RTUtil.Log("RTCore awake.");
-            DontDestroyOnLoad(this);
 
-            mMissionControl = new MissionControlGUI();
-            mSatelliteNetwork = new SatelliteNetwork();
-            mPathRenderer = new PathRenderer(mSatelliteNetwork);
+            Settings = new RTSettings(this);
+            //Assets = new RTAssets(this);
+            Satellites = new RTSatelliteManager(this);
+            Antennas = new RTAntennaManager(this);
+            Network = new RTSatelliteNetwork(this);
 
-            Settings = new RTSettings();
-            Assets = new RTAssets();
-
-            Settings.Load();
-            Assets.Load();
-            mMissionControl.Load();
+            mPathRenderer = new PathRenderer(Network);
+           
+            RegisterEvents();
 
             RTUtil.Log("RTCore loaded.");
         }
 
-        public void OnGUI() {
-            mMissionControl.Draw();
-            mPathRenderer.Draw();
-        }
-
-        public void OnLateUpdate() {
-            mPathRenderer.Draw();
+        public void Start() {
+            Init();
+            foreach(Vessel v in FlightGlobals.Vessels) {
+                if(v.HasSignalProcessor()) {
+                    Satellites.RegisterFor(v);
+                    Antennas.RegisterProtoFor(v);
+                }
+            }
         }
 
         public void FixedUpdate() {
-            mCounter = (mCounter+1)%25;
-            if(mCounter == 0) {
-                RTUtil.Log("Tick!");
-                if(FlightGlobals.fetch != null && FlightGlobals.ActiveVessel != null) {
-                    mSatelliteNetwork.Update();
-                    mSatelliteNetwork.FindCommandPath(FlightGlobals.ActiveVessel);
-                    mPathRenderer.Update();
+            if (mCounter == 0) {
+                RTUtil.Log("Tick");
+                if (FlightGlobals.ActiveVessel != null) {
+                    mCurrentActiveVessel = FlightGlobals.ActiveVessel;
+                    ISatellite sat = Satellites.For(mCurrentActiveVessel);
+                    if (sat != null) {
+                        Network.FindCommandPath(sat);
+                        mPathRenderer.UpdateLineCache();
+                    }
                 }
             }
-
+            mCounter = (mCounter+1)%50;
         }
 
-    }
+        public void LateUpdate() {
+            mPathRenderer.Draw();
+            if(Input.GetKeyDown(KeyCode.H)) {
+                (new SatelliteGUIWindow(Satellites.For(FlightGlobals.ActiveVessel))).Show();
+            }
+        }
 
-    class RemoteTechCoreHook : PartModule {
+        void RegisterEvents() {
+            MapView.OnEnterMapView += mPathRenderer.Show;
+            MapView.OnExitMapView += mPathRenderer.Hide;
+        }
 
-        static RTCore mCore;
+        void UnregisterEvents() {
+            MapView.OnEnterMapView -= mPathRenderer.Show;
+            MapView.OnExitMapView -= mPathRenderer.Hide;
+        }
 
-        public override void OnAwake() {
-            mCore = RTCore.Instance();
-            RTUtil.Log("RemoteTechCoreHook loaded.");
+        void OnDestroy() {
+            Satellites.Dispose();
+            Antennas.Dispose();
+            UnregisterEvents();
         }
     }
-
 }
