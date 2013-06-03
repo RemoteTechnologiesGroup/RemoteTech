@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace RemoteTech {
-    public class RTAntennaManager : IEnumerable<IAntenna>, IDisposable {
+    public class RTAntennaManager : IDisposable {
         public delegate void RTAntennaHandler(IAntenna satellite);
 
         public event RTAntennaHandler Registered;
@@ -19,9 +19,13 @@ namespace RemoteTech {
             mLoadedAntennaCache = new Dictionary<Guid, List<IAntenna>>();
             mProtoAntennaCache = new Dictionary<Guid, List<IAntenna>>();
             mCore = core;
-            GameEvents.onVesselLoaded.Add(OnVesselLoaded);
-            GameEvents.onVesselWasModified.Add(OnVesselModified);
-            GameEvents.onVesselDestroy.Add(OnVesselDestroy);
+            GameEvents.onVesselGoOnRails.Add(OnVesselGoOnRails);
+            mCore.Satellites.Registered += OnSatelliteRegistered;
+            mCore.Satellites.Unregistered += OnSatelliteUnregistered;
+        }
+
+        public IEnumerable<IAntenna> For(ISatellite sat) {
+            return For(sat.SignalProcessor.Vessel);
         }
 
         public IEnumerable<IAntenna> For(Vessel v) {
@@ -54,7 +58,7 @@ namespace RemoteTech {
             }
         }
 
-        void UnregisterProtoFor(Vessel v) {
+        public void UnregisterProtoFor(Vessel v) {
             RTUtil.Log("AntennaManager: UnregisterProtoFor: " + v);
             Guid key = v.id;
 
@@ -91,35 +95,25 @@ namespace RemoteTech {
             int instance_id = mLoadedAntennaCache[key].FindIndex(x => x == antenna);
 
             if (instance_id != -1) {
-                OnUnregister(mLoadedAntennaCache[key][instance_id]);
                 mLoadedAntennaCache[key].RemoveAt(instance_id);
                 if(mLoadedAntennaCache[key].Count == 0) {
                     mLoadedAntennaCache.Remove(key);
                     RegisterProtoFor(antenna.Vessel);
                 }
+                OnUnregister(mLoadedAntennaCache[key][instance_id]);
             }
         }
 
-        void OnVesselLoaded(Vessel v) {
-            RTUtil.Log("AntennaManager: OnVesselLoaded: " + v);
-            if (v.HasSignalProcessor()) {
-                RTUtil.Log("AntennaManager: loaded " + v.vesselName);
-                RegisterProtoFor(v);
-            }
+        void OnVesselGoOnRails(Vessel v) {
+            RegisterProtoFor(v);
         }
 
-        void OnVesselDestroy(Vessel v) {
-            RTUtil.Log("AntennaManager: OnVesselDestroy: " + v);
-            UnregisterProtoFor(v);
+        void OnSatelliteRegistered(ISatellite sat) {
+            RegisterProtoFor(sat.SignalProcessor.Vessel);
         }
 
-        void OnVesselModified(Vessel v) {
-            RTUtil.Log("AntennaManager: OnVesselModified: " + v);
-            if (!v.HasSignalProcessor()) {
-                UnregisterProtoFor(v);
-            } else {
-                RegisterProtoFor(v);
-            }
+        void OnSatelliteUnregistered(ISatellite sat) {
+            UnregisterProtoFor(sat.SignalProcessor.Vessel);
         }
 
         void OnRegister(IAntenna antenna) {
@@ -135,18 +129,9 @@ namespace RemoteTech {
         }
 
         public void Dispose() {
-            GameEvents.onVesselLoaded.Remove(OnVesselLoaded);
-            GameEvents.onVesselWasModified.Remove(OnVesselModified);
-            GameEvents.onVesselDestroy.Remove(OnVesselDestroy);
-        }
-
-        public IEnumerator<IAntenna> GetEnumerator() {
-            return mLoadedAntennaCache.Values.SelectMany(x => x).Concat(mProtoAntennaCache.Values.SelectMany(x => x)).GetEnumerator();
-
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-            return GetEnumerator();
+            GameEvents.onVesselGoOnRails.Remove(OnVesselGoOnRails);
+            mCore.Satellites.Registered -= OnSatelliteRegistered;
+            mCore.Satellites.Unregistered -= OnSatelliteUnregistered;
         }
     }
 }

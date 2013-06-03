@@ -21,7 +21,7 @@
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>True</Optimize>
-    <OutputPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\Kerbal Space Program\GameData\RemoteTech\Plugins\</OutputPath>
+    <OutputPath>..\..\..\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -57,7 +57,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Plugin\Core\ProtoAntenna.cs" />
+    <Compile Include="Plugin\Datatypes\Path.cs" />
+    <Compile Include="Plugin\Interfaces\ProtoAntenna.cs" />
+    <Compile Include="Plugin\Interfaces\ProtoSignalProcessor.cs" />
     <Compile Include="Plugin\Core\RTAntennaManager.cs" />
     <Compile Include="Plugin\GUI\AntennaConfigFragment.cs" />
     <Compile Include="Plugin\GUI\RTGUIManager.cs" />
@@ -68,21 +70,22 @@
     <Compile Include="Plugin\Interfaces\ISatellite.cs" />
     <Compile Include="Plugin\Core\RTSatelliteManager.cs" />
     <Compile Include="Plugin\Interfaces\ISignalProcessor.cs" />
+    <Compile Include="Plugin\Modules\ModuleRTAntennaAnimated.cs" />
     <Compile Include="Plugin\Modules\MissionControlSatellite.cs" />
-    <Compile Include="Plugin\Core\Pathfinder.cs" />
+    <Compile Include="Plugin\Datatypes\Pathfinder.cs" />
     <Compile Include="Plugin\Core\PathRenderer.cs" />
     <Compile Include="Plugin\Core\RTAssets.cs" />
     <Compile Include="Plugin\Core\RTCore.cs" />
     <Compile Include="Plugin\Core\RTSettings.cs" />
     <Compile Include="Plugin\Core\RTUtil.cs" />
     <Compile Include="Plugin\Core\Satellite.cs" />
-    <Compile Include="Plugin\Core\RTSatelliteNetwork.cs" />
+    <Compile Include="Plugin\Core\RTConnectionManager.cs" />
     <Compile Include="Plugin\Datatypes\BinaryHeap.cs" />
     <Compile Include="Plugin\Datatypes\PriorityQueue.cs" />
     <Compile Include="Plugin\Datatypes\WeakReference.cs" />
-    <Compile Include="Plugin\Modules\AntennaPartModule.cs" />
+    <Compile Include="Plugin\Modules\ModuleRTAntenna.cs" />
     <Compile Include="Plugin\Modules\CommandSPUPartModule.cs" />
-    <Compile Include="Plugin\Modules\SPUPartModule.cs" />
+    <Compile Include="Plugin\Modules\ModuleSPU.cs" />
     <Compile Include="Plugin\SimpleTypes\Attitude.cs" />
     <Compile Include="Plugin\SimpleTypes\AttitudeChange.cs" />
     <Compile Include="Plugin\SimpleTypes\Pair.cs" />
@@ -91,12 +94,9 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Plugin\Tests\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="PluginData\RemoteTech\button_vessel_probe.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
 </Project>

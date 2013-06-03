@@ -1,0 +1,177 @@
+using System;
+using System.Text;
+
+namespace RemoteTech
+{
+    public class ModuleRTAntenna : PartModule, IAntenna {
+
+        // Properties
+        public bool CanTarget { get { return RTDishRange != -1; } }
+        public String Name { get { return ClassName; } }
+        public Guid Target { get { return RTAntennaTarget; } set { RTAntennaTarget = value; UpdateContext(); } }
+        public float DishRange { get { return IsRTActive && IsPowered ? Mode1DishRange : Mode0DishRange; } }
+        public float OmniRange { get { return IsRTActive && IsPowered ? Mode1OmniRange : Mode0OmniRange; } }
+        public float Consumption { get { return IsRTActive && IsPowered ? Mode1EnergyCost : Mode0EnergyCost; } }
+        public Vessel Vessel { get { return vessel; } }
+
+        // KSPFields
+        [KSPField(isPersistant = true)]
+        public bool
+            IsRTAntenna = true,
+            IsRTActive = false,
+            IsPowered = true;
+
+        [KSPField(isPersistant = true)]
+        public float
+            RTDishRange,
+            RTOmniRange;
+
+        [KSPField(isPersistant = true)]
+        public Guid
+            RTAntennaTarget = Guid.Empty;
+
+        [KSPField]
+        public float
+            Mode0EnergyCost = 0,
+            Mode1EnergyCost = 0.00166667f,
+            Mode0OmniRange = 2000,
+            Mode1OmniRange = 70000,
+            Mode0DishRange = 2000,
+            Mode1DishRange = 70000;
+
+        [KSPField]
+        public bool
+            CanToggle = true;
+
+        [KSPField]
+        public String
+            Mode0Name = "Inactive",
+            Mode1Name = "Activated",
+            ActionMode1Name = "Extend",
+            ActionMode0Name = "Retract",
+            ActionToggleName = "Toggle";
+
+        [KSPField(guiActive = true, guiName="Antenna status")] public String GUI_Status;
+        [KSPField(guiName="Omni range")] public String GUI_OmniRange;
+        [KSPField(guiName="Dish range")] public String GUI_DishRange;
+        [KSPField(guiName="Energy")] public String GUI_EnergyReq;
+        [KSPField(guiName="Target")] public String GUI_Target;
+
+        Guid mRegisteredId;
+
+        public override string GetInfo() {
+            StringBuilder info = new StringBuilder();
+            if(Mode1OmniRange > 0) {
+                info.Append("Omni range: ");
+                info.Append(RTUtil.FormatDistance(Mode0OmniRange));
+                info.Append(" / ");
+                info.AppendLine(RTUtil.FormatDistance(Mode1OmniRange));
+            }
+            if (Mode1DishRange > 0) {
+                info.Append("Dish range: ");
+                info.Append(RTUtil.FormatDistance(Mode0DishRange));
+                info.Append(" / ");
+                info.AppendLine(RTUtil.FormatDistance(Mode1DishRange));
+            }
+            if (Mode1EnergyCost > 0) {
+                info.Append("Energy req.: ");
+                info.Append((Mode1EnergyCost*60).ToString("0.00")+"/min.");
+            }
+            return info.ToString();
+        }
+
+        public virtual void SetState(bool state) {
+            IsRTActive = state;
+            RTDishRange = IsRTActive ? Mode1DishRange : Mode0DishRange;
+            RTOmniRange = IsRTActive ? Mode1OmniRange : Mode0OmniRange;
+            Events["EventOpen"].guiActive = !IsRTActive;
+            Events["EventClose"].guiActive = IsRTActive && CanToggle;
+            UpdateContext();
+        }
+
+        [KSPEvent(name = "EventToggle", guiActive = false)]
+        public void EventToggle() {
+            if (IsRTActive) {
+                EventClose();
+            } else {
+                EventOpen();
+            }
+        }
+
+        [KSPEvent(name = "EventOpen", guiActive = false)]
+        public void EventOpen() {
+            SetState(true);
+        }
+
+        [KSPEvent(name = "EventClose", guiActive = false)]
+        public void EventClose() {
+            if(CanToggle) {
+                SetState(false);
+            }
+        }
+
+        [KSPAction("ActionToggle", KSPActionGroup.None)]
+        public void ActionToggle(KSPActionParam param) {
+            EventToggle();
+        }
+
+        [KSPAction("ActionOpen", KSPActionGroup.None)]
+        public void ActionOpen(KSPActionParam param) {
+            EventOpen();
+        }
+
+        [KSPAction("ActionClose", KSPActionGroup.None)]
+        public void ActionClose(KSPActionParam param) {
+            EventClose();
+        }
+
+        public override void OnStart(StartState state) {
+            Actions["ActionOpen"].guiName = ActionMode1Name;
+            Actions["ActionOpen"].active = true;
+            Actions["ActionClose"].guiName = ActionMode0Name;
+            Actions["ActionClose"].active = CanToggle;
+            Actions["ActionToggle"].guiName = ActionToggleName;
+            Actions["ActionToggle"].active = CanToggle;
+
+            if (RTCore.Instance != null) {
+                Events["EventOpen"].guiName = ActionMode1Name;
+                Events["EventClose"].guiName = ActionMode0Name;
+                Events["EventToggle"].guiName = ActionToggleName;
+
+                Fields["GUI_OmniRange"].guiActive = Mode1OmniRange > 0;
+                Fields["GUI_DishRange"].guiActive = Mode1DishRange > 0;
+                Fields["GUI_EnergyReq"].guiActive = Mode1EnergyCost > 0;
+                Fields["GUI_Target"].guiActive = Mode1DishRange > 0;
+
+                mRegisteredId = RTCore.Instance.Antennas.Register(vessel, this);
+                GameEvents.onVesselWasModified.Add(OnVesselModified);
+                SetState(IsRTActive);
+                UpdateContext();
+            }
+        }
+
+        void UpdateContext() {
+            GUI_Status = IsRTActive ? Mode1Name : Mode0Name;
+            GUI_OmniRange = RTUtil.FormatDistance(OmniRange);
+            GUI_DishRange = RTUtil.FormatDistance(DishRange);
+            GUI_EnergyReq = (Consumption * 60).ToString("0.00") + "/min";
+            GUI_Target = RTUtil.TargetName(Target);
+            part.SendMessage("UpdateGUI");
+        }
+
+        public void OnDestroy() {
+            RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
+            GameEvents.onVesselWasModified.Remove(OnVesselModified);
+        }
+
+        public void OnVesselModified(Vessel v) {
+            if(vessel == null || (mRegisteredId != vessel.id)) {
+                RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
+                if(vessel != null) {
+                    mRegisteredId = RTCore.Instance.Antennas.Register(vessel, this);
+                }
+            }
+        }
+    }
+}
+

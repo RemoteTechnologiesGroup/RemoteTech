@@ -29,7 +29,7 @@ namespace Tests
                 this.AdjacencyMatrix = matrix;
             }
 
-            public Pair<List<int>, float> Run() {
+            public Path<int> Run() {
                 return Pathfinder.Solve<int>(0, AdjacencyMatrix.Length - 1, new Pathfinder.NeighbourDelegate<int>(FindNeighbours),
                                                                      new Pathfinder.CostDelegate<int>(FindCost),
                                                                      new Pathfinder.HeuristicDelegate<int>(FindHeuristic));
@@ -60,7 +60,7 @@ namespace Tests
         [Test()]
         public void TestPathfinder() {
             Scenario first = new Scenario(TestMatrix1);
-            List<int> firstPath = first.Run().First;
+            List<int> firstPath = first.Run().Nodes;
             for (int i = 0; i < TestExpected1.Count; i++) {
                 Assert.AreEqual(TestExpected1[i], firstPath[i]);
             }

@@ -7,10 +7,11 @@ namespace RemoteTech
 {
     public interface ISatellite {
 
-        String Name { get; }
+        String Name { get; set; }
         Guid Guid { get; }
         Vector3 Position { get; }
-        Vessel Vessel { get; }
+        ISignalProcessor SignalProcessor { get; set; }
+        bool Powered { get; }
 
         float OmniRange { get; }
         IEnumerable<Pair<Guid, float>> DishRange { get; }

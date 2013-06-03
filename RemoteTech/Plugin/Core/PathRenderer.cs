@@ -6,11 +6,11 @@ namespace RemoteTech {
     public class PathRenderer {
 
         VectorLine mLineCache;
-        RTSatelliteNetwork mNetwork;
+        RTConnectionManager mNetwork;
         Vector3[] mLinePoints;
         bool mEnabled;
 
-        public PathRenderer(RTSatelliteNetwork satelliteNetwork) {
+        public PathRenderer(RTConnectionManager satelliteNetwork) {
             mNetwork = satelliteNetwork;
         }
 
@@ -24,10 +24,10 @@ namespace RemoteTech {
         }
 
         public void UpdateLineCache() {
-            if(mNetwork.Path.Count > 0) {
-                mLinePoints = new Vector3[mNetwork.Path.Count];
-                for (int i = 0; i < mNetwork.Path.Count; i++) {
-                    mLinePoints[i] = ScaledSpace.LocalToScaledSpace(mNetwork.Path[i].Position);
+            if(mNetwork.Connection.Exists) {
+                mLinePoints = new Vector3[mNetwork.Connection.Nodes.Count];
+                for (int i = 0; i < mNetwork.Connection.Nodes.Count; i++) {
+                    mLinePoints[i] = ScaledSpace.LocalToScaledSpace(mNetwork.Connection.Nodes[i].Position);
                 }
                 if(mLineCache == null) {
                     mLineCache = new VectorLine("Path", mLinePoints,

@@ -24,18 +24,29 @@ namespace RemoteTech
             return (long)(Planetarium.GetUniversalTime() * 1000);
         }
 
-        public static String GetAnimationArrows() {
-            switch ((long)Planetarium.GetUniversalTime() % 4) {
-                default:
-                case 0:
-                    return "";
-                case 1:
-                    return "»";
-                case 2:
-                    return "»»";
-                case 3:
-                    return "»»»";
+        public static String TargetName(Guid guid) {
+            ISatellite sat;
+
+            if(RTCore.Instance.Network.Planets.ContainsKey(guid)) {
+                return RTCore.Instance.Network.Planets[guid].name;
             }
+            if((sat = RTCore.Instance.Satellites.WithGuid(guid)) != null) {
+                return sat.Name;
+            }
+            if(guid.Equals(RTCore.Instance.Network.MissionControl.Guid)) {
+                return RTCore.Instance.Network.MissionControl.Name;
+            }
+            return "[Unknown Target]";
+        }
+
+        public static Guid Guid(this CelestialBody cb) {
+            char[] name = cb.GetName().ToCharArray();
+            StringBuilder s = new StringBuilder();
+            for (int i = 0; i < 16; i++) {
+                s.Append(((short)name[i % name.Length]).ToString("x"));
+            }
+            RTUtil.Log("cb.Guid: " + s.ToString());
+            return new Guid(s.ToString());
         }
 
         public static String[] DistanceUnits = { "m", "km", "Mm", "Gm", "Tm" };
@@ -62,6 +73,16 @@ namespace RemoteTech
             return false;
         }
 
+        public static bool GetBool(this ProtoPartModuleSnapshot ppms, String value) {
+            ConfigNode n = new ConfigNode();
+            ppms.Save(n);
+            try {
+                return Boolean.Parse(n.GetValue(value) ?? "False");
+            } catch (ArgumentException) {
+                return false;
+            }
+        }
+
         public static bool IsSignalProcessor(this ProtoPartModuleSnapshot ppms) {
             return ppms.HasValue("IsRTSignalProcessor");
         }
@@ -70,12 +91,12 @@ namespace RemoteTech
             return pm.Fields.GetValue<bool>("IsRTSignalProcessor");
         }
 
-        public static bool HasSignalProcessor(this Vessel v) {
+        public static ISignalProcessor GetSignalProcessor(this Vessel v) {
             RTUtil.Log("RTUtil: HasSignalProcessor: " + v);
             if(!v.loaded) {
                 foreach (ProtoPartModuleSnapshot ppms in v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules)) {
                     if (ppms.IsSignalProcessor()) {
-                        return true;
+                        return new ProtoSignalProcessor(ppms, v);
                     }
                 }
 
@@ -83,12 +104,12 @@ namespace RemoteTech
                 foreach (Part p in v.Parts) {
                     foreach (PartModule pm in p.Modules) {
                         if(pm.IsSignalProcessor()) {
-                            return true;
+                            return pm as ISignalProcessor;
                         }
                     }
                 }
             }
-            return false;
+            return null;
         }
 
         public static bool IsAntenna(this ProtoPartModuleSnapshot ppms) {
@@ -99,45 +120,33 @@ namespace RemoteTech
             return pm.Fields.GetValue<bool>("IsRTAntenna");
         }
 
-        // GUI
-        public delegate void ClickDelegate();
-        public delegate void StateDelegate(int state);
-
-        public static void Button(int width, int height, String text, ClickDelegate onClick) {
-            if(GUILayout.Button(text, GUILayout.Height(height), GUILayout.Width(width))) {
+        public static void Button(String text, OnClick onClick) {
+            if(GUILayout.Button(text)) {
                 onClick.Invoke();
             }
         }
 
-        public static void Button(int width, int height, String text) {
-            GUILayout.Button(text, GUILayout.Height(height), GUILayout.Width(width));
+        public static void GroupButton(int wide, String[] text, ref int group) {
+            group = GUILayout.SelectionGrid(group, text, wide);
         }
 
-        public static void GroupButton(int width, int height, String[] text, ref int group) {
-            group = GUILayout.SelectionGrid(group, text, 1, GUILayout.Height(height * text.Length), GUILayout.Width(width));
-        }
-
-        public static void GroupButton(int width, int height, String[] text, ref int group, StateDelegate onStateChange) {
+        public static void GroupButton(int wide, String[] text, ref int group, OnState onStateChange) {
             int group2;
-            if ((group2 = GUILayout.SelectionGrid(group, text, 1, GUILayout.Height(height * text.Length), GUILayout.Width(width))) != group) {
+            if ((group2 = GUILayout.SelectionGrid(group, text, wide)) != group) {
                 group = group2;
                 onStateChange.Invoke(group2);
             }
         }
 
-        public static void ToggleButton(int width, int height, String text, ref bool state, StateDelegate onStateChange) {
-            if (GUILayout.Toggle(state, text, GUI.skin.button, GUILayout.Height(height), GUILayout.Width(width)) != state) {
+        public static void ToggleButton(String text, ref bool state, OnState onStateChange) {
+            if (GUILayout.Toggle(state, text, GUI.skin.button) != state) {
                 state = !state;
                 onStateChange.Invoke(state ? 1 : 0);
             }
         }
 
-        public static void Label(int width, int height, String text) {
-            GUILayout.Label(text, GUILayout.Height(height), GUILayout.Width(width));
-        }
-
-        public static void TextField(int width, int height, ref String text) {
-            text = GUILayout.TextField(text, GUILayout.Height(height), GUILayout.Width(width));
+        public static void TextField(ref String text) {
+            text = GUILayout.TextField(text);
         }
         
         public static bool IsMouseInWindow(Vector2 mouse, Rect window) {

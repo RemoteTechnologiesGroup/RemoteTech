@@ -9,6 +9,7 @@ namespace RemoteTech {
         ProtoPartModuleSnapshot mParent;
         Guid mTarget;
 
+        public bool CanTarget { get { return DishRange != -1; } }
         public string Name { get; private set; }
         public float DishRange { get; private set; }
         public float OmniRange { get; private set; }

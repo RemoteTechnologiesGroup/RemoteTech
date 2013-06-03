@@ -5,32 +5,83 @@ using System.Text;
 using UnityEngine;
 
 namespace RemoteTech {
-    public class AntennaFragment : IGUIFragment, IDisposable {
+    public class AntennaConfigFragment : IGUIFragment, IDisposable {
 
+        static String[] mHeader = { "Satellites", "Planets" };
+        int mHeaderState;
+        int mSatellitesState;
+        int mPlanetsState;
         IAntenna mFocus;
-        OnClose mOnClose;
+        List<ISatellite> mSatellites;
+        List<CelestialBody> mPlanets;
+        String[] mSatelliteText;
+        String[] mPlanetText;
+        OnClick mOnClose;
+        OnAntenna mOnUpdate;
+        Vector2 mScrollPosition;
 
-        public AntennaFragment(IAntenna sat, OnClose onClose) {
-            mFocus = sat;
+        public AntennaConfigFragment(IAntenna antenna, OnClick onClose, OnAntenna onUpdate) {
+            mFocus = antenna;
             mOnClose = onClose;
+            mOnUpdate = onUpdate;
+            mHeaderState = 0;
+            mScrollPosition = Vector2.zero;
 
             RTCore.Instance.Antennas.Unregistered += OnAntenna;
+            RTCore.Instance.Satellites.Unregistered += OnSatellite;
+            RTCore.Instance.Satellites.Registered += OnSatellite;
 
-            OnAntenna(mFocus);
+            RefreshPlanets();
+            RefreshSatellites();
         }
 
         public void Draw() {
             GUILayout.BeginVertical();
-            RTUtil.Label(250, 30, "Module: " + mFocus.Name);
-            RTUtil.Label(250, 30, "Target: " + mFocus.Target);
-            RTUtil.Label(250, 30, "Dish Range: " + mFocus.DishRange);
-            RTUtil.Label(250, 30, "Omni Range: " + mFocus.OmniRange);
-            RTUtil.Button(250, 30, "Close", () => mOnClose.Invoke());
+            {
+                RTUtil.GroupButton(2, mHeader, ref mHeaderState);
+                mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.MinHeight(300), GUILayout.MinWidth(300));
+                GUILayout.BeginVertical(GUI.skin.box);
+                {
+                    if(mHeaderState == 1) {
+                        RTUtil.GroupButton(1, mPlanetText, ref mPlanetsState, 
+                            x => { mFocus.Target = mPlanets[mPlanetsState].Guid(); mOnUpdate(mFocus); });
+                    } else {
+                        RTUtil.GroupButton(1, mSatelliteText, ref mSatellitesState, 
+                            x => { mFocus.Target = mSatellites[mSatellitesState].Guid; mOnUpdate(mFocus); });
+                    }
+                }
+                GUILayout.EndVertical();
+                GUILayout.EndScrollView();
+            }
             GUILayout.EndVertical();
         }
 
         public void Dispose() {
             RTCore.Instance.Antennas.Unregistered -= OnAntenna;
+            RTCore.Instance.Satellites.Unregistered -= OnSatellite;
+            RTCore.Instance.Satellites.Registered -= OnSatellite;
+        }
+
+        void RefreshPlanets() {
+            mPlanets = RTCore.Instance.Network.Planets.Values.ToList();
+            mPlanetsState = mPlanets.FindIndex(cb => cb.Guid() == mFocus.Target);
+            mPlanetText = new String[mPlanets.Count];
+            for (int i = 0; i < mPlanetText.Length; i++) {
+                mPlanetText[i] = mPlanets[i].name;
+            }
+        }
+
+        void RefreshSatellites() {
+            mSatellites = RTCore.Instance.Satellites.Concat( new [] { RTCore.Instance.Network.MissionControl } ).ToList();
+            mSatellitesState = mSatellites.FindIndex(s => s.Guid == mFocus.Target);
+            mSatelliteText = new String[mSatellites.Count];
+            for (int i = 0; i < mSatelliteText.Length; i++) {
+                mSatelliteText[i] = mSatellites[i].Name;
+            }
+        }
+
+        void OnSatellite(ISatellite satellite) {
+            RefreshSatellites();
         }
 
         void OnAntenna(IAntenna antenna) {
@@ -41,35 +92,27 @@ namespace RemoteTech {
     }
 
     public class AntennaGUIWindow : AbstractGUIWindow {
-
         IAntenna mAntenna;
-        AntennaFragment mFragment;
-        Rect mWindowPosition;
+        AntennaConfigFragment mAntennaFragment;
 
-        public AntennaGUIWindow(IAntenna sat) {
-            mAntenna = sat;
-            mWindowPosition = new Rect(0, 0, 250, 400);
+        public AntennaGUIWindow(IAntenna antenna)
+            : base("Antenna Configuration", new Rect(100, 100, 0, 0)) {
+            mAntenna = antenna;
         }
 
-        void Window(int id) {
-            mFragment.Draw();
+        protected override void Window(int id) {
+            mAntennaFragment.Draw();
             GUI.DragWindow();
         }
 
         public override void Show() {
-            mFragment = new AntennaFragment(mAntenna, () => Hide());
+            mAntennaFragment = new AntennaConfigFragment(mAntenna, Hide, a => { });
             base.Show();
         }
 
         public override void Hide() {
             base.Hide();
-            if(mFragment != null) {
-                mFragment.Dispose();
-            }
-        }
-
-        protected override void Draw() {
-            mWindowPosition = GUILayout.Window(46, mWindowPosition, Window, "Antenna Configuration");
+            mAntennaFragment.Dispose();
         }
     }
 }

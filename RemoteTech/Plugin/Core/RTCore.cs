@@ -9,32 +9,28 @@ namespace RemoteTech {
 
         public RTSettings Settings { get; private set; }
         public RTAssets Assets { get; private set; }
-        public RTSatelliteNetwork Network { get; private set; }
+        public RTConnectionManager Network { get; private set; }
         public RTSatelliteManager Satellites { get; private set; }
         public RTAntennaManager Antennas { get; private set; }
 
         PathRenderer mPathRenderer;
-
-        Vessel mCurrentActiveVessel;
+        RTGUIManager mGuiManager;
 
         int mCounter = 0;
 
         void Init() {
             Instance = GameObject.Find("RTCore").GetComponent<RTCore>();
-            if (Instance != this) {
-                DestroyImmediate(this);
-                return;
-            }
 
             RTUtil.Log("RTCore awake.");
 
             Settings = new RTSettings(this);
-            //Assets = new RTAssets(this);
+            Assets = new RTAssets(this);
             Satellites = new RTSatelliteManager(this);
             Antennas = new RTAntennaManager(this);
-            Network = new RTSatelliteNetwork(this);
+            Network = new RTConnectionManager(this);
 
             mPathRenderer = new PathRenderer(Network);
+            mGuiManager = new RTGUIManager(this);
            
             RegisterEvents();
 
@@ -44,33 +40,24 @@ namespace RemoteTech {
         public void Start() {
             Init();
             foreach(Vessel v in FlightGlobals.Vessels) {
-                if(v.HasSignalProcessor()) {
-                    Satellites.RegisterFor(v);
-                    Antennas.RegisterProtoFor(v);
-                }
+                Satellites.RegisterFor(v);
             }
         }
 
         public void FixedUpdate() {
             if (mCounter == 0) {
                 RTUtil.Log("Tick");
-                if (FlightGlobals.ActiveVessel != null) {
-                    mCurrentActiveVessel = FlightGlobals.ActiveVessel;
-                    ISatellite sat = Satellites.For(mCurrentActiveVessel);
-                    if (sat != null) {
-                        Network.FindCommandPath(sat);
-                        mPathRenderer.UpdateLineCache();
-                    }
-                }
+                StartCoroutine(Network.EstablishConnection());
             }
             mCounter = (mCounter+1)%50;
         }
 
+        public void OnGUI() {
+            mGuiManager.Draw();
+        }
+
         public void LateUpdate() {
             mPathRenderer.Draw();
-            if(Input.GetKeyDown(KeyCode.H)) {
-                (new SatelliteGUIWindow(Satellites.For(FlightGlobals.ActiveVessel))).Show();
-            }
         }
 
         void RegisterEvents() {
@@ -87,6 +74,7 @@ namespace RemoteTech {
             Satellites.Dispose();
             Antennas.Dispose();
             UnregisterEvents();
+            Instance = null;
         }
     }
 }

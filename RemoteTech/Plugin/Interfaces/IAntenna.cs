@@ -10,6 +10,7 @@ namespace RemoteTech
         float OmniRange { get; }
         float Consumption { get; }
         Vessel Vessel { get; }
+        bool CanTarget { get; }
     }
 }
 

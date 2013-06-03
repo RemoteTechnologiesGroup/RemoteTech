@@ -17,6 +17,9 @@ namespace RemoteTech {
             mSatelliteCache = new Dictionary<Guid, ISatellite>();
             mCore = core;
             GameEvents.onVesselLoaded.Add(OnVesselLoaded);
+            GameEvents.onVesselGoOnRails.Add(OnVesselModified);
+            GameEvents.onVesselGoOffRails.Add(OnVesselModified);
+            GameEvents.onVesselChange.Add(OnVesselModified);
             GameEvents.onVesselWasModified.Add(OnVesselModified);
             GameEvents.onVesselDestroy.Add(OnVesselDestroy);
         }
@@ -31,14 +34,16 @@ namespace RemoteTech {
             return mSatelliteCache.ContainsKey(key) ? mSatelliteCache[key] : null;
         }
 
-        public ISatellite RegisterFor(Vessel v) {
+        public bool RegisterFor(Vessel v) {
             RTUtil.Log("SatelliteManager: RegisterFor: " + v);
             Guid key = v.id;
             if (!mSatelliteCache.ContainsKey(key)) {
-                mSatelliteCache[key] = new Satellite(v);
+                ISignalProcessor spu = v.GetSignalProcessor();
+                mSatelliteCache[key] = new Satellite(spu);
                 OnRegister(mSatelliteCache[key]);
+                return true;
             }
-            return mSatelliteCache[key];
+            return false;
         }
 
         void UnregisterFor(Vessel v) {
@@ -52,9 +57,8 @@ namespace RemoteTech {
 
         void OnVesselLoaded(Vessel v) {
             RTUtil.Log("SatelliteManager: OnVesselLoaded: " + v);
-            if (v.HasSignalProcessor()) {
+            if (RegisterFor(v)) {
                 RTUtil.Log("SatelliteManager: loaded " + v.vesselName);
-                RegisterFor(v);
             }
         }
 
@@ -65,8 +69,14 @@ namespace RemoteTech {
 
         void OnVesselModified(Vessel v) {
             RTUtil.Log("SatelliteManager: OnVesselModified" + v);
-            if (!v.HasSignalProcessor()) {
+            ISignalProcessor spu;
+            ISatellite sat;
+            if((spu = v.GetSignalProcessor()) == null) {
                 UnregisterFor(v);
+            } else if((sat = For(v)).SignalProcessor != spu) {
+                sat.SignalProcessor = spu;
+            } else {
+                RegisterFor(v);
             }
         }
 
@@ -84,6 +94,9 @@ namespace RemoteTech {
 
         public void Dispose() {
             GameEvents.onVesselLoaded.Remove(OnVesselLoaded);
+            GameEvents.onVesselGoOnRails.Remove(OnVesselModified);
+            GameEvents.onVesselGoOffRails.Remove(OnVesselModified);
+            GameEvents.onVesselChange.Remove(OnVesselModified);
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onVesselDestroy.Remove(OnVesselDestroy);
         }
