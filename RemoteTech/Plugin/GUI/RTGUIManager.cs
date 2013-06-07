@@ -21,7 +21,7 @@ namespace RemoteTech {
 
         void OpenSatelliteConfig(Vessel v) {
             ISatellite sat;
-            if((sat = mCore.Satellites.For(v)) != null) {
+            if((sat = mCore.Satellites.For(v.id)) != null) {
                 (new SatelliteGUIWindow(sat)).Show();
             }
         }

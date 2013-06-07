@@ -2,34 +2,31 @@
 using UnityEngine;
 
 namespace RemoteTech {
+    public class RTCore : MonoBehaviour {
+        public static RTCore Instance { get; protected set; }
+
+        public RTSettings Settings { get; protected set; }
+        public RTNetworkManager Network { get; protected set; }
+        public RTSatelliteManager Satellites { get; protected set; }
+        public RTAntennaManager Antennas { get; protected set; }
+    }
+
     [KSPAddon(KSPAddon.Startup.Flight, false)]
-    public sealed class RTCore : MonoBehaviour {
+    class RTCoreFlight : RTCore {
 
-        public static RTCore Instance { get; private set; }
-
-        public RTSettings Settings { get; private set; }
-        public RTAssets Assets { get; private set; }
-        public RTConnectionManager Network { get; private set; }
-        public RTSatelliteManager Satellites { get; private set; }
-        public RTAntennaManager Antennas { get; private set; }
-
-        PathRenderer mPathRenderer;
+        RTNetworkRenderer mPathRenderer;
         RTGUIManager mGuiManager;
 
-        int mCounter = 0;
-
         void Init() {
-            Instance = GameObject.Find("RTCore").GetComponent<RTCore>();
-
-            RTUtil.Log("RTCore awake.");
+            RTCore.Instance = GameObject.Find("RTCoreFlight").GetComponent<RTCoreFlight>();
 
             Settings = new RTSettings(this);
-            Assets = new RTAssets(this);
             Satellites = new RTSatelliteManager(this);
             Antennas = new RTAntennaManager(this);
-            Network = new RTConnectionManager(this);
+            Network = new RTNetworkManager(this);
 
-            mPathRenderer = new PathRenderer(Network);
+            mPathRenderer = RTNetworkRenderer.Attach(this);
+            mPathRenderer.Show();
             mGuiManager = new RTGUIManager(this);
            
             RegisterEvents();
@@ -40,24 +37,17 @@ namespace RemoteTech {
         public void Start() {
             Init();
             foreach(Vessel v in FlightGlobals.Vessels) {
-                Satellites.RegisterFor(v);
+                Satellites.RegisterProtoFor(v);
+                Antennas.RegisterProtoFor(v);
             }
         }
 
         public void FixedUpdate() {
-            if (mCounter == 0) {
-                RTUtil.Log("Tick");
-                StartCoroutine(Network.EstablishConnection());
-            }
-            mCounter = (mCounter+1)%50;
+            StartCoroutine(Network.Tick());
         }
 
         public void OnGUI() {
             mGuiManager.Draw();
-        }
-
-        public void LateUpdate() {
-            mPathRenderer.Draw();
         }
 
         void RegisterEvents() {
@@ -74,6 +64,42 @@ namespace RemoteTech {
             Satellites.Dispose();
             Antennas.Dispose();
             UnregisterEvents();
+            Instance = null;
+        }
+    }
+
+    [KSPAddon(KSPAddon.Startup.TrackingStation, false)]
+    class RTCoreTracking : RTCore {
+
+        RTNetworkRenderer mPathRenderer;
+
+        void Init() {
+            RTCore.Instance = GameObject.Find("RTCoreTracking").GetComponent<RTCoreTracking>();
+
+            Settings = new RTSettings(this);
+            Satellites = new RTSatelliteManager(this);
+            Antennas = new RTAntennaManager(this);
+            Network = new RTNetworkManager(this);
+
+            mPathRenderer = RTNetworkRenderer.Attach(this);
+            mPathRenderer.Show();
+        }
+
+        public void Start() {
+            Init();
+            foreach (Vessel v in FlightGlobals.Vessels) {
+                Satellites.RegisterProtoFor(v);
+                Antennas.RegisterProtoFor(v);
+            }
+        }
+
+        public void FixedUpdate() {
+            StartCoroutine(Network.Tick());
+        }
+
+        void OnDestroy() {
+            Satellites.Dispose();
+            Antennas.Dispose();
             Instance = null;
         }
     }

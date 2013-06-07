@@ -10,7 +10,6 @@ namespace RemoteTech {
         public event RTAntennaHandler Registered;
         public event RTAntennaHandler Unregistered;
 
-        //TODO: Return dummy antennas for unloaded vessels!
         Dictionary<Guid, List<IAntenna>> mLoadedAntennaCache;
         Dictionary<Guid, List<IAntenna>> mProtoAntennaCache;
         RTCore mCore;
@@ -24,24 +23,27 @@ namespace RemoteTech {
             mCore.Satellites.Unregistered += OnSatelliteUnregistered;
         }
 
-        public IEnumerable<IAntenna> For(ISatellite sat) {
-            return For(sat.SignalProcessor.Vessel);
+        public IEnumerable<IAntenna> For(Vessel vessel) {
+            return For(vessel.id);
         }
 
-        public IEnumerable<IAntenna> For(Vessel v) {
-            RTUtil.Log("AntennaManager: For: " + v);
-            Guid key = v.id;
+        public IEnumerable<IAntenna> For(ISatellite satellite) {
+            return For(satellite.Guid);
+        }
 
-            if(v.loaded) {
-                return mLoadedAntennaCache.ContainsKey(key) ? mLoadedAntennaCache[key] : Enumerable.Empty<IAntenna>();
+        public IEnumerable<IAntenna> For(Guid key) {
+            if (mLoadedAntennaCache.ContainsKey(key)) {
+                return mLoadedAntennaCache[key];
+            } else if (mProtoAntennaCache.ContainsKey(key)) {
+                return mProtoAntennaCache[key];
             } else {
-                return mProtoAntennaCache.ContainsKey(key) ? mProtoAntennaCache[key] : Enumerable.Empty<IAntenna>();
+                return Enumerable.Empty<IAntenna>();
             }
         }
 
-        public void RegisterProtoFor(Vessel v) {
-            RTUtil.Log("AntennaManager: RegisterProtoFor: " + v);
-            Guid key = v.id;
+        public void RegisterProtoFor(Vessel vessel) {
+            RTUtil.Log("AntennaManager: RegisterProtoFor: " + vessel);
+            Guid key = vessel.id;
 
             if (!mProtoAntennaCache.ContainsKey(key)) {
                 mProtoAntennaCache[key] = new List<IAntenna>();
@@ -49,18 +51,20 @@ namespace RemoteTech {
 
             mProtoAntennaCache[key].Clear();
 
-            foreach(ProtoPartModuleSnapshot ppms in v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Where(x => x.IsAntenna())) {
-                IAntenna protoAntenna = new ProtoAntenna(v, ppms);
-                if(protoAntenna != null) { // Initialisation can fail.
-                    mProtoAntennaCache[key].Add(protoAntenna);
-                    OnRegister(protoAntenna);
+            foreach(ProtoPartSnapshot pps in vessel.protoVessel.protoPartSnapshots) {
+                foreach(ProtoPartModuleSnapshot ppms in pps.modules.Where(x => x.IsAntenna())) {
+                    IAntenna protoAntenna = new ProtoAntenna(vessel, pps, ppms);
+                    if(protoAntenna != null) { // Initialisation can fail.
+                        mProtoAntennaCache[key].Add(protoAntenna);
+                        OnRegister(protoAntenna);
+                    }
                 }
             }
         }
 
-        public void UnregisterProtoFor(Vessel v) {
-            RTUtil.Log("AntennaManager: UnregisterProtoFor: " + v);
-            Guid key = v.id;
+        public void UnregisterProtoFor(Vessel vessel) {
+            RTUtil.Log("AntennaManager: UnregisterProtoFor: " + vessel);
+            Guid key = vessel.id;
 
             if (!mProtoAntennaCache.ContainsKey(key))
                 return;
@@ -72,9 +76,8 @@ namespace RemoteTech {
             mProtoAntennaCache.Remove(key);
         }
 
-        public Guid Register(Vessel v, IAntenna antenna) {
-            RTUtil.Log("AntennaManager: Register: " + v + ", " + antenna.Name);
-            Guid key = v.protoVessel.vesselID;
+        public Guid Register(Guid key, IAntenna antenna) {
+            RTUtil.Log("AntennaManager: Register: " + key + ", " + antenna.Name);
             if (!mLoadedAntennaCache.ContainsKey(key)) {
                 mLoadedAntennaCache[key] = new List<IAntenna>();
             }
@@ -98,9 +101,8 @@ namespace RemoteTech {
                 mLoadedAntennaCache[key].RemoveAt(instance_id);
                 if(mLoadedAntennaCache[key].Count == 0) {
                     mLoadedAntennaCache.Remove(key);
-                    RegisterProtoFor(antenna.Vessel);
                 }
-                OnUnregister(mLoadedAntennaCache[key][instance_id]);
+                OnUnregister(antenna);
             }
         }
 
@@ -109,11 +111,11 @@ namespace RemoteTech {
         }
 
         void OnSatelliteRegistered(ISatellite sat) {
-            RegisterProtoFor(sat.SignalProcessor.Vessel);
+            //RegisterProtoFor(sat.mSignalProcessor.Vessel);
         }
 
         void OnSatelliteUnregistered(ISatellite sat) {
-            UnregisterProtoFor(sat.SignalProcessor.Vessel);
+            //UnregisterProtoFor(sat.mSignalProcessor.Vessel);
         }
 
         void OnRegister(IAntenna antenna) {

@@ -73,13 +73,13 @@
     <Compile Include="Plugin\Modules\ModuleRTAntennaAnimated.cs" />
     <Compile Include="Plugin\Modules\MissionControlSatellite.cs" />
     <Compile Include="Plugin\Datatypes\Pathfinder.cs" />
-    <Compile Include="Plugin\Core\PathRenderer.cs" />
+    <Compile Include="Plugin\Core\RTNetworkRenderer.cs" />
     <Compile Include="Plugin\Core\RTAssets.cs" />
     <Compile Include="Plugin\Core\RTCore.cs" />
     <Compile Include="Plugin\Core\RTSettings.cs" />
     <Compile Include="Plugin\Core\RTUtil.cs" />
     <Compile Include="Plugin\Core\Satellite.cs" />
-    <Compile Include="Plugin\Core\RTConnectionManager.cs" />
+    <Compile Include="Plugin\Core\RTNetworkManager.cs" />
     <Compile Include="Plugin\Datatypes\BinaryHeap.cs" />
     <Compile Include="Plugin\Datatypes\PriorityQueue.cs" />
     <Compile Include="Plugin\Datatypes\WeakReference.cs" />
@@ -90,6 +90,7 @@
     <Compile Include="Plugin\SimpleTypes\AttitudeChange.cs" />
     <Compile Include="Plugin\SimpleTypes\Pair.cs" />
     <Compile Include="Plugin\SimpleTypes\TrottleChange.cs" />
+    <Compile Include="Plugin\SimpleTypes\TypedEdge.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

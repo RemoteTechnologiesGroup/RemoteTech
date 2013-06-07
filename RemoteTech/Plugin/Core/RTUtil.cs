@@ -30,7 +30,7 @@ namespace RemoteTech
             if(RTCore.Instance.Network.Planets.ContainsKey(guid)) {
                 return RTCore.Instance.Network.Planets[guid].name;
             }
-            if((sat = RTCore.Instance.Satellites.WithGuid(guid)) != null) {
+            if((sat = RTCore.Instance.Satellites.For(guid)) != null) {
                 return sat.Name;
             }
             if(guid.Equals(RTCore.Instance.Network.MissionControl.Guid)) {
@@ -120,19 +120,19 @@ namespace RemoteTech
             return pm.Fields.GetValue<bool>("IsRTAntenna");
         }
 
-        public static void Button(String text, OnClick onClick) {
-            if(GUILayout.Button(text)) {
+        public static void Button(String text, OnClick onClick, params GUILayoutOption[] options) {
+            if(GUILayout.Button(text, options)) {
                 onClick.Invoke();
             }
         }
 
-        public static void GroupButton(int wide, String[] text, ref int group) {
-            group = GUILayout.SelectionGrid(group, text, wide);
+        public static void GroupButton(int wide, String[] text, ref int group, params GUILayoutOption[] options) {
+            group = GUILayout.SelectionGrid(group, text, wide, options);
         }
 
-        public static void GroupButton(int wide, String[] text, ref int group, OnState onStateChange) {
+        public static void GroupButton(int wide, String[] text, ref int group, OnState onStateChange, params GUILayoutOption[] options) {
             int group2;
-            if ((group2 = GUILayout.SelectionGrid(group, text, wide)) != group) {
+            if ((group2 = GUILayout.SelectionGrid(group, text, wide, options)) != group) {
                 group = group2;
                 onStateChange.Invoke(group2);
             }

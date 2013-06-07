@@ -1,14 +1,20 @@
 using System;
 using System.Text;
 
-namespace RemoteTech
-{
+namespace RemoteTech {
     public class ModuleRTAntenna : PartModule, IAntenna {
 
         // Properties
-        public bool CanTarget { get { return RTDishRange != -1; } }
-        public String Name { get { return ClassName; } }
-        public Guid Target { get { return RTAntennaTarget; } set { RTAntennaTarget = value; UpdateContext(); } }
+        public bool CanTarget { get { return Mode1DishRange != -1; } }
+        public String Name { get { return part.partName; } }
+        public Guid Target { 
+            get { return RTAntennaTargetGuid; }
+            set {
+                RTAntennaTargetGuid = value;
+                RTAntennaTarget = value.ToString();
+                UpdateContext();
+            }
+        }
         public float DishRange { get { return IsRTActive && IsPowered ? Mode1DishRange : Mode0DishRange; } }
         public float OmniRange { get { return IsRTActive && IsPowered ? Mode1OmniRange : Mode0OmniRange; } }
         public float Consumption { get { return IsRTActive && IsPowered ? Mode1EnergyCost : Mode0EnergyCost; } }
@@ -26,9 +32,10 @@ namespace RemoteTech
             RTDishRange,
             RTOmniRange;
 
+        public Guid RTAntennaTargetGuid = Guid.Empty;
         [KSPField(isPersistant = true)]
-        public Guid
-            RTAntennaTarget = Guid.Empty;
+        public String
+            RTAntennaTarget = Guid.Empty.ToString();
 
         [KSPField]
         public float
@@ -143,9 +150,14 @@ namespace RemoteTech
                 Fields["GUI_EnergyReq"].guiActive = Mode1EnergyCost > 0;
                 Fields["GUI_Target"].guiActive = Mode1DishRange > 0;
 
-                mRegisteredId = RTCore.Instance.Antennas.Register(vessel, this);
+                mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 SetState(IsRTActive);
+                try {
+                    Target = new Guid(RTAntennaTarget);
+                } catch (FormatException) {
+                    Target = Guid.Empty;
+                }
                 UpdateContext();
             }
         }
@@ -160,17 +172,23 @@ namespace RemoteTech
         }
 
         public void OnDestroy() {
-            RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
-            GameEvents.onVesselWasModified.Remove(OnVesselModified);
+            if (RTCore.Instance != null) {
+                RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
+                GameEvents.onVesselWasModified.Remove(OnVesselModified);
+            }
         }
 
         public void OnVesselModified(Vessel v) {
             if(vessel == null || (mRegisteredId != vessel.id)) {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
                 if(vessel != null) {
-                    mRegisteredId = RTCore.Instance.Antennas.Register(vessel, this);
+                    mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
                 }
             }
+        }
+        
+        public override String ToString() {
+            return "ModuleRTAntenna {" + Target + ", " + DishRange + ", " + OmniRange + ", " + Vessel.vesselName + "}";
         }
     }
 }

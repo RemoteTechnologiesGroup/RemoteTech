@@ -5,8 +5,11 @@ using System.Text;
 
 namespace RemoteTech {
     public class RTSettings {
+        public float SIGNAL_SPEED = 299792458.0f;
+        public float SIGNAL_DELAY_MODIFIER = 1.0f;
 
-        public float SignalSpeed = 299792458.0f;
+        public GraphMode GRAPH_MODE = GraphMode.MapView | GraphMode.TrackingStation;
+        public EdgeType GRAPH_EDGE = EdgeType.Omni | EdgeType.Dish | EdgeType.Connection;
 
         RTCore mCore;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace RemoteTech {
-    public class Path<T> : Path {
+    public class Path<T> {
         public bool Exists { get { return Nodes.Count > 0; } }
         public readonly List<T> Nodes;
         public readonly float Cost;
@@ -13,7 +13,6 @@ namespace RemoteTech {
             Nodes = nodes;
             Cost = cost;
         }
-
     }
 
     public class Path {

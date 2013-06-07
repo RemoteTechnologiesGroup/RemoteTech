@@ -23,23 +23,31 @@ namespace RemoteTech {
             set {
                 mTarget = value;
                 mParent.moduleValues.SetValue("RTAntennaTarget", value.ToString());
+                mParent.Save(mParent.moduleValues);
             }
         }
 
-        public ProtoAntenna(Vessel v, ProtoPartModuleSnapshot ppms) {
+        public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms) {
             ConfigNode n = new ConfigNode();
             ppms.Save(n);
             try {
-                Name = ppms.moduleName;
+                Name = p.partName;
                 mTarget = new Guid(n.GetValue("RTAntennaTarget"));
                 DishRange = Single.Parse(n.GetValue("RTDishRange"));
                 OmniRange = Single.Parse(n.GetValue("RTOmniRange"));
                 Consumption = 0.0f;
             } catch (ArgumentException) {
                 throw new ArgumentException("Malformed argument. Could not read values.");
+            } catch (FormatException) {
+                mTarget = Guid.Empty;
             }
             mParent = ppms;
             Vessel = v;
+            RTUtil.Log("ProtoAntenna: " + DishRange + ", " + OmniRange + ", " + Name);
+        }
+
+        public override String ToString() {
+            return "ProtoAntenna {" + mTarget + ", " + DishRange + ", " + OmniRange + ", " + Vessel.vesselName + "}";
         }
     }
 }

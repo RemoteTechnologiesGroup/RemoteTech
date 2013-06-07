@@ -7,7 +7,7 @@ namespace RemoteTech
 {
     public interface ISatellite {
 
-        String Name { get; set; }
+        String Name { get; }
         Guid Guid { get; }
         Vector3 Position { get; }
         ISignalProcessor SignalProcessor { get; set; }
@@ -15,12 +15,6 @@ namespace RemoteTech
 
         float OmniRange { get; }
         IEnumerable<Pair<Guid, float>> DishRange { get; }
-    }
-
-    public static class ISatelliteExtensions {
-        public static float IsPointingAt(this ISatellite a, ISatellite b) {
-            return a.DishRange.Max(x => (x.First == b.Guid) ? x.Second : 0.0f);
-        }
     }
 }
 

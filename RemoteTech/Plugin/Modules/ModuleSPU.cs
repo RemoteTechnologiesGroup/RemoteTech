@@ -5,9 +5,19 @@ using UnityEngine;
 namespace RemoteTech {
     public class ModuleSPU : PartModule, ISignalProcessor {
 
+        public String Name {
+            get { return Vessel.vesselName; }
+        }
+        public Guid Guid { get { return Vessel.id; } }
         public bool Powered { get { return IsPowered; } }
+        public Vector3 Position {
+            get {
+                return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime());
+            }
+        }
         public Vessel Vessel { get { return vessel; } }
 
+        Guid mRegisteredId;
 
         [KSPField(isPersistant = true)]
         public bool
@@ -20,19 +30,30 @@ namespace RemoteTech {
 
         [KSPEvent(guiName = "Settings", guiActive = true)]
         public void Settings() {
-            (new SatelliteGUIWindow(RTCore.Instance.Satellites.For(vessel))).Show();
+            (new SatelliteGUIWindow(RTCore.Instance.Satellites.For(Vessel.id))).Show();
         }
 
-        public void FixedUpdate() {
-            StartCoroutine(LateFixedUpdate());
-        }
-
-        IEnumerator LateFixedUpdate() {
-            yield return new WaitForFixedUpdate();
-            /*if (vessel == FlightGlobals.ActiveVessel && !RTCore.Instance.Connection.Connection.Exists) {
-                part.isControlSource = false;
+        public override void OnStart(StartState state) {
+            if (RTCore.Instance != null) {
+                mRegisteredId = RTCore.Instance.Satellites.Register(Vessel.id, this);
+                GameEvents.onVesselWasModified.Add(OnVesselModified);
             }
-            IsPowered = part.isControlSource;*/
+        }
+
+        public void OnDestroy() {
+            if (RTCore.Instance != null) {
+                RTCore.Instance.Satellites.Register(Vessel.id, this);
+                GameEvents.onVesselWasModified.Remove(OnVesselModified);
+            }
+        }
+
+        public void OnVesselModified(Vessel v) {
+            if (vessel == null || (mRegisteredId != Vessel.id)) {
+                RTCore.Instance.Satellites.Unregister(Vessel.id, this);
+                if (vessel != null) {
+                    mRegisteredId = RTCore.Instance.Satellites.Register(Vessel.id, this);
+                }
+            }
         }
     }
 }

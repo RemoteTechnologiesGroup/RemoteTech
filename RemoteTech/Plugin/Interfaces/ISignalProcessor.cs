@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using UnityEngine;
 
 namespace RemoteTech {
     public interface ISignalProcessor {
-        Vessel Vessel { get; }
         bool Powered { get; }
+        String Name { get; }
+        Guid Guid { get; }
+        Vector3 Position { get; }
+        Vessel Vessel { get; }
     }
 }
