@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class RTAssets {
-
         public Texture2D ImgSat { get; private set; }
 
         RTCore mCore;

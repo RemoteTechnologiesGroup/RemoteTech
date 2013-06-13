@@ -5,33 +5,35 @@ using System.Text;
 using UnityEngine;
 
 namespace RemoteTech {
-    class RTGUIManager {
-
+    public class RTGUIManager : IDisposable {
         RTCore mCore;
+        bool mIndicatorEnabled;
 
         public RTGUIManager(RTCore core) {
             mCore = core;
+            mCore.Network.ConnectionUpdated += OnConnectionUpdate;
         }
 
         public void Draw() {
             if(!MapView.MapIsEnabled) {
-                DrawOverlay();
+                DrawIndicator();
             }
         }
 
-        void OpenSatelliteConfig(Vessel v) {
-            ISatellite sat;
-            if((sat = mCore.Satellites.For(v.id)) != null) {
+        public void OpenSatelliteConfig(Vessel v) {
+            Satellite sat;
+            if ((sat = mCore.Satellites.For(v.id)) != null && mIndicatorEnabled) {
                 (new SatelliteGUIWindow(sat)).Show();
             }
         }
 
-        void OpenAntennaConfig(IAntenna a) {
+        public void OpenAntennaConfig(IAntenna a) {
             (new AntennaGUIWindow(a)).Show();
         }
 
-        void DrawOverlay() {
+        void DrawIndicator() {
             GUI.skin = HighLogic.Skin;
+            GUI.backgroundColor = mIndicatorEnabled ? Color.green : Color.red;
             if (GUI.Button(new Rect(0, 100, 32, 32), "")) {
                 OpenSatelliteConfig(FlightGlobals.ActiveVessel);
             }
@@ -42,5 +44,12 @@ namespace RemoteTech {
                 Color.grey, MapView.OrbitIconsMaterial);
         }
 
+        void OnConnectionUpdate(Path<ISatellite> path) {
+            mIndicatorEnabled = path.Exists && (path.Target == mCore.Satellites.For(FlightGlobals.ActiveVessel));
+        }
+
+        public void Dispose() {
+            mCore.Network.ConnectionUpdated -= OnConnectionUpdate;
+        }
     }
 }

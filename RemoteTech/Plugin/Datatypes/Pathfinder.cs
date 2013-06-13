@@ -59,7 +59,7 @@ namespace RemoteTech {
                         cost += node.Cost;
                     }
                     reversePath.Reverse();
-                    return Path.Instance(reversePath, cost);
+                    return new Path<T>(reversePath, cost);
                 }
 
                 foreach (T item in neighboursFunction.Invoke(current.Item)) {
@@ -82,7 +82,7 @@ namespace RemoteTech {
                     }
                 }
             }
-            return Path.Instance(new List<T>(), Single.PositiveInfinity);
+            return Path.Empty<T>();
         }
     }
 }

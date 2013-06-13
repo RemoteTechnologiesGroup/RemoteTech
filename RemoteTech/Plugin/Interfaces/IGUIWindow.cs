@@ -6,14 +6,11 @@ using UnityEngine;
 
 namespace RemoteTech {
     interface IGUIWindow {
-
         void Show();
         void Hide();
-
     }
 
     public abstract class AbstractGUIWindow : IGUIWindow {
-
         String mTitle;
         protected Rect mWindowPosition;
         int mWindowId;
@@ -24,10 +21,18 @@ namespace RemoteTech {
             mWindowId = (new System.Random()).Next();
         }
 
-        protected abstract void Window(int uid);
+        public virtual void Window(int uid) {
+            if (GUI.Button(new Rect(mWindowPosition.x + mWindowPosition.width - 18,
+mWindowPosition.y + 2, 16, 16), "")) {
+                Hide();
+            }
+            GUI.DragWindow();
+        }
 
         void Draw() {
             mWindowPosition = GUILayout.Window(mWindowId, mWindowPosition, Window, mTitle);
+
+            
         }
 
         public virtual void Show() {

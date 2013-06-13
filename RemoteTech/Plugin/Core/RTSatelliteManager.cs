@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace RemoteTech {
-    public class RTSatelliteManager : IEnumerable<ISatellite>, IDisposable {
+    public class RTSatelliteManager : IEnumerable<Satellite>, IDisposable {
         public delegate void RTSatelliteHandler(ISatellite satellite);
 
         public event RTSatelliteHandler Registered;
@@ -12,12 +12,12 @@ namespace RemoteTech {
 
         public int Count { get { return mSatelliteCache.Count; } }
 
-        Dictionary<Guid, ISatellite> mSatelliteCache;
+        Dictionary<Guid, Satellite> mSatelliteCache;
         Dictionary<Guid, List<ISignalProcessor>> mLoadedSpuCache;
         RTCore mCore;
 
         public RTSatelliteManager(RTCore core) {
-            mSatelliteCache = new Dictionary<Guid, ISatellite>();
+            mSatelliteCache = new Dictionary<Guid, Satellite>();
             mLoadedSpuCache = new Dictionary<Guid, List<ISignalProcessor>>();
             mCore = core;
             GameEvents.onVesselCreate.Add(OnVesselCreate);
@@ -25,7 +25,11 @@ namespace RemoteTech {
             GameEvents.onVesselGoOnRails.Add(OnVesselOnRails);
         }
 
-        public ISatellite For(Guid key) {
+        public Satellite For(Vessel v) {
+            return v == null ? null : For(v.id);
+        }
+
+        public Satellite For(Guid key) {
             return mSatelliteCache.ContainsKey(key) ? mSatelliteCache[key] : null;
         }
 
@@ -119,7 +123,7 @@ namespace RemoteTech {
             GameEvents.onVesselGoOnRails.Remove(OnVesselOnRails);
         }
 
-        public IEnumerator<ISatellite> GetEnumerator() {
+        public IEnumerator<Satellite> GetEnumerator() {
             return mSatelliteCache.Values.GetEnumerator();
         }
 

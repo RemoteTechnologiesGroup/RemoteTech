@@ -9,8 +9,6 @@ namespace RemoteTech {
     public delegate void OnAntenna(IAntenna antenna);
 
     interface IGUIFragment {
-
         void Draw();
-
     }
 }

@@ -9,13 +9,12 @@ namespace RemoteTech {
         public RTNetworkManager Network { get; protected set; }
         public RTSatelliteManager Satellites { get; protected set; }
         public RTAntennaManager Antennas { get; protected set; }
+        public RTGUIManager GUI { get; protected set; }
     }
 
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     class RTCoreFlight : RTCore {
-
         RTNetworkRenderer mPathRenderer;
-        RTGUIManager mGuiManager;
 
         void Init() {
             RTCore.Instance = GameObject.Find("RTCoreFlight").GetComponent<RTCoreFlight>();
@@ -24,10 +23,10 @@ namespace RemoteTech {
             Satellites = new RTSatelliteManager(this);
             Antennas = new RTAntennaManager(this);
             Network = new RTNetworkManager(this);
+            GUI = new RTGUIManager(this);
 
             mPathRenderer = RTNetworkRenderer.Attach(this);
             mPathRenderer.Show();
-            mGuiManager = new RTGUIManager(this);
            
             RegisterEvents();
 
@@ -47,7 +46,7 @@ namespace RemoteTech {
         }
 
         public void OnGUI() {
-            mGuiManager.Draw();
+            GUI.Draw();
         }
 
         void RegisterEvents() {
@@ -63,6 +62,7 @@ namespace RemoteTech {
         void OnDestroy() {
             Satellites.Dispose();
             Antennas.Dispose();
+            GUI.Dispose();
             UnregisterEvents();
             Instance = null;
         }

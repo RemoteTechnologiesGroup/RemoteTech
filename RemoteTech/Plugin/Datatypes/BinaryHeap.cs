@@ -5,7 +5,6 @@ namespace RemoteTech {
     // Sadly there is no way to enforce immutability C#.
     // Do not modify sorting order externally! Increase/Decrease().
     public class BinaryHeap<T> where T : class, IComparable<T> {
-
         List<T> mData;
 
         public BinaryHeap() : this(0) {}

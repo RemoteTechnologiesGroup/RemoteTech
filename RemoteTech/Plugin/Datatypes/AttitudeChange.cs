@@ -1,7 +1,6 @@
 using System;
 
-namespace RemoteTech
-{
+namespace RemoteTech {
     public class AttitudeChange {
         public readonly Attitude Attitude;
         public readonly float Pitch;

@@ -4,12 +4,18 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RemoteTech
-{
+namespace RemoteTech {
     public static class RTUtil {
-
-        public static void Log(string message) {
+        public static void Log(String message) {
             Debug.Log("RemoteTech: " + message);
+        }
+
+        public static void Log(String message, params System.Object[] param) {
+            Debug.Log(String.Format("RemoteTech: " + message, param));
+        }
+
+        public static void Log(String message, params UnityEngine.Object[] param) {
+            Debug.Log(String.Format("RemoteTech: " + message, param));
         }
 
         public static string ToDebugString<TKey, TValue>(this IDictionary<TKey, TValue> dictionary) {

@@ -4,25 +4,19 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleSPU : PartModule, ISignalProcessor {
-
-        public String Name {
-            get { return Vessel.vesselName; }
-        }
+        public String Name { get { return Vessel.vesselName; } }
         public Guid Guid { get { return Vessel.id; } }
         public bool Powered { get { return IsPowered; } }
-        public Vector3 Position {
-            get {
-                return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime());
-            }
-        }
+        public Vector3 Position { get { return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime()); } }
+        public CelestialBody Body { get { return Vessel.orbit.referenceBody; } }
         public Vessel Vessel { get { return vessel; } }
-
-        Guid mRegisteredId;
 
         [KSPField(isPersistant = true)]
         public bool
             IsRTSignalProcessor = true,
             IsPowered = false;
+
+        Guid mRegisteredId;
 
         public override string GetInfo() {
             return "Remote Control";
@@ -37,6 +31,7 @@ namespace RemoteTech {
             if (RTCore.Instance != null) {
                 mRegisteredId = RTCore.Instance.Satellites.Register(Vessel.id, this);
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
+                GameEvents.onPartUndock.Add(OnPartUndock);
             }
         }
 
@@ -44,6 +39,13 @@ namespace RemoteTech {
             if (RTCore.Instance != null) {
                 RTCore.Instance.Satellites.Register(Vessel.id, this);
                 GameEvents.onVesselWasModified.Remove(OnVesselModified);
+                GameEvents.onPartUndock.Remove(OnPartUndock);
+            }
+        }
+
+        public void OnPartUndock(Part p) {
+            if (p.vessel == vessel) {
+                OnVesselModified(p.vessel);
             }
         }
 

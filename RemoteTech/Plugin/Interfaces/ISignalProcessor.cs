@@ -7,6 +7,7 @@ namespace RemoteTech {
         String Name { get; }
         Guid Guid { get; }
         Vector3 Position { get; }
+        CelestialBody Body { get; }
         Vessel Vessel { get; }
     }
 }

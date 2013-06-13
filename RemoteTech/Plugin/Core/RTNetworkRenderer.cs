@@ -22,6 +22,7 @@ namespace RemoteTech {
         VectorLine[] mLines;
         RTCore mCore;
         HashSet<TypedEdge<ISatellite>> mEdges;
+        HashSet<TypedEdge<ISatellite>> mConnectionEdges;
         bool mEnabled;
 
         public static RTNetworkRenderer Attach(RTCore core) {
@@ -33,7 +34,9 @@ namespace RemoteTech {
             renderer.mCore = core;
             renderer.mLines = new VectorLine[] {};
             renderer.mEdges = new HashSet<TypedEdge<ISatellite>>();
-            renderer.mCore.Network.EdgeUpdated += renderer.UpdateEdge;
+            renderer.mConnectionEdges = new HashSet<TypedEdge<ISatellite>>();
+            renderer.mCore.Network.EdgeUpdated += renderer.OnEdgeUpdate;
+            renderer.mCore.Network.ConnectionUpdated += renderer.OnConnectionUpdate;
             renderer.mCore.Satellites.Unregistered += renderer.OnSatelliteUnregister;
             return renderer;
         }
@@ -64,14 +67,6 @@ namespace RemoteTech {
             mEnabled = false;
         }
 
-        void UpdateEdge(TypedEdge<ISatellite> edge) {
-            if(edge.Type == EdgeType.None) {
-                mEdges.Remove(edge);
-            } else {
-                mEdges.Add(edge);
-            }
-        }
-
         public void UpdateLineCache() {
             if(mCore.Network != null) {
                 int oldLength = mLines.Length;
@@ -83,10 +78,12 @@ namespace RemoteTech {
                 var it = mEdges.GetEnumerator();
                 for (int i = 0; i < newLength; i++) {
                     it.MoveNext();
-                    if(mLines[i] == null) {
-                        mLines[i] = new VectorLine("Path", new Vector3[] {
+                    Vector3[] newPoints = new Vector3[] {
                         ScaledSpace.LocalToScaledSpace(it.Current.A.Position),
-                        ScaledSpace.LocalToScaledSpace(it.Current.B.Position) },
+                        ScaledSpace.LocalToScaledSpace(it.Current.B.Position)
+                    };
+                    if(mLines[i] == null) {
+                        mLines[i] = new VectorLine("Path", newPoints,
                             GetColorFor(it.Current),
                             MapView.fetch.orbitLinesMaterial,
                             5.0f,
@@ -94,10 +91,7 @@ namespace RemoteTech {
                         mLines[i].layer = 31;
                         mLines[i].mesh.MarkDynamic();
                     } else {
-                        mLines[i].Resize(new Vector3[] {
-                        ScaledSpace.LocalToScaledSpace(it.Current.A.Position),
-                        ScaledSpace.LocalToScaledSpace(it.Current.B.Position)
-                    });
+                        mLines[i].Resize(newPoints);
                         Vector.SetColor(mLines[i], GetColorFor(it.Current));
                     }
                     Vector.Active(mLines[i], (mCore.Settings.GRAPH_EDGE & it.Current.Type) == it.Current.Type);
@@ -109,21 +103,40 @@ namespace RemoteTech {
         }
 
         Color GetColorFor(TypedEdge<ISatellite> edge) {
-            if (mCore.Network.Connection.Nodes.Contains(edge.A) &&
-                mCore.Network.Connection.Nodes.Contains(edge.B)) {
-                return XKCDColors.Crimson;
+            if (mConnectionEdges.Contains(edge)) {
+                return XKCDColors.ElectricLime;
             } else {
-                return XKCDColors.Grey;
+                if (edge.Type == EdgeType.Omni) 
+                    return XKCDColors.BrownGrey;
+                if (edge.Type == EdgeType.Dish)
+                    return XKCDColors.Amber;
             }
+            return XKCDColors.Grey;
         }
 
         void OnSatelliteUnregister(ISatellite s) {
             mEdges.RemoveWhere(x => x.A == s || x.B == s);
         }
 
+        void OnEdgeUpdate(TypedEdge<ISatellite> edge) {
+            if (edge.Type == EdgeType.None) {
+                mEdges.Remove(edge);
+            } else {
+                mEdges.Add(edge);
+            }
+        }
+
+        void OnConnectionUpdate(Path<ISatellite> conn) {
+            mConnectionEdges.Clear();
+            for(int i = 1; i < conn.Nodes.Count; i++) {
+                mConnectionEdges.Add(new TypedEdge<ISatellite>(conn.Nodes[i - 1], conn.Nodes[i], EdgeType.Connection));
+            }
+        }
+
         public void OnDestroy() {
-            mCore.Network.EdgeUpdated -= UpdateEdge;
+            mCore.Network.EdgeUpdated -= OnEdgeUpdate;
             mCore.Satellites.Unregistered -= OnSatelliteUnregister;
+            mCore.Network.ConnectionUpdated -= OnConnectionUpdate;
         }
     }
 }

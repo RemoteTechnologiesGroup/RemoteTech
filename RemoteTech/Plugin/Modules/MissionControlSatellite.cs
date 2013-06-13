@@ -20,6 +20,8 @@ namespace RemoteTech {
             }
         }
 
+        public CelestialBody Body { get { return FlightGlobals.Bodies[1]; } }
+
         public bool Powered { get { return true; } }
 
         public ISignalProcessor SignalProcessor { 
@@ -27,12 +29,12 @@ namespace RemoteTech {
             set { throw new NotImplementedException(); }
         }
 
-        public IEnumerable<Pair<Guid, float>> DishRange {
-            get { return Enumerable.Empty<Pair<Guid, float>>(); }
+        public IEnumerable<Dish> Dishes {
+            get { return Enumerable.Empty<Dish>(); }
         }
 
-        public float OmniRange {
-            get { return 9000000; }
+        public float Omni {
+            get { return 9e30f; }
         }
 
         public MissionControlSatellite() {

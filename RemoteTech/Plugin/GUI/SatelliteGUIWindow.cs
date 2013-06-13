@@ -5,20 +5,69 @@ using System.Text;
 using UnityEngine;
 
 namespace RemoteTech {
-    public class SatelliteConfigFragment : IGUIFragment, IDisposable {
+    public class SatelliteGUIWindow : AbstractGUIWindow {
 
-        ISatellite mFocus;
+        Satellite mSat;
+        SatelliteConfigFragment mSatelliteFragment;
+        AntennaConfigFragment mAntennaFragment;
+
+        public SatelliteGUIWindow(Satellite sat)
+            : base("Satellite Configuration", new Rect(100, 100, 0, 0)) {
+            mSat = sat;
+        }
+
+        public override void Window(int id) {
+            GUILayout.BeginHorizontal();
+            {
+                mSatelliteFragment.Draw();
+                if (mAntennaFragment != null) {
+                    mAntennaFragment.Draw();
+                }
+            }
+            GUILayout.EndHorizontal();
+            base.Window(id);
+        }
+
+        void AntennaClick(IAntenna antenna) {
+            OnAntennaFragmentClose();
+            mAntennaFragment = new AntennaConfigFragment(antenna, OnAntennaFragmentClose, x => mSatelliteFragment.RefreshAntennae());
+        }
+
+        void OnAntennaFragmentClose() {
+            if (mAntennaFragment != null) {
+                mAntennaFragment.Dispose();
+                mAntennaFragment = null;
+            }
+        }
+
+        public override void Show() {
+            mSatelliteFragment = new SatelliteConfigFragment(mSat, Hide, AntennaClick);
+            base.Show();
+        }
+
+        public override void Hide() {
+            base.Hide();
+            OnAntennaFragmentClose();
+            if (mSatelliteFragment != null) {
+                mSatelliteFragment.Dispose();
+                mSatelliteFragment = null;
+            }
+        }
+    }
+
+    public class SatelliteConfigFragment : IGUIFragment, IDisposable {
+        Satellite mFocus;
         List<IAntenna> mFocusAntennas;
         OnClick mOnClose;
         OnAntenna mOnClick;
         String[] mListCache;
         Vector2 mScrollPosition;
-        String mTextInput;
+        String mName;
         int mScrollState;
 
-        public SatelliteConfigFragment(ISatellite sat, OnClick onClose, OnAntenna onClick) {
+        public SatelliteConfigFragment(Satellite sat, OnClick onClose, OnAntenna onClick) {
             mFocus = sat;
-            mTextInput = sat.Name;
+            mName = sat.Name;
             mOnClose = onClose;
             mOnClick = onClick;
             mScrollPosition = Vector2.zero;
@@ -29,6 +78,7 @@ namespace RemoteTech {
             RTCore.Instance.Antennas.Unregistered += OnAntenna;
             RTCore.Instance.Satellites.Registered += OnSatellite;
             RTCore.Instance.Satellites.Unregistered += OnSatellite;
+            GameEvents.onVesselRename.Add(OnVesselRename);
 
             RefreshAntennae();
         }
@@ -38,8 +88,8 @@ namespace RemoteTech {
             {
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Box(mTextInput);
-                    RTUtil.Button("Name", () => { mFocus.SignalProcessor.Vessel.RenameVessel(); }, 
+                    GUILayout.Box(mName);
+                    RTUtil.Button("Name", () => { mFocus.SignalProcessor.Vessel.RenameVessel(); },
                         GUILayout.ExpandWidth(false));
                 }
                 GUILayout.EndHorizontal();
@@ -70,8 +120,12 @@ namespace RemoteTech {
             mFocusAntennas = RTCore.Instance.Antennas.For(mFocus).Where(a => a.CanTarget).ToList();
             mListCache = new String[mFocusAntennas.Count];
             for (int i = 0; i < mListCache.Length; i++) {
-                mListCache[i] = (mFocusAntennas[i].Name ?? "No Name") + '\n' + (RTUtil.TargetName(mFocusAntennas[i].Target));
+                mListCache[i] = (mFocusAntennas[i].Name ?? "No Name") + '\n' + (RTUtil.TargetName(mFocusAntennas[i].DishTarget));
             }
+        }
+
+        void OnVesselRename(GameEvents.FromToAction<String, String> ft) {
+            mName = mFocus.Name;
         }
 
         void OnSatellite(ISatellite satellite) {
@@ -81,62 +135,9 @@ namespace RemoteTech {
         }
 
         void OnAntenna(IAntenna antenna) {
-            if(mFocusAntennas.Contains(antenna)) {
+            if (mFocusAntennas.Contains(antenna)) {
                 RefreshAntennae();
             }
-        }
-    }
-
-    public class SatelliteGUIWindow : AbstractGUIWindow {
-
-        ISatellite mSat;
-        SatelliteConfigFragment mSatelliteFragment;
-        AntennaConfigFragment mAntennaFragment;
-
-        public SatelliteGUIWindow(ISatellite sat) : base("Satellite Configuration", new Rect(100, 100, 0, 0)) {
-            mSat = sat;
-        }
-
-        protected override void Window(int id) {
-            GUILayout.BeginHorizontal();
-            {
-                mSatelliteFragment.Draw();
-                if(mAntennaFragment != null) {
-                    mAntennaFragment.Draw();
-                }
-            }
-            GUILayout.EndHorizontal();
-            GUI.DragWindow();
-        }
-
-        void AntennaClick(IAntenna antenna) {
-            AntennaHide();
-            mAntennaFragment = new AntennaConfigFragment(antenna, AntennaHide, x => mSatelliteFragment.RefreshAntennae());
-        }
-
-        void SatelliteHide() {
-            if (mSatelliteFragment != null) {
-                mSatelliteFragment.Dispose();
-                mSatelliteFragment = null;
-            }
-        }
-
-        void AntennaHide() {
-            if(mAntennaFragment != null) {
-                mAntennaFragment.Dispose();
-                mAntennaFragment = null;
-            }
-        }
-
-        public override void Show() {
-            mSatelliteFragment = new SatelliteConfigFragment(mSat, Hide, AntennaClick);
-            base.Show();
-        }
-
-        public override void Hide() {
-            base.Hide();
-            AntennaHide();
-            SatelliteHide();
         }
     }
 }

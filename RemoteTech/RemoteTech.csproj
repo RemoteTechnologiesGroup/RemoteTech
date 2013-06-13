@@ -61,9 +61,9 @@
     <Compile Include="Plugin\Interfaces\ProtoAntenna.cs" />
     <Compile Include="Plugin\Interfaces\ProtoSignalProcessor.cs" />
     <Compile Include="Plugin\Core\RTAntennaManager.cs" />
-    <Compile Include="Plugin\GUI\AntennaConfigFragment.cs" />
+    <Compile Include="Plugin\GUI\AntennaGUIWindow.cs" />
     <Compile Include="Plugin\GUI\RTGUIManager.cs" />
-    <Compile Include="Plugin\GUI\SatelliteConfigFragment.cs" />
+    <Compile Include="Plugin\GUI\SatelliteGUIWindow.cs" />
     <Compile Include="Plugin\Interfaces\IAntenna.cs" />
     <Compile Include="Plugin\Interfaces\IGUIFragment.cs" />
     <Compile Include="Plugin\Interfaces\IGUIWindow.cs" />
@@ -82,19 +82,18 @@
     <Compile Include="Plugin\Core\RTNetworkManager.cs" />
     <Compile Include="Plugin\Datatypes\BinaryHeap.cs" />
     <Compile Include="Plugin\Datatypes\PriorityQueue.cs" />
-    <Compile Include="Plugin\Datatypes\WeakReference.cs" />
     <Compile Include="Plugin\Modules\ModuleRTAntenna.cs" />
     <Compile Include="Plugin\Modules\CommandSPUPartModule.cs" />
     <Compile Include="Plugin\Modules\ModuleSPU.cs" />
-    <Compile Include="Plugin\SimpleTypes\Attitude.cs" />
-    <Compile Include="Plugin\SimpleTypes\AttitudeChange.cs" />
-    <Compile Include="Plugin\SimpleTypes\Pair.cs" />
-    <Compile Include="Plugin\SimpleTypes\TrottleChange.cs" />
-    <Compile Include="Plugin\SimpleTypes\TypedEdge.cs" />
+    <Compile Include="Plugin\Datatypes\Attitude.cs" />
+    <Compile Include="Plugin\Datatypes\AttitudeChange.cs" />
+    <Compile Include="Plugin\Datatypes\Dish.cs" />
+    <Compile Include="Plugin\Datatypes\Pair.cs" />
+    <Compile Include="Plugin\Datatypes\TrottleChange.cs" />
+    <Compile Include="Plugin\Datatypes\TypedEdge.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Plugin\Tests\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

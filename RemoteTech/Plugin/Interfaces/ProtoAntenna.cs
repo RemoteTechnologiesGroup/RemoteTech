@@ -5,18 +5,14 @@ using System.Text;
 
 namespace RemoteTech {
     class ProtoAntenna : IAntenna {
-
-        ProtoPartModuleSnapshot mParent;
-        Guid mTarget;
-
         public bool CanTarget { get { return DishRange != -1; } }
         public string Name { get; private set; }
         public float DishRange { get; private set; }
+        public double DishFactor { get; private set; }
         public float OmniRange { get; private set; }
         public float Consumption { get; private set; }
         public Vessel Vessel { get; private set; }
-
-        public Guid Target {
+        public Guid DishTarget {
             get {
                 return mTarget;
             }
@@ -27,6 +23,9 @@ namespace RemoteTech {
             }
         }
 
+        ProtoPartModuleSnapshot mParent;
+        Guid mTarget;
+
         public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms) {
             ConfigNode n = new ConfigNode();
             ppms.Save(n);
@@ -34,6 +33,7 @@ namespace RemoteTech {
                 Name = p.partName;
                 mTarget = new Guid(n.GetValue("RTAntennaTarget"));
                 DishRange = Single.Parse(n.GetValue("RTDishRange"));
+                DishFactor = Double.Parse(n.GetValue("RTDishAngle"));
                 OmniRange = Single.Parse(n.GetValue("RTOmniRange"));
                 Consumption = 0.0f;
             } catch (ArgumentException) {

@@ -3,16 +3,10 @@ using UnityEngine;
 
 namespace RemoteTech {
     class ProtoSignalProcessor : ISignalProcessor {
-
-        public String Name {
-            get { return Vessel.vesselName; }
-        }
+        public String Name { get { return Vessel.vesselName; } }
         public Guid Guid { get { return Vessel.id; } }
-        public Vector3 Position {
-            get {
-                return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime());
-            }
-        }
+        public Vector3 Position { get { return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime()); } }
+        public CelestialBody Body { get { return Vessel.orbit.referenceBody; } }
         public Vessel Vessel { get; private set; }
         public bool Powered { get; private set; }
 
