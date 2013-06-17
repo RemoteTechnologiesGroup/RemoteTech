@@ -3,11 +3,9 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleRTAntennaAnimated : ModuleRTAntenna {
-        [KSPField]
-        public String 
-            AnimationName = "antenna";
+        [KSPField] public String AnimationName = "antenna";
 
-        Animation mAnimation;
+        private Animation mAnimation;
 
         public override void OnStart(StartState state) {
             mAnimation = part.FindModelAnimators(AnimationName)[0];
@@ -15,11 +13,11 @@ namespace RemoteTech {
                 RTUtil.Log("ModuleRTAntennaAnimated: Animation error");
                 enabled = false;
                 return;
-            } else {
-                mAnimation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
-                mAnimation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
-                mAnimation.Play(AnimationName);
             }
+
+            mAnimation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
+            mAnimation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
+            mAnimation.Play(AnimationName);
             base.OnStart(state);
         }
 
@@ -30,4 +28,3 @@ namespace RemoteTech {
         }
     }
 }
-

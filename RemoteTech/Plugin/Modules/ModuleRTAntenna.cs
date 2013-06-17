@@ -4,8 +4,10 @@ using System.Text;
 namespace RemoteTech {
     public class ModuleRTAntenna : PartModule, IAntenna {
         public bool CanTarget { get { return Mode1DishRange != -1; } }
-        public String Name { get { return part.partName; } }
-        public Guid DishTarget { 
+
+        public String Name { get { return part.partInfo.title; } }
+
+        public Guid DishTarget {
             get { return RTAntennaTargetGuid; }
             set {
                 RTAntennaTargetGuid = value;
@@ -13,64 +15,56 @@ namespace RemoteTech {
                 UpdateContext();
             }
         }
+
         public float DishRange { get { return IsRTActive && IsPowered ? Mode1DishRange : Mode0DishRange; } }
-        public double DishFactor { get { return RTDishAngle; } }
+
+        public double DishFactor { get { return RTDishFactor; } }
+
         public float OmniRange { get { return IsRTActive && IsPowered ? Mode1OmniRange : Mode0OmniRange; } }
+
         public float Consumption { get { return IsRTActive && IsPowered ? Mode1EnergyCost : Mode0EnergyCost; } }
+
         public Vessel Vessel { get { return vessel; } }
 
-        // KSPFields
-        [KSPField(isPersistant = true)]
-        public bool
-            IsRTAntenna = true,
-            IsRTActive = false,
-            IsPowered = true;
+        [KSPField(guiName = "Dish range")] public String GUI_DishRange;
+        [KSPField(guiName = "Energy")] public String GUI_EnergyReq;
+        [KSPField(guiName = "Omni range")] public String GUI_OmniRange;
+        [KSPField(guiActive = true, guiName = "Antenna status")] public String GUI_Status;
 
-        [KSPField(isPersistant = true)]
-        public float
-            RTDishRange,
-            RTOmniRange;
+        [KSPField] public bool CanToggle = true;
 
-        [KSPField(isPersistant = true)]
-        public double
-            RTDishAngle;
+        [KSPField] public String Mode0Name = "Inactive";
+        [KSPField] public String Mode1Name = "Activated";
+
+        [KSPField] public String ActionMode0Name = "Retract";
+        [KSPField] public String ActionMode1Name = "Extend";
+        [KSPField] public String ActionToggleName = "Toggle";
+
+        [KSPField] public float Mode0DishRange = 2000.0f;
+        [KSPField] public float Mode1DishRange = 70000.0f;
+
+        [KSPField] public float Mode0OmniRange = 2000.0f;
+        [KSPField] public float Mode1OmniRange = 70000.0f;
+
+        [KSPField] public float Mode0EnergyCost = 0.0f;
+        [KSPField] public float Mode1EnergyCost = 0.00166667f;
+
+        [KSPField(isPersistant = true)] public bool IsPowered = true;
+        [KSPField(isPersistant = true)] public bool IsRTActive = false;
+        [KSPField(isPersistant = true)] public bool IsRTAntenna = true;
 
         public Guid RTAntennaTargetGuid = Guid.Empty;
-        [KSPField(isPersistant = true)]
-        public String
-            RTAntennaTarget = Guid.Empty.ToString();
+        [KSPField(isPersistant = true)] public String RTAntennaTarget = Guid.Empty.ToString();
 
-        [KSPField]
-        public float
-            Mode0EnergyCost = 0.0f,
-            Mode1EnergyCost = 0.00166667f,
-            Mode0OmniRange = 2000.0f,
-            Mode1OmniRange = 70000.0f,
-            Mode0DishRange = 2000.0f,
-            Mode1DishRange = 70000.0f;
-            
-        [KSPField]
-        public bool
-            CanToggle = true;
+        [KSPField(isPersistant = true)] public double RTDishFactor;
+        [KSPField(isPersistant = true)] public float RTOmniRange;
+        [KSPField(isPersistant = true)] public float RTDishRange;
 
-        [KSPField]
-        public String
-            Mode0Name = "Inactive",
-            Mode1Name = "Activated",
-            ActionMode1Name = "Extend",
-            ActionMode0Name = "Retract",
-            ActionToggleName = "Toggle";
-
-        [KSPField(guiActive = true, guiName="Antenna status")] public String GUI_Status;
-        [KSPField(guiName="Omni range")] public String GUI_OmniRange;
-        [KSPField(guiName="Dish range")] public String GUI_DishRange;
-        [KSPField(guiName="Energy")] public String GUI_EnergyReq;
-
-        Guid mRegisteredId;
+        private Guid mRegisteredId;
 
         public override string GetInfo() {
-            StringBuilder info = new StringBuilder();
-            if(Mode1OmniRange > 0) {
+            var info = new StringBuilder();
+            if (Mode1OmniRange > 0) {
                 info.Append("Omni range: ");
                 info.Append(RTUtil.FormatDistance(Mode0OmniRange));
                 info.Append(" / ");
@@ -84,7 +78,7 @@ namespace RemoteTech {
             }
             if (Mode1EnergyCost > 0) {
                 info.Append("Energy req.: ");
-                info.Append((Mode1EnergyCost*60).ToString("0.00")+"/min.");
+                info.Append((Mode1EnergyCost*60).ToString("0.00") + "/min.");
             }
             return info.ToString();
         }
@@ -104,14 +98,15 @@ namespace RemoteTech {
         public void EventToggle() {
             if (IsRTActive) {
                 EventClose();
-            } else {
+            }
+            else {
                 EventOpen();
             }
         }
 
         [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target")]
         public void EventTarget() {
-            RTCore.Instance.GUI.OpenAntennaConfig(this);
+            RTCore.Instance.Gui.OpenAntennaConfig(this, vessel);
         }
 
         [KSPEvent(name = "EventOpen", guiActive = false)]
@@ -121,7 +116,7 @@ namespace RemoteTech {
 
         [KSPEvent(name = "EventClose", guiActive = false)]
         public void EventClose() {
-            if(CanToggle) {
+            if (CanToggle) {
                 SetState(false);
             }
         }
@@ -162,10 +157,11 @@ namespace RemoteTech {
 
                 try {
                     DishTarget = new Guid(RTAntennaTarget);
-                } catch (FormatException) {
+                }
+                catch (FormatException) {
                     DishTarget = Guid.Empty;
                 }
-                RTDishAngle = Math.Cos(5* 2 * Math.PI / 360);
+                RTDishFactor = Math.Cos(2*2*Math.PI/360);
 
                 mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
@@ -176,11 +172,11 @@ namespace RemoteTech {
             }
         }
 
-        void UpdateContext() {
+        private void UpdateContext() {
             GUI_Status = IsRTActive ? Mode1Name : Mode0Name;
             GUI_OmniRange = RTUtil.FormatDistance(OmniRange);
             GUI_DishRange = RTUtil.FormatDistance(DishRange);
-            GUI_EnergyReq = (Consumption * 60).ToString("0.00") + "/min";
+            GUI_EnergyReq = (Consumption*60).ToString("0.00") + "/min";
             Events["EventTarget"].guiName = RTUtil.TargetName(DishTarget);
         }
 
@@ -193,23 +189,23 @@ namespace RemoteTech {
         }
 
         public void OnPartUndock(Part p) {
-            if(p.vessel == vessel) {
+            if (p.vessel == vessel) {
                 OnVesselModified(p.vessel);
             }
         }
 
         public void OnVesselModified(Vessel v) {
-            if(vessel == null || (mRegisteredId != vessel.id)) {
+            if (vessel == null || (mRegisteredId != vessel.id)) {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
-                if(vessel != null) {
+                if (vessel != null) {
                     mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
                 }
             }
         }
-        
+
         public override String ToString() {
-            return "ModuleRTAntenna {" + DishTarget + ", " + DishRange + ", " + OmniRange + ", " + Vessel.vesselName + "}";
+            return "ModuleRTAntenna {" + DishTarget + ", " + DishRange + ", " + OmniRange + ", " +
+                   Vessel.vesselName + "}";
         }
     }
 }
-

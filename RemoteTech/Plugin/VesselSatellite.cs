@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech {
-    public class Satellite : ISatellite {
-        public bool Powered { get { return SignalProcessor.Powered; } }
+    public class VesselSatellite : ISatellite {
+
+        public ISignalProcessor SignalProcessor { get; set; }
+        public Vessel Vessel { get { return SignalProcessor.Vessel; } }
+        public bool Active { get { return SignalProcessor.Active; } }
+        public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(SignalProcessor.Vessel); } }
+
         public String Name { get { return SignalProcessor.Name; } }
         public Guid Guid { get { return SignalProcessor.Guid; } }
         public Vector3 Position { get { return SignalProcessor.Position; } }
         public CelestialBody Body { get { return SignalProcessor.Body; } }
-        public ISignalProcessor SignalProcessor { get; set; }
+
+        public bool LocalControl { get { return SignalProcessor.CrewCount > 0; } }
+
         public float Omni { get { return RTCore.Instance.Antennas.For(Guid).Max(a => a.OmniRange); } }
         public IEnumerable<Dish> Dishes {
             get {
@@ -23,7 +29,7 @@ namespace RemoteTech {
             }
         }
 
-        public Satellite(ISignalProcessor parent) {
+        public VesselSatellite(ISignalProcessor parent) {
             SignalProcessor = parent;
         }
 

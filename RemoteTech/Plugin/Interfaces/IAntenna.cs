@@ -12,4 +12,3 @@ namespace RemoteTech {
         bool CanTarget { get; }
     }
 }
-

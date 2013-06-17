@@ -1,23 +1,22 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RemoteTech {
-    public class RTSatelliteManager : IEnumerable<Satellite>, IDisposable {
-        public delegate void RTSatelliteHandler(ISatellite satellite);
+    public class SatelliteManager : IEnumerable<VesselSatellite>, IDisposable {
+        public delegate void SatelliteHandler(ISatellite satellite);
 
-        public event RTSatelliteHandler Registered;
-        public event RTSatelliteHandler Unregistered;
+        public event SatelliteHandler Registered;
+        public event SatelliteHandler Unregistered;
 
         public int Count { get { return mSatelliteCache.Count; } }
 
-        Dictionary<Guid, Satellite> mSatelliteCache;
-        Dictionary<Guid, List<ISignalProcessor>> mLoadedSpuCache;
-        RTCore mCore;
+        private readonly Dictionary<Guid, List<ISignalProcessor>> mLoadedSpuCache;
+        private readonly Dictionary<Guid, VesselSatellite> mSatelliteCache;
+        private readonly RTCore mCore;
 
-        public RTSatelliteManager(RTCore core) {
-            mSatelliteCache = new Dictionary<Guid, Satellite>();
+        public SatelliteManager(RTCore core) {
+            mSatelliteCache = new Dictionary<Guid, VesselSatellite>();
             mLoadedSpuCache = new Dictionary<Guid, List<ISignalProcessor>>();
             mCore = core;
             GameEvents.onVesselCreate.Add(OnVesselCreate);
@@ -25,11 +24,11 @@ namespace RemoteTech {
             GameEvents.onVesselGoOnRails.Add(OnVesselOnRails);
         }
 
-        public Satellite For(Vessel v) {
+        public VesselSatellite For(Vessel v) {
             return v == null ? null : For(v.id);
         }
 
-        public Satellite For(Guid key) {
+        public VesselSatellite For(Guid key) {
             return mSatelliteCache.ContainsKey(key) ? mSatelliteCache[key] : null;
         }
 
@@ -38,9 +37,10 @@ namespace RemoteTech {
             if (!mLoadedSpuCache.ContainsKey(key)) {
                 mLoadedSpuCache[key] = new List<ISignalProcessor>();
                 mLoadedSpuCache[key].Add(spu);
-                mSatelliteCache[key] = new Satellite(spu);
+                mSatelliteCache[key] = new VesselSatellite(spu);
                 OnRegister(mSatelliteCache[key]);
-            } else {
+            }
+            else {
                 ISignalProcessor instance = mLoadedSpuCache[key].Find(x => x == spu);
                 if (instance == null) {
                     mLoadedSpuCache[key].Add(spu);
@@ -51,8 +51,7 @@ namespace RemoteTech {
 
         public void Unregister(Guid key, ISignalProcessor spu) {
             RTUtil.Log("SatelliteManager: Unregister: " + key + ", " + spu);
-            if (!mLoadedSpuCache.ContainsKey(key))
-                return;
+            if (!mLoadedSpuCache.ContainsKey(key)) return;
 
             int instance_id = mLoadedSpuCache[key].FindIndex(x => x == spu);
             if (instance_id != -1) {
@@ -63,7 +62,8 @@ namespace RemoteTech {
                     mSatelliteCache.Remove(key);
                     OnUnregister(sat);
                     RegisterProtoFor(spu.Vessel);
-                } else {
+                }
+                else {
                     mSatelliteCache[key].SignalProcessor = mLoadedSpuCache[key][0];
                 }
             }
@@ -71,47 +71,44 @@ namespace RemoteTech {
 
         public void RegisterProtoFor(Vessel vessel) {
             RTUtil.Log("SatelliteManager: RegisterProtoFor: " + vessel);
-            if (mLoadedSpuCache.ContainsKey(vessel.id))
-                return;
+            if (mLoadedSpuCache.ContainsKey(vessel.id)) return;
             Guid key = vessel.protoVessel.vesselID;
             ISignalProcessor spu = vessel.GetSignalProcessor();
-            if(spu != null) {
-                mSatelliteCache[key] = new Satellite(spu);
+            if (spu != null) {
+                mSatelliteCache[key] = new VesselSatellite(spu);
                 OnRegister(mSatelliteCache[key]);
             }
-
         }
 
         public void UnregisterProtoFor(Vessel vessel) {
             RTUtil.Log("SatelliteManager: RegisterProtoFor: " + vessel);
             Guid key = vessel.protoVessel.vesselID;
-            if (mLoadedSpuCache.ContainsKey(key))
-                return;
+            if (mLoadedSpuCache.ContainsKey(key)) return;
             mSatelliteCache.Remove(key);
         }
 
-        void OnVesselOnRails(Vessel v) {
-            if(v.parts.Count == 0) {
+        private void OnVesselOnRails(Vessel v) {
+            if (v.parts.Count == 0) {
                 RegisterProtoFor(v);
             }
         }
 
-        void OnVesselCreate(Vessel v) {
+        private void OnVesselCreate(Vessel v) {
             RTUtil.Log("SatelliteManager: OnVesselCreate: " + v);
         }
 
-        void OnVesselDestroy(Vessel v) {
+        private void OnVesselDestroy(Vessel v) {
             RTUtil.Log("SatelliteManager: OnVesselDestroy" + v);
             UnregisterProtoFor(v);
         }
 
-        void OnRegister(ISatellite satellite) {
-            if(Registered != null) {
+        private void OnRegister(ISatellite satellite) {
+            if (Registered != null) {
                 Registered(satellite);
             }
         }
 
-        void OnUnregister(ISatellite satellite) {
+        private void OnUnregister(ISatellite satellite) {
             if (Unregistered != null) {
                 Unregistered(satellite);
             }
@@ -123,12 +120,12 @@ namespace RemoteTech {
             GameEvents.onVesselGoOnRails.Remove(OnVesselOnRails);
         }
 
-        public IEnumerator<Satellite> GetEnumerator() {
+        public IEnumerator<VesselSatellite> GetEnumerator() {
             return mSatelliteCache.Values.GetEnumerator();
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-            return this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() {
+            return GetEnumerator();
         }
     }
 }

@@ -1,31 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RemoteTech {
     public class Pair<T, U> {
-        public Pair(T first, U second) {
-            this.First = first;
-            this.Second = second;
-        }
-
         public readonly T First;
         public readonly U Second;
+
+        public Pair(T first, U second) {
+            First = first;
+            Second = second;
+        }
     }
 
     public class LoosePair<T, U> : IEquatable<LoosePair<T, U>> {
-        public LoosePair(T first, U second) {
-            this.First = first;
-            this.Second = second;
+        public bool Equals(LoosePair<T, U> other) {
+            return (First.Equals(other.First) || First.Equals(other.Second)) &&
+                   (Second.Equals(other.First) || Second.Equals(other.Second));
         }
 
         public readonly T First;
         public readonly U Second;
 
-        public bool Equals(LoosePair<T, U> other) {
-            return (First.Equals(other.First) || First.Equals(other.Second)) &&
-                   (Second.Equals(other.First) || Second.Equals(other.Second));
+        public LoosePair(T first, U second) {
+            First = first;
+            Second = second;
         }
 
         public override int GetHashCode() {
