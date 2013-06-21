@@ -12,6 +12,7 @@ namespace RemoteTech {
 
         int CrewCount { get; }
 
+       // FlightComputer FlightComputer { get; }
         Vessel Vessel { get; }
     }
 }

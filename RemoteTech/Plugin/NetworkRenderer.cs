@@ -12,9 +12,7 @@ namespace RemoteTech {
 
         public static NetworkRenderer AttachToMapView(RTCore core, NetworkManager network) {
             var renderer = MapView.MapCamera.gameObject.GetComponent<NetworkRenderer>();
-            if (renderer) {
-                Destroy(renderer);
-            }
+            if (renderer) Destroy(renderer);
             renderer = MapView.MapCamera.gameObject.AddComponent<NetworkRenderer>();
             renderer.mCore = core;
             renderer.mLines = new VectorLine[] {};
@@ -30,12 +28,8 @@ namespace RemoteTech {
             UpdateLineCache();
             if (mLines == null || !mEnabled) return;
             foreach (VectorLine vl in mLines) {
-                if (MapView.Draw3DLines) {
-                    Vector.DrawLine3D(vl);
-                }
-                else {
-                    Vector.DrawLine(vl);
-                }
+                if (MapView.Draw3DLines) Vector.DrawLine3D(vl);
+                else Vector.DrawLine(vl);
             }
         }
 
@@ -45,10 +39,12 @@ namespace RemoteTech {
         }
 
         public void Hide() {
-            for (int i = 0; i < mLines.Length; i++) {
-                Vector.DestroyLine(ref mLines[i]);
+            if (mLines != null) {
+                for (int i = 0; i < mLines.Length; i++) {
+                    Vector.DestroyLine(ref mLines[i]);
+                }
+                mLines = null;
             }
-            mLines = null;
             mEnabled = false;
         }
 
@@ -73,8 +69,7 @@ namespace RemoteTech {
                                                    LineType.Discrete);
                         mLines[i].layer = 31;
                         mLines[i].mesh.MarkDynamic();
-                    }
-                    else {
+                    } else {
                         mLines[i].Resize(newPoints);
                         Vector.SetColor(mLines[i], GetColorFor(it.Current));
                     }
@@ -83,16 +78,11 @@ namespace RemoteTech {
                                   (it.Current.A.Visible && it.Current.B.Visible));
                 }
                 mEnabled = true;
-            }
-            else {
-                mEnabled = false;
-            }
+            } else mEnabled = false;
         }
 
         private Color GetColorFor(TypedEdge<ISatellite> edge) {
-            if (mConnectionEdges.Contains(edge)) {
-                return XKCDColors.ElectricLime;
-            }
+            if (mConnectionEdges.Contains(edge)) return XKCDColors.ElectricLime;
             if (edge.Type == EdgeType.Omni) return XKCDColors.BrownGrey;
             if (edge.Type == EdgeType.Dish) return XKCDColors.Amber;
 
@@ -104,12 +94,8 @@ namespace RemoteTech {
         }
 
         private void OnEdgeUpdate(TypedEdge<ISatellite> edge) {
-            if (edge.Type == EdgeType.None) {
-                mEdges.Remove(edge);
-            }
-            else {
-                mEdges.Add(edge);
-            }
+            if (edge.Type == EdgeType.None) mEdges.Remove(edge);
+            else mEdges.Add(edge);
         }
 
         private void OnConnectionUpdate(Path<ISatellite> conn) {

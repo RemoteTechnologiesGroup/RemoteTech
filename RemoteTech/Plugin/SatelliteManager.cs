@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RemoteTech {
     public class SatelliteManager : IEnumerable<VesselSatellite>, IDisposable {
-        public delegate void SatelliteHandler(ISatellite satellite);
+        public delegate void SatelliteHandler(VesselSatellite satellite);
 
         public event SatelliteHandler Registered;
         public event SatelliteHandler Unregistered;
@@ -55,7 +55,7 @@ namespace RemoteTech {
 
             int instance_id = mLoadedSpuCache[key].FindIndex(x => x == spu);
             if (instance_id != -1) {
-                ISatellite sat = mSatelliteCache[key];
+                VesselSatellite sat = mSatelliteCache[key];
                 mLoadedSpuCache[key].RemoveAt(instance_id);
                 if (mLoadedSpuCache[key].Count == 0) {
                     mLoadedSpuCache.Remove(key);
@@ -102,15 +102,16 @@ namespace RemoteTech {
             UnregisterProtoFor(v);
         }
 
-        private void OnRegister(ISatellite satellite) {
+        private void OnRegister(VesselSatellite satellite) {
             if (Registered != null) {
                 Registered(satellite);
             }
         }
 
-        private void OnUnregister(ISatellite satellite) {
+        private void OnUnregister(VesselSatellite satellite) {
             if (Unregistered != null) {
                 Unregistered(satellite);
+                satellite.Dispose();
             }
         }
 

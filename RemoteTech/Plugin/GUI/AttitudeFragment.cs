@@ -13,6 +13,7 @@ namespace RemoteTech {
             "GRD\n-", "RAD\n-", "NRM\n-",
         };
 
+        private VesselSatellite mSatellite;
         private OnClick mOnClickQueue;
 
         private int mModeState;
@@ -25,7 +26,8 @@ namespace RemoteTech {
         private String mHeading;
         private String mDuration;
 
-        public AttitudeFragment(OnClick queue) {
+        public AttitudeFragment(VesselSatellite vs, OnClick queue) {
+            mSatellite = vs;
             mOnClickQueue = queue;
             mPitch = "90";
             mRoll = "90";
@@ -90,7 +92,78 @@ namespace RemoteTech {
         }
 
         void OnClickUpdate() {
+            FlightCommand fc = new FlightCommand(RTUtil.GetGameTime() + 
+                                                                mSatellite.Connection.Delay);
+            switch (mAttitudeState) {
+                default:
+                    fc.Attitude = FlightAttitude.Prograde;
+                    break;
+                case 1:
+                    fc.Attitude = FlightAttitude.RadialPlus;
+                    break;
+                case 2:
+                    fc.Attitude = FlightAttitude.NormalPlus;
+                    break;
+                case 3:
+                    fc.Attitude = FlightAttitude.Retrograde;
+                    break;
+                case 4:
+                    fc.Attitude = FlightAttitude.RadialMinus;
+                    break;
+                case 5:
+                    fc.Attitude = FlightAttitude.NormalMinus;
+                    break;
+            }
 
+            switch (mModeState) {
+                default:
+                    fc.Mode = FlightMode.Off;
+                    fc.Frame = ReferenceFrame.World;
+                    break;
+                case 1:
+                    fc.Mode = FlightMode.KillRot;
+                    fc.Attitude = FlightAttitude.Prograde;
+                    fc.Frame = ReferenceFrame.World;
+                    break;
+                case 2:
+                    fc.Mode = FlightMode.AttitudeHold;
+                    fc.Frame = ReferenceFrame.Maneuver;
+                    break;
+                case 3:
+                    fc.Mode = FlightMode.AttitudeHold;
+                    fc.Frame = ReferenceFrame.Orbit;
+                    break;
+                case 4:
+                    fc.Mode = FlightMode.AttitudeHold;
+                    fc.Frame = ReferenceFrame.Surface;
+                    break;
+                case 5:
+                    fc.Mode = FlightMode.AttitudeHold;
+                    fc.Frame = ReferenceFrame.Target;
+                    break;
+            }
+
+            float pitch;
+            if (!Single.TryParse(mPitch, out pitch)) {
+                pitch = 0;
+            }
+            mPitch = pitch.ToString();
+
+            float heading;
+            if (!Single.TryParse(mHeading, out heading)) {
+                heading = 0;
+            }
+            mHeading = heading.ToString();
+
+            float roll;
+            if (!Single.TryParse(mRoll, out roll)) {
+                roll = 0;
+            }
+            mRoll = roll.ToString();
+
+            fc.Direction = new Vector3(pitch, heading, roll);
+
+            mSatellite.FlightComputer.Enqueue(fc);
         }
     }
 }

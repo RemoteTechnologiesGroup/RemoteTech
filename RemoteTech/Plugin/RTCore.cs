@@ -50,6 +50,7 @@ namespace RemoteTech {
             Antennas.Dispose();
             Network.Dispose();
             Gui.Dispose();
+            mFlightHandler.Dispose();
             Instance = null;
         }
     }

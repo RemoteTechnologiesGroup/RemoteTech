@@ -64,7 +64,8 @@
     <Compile Include="Plugin\GUI\QueueFragment.cs" />
     <Compile Include="Plugin\GUI\RoverFragment.cs" />
     <Compile Include="Plugin\GUI\AerialFragment.cs" />
-    <Compile Include="Plugin\SimpleTypes\Enum.cs" />
+    <Compile Include="Plugin\FlightComputer.cs" />
+    <Compile Include="Plugin\Legacy\FlightComputer.cs" />
     <Compile Include="Plugin\SimpleTypes\Path.cs" />
     <Compile Include="Plugin\GUI\SettingsWindow.cs" />
     <Compile Include="Plugin\Interfaces\ProtoAntenna.cs" />
@@ -91,10 +92,8 @@
     <Compile Include="Plugin\SimpleTypes\PriorityQueue.cs" />
     <Compile Include="Plugin\Modules\ModuleRTAntenna.cs" />
     <Compile Include="Plugin\Modules\ModuleSPU.cs" />
-    <Compile Include="Plugin\SimpleTypes\AttitudeChange.cs" />
     <Compile Include="Plugin\SimpleTypes\Dish.cs" />
     <Compile Include="Plugin\SimpleTypes\Pair.cs" />
-    <Compile Include="Plugin\SimpleTypes\TrottleChange.cs" />
     <Compile Include="Plugin\SimpleTypes\TypedEdge.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

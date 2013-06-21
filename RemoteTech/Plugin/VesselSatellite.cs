@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech {
-    public class VesselSatellite : ISatellite {
+    public class VesselSatellite : ISatellite, IDisposable {
 
         public ISignalProcessor SignalProcessor { get; set; }
         public Vessel Vessel { get { return SignalProcessor.Vessel; } }
@@ -16,9 +16,17 @@ namespace RemoteTech {
         public Vector3 Position { get { return SignalProcessor.Position; } }
         public CelestialBody Body { get { return SignalProcessor.Body; } }
 
+        // Should be: has non-spu control source?
         public bool LocalControl { get { return SignalProcessor.CrewCount > 0; } }
 
-        public float Omni { get { return RTCore.Instance.Antennas.For(Guid).Max(a => a.OmniRange); } }
+        public float Omni {
+            get { 
+                return RTCore.Instance.Antennas.For(Guid).Any()
+                    ? RTCore.Instance.Antennas.For(Guid).Max(a => a.OmniRange)
+                    : 0.0f;
+            }
+        }
+
         public IEnumerable<Dish> Dishes {
             get {
                 foreach (IAntenna a in RTCore.Instance.Antennas.For(this)) {
@@ -29,8 +37,25 @@ namespace RemoteTech {
             }
         }
 
+        public FlightComputer FlightComputer { get; private set; }
+        public Path<ISatellite> Connection { get; set; }
+
         public VesselSatellite(ISignalProcessor parent) {
             SignalProcessor = parent;
+            FlightComputer = new FlightComputer(this);
+            Connection = Path.Empty((ISatellite) this);
+            RTCore.Instance.Network.ConnectionUpdated += OnConnectionUpdate;
+        }
+
+        public void OnConnectionUpdate(Path<ISatellite> path) {
+            if (path.Start == this) {
+                Connection = path;
+            }
+        }
+
+        public void Dispose() {
+            FlightComputer.Dispose();
+            RTCore.Instance.Network.ConnectionUpdated -= OnConnectionUpdate;
         }
 
         public override string ToString() {

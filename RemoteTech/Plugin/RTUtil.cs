@@ -32,8 +32,8 @@ namespace RemoteTech {
             return "{" + string.Join(",", list.Select(x => x.ToString()).ToArray()) + "}";
         }
 
-        public static long GetGameTime() {
-            return (long) (Planetarium.GetUniversalTime()*1000);
+        public static double GetGameTime() {
+            return (Planetarium.GetUniversalTime());
         }
 
         public static String TargetName(Guid guid) {

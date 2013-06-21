@@ -13,6 +13,10 @@ namespace RemoteTech {
             mCore.Network.ConnectionUpdated += OnConnectionUpdate;
         }
 
+        public void Dispose() {
+            mCore.Network.ConnectionUpdated -= OnConnectionUpdate;
+        }
+
         public void Draw() {
             if (!MapView.MapIsEnabled) {
                 DrawIndicator();
@@ -26,7 +30,11 @@ namespace RemoteTech {
         }
 
         public void OpenFlightComputer(Vessel v) {
-            (new FlightComputerWindow()).Show();
+            VesselSatellite s;
+            if ((s = mCore.Satellites.For(v.id)) != null) {
+                (new FlightComputerWindow(s)).Show();
+            }
+            
         }
 
         public void OpenSatelliteConfig(Vessel v) {
@@ -102,10 +110,6 @@ namespace RemoteTech {
             mTooltip = (mIndicator != Path.Type.NotConnected)
                        ? "Delay: " + path.Delay.ToString("F1") + " seconds."
                        : "No connection";
-        }
-
-        public void Dispose() {
-            mCore.Network.ConnectionUpdated -= OnConnectionUpdate;
         }
     }
 }

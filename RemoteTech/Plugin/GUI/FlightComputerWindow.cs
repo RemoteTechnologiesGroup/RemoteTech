@@ -23,9 +23,13 @@ namespace RemoteTech {
         private QueueFragment mQueue;
         private bool mQueueEnabled;
 
-        public FlightComputerWindow()
+        private VesselSatellite mSatellite;
+
+        public FlightComputerWindow(VesselSatellite vs)
         : base("Flight Computer", new Rect(100, 100, 0, 0)) {
-            mAttitude = new AttitudeFragment(OnClickQueue);
+            mSatellite = vs;
+
+            mAttitude = new AttitudeFragment(vs, OnClickQueue);
             mRover = new RoverFragment();
             mAerial = new AerialFragment();
             mProgcom = new ProgcomFragment();
@@ -36,43 +40,43 @@ namespace RemoteTech {
 
         public override void Window(int id) {
             base.Window(id);
-            GUILayout.BeginVertical(GUILayout.Width(200));
+            GUILayout.BeginHorizontal();
             {
-                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
                 {
-                    RTUtil.Button("<", () => {
-                        mTab = mTab == 0 ? (Tab) NUMBER_OF_TABS - 1
-                                         : (Tab)(((int)mTab - 1) % NUMBER_OF_TABS);
-                    });
-                    GUILayout.Label("Mode: " + mTab.ToString(), GUILayout.ExpandWidth(true));
-                    RTUtil.Button(">", () => {
-                        mTab = (Tab)(((int)mTab + 1) % NUMBER_OF_TABS);
-                    });
-                }
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                {
+                    GUILayout.BeginHorizontal(GUILayout.Width(150));
+                    {
+                        RTUtil.Button("<", () => {
+                            mTab = mTab == 0
+                                   ? (Tab) NUMBER_OF_TABS - 1
+                                   : (Tab) (((int) mTab - 1)%NUMBER_OF_TABS);
+                        }, GUILayout.ExpandWidth(false));
+                        GUILayout.Label("Mode: " + mTab.ToString(), GUILayout.ExpandWidth(true));
+                        RTUtil.Button(">", () => {
+                            mTab = (Tab) (((int) mTab + 1)%NUMBER_OF_TABS);
+                        }, GUILayout.ExpandWidth(false));
+                    }
+                    GUILayout.EndHorizontal();
                     switch (mTab) {
                         case Tab.Attitude:
                             mAttitude.Draw();
-                            if (mQueueEnabled) mQueue.Draw();
                             break;
                         case Tab.Rover:
                             mRover.Draw();
-                            if (mQueueEnabled) mQueue.Draw();
                             break;
                         case Tab.Aerial:
                             mAerial.Draw();
-                            if (mQueueEnabled) mQueue.Draw();
                             break;
                         case Tab.Progcom:
                             mProgcom.Draw();
                             break;
                     }
                 }
-                GUILayout.EndHorizontal();
+                GUILayout.EndVertical();
+                if (mQueueEnabled)
+                    mQueue.Draw();
             }
-            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
         }
 
         void OnClickQueue() {

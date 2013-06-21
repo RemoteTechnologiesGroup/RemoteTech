@@ -5,6 +5,21 @@ using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech {
+    [Flags]
+    public enum GraphMode {
+        None = 0x00,
+        MapView = 0x01,
+        TrackingStation = 0x02,
+    }
+
+    [Flags]
+    public enum EdgeType {
+        None = 0x00,
+        Omni = 0x01,
+        Dish = 0x02,
+        Connection = 0x04,
+    }
+
     public class NetworkManager : IEnumerable<ISatellite> {
         public delegate void ConnectionHandler(Path<ISatellite> connection);
 
@@ -98,7 +113,8 @@ namespace RemoteTech {
         }
 
         private EdgeType IsConnectedTo(ISatellite a, ISatellite b) {
-            if (a == b) return EdgeType.None;
+            bool los = LineOfSight(a, b) || CheatOptions.InfiniteEVAFuel;
+            if (a == b || !los) return EdgeType.None;
 
             float distance = Distance(a, b);
             if (distance < a.Omni) return EdgeType.Omni;
@@ -118,7 +134,7 @@ namespace RemoteTech {
         }
 
         public static bool LineOfSight(ISatellite a, ISatellite b) {
-            /*foreach (CelestialBody referenceBody in FlightGlobals.Bodies) {
+            foreach (CelestialBody referenceBody in FlightGlobals.Bodies) {
                 Vector3d bodyFromA = referenceBody.position - a.Position;
                 Vector3d bFromA = b.Position - a.Position;
                 if (Vector3d.Dot(bodyFromA, bFromA) > 0) {
@@ -131,11 +147,12 @@ namespace RemoteTech {
                         }
                     }
                 }
-            }*/
+            }
+            return true;
             // Breaks under timewarp. Unreliable for some reason
-            Vector3 scaledA = ScaledSpace.LocalToScaledSpace(a.Position);
-            Vector3 scaledB = ScaledSpace.LocalToScaledSpace(b.Position);
-            return !Physics.Linecast(scaledA, scaledB, 1 << LayerMask.NameToLayer("Scaled Scenery"));
+            //Vector3 scaledA = ScaledSpace.LocalToScaledSpace(a.Position);
+            //Vector3 scaledB = ScaledSpace.LocalToScaledSpace(b.Position);
+            //return !Physics.Linecast(scaledA, scaledB, 1 << LayerMask.NameToLayer("Scaled Scenery"));
         }
 
         public IEnumerator Tick() {

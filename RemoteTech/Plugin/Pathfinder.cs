@@ -62,7 +62,7 @@ namespace RemoteTech {
                     }
                 }
             }
-            return Path.Empty<T>();
+            return Path.Empty<T>(start);
         }
 
         public class Node<T> : IComparable<Node<T>> {
