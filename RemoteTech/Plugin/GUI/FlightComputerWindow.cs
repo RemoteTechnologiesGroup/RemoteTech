@@ -34,7 +34,7 @@ namespace RemoteTech {
             mAerial = new AerialFragment();
             mProgcom = new ProgcomFragment();
 
-            mQueue = new QueueFragment();
+            mQueue = new QueueFragment(vs);
             mQueueEnabled = false;
         }
 
@@ -81,6 +81,7 @@ namespace RemoteTech {
 
         void OnClickQueue() {
             mQueueEnabled = !mQueueEnabled;
+            mWindowPosition.width = 0;
         }
 
         public override void Show() {

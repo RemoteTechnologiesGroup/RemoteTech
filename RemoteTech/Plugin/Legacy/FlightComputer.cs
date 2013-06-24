@@ -68,12 +68,13 @@ namespace RemoteTech.Legacy {
 
                 updateAvailableTorque();
 
-                attitudeError = Quaternion.Angle(Target, vessel.transform.rotation);
+                attitudeError = Math.Abs(Vector3d.Angle(Target * Vector3d.forward, vessel.ReferenceTransform.up));
                 // Used in the drive_limit calculation
                 double precision = Math.Max(0.5, Math.Min(10.0, (torquePYAvailable + torqueThrustPYAvailable * s.mainThrottle) * 20.0 / MoI.magnitude));
 
                 // Direction we want to be facing
                 Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vessel.ReferenceTransform.rotation) * Target);
+
 
                 Vector3d deltaEuler = new Vector3d(
                                                       (delta.eulerAngles.x > 180) ? (delta.eulerAngles.x - 360.0F) : delta.eulerAngles.x,
@@ -290,11 +291,11 @@ namespace RemoteTech.Legacy {
             }
 
             public float Control(float v) {
-                if (Time.fixedTime > mOldTime) {
+                if (TimeWarp.deltaTime > mOldTime) {
                     if (mOldTime >= 0) {
-                        mOldD = (v - mOldVal) / (Time.fixedTime - mOldTime);
+                        mOldD = (v - mOldVal) / (TimeWarp.deltaTime - mOldTime);
 
-                        float i = v / (Time.fixedTime - mOldTime);
+                        float i = v / (TimeWarp.deltaTime - mOldTime);
                         if (mBuffer != null) {
                             mSum -= mBuffer[mPtr];
                             mBuffer[mPtr] = i;
@@ -305,7 +306,7 @@ namespace RemoteTech.Legacy {
                         mSum += i;
                     }
 
-                    mOldTime = Time.fixedTime;
+                    mOldTime = TimeWarp.deltaTime;
                     mOldVal = value;
                 }
 

@@ -5,38 +5,38 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class VesselSatellite : ISatellite, IDisposable {
-
         public ISignalProcessor SignalProcessor { get; set; }
+
         public Vessel Vessel { get { return SignalProcessor.Vessel; } }
+
         public bool Active { get { return SignalProcessor.Active; } }
+
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(SignalProcessor.Vessel); } }
 
         public String Name { get { return SignalProcessor.Name; } }
+
         public Guid Guid { get { return SignalProcessor.Guid; } }
+
         public Vector3 Position { get { return SignalProcessor.Position; } }
+
         public CelestialBody Body { get { return SignalProcessor.Body; } }
 
-        // Should be: has non-spu control source?
-        public bool LocalControl { get { return SignalProcessor.CrewCount > 0; } }
-
         public float Omni {
-            get { 
+            get {
                 return RTCore.Instance.Antennas.For(Guid).Any()
-                    ? RTCore.Instance.Antennas.For(Guid).Max(a => a.OmniRange)
-                    : 0.0f;
+                       ? RTCore.Instance.Antennas.For(Guid).Max(a => a.OmniRange)
+                       : 0.0f;
             }
         }
 
         public IEnumerable<Dish> Dishes {
             get {
                 foreach (IAntenna a in RTCore.Instance.Antennas.For(this)) {
-                    if (a.CanTarget && !a.DishTarget.Equals(Guid.Empty)) {
-                        yield return new Dish(a.DishTarget, a.DishFactor, a.DishRange);
-                    }
+                    if (a.CanTarget && !a.DishTarget.Equals(Guid.Empty)) yield return new Dish(a.DishTarget, a.DishFactor, a.DishRange);
                 }
             }
         }
-
+        public bool LocalControl { get { return SignalProcessor.LocalControl; } }
         public FlightComputer FlightComputer { get; private set; }
         public Path<ISatellite> Connection { get; set; }
 
@@ -48,9 +48,7 @@ namespace RemoteTech {
         }
 
         public void OnConnectionUpdate(Path<ISatellite> path) {
-            if (path.Start == this) {
-                Connection = path;
-            }
+            if (path.Start == this) Connection = path;
         }
 
         public void Dispose() {

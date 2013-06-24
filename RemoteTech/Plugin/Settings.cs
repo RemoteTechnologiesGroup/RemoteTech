@@ -1,9 +1,12 @@
 ﻿namespace RemoteTech {
     public class Settings {
-        public EdgeType GRAPH_EDGE = EdgeType.Omni | EdgeType.Dish | EdgeType.Connection;
-        public GraphMode GRAPH_MODE = GraphMode.MapView | GraphMode.TrackingStation;
-        public float SIGNAL_DELAY_MODIFIER = 1.0f;
-        public float SIGNAL_SPEED = 299792458.0f;
+        public EdgeType GraphEdge = EdgeType.Omni | EdgeType.Dish | EdgeType.Connection;
+        public GraphMode GraphMode = GraphMode.MapView | GraphMode.TrackingStation;
+        public float SignalDelayModifier = 1.0f;
+        public float SignalSpeed = 299792458.0f;
+
+        public bool DebugAlwaysConnected = false;
+        public float DebugOffsetDelay = 5.0f;
 
         private RTCore mCore;
 

@@ -4,28 +4,33 @@ using UnityEngine;
 namespace RemoteTech {
     public class GuiManager : IDisposable {
 
-        private readonly RTCore mCore;
-        private Path.Type mIndicator;
+        private enum State {
+            NotConnected,
+            LocalControl,
+            Connected,
+        }
+
+        private State mIndicator;
         private String mTooltip;
+
+        private readonly RTCore mCore;
 
         public GuiManager(RTCore core) {
             mCore = core;
-            mCore.Network.ConnectionUpdated += OnConnectionUpdate;
         }
 
         public void Dispose() {
-            mCore.Network.ConnectionUpdated -= OnConnectionUpdate;
+
         }
 
         public void Draw() {
             if (!MapView.MapIsEnabled) {
                 DrawIndicator();
             }
-            if (Event.current.type == EventType.KeyUp) {
-                if (Event.current.keyCode == KeyCode.H) {
-                    Event.current.Use();
-                    OpenSettings();
-                }
+            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.R && 
+                    GameSettings.MODIFIER_KEY.GetKeyDown()) {
+                Event.current.Use();
+                OpenSettings();
             }
         }
 
@@ -39,7 +44,7 @@ namespace RemoteTech {
 
         public void OpenSatelliteConfig(Vessel v) {
             VesselSatellite s;
-            if ((s = mCore.Satellites.For(v.id)) != null && mIndicator != Path.Type.NotConnected ) {
+            if ((s = mCore.Satellites.For(v.id)) != null && mIndicator != State.NotConnected) {
                 (new SatelliteWindow(s)).Show();
             }
         }
@@ -61,14 +66,23 @@ namespace RemoteTech {
 
         private void DrawIndicator() {
             GUI.skin = HighLogic.Skin;
+            if (Event.current.type == EventType.Repaint) {
+                VesselSatellite focus = mCore.Satellites.For(FlightGlobals.ActiveVessel);
+                mIndicator = focus.Connection.Exists
+                             ? State.Connected
+                             : (focus.LocalControl ? State.LocalControl : State.NotConnected);
+                mTooltip = (mIndicator != State.NotConnected)
+                           ? "Delay: " + focus.Connection.Delay.ToString("F1") + " seconds."
+                           : "No connection";
+            }
             switch (mIndicator) {
-                case Path.Type.Connected:
+                case State.Connected:
                     GUI.backgroundColor = Color.green;
                     break;
-                case Path.Type.LocalControl:
+                case State.LocalControl:
                     GUI.backgroundColor = Color.yellow;
                     break;
-                case Path.Type.NotConnected:
+                case State.NotConnected:
                     GUI.backgroundColor = Color.red;
                     break;
             }
@@ -101,15 +115,6 @@ namespace RemoteTech {
             }
             GUILayout.EndArea();
 
-        }
-
-        private void OnConnectionUpdate(Path<ISatellite> path) {
-            if (path.Start != mCore.Satellites.For(FlightGlobals.ActiveVessel)) return;
-
-            mIndicator = path.State;
-            mTooltip = (mIndicator != Path.Type.NotConnected)
-                       ? "Delay: " + path.Delay.ToString("F1") + " seconds."
-                       : "No connection";
         }
     }
 }

@@ -74,7 +74,7 @@ namespace RemoteTech {
                         Vector.SetColor(mLines[i], GetColorFor(it.Current));
                     }
                     Vector.Active(mLines[i],
-                                  ((mCore.Settings.GRAPH_EDGE & it.Current.Type) == it.Current.Type) &&
+                                  ((mCore.Settings.GraphEdge & it.Current.Type) == it.Current.Type) &&
                                   (it.Current.A.Visible && it.Current.B.Visible));
                 }
                 mEnabled = true;
@@ -100,10 +100,13 @@ namespace RemoteTech {
 
         private void OnConnectionUpdate(Path<ISatellite> conn) {
             mConnectionEdges.Clear();
-            for (int i = 1; i < conn.Nodes.Count; i++) {
-                mConnectionEdges.Add(new TypedEdge<ISatellite>(conn.Nodes[i - 1], conn.Nodes[i],
-                                                               EdgeType.Connection));
+            if (FlightGlobals.ActiveVessel && conn.Start.Guid == FlightGlobals.ActiveVessel.id) {
+                for (int i = 1; i < conn.Nodes.Count; i++) {
+                    mConnectionEdges.Add(new TypedEdge<ISatellite>(conn.Nodes[i - 1], conn.Nodes[i],
+                                                                   EdgeType.Connection));
+                }
             }
+
         }
 
         public void Detach() {

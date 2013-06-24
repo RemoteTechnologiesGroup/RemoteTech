@@ -70,7 +70,7 @@ namespace RemoteTech {
 
         public void LoadSettings() {
             Settings settings = RTCore.Instance.Settings;
-            mSignalSpeed = settings.SIGNAL_SPEED.ToString();
+            mSignalSpeed = settings.SignalSpeed.ToString();
         }
 
         public void SaveSettings() {

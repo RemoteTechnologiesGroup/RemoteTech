@@ -9,17 +9,15 @@ namespace RemoteTech {
         public event AntennaHandler Registered;
         public event AntennaHandler Unregistered;
 
+        private readonly Dictionary<Guid, List<IAntenna>> mLoadedAntennaCache =
+            new Dictionary<Guid, List<IAntenna>>();
+        private readonly Dictionary<Guid, List<IAntenna>> mProtoAntennaCache =
+            new Dictionary<Guid, List<IAntenna>>();
         private readonly RTCore mCore;
-        private readonly Dictionary<Guid, List<IAntenna>> mLoadedAntennaCache;
-        private readonly Dictionary<Guid, List<IAntenna>> mProtoAntennaCache;
 
         public AntennaManager(RTCore core) {
-            mLoadedAntennaCache = new Dictionary<Guid, List<IAntenna>>();
-            mProtoAntennaCache = new Dictionary<Guid, List<IAntenna>>();
             mCore = core;
             GameEvents.onVesselGoOnRails.Add(OnVesselGoOnRails);
-            mCore.Satellites.Registered += OnSatelliteRegistered;
-            mCore.Satellites.Unregistered += OnSatelliteUnregistered;
         }
 
         public IEnumerable<IAntenna> For(Vessel vessel) {
@@ -104,15 +102,9 @@ namespace RemoteTech {
         }
 
         private void OnVesselGoOnRails(Vessel v) {
-            RegisterProtoFor(v);
-        }
-
-        private void OnSatelliteRegistered(ISatellite sat) {
-            //RegisterProtoFor(sat.mSignalProcessor.Vessel);
-        }
-
-        private void OnSatelliteUnregistered(ISatellite sat) {
-            //UnregisterProtoFor(sat.mSignalProcessor.Vessel);
+            if (v.parts.Count == 0) {
+                RegisterProtoFor(v);
+            }
         }
 
         private void OnRegister(IAntenna antenna) {
@@ -129,8 +121,6 @@ namespace RemoteTech {
 
         public void Dispose() {
             GameEvents.onVesselGoOnRails.Remove(OnVesselGoOnRails);
-            mCore.Satellites.Registered -= OnSatelliteRegistered;
-            mCore.Satellites.Unregistered -= OnSatelliteUnregistered;
         }
     }
 }

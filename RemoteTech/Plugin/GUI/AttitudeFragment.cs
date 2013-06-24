@@ -13,6 +13,50 @@ namespace RemoteTech {
             "GRD\n-", "RAD\n-", "NRM\n-",
         };
 
+        private float Pitch {
+            get {
+                float pitch;
+                if (!Single.TryParse(mPitch, out pitch)) {
+                    pitch = 0;
+                }
+                return pitch;
+            }
+            set { mPitch = value.ToString(); }
+        }
+
+        private float Heading {
+            get {
+                float heading;
+                if (!Single.TryParse(mHeading, out heading)) {
+                    heading = 0;
+                }
+                return heading;
+            }
+            set { mHeading = value.ToString(); }
+        }
+
+        private float Roll {
+            get {
+                float roll;
+                if (!Single.TryParse(mRoll, out roll)) {
+                    roll = 0;
+                }
+                return roll;
+            }
+            set { mRoll = value.ToString(); }
+        }
+
+        private double Duration {
+            get {
+                TimeSpan duration;
+                if (!RTUtil.TryParseDuration(mDuration, out duration)) {
+                    duration = new TimeSpan();
+                }
+                return duration.TotalSeconds;
+            }
+            set { mDuration = value.ToString(); }
+        }
+
         private VesselSatellite mSatellite;
         private OnClick mOnClickQueue;
 
@@ -30,43 +74,57 @@ namespace RemoteTech {
             mSatellite = vs;
             mOnClickQueue = queue;
             mPitch = "90";
-            mRoll = "90";
+            mRoll = "0";
             mHeading = "90";
             mDuration = "0";
         }
 
         public void Draw() {
-            GUILayout.BeginVertical();
+            GUILayout.BeginVertical(GUILayout.Width(150));
             {
                 RTUtil.GroupButton(3, MODE_TEXT, ref mModeState);
+                RTUtil.StateButton("SURFACE", mModeState == 6, (state) => mModeState = 6);
                 GUILayout.Space(5);
                 RTUtil.GroupButton(3, ATTITUDE_TEXT, ref mAttitudeState);
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("Pitch: ");
-                    RTUtil.Button("+", () => { }, GUILayout.ExpandWidth(false));
-                    RTUtil.Button("-", () => { }, GUILayout.ExpandWidth(false));
-                    RTUtil.TextField(ref mPitch, GUILayout.Width(50));
-                }
-                GUILayout.EndHorizontal();
+                    GUILayout.BeginVertical();
+                    {
+                        GUILayout.Label("PIT: ");
+                        GUILayout.Label("HDG: ");
+                        GUILayout.Label("RLL: ");
+                    }
+                    GUILayout.EndVertical();
 
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label("Head: ");
-                    RTUtil.Button("+", () => { }, GUILayout.ExpandWidth(false));
-                    RTUtil.Button("-", () => { }, GUILayout.ExpandWidth(false));
-                    RTUtil.TextField(ref mHeading, GUILayout.Width(50));
-                }
-                GUILayout.EndHorizontal();
+                    GUILayout.BeginVertical();
+                    {
+                        GUILayout.BeginHorizontal();
+                        {
+                            RTUtil.Button("+", () => Pitch++, GUILayout.ExpandWidth(false));
+                            RTUtil.Button("-", () => Pitch--, GUILayout.ExpandWidth(false));
+                            RTUtil.TextField(ref mPitch, GUILayout.ExpandWidth(true));
+                        }
+                        GUILayout.EndHorizontal();
 
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label("Roll: ");
-                    RTUtil.Button("+", () => { }, GUILayout.ExpandWidth(false));
-                    RTUtil.Button("-", () => { }, GUILayout.ExpandWidth(false));
-                    RTUtil.TextField(ref mRoll, GUILayout.Width(50));
+                        GUILayout.BeginHorizontal();
+                        {
+                            RTUtil.Button("+", () => Heading++, GUILayout.ExpandWidth(false));
+                            RTUtil.Button("-", () => Heading--, GUILayout.ExpandWidth(false));
+                            RTUtil.TextField(ref mHeading, GUILayout.ExpandWidth(true));
+                        }
+                        GUILayout.EndHorizontal();
+
+                        GUILayout.BeginHorizontal();
+                        {
+                            RTUtil.Button("+", () => Roll++, GUILayout.ExpandWidth(false));
+                            RTUtil.Button("-", () => Roll--, GUILayout.ExpandWidth(false));
+                            RTUtil.TextField(ref mRoll, GUILayout.ExpandWidth(true));
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.EndVertical();
                 }
                 GUILayout.EndHorizontal();
 
@@ -74,15 +132,16 @@ namespace RemoteTech {
                 {
                     GUILayout.Label("Throttle: ");
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(mThrottleState.ToString("F1") + "%");
+                    GUILayout.Label(mThrottleState.ToString("P"));
                 }
                 GUILayout.EndHorizontal();
-                RTUtil.HorizontalSlider(ref mThrottleState, 0, 100);
+
+                RTUtil.HorizontalSlider(ref mThrottleState, 0, 1);
                 RTUtil.TextField(ref mDuration);
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.Button("UPD", OnClickUpdate);
+                    RTUtil.Button("SEND", OnClickUpdate);
                     GUILayout.FlexibleSpace();
                     RTUtil.Button("Q", mOnClickQueue);
                 }
@@ -92,6 +151,7 @@ namespace RemoteTech {
         }
 
         void OnClickUpdate() {
+            if (!mSatellite.Connection.Exists) return;
             FlightCommand fc = new FlightCommand(RTUtil.GetGameTime() + 
                                                                 mSatellite.Connection.Delay);
             switch (mAttitudeState) {
@@ -122,7 +182,6 @@ namespace RemoteTech {
                     break;
                 case 1:
                     fc.Mode = FlightMode.KillRot;
-                    fc.Attitude = FlightAttitude.Prograde;
                     fc.Frame = ReferenceFrame.World;
                     break;
                 case 2:
@@ -141,28 +200,17 @@ namespace RemoteTech {
                     fc.Mode = FlightMode.AttitudeHold;
                     fc.Frame = ReferenceFrame.Target;
                     break;
+                case 6:
+                    fc.Mode = FlightMode.AttitudeHold;
+                    fc.Frame = ReferenceFrame.North;
+                    fc.Attitude = FlightAttitude.Surface;
+                    break;
             }
 
-            float pitch;
-            if (!Single.TryParse(mPitch, out pitch)) {
-                pitch = 0;
-            }
-            mPitch = pitch.ToString();
-
-            float heading;
-            if (!Single.TryParse(mHeading, out heading)) {
-                heading = 0;
-            }
-            mHeading = heading.ToString();
-
-            float roll;
-            if (!Single.TryParse(mRoll, out roll)) {
-                roll = 0;
-            }
-            mRoll = roll.ToString();
-
-            fc.Direction = new Vector3(pitch, heading, roll);
-
+            fc.Direction = new Vector3(Pitch, Heading, Roll);
+                             
+            fc.Throttle = mThrottleState;
+            fc.Duration = Duration;
             mSatellite.FlightComputer.Enqueue(fc);
         }
     }

@@ -7,7 +7,7 @@ namespace RemoteTech {
 
         public delegate float HeuristicDelegate<T>(T a, T b);
 
-        public delegate List<T> NeighbourDelegate<T>(T a);
+        public delegate IEnumerable<T> NeighbourDelegate<T>(T a);
 
         // All sorting related data is immutable.
 

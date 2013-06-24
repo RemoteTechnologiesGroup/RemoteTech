@@ -11,6 +11,10 @@ namespace RemoteTech {
             mHeap = new BinaryHeap<T>();
         }
 
+        public void Clear() {
+            mHeap.Clear();
+        }
+
         public void Enqueue(T item) {
             mHeap.Add(item);
         }

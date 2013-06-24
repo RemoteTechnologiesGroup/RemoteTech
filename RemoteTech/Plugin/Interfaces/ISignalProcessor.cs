@@ -10,9 +10,8 @@ namespace RemoteTech {
         Vector3 Position { get; }
         CelestialBody Body { get; }
 
-        int CrewCount { get; }
+        bool LocalControl { get; }
 
-       // FlightComputer FlightComputer { get; }
         Vessel Vessel { get; }
     }
 }

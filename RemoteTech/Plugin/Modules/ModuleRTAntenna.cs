@@ -66,15 +66,15 @@ namespace RemoteTech {
             var info = new StringBuilder();
             if (Mode1OmniRange > 0) {
                 info.Append("Omni range: ");
-                info.Append(RTUtil.FormatDistance(Mode0OmniRange));
+                info.Append(RTUtil.FormatSI(Mode0OmniRange, "m"));
                 info.Append(" / ");
-                info.AppendLine(RTUtil.FormatDistance(Mode1OmniRange));
+                info.AppendLine(RTUtil.FormatSI(Mode1OmniRange, "m"));
             }
             if (Mode1DishRange > 0) {
                 info.Append("Dish range: ");
-                info.Append(RTUtil.FormatDistance(Mode0DishRange));
+                info.Append(RTUtil.FormatSI(Mode0DishRange, "m"));
                 info.Append(" / ");
-                info.AppendLine(RTUtil.FormatDistance(Mode1DishRange));
+                info.AppendLine(RTUtil.FormatSI(Mode1DishRange, "m"));
             }
             if (Mode1EnergyCost > 0) {
                 info.Append("Energy req.: ");
@@ -174,8 +174,8 @@ namespace RemoteTech {
 
         private void UpdateContext() {
             GUI_Status = IsRTActive ? Mode1Name : Mode0Name;
-            GUI_OmniRange = RTUtil.FormatDistance(OmniRange);
-            GUI_DishRange = RTUtil.FormatDistance(DishRange);
+            GUI_OmniRange = RTUtil.FormatSI(OmniRange, "m");
+            GUI_DishRange = RTUtil.FormatSI(DishRange, "m");
             GUI_EnergyReq = (Consumption*60).ToString("0.00") + "/min";
             Events["EventTarget"].guiName = RTUtil.TargetName(DishTarget);
         }

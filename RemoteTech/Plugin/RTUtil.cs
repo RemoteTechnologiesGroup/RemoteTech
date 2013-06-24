@@ -2,12 +2,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Object = System.Object;
 
 namespace RemoteTech {
     public static class RTUtil {
         public static String[] DistanceUnits = {"m", "km", "Mm", "Gm", "Tm"};
+
+        private static readonly Regex mDurationRegex;
+
+        static RTUtil() {
+            mDurationRegex = new Regex(@"(?:(?<seconds>\d+)\s*s[a-z]*[,\s]*)?" + 
+                                       @"(?:(?<minutes>\d+)\s*m[a-z]*[,\s]*)?" +
+                                       @"(?:(?<hours>\d+)\s*h[a-z]*[,\s]*)?");
+        }
+
+        public static bool TryParseDuration(String duration, out TimeSpan time) {
+            time = new TimeSpan();
+            Match match = mDurationRegex.Match(duration);
+            if (match.Success) {
+                if (match.Groups["seconds"].Success) {
+                    time += TimeSpan.FromSeconds(Int32.Parse(match.Groups["seconds"].Value));
+                }
+                if (match.Groups["minutes"].Success) {
+                    time += TimeSpan.FromMinutes(Int32.Parse(match.Groups["minutes"].Value));
+                }
+                if (match.Groups["hours"].Success) {
+                    time += TimeSpan.FromHours(Int32.Parse(match.Groups["hours"].Value));
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public static String FormatSI(double value, String unit) {
+            // Engineering notation
+            int i;
+            for (i = 0; value > 1000 && i < DistanceUnits.Length; i++) {
+                value /= 1000;
+            }
+            return value.ToString("G6") + DistanceUnits[i] + unit;
+        }
 
         public static void Log(String message) {
             Debug.Log("RemoteTech: " + message);
@@ -62,15 +99,6 @@ namespace RemoteTech {
             }
             Log("cb.Guid: " + s);
             return new Guid(s.ToString());
-        }
-
-        public static String FormatDistance(float dist) {
-            // Engineering notation
-            int i;
-            for (i = 0; dist > 1000 && i < DistanceUnits.Length; i++) {
-                dist /= 1000;
-            }
-            return dist.ToString("G6") + DistanceUnits[i];
         }
 
         public static bool HasValue(this ProtoPartModuleSnapshot ppms, String value) {
@@ -161,10 +189,9 @@ namespace RemoteTech {
             }
         }
 
-        public static void ToggleButton(String text, ref bool state, OnState onStateChange,
+        public static void StateButton(String text, bool state, OnState onStateChange,
                                         params GUILayoutOption[] options) {
             if (GUILayout.Toggle(state, text, GUI.skin.button, options) != state) {
-                state = !state;
                 onStateChange.Invoke(state ? 1 : 0);
             }
         }

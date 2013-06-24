@@ -11,13 +11,13 @@ namespace RemoteTech {
 
         public int Count { get { return mSatelliteCache.Count; } }
 
-        private readonly Dictionary<Guid, List<ISignalProcessor>> mLoadedSpuCache;
-        private readonly Dictionary<Guid, VesselSatellite> mSatelliteCache;
+        private readonly Dictionary<Guid, List<ISignalProcessor>> mLoadedSpuCache =
+            new Dictionary<Guid, List<ISignalProcessor>>();
+        private readonly Dictionary<Guid, VesselSatellite> mSatelliteCache =
+            new Dictionary<Guid, VesselSatellite>();
         private readonly RTCore mCore;
 
         public SatelliteManager(RTCore core) {
-            mSatelliteCache = new Dictionary<Guid, VesselSatellite>();
-            mLoadedSpuCache = new Dictionary<Guid, List<ISignalProcessor>>();
             mCore = core;
             GameEvents.onVesselCreate.Add(OnVesselCreate);
             GameEvents.onVesselDestroy.Add(OnVesselDestroy);
@@ -32,7 +32,8 @@ namespace RemoteTech {
             return mSatelliteCache.ContainsKey(key) ? mSatelliteCache[key] : null;
         }
 
-        public Guid Register(Guid key, ISignalProcessor spu) {
+        public Guid Register(Vessel v, ISignalProcessor spu) {
+            Guid key = v.id;
             RTUtil.Log("SatelliteManager: Register: " + key + ", " + spu);
             if (!mLoadedSpuCache.ContainsKey(key)) {
                 mLoadedSpuCache[key] = new List<ISignalProcessor>();
@@ -61,7 +62,6 @@ namespace RemoteTech {
                     mLoadedSpuCache.Remove(key);
                     mSatelliteCache.Remove(key);
                     OnUnregister(sat);
-                    RegisterProtoFor(spu.Vessel);
                 }
                 else {
                     mSatelliteCache[key].SignalProcessor = mLoadedSpuCache[key][0];

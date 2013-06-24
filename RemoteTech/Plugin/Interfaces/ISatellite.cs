@@ -12,8 +12,6 @@ namespace RemoteTech {
         Vector3 Position { get; }
         CelestialBody Body { get; }
 
-        bool LocalControl { get; }
-
         float Omni { get; }
         IEnumerable<Dish> Dishes { get; }
     }

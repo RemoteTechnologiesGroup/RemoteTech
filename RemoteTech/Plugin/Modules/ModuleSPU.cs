@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RemoteTech {
@@ -6,31 +7,65 @@ namespace RemoteTech {
         public bool Active { get { return IsPowered; } }
 
         public String Name { get { return Vessel.vesselName; } }
+
         public Guid Guid { get { return Vessel.id; } }
+
         public Vector3 Position { get { return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime()); } }
+
         public CelestialBody Body { get { return Vessel.orbit.referenceBody; } }
 
-        public int CrewCount { get { return Vessel.GetCrewCount(); } }
+        public bool LocalControl {
+            get {
+                bool isControlSource = part.isControlSource;
+                part.isControlSource = false;
+                bool otherControlSources = vessel.HasControlSources();
+                part.isControlSource = isControlSource;
+
+                return otherControlSources;
+            }
+        }
 
         public Vessel Vessel { get { return vessel; } }
 
-        [KSPField(isPersistant = true)] public bool IsPowered = false;
-        [KSPField(isPersistant = true)] public bool IsRTSignalProcessor = true;
+        [KSPField(isPersistant = true)]
+        public bool IsPowered = false;
+
+        [KSPField(isPersistant = true)]
+        public bool IsRTSignalProcessor = true;
+
+        [KSPField(isPersistant = true)]
+        public bool IsRTCommandModule = true;
+
+        [KSPField]
+        public int minimumCrew = 0;
+
+        [KSPField(guiName = "State", guiActive = true)]
+        public String Status;
+
+        private enum State {
+            Operational,
+            NoCrew,
+            NoResources,
+            NoConnection
+        }
 
         private Guid mRegisteredId;
 
+        // Unity requires this to be public for some fucking magical reason?!
+        public List<ModuleResource> RequiredResources;
+
         public override string GetInfo() {
-            return "Remote Control";
+            return IsRTCommandModule ? "Remote Command" : "Remote Control";
         }
 
         [KSPEvent(guiName = "Settings", guiActive = true)]
         public void Settings() {
-            (new SatelliteWindow(RTCore.Instance.Satellites.For(Vessel.id))).Show();
+            (new SatelliteWindow(RTCore.Instance.Satellites.For(Vessel))).Show();
         }
 
         public override void OnStart(StartState state) {
             if (RTCore.Instance != null) {
-                mRegisteredId = RTCore.Instance.Satellites.Register(Vessel.id, this);
+                mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this);
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
             }
@@ -38,23 +73,75 @@ namespace RemoteTech {
 
         public void OnDestroy() {
             if (RTCore.Instance != null) {
-                RTCore.Instance.Satellites.Register(Vessel.id, this);
+                RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
                 GameEvents.onVesselWasModified.Remove(OnVesselModified);
                 GameEvents.onPartUndock.Remove(OnPartUndock);
             }
         }
 
-        public void OnPartUndock(Part p) {
-            if (p.vessel == vessel) {
-                OnVesselModified(p.vessel);
+        public override void OnLoad(ConfigNode node) {
+            if (RequiredResources == null) {
+                RequiredResources = new List<ModuleResource>();
+            }
+            foreach (ConfigNode cn in node.nodes) {
+                if(!cn.name.Equals("RESOURCE")) continue;
+                ModuleResource rs = new ModuleResource();
+                rs.Load(cn);
+                RequiredResources.Add(rs);
             }
         }
 
+        State UpdateControlState() {
+            if (!RTCore.Instance) return State.NoConnection;
+            if (part.protoModuleCrew.Count < minimumCrew) {
+                IsPowered = part.isControlSource = false;
+                return State.NoCrew;
+            }
+            foreach (ModuleResource rs in RequiredResources) {
+                rs.currentRequest = rs.rate * TimeWarp.deltaTime;
+                rs.currentAmount = part.RequestResource(rs.id, rs.currentRequest);
+                if (rs.currentAmount < rs.currentRequest * 0.9) {
+                    IsPowered = part.isControlSource = false;
+                    return State.NoResources;
+                }
+            }
+            if (mRegisteredId == Guid.Empty ||
+                    !RTCore.Instance.Satellites.For(mRegisteredId).Connection.Exists) {
+                IsPowered = part.isControlSource = false;
+                return State.NoConnection;
+            }
+            IsPowered = part.isControlSource = true;
+            return State.Operational;
+        }
+
+        public void FixedUpdate() {
+            switch (UpdateControlState()) {
+                case State.Operational:
+                    Status = "Operational.";
+                    break;
+                case State.NoCrew:
+                    Status = "Not enough crew.";
+                    break;
+                case State.NoConnection:
+                    Status = "No connection.";
+                    break;
+                case State.NoResources:
+                    Status = "Out of power";
+                    break;
+            }
+        }
+
+        public void OnPartUndock(Part p) {
+            if (p.vessel == vessel) OnVesselModified(p.vessel);
+        }
+
         public void OnVesselModified(Vessel v) {
-            if (vessel == null || (mRegisteredId != Vessel.id)) {
-                RTCore.Instance.Satellites.Unregister(Vessel.id, this);
-                if (vessel != null) {
-                    mRegisteredId = RTCore.Instance.Satellites.Register(Vessel.id, this);
+            if (IsPowered) {
+                if (vessel == null || (mRegisteredId != Vessel.id)) {
+                    RTCore.Instance.Satellites.Unregister(Vessel.id, this);
+                    if (vessel != null) {
+                        mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this); 
+                    }
                 }
             }
         }

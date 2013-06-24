@@ -70,8 +70,9 @@ namespace RemoteTech {
 
         public void FindPath(ISatellite start, ISatellite goal) {
             RTUtil.Log("SatelliteNetwork: FindCommandPath");
-            Path<ISatellite> conn = Pathfinder.Solve(start, MissionControl, s => Graph[s], Distance,
-                                                     Distance);
+            Path<ISatellite> conn = Pathfinder.Solve(start, MissionControl, 
+                s => Graph[s].Where(x => x.Active), 
+                Distance, Distance);
             OnConnectionUpdate(conn);
         }
 

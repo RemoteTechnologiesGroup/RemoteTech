@@ -57,6 +57,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugin\SimpleTypes\DelayedActionGroup.cs" />
+    <Compile Include="Plugin\SimpleTypes\DelayedFlightCtrlState.cs" />
+    <Compile Include="Plugin\FlightCommand.cs" />
     <Compile Include="Plugin\FlightHandler.cs" />
     <Compile Include="Plugin\GUI\AttitudeFragment.cs" />
     <Compile Include="Plugin\GUI\FlightComputerWindow.cs" />
