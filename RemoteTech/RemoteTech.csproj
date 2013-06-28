@@ -57,6 +57,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugin\GUI\AntennaConfigFragment.cs" />
+    <Compile Include="Plugin\GUI\SatelliteConfigFragment.cs" />
     <Compile Include="Plugin\SimpleTypes\DelayedActionGroup.cs" />
     <Compile Include="Plugin\SimpleTypes\DelayedFlightCtrlState.cs" />
     <Compile Include="Plugin\FlightCommand.cs" />
@@ -70,13 +72,12 @@
     <Compile Include="Plugin\FlightComputer.cs" />
     <Compile Include="Plugin\Legacy\FlightComputer.cs" />
     <Compile Include="Plugin\SimpleTypes\Path.cs" />
-    <Compile Include="Plugin\GUI\SettingsWindow.cs" />
     <Compile Include="Plugin\Interfaces\ProtoAntenna.cs" />
     <Compile Include="Plugin\Interfaces\ProtoSignalProcessor.cs" />
     <Compile Include="Plugin\AntennaManager.cs" />
     <Compile Include="Plugin\GUI\AntennaWindow.cs" />
     <Compile Include="Plugin\GuiManager.cs" />
-    <Compile Include="Plugin\GUI\SatelliteWindow.cs" />
+    <Compile Include="Plugin\GUI\MapViewSatelliteWindow.cs" />
     <Compile Include="Plugin\Interfaces\IAntenna.cs" />
     <Compile Include="Plugin\Interfaces\IFragment.cs" />
     <Compile Include="Plugin\Interfaces\IGuiWindow.cs" />

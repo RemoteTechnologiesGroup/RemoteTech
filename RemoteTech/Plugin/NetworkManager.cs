@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ namespace RemoteTech {
         Connection = 0x04,
     }
 
-    public class NetworkManager : IEnumerable<ISatellite> {
+    public class NetworkManager : IEnumerable<ISatellite>, IConfigNode {
         public delegate void ConnectionHandler(Path<ISatellite> connection);
 
         public delegate void TypedEdgeHandler(TypedEdge<ISatellite> edge);
@@ -28,13 +29,15 @@ namespace RemoteTech {
         public event ConnectionHandler ConnectionUpdated;
         public event TypedEdgeHandler EdgeUpdated;
 
+        public float SignalDelayModifier = 1.0f;
+        public float SignalSpeed = 299792458.0f;
+
         public Dictionary<Guid, CelestialBody> Planets { get; private set; }
         public MissionControlSatellite MissionControl { get; private set; }
         public Dictionary<ISatellite, List<ISatellite>> Graph { get; private set; }
 
         private const int REFRESH_TICKS = 50;
         private readonly RTCore mCore;
-        private readonly NetworkRenderer mRenderer;
         
         private int mTick;
         private int mTickIndex;
@@ -45,13 +48,16 @@ namespace RemoteTech {
             Graph = new Dictionary<ISatellite, List<ISatellite>>();
             Planets = GeneratePlanetGuidMap();
 
-            mRenderer = NetworkRenderer.AttachToMapView(mCore, this);
-            mRenderer.Show();
-
             mCore.Satellites.Registered += OnSatelliteRegister;
             mCore.Satellites.Unregistered += OnSatelliteUnregister;
-            MapView.OnEnterMapView += mRenderer.Show;
-            MapView.OnExitMapView += mRenderer.Hide;
+        }
+
+        public void Load(ConfigNode node) {
+
+        }
+
+        public void Save(ConfigNode node) {
+
         }
 
         private Dictionary<Guid, CelestialBody> GeneratePlanetGuidMap() {
@@ -68,12 +74,16 @@ namespace RemoteTech {
             return Vector3.Distance(a.Position, b.Position);
         }
 
-        public void FindPath(ISatellite start, ISatellite goal) {
+        public void FindPath(ISatellite start) {
             RTUtil.Log("SatelliteNetwork: FindCommandPath");
-            Path<ISatellite> conn = Pathfinder.Solve(start, MissionControl, 
-                s => Graph[s].Where(x => x.Active), 
-                Distance, Distance);
-            OnConnectionUpdate(conn);
+            List<Path<ISatellite>> paths = new List<Path<ISatellite>>();
+            IEnumerable<ISatellite> commandStations = mCore.Satellites.FindCommandStations();
+            foreach (ISatellite root in commandStations.Concat(new []{ MissionControl })) {
+                paths.Add(Pathfinder.Solve(start, root,
+                    s => Graph[s].Where(x => x.Powered),
+                    Distance, Distance));
+            }
+            OnConnectionUpdate(paths.Min());
         }
 
         private void UpdateGraph(ISatellite a) {
@@ -161,11 +171,10 @@ namespace RemoteTech {
             int takeCount = (mCore.Satellites.Count/REFRESH_TICKS) +
                             ((mCore.Satellites.Count%REFRESH_TICKS) < mTick ? 1 : 0);
             if (takeCount > 0) {
-                foreach (ISatellite s in mCore.Satellites.Skip(mTickIndex).Take(takeCount)) {
+                foreach (VesselSatellite s in mCore.Satellites.Skip(mTickIndex).Take(takeCount)) {
                     UpdateGraph(s);
-                    if (FlightGlobals.ActiveVessel &&
-                        s == mCore.Satellites.For(FlightGlobals.ActiveVessel.id)) {
-                        FindPath(s, MissionControl);
+                    if (s.Vessel.loaded && !s.Vessel.packed) {
+                        FindPath(s);
                     }
                 }
                 mTickIndex += takeCount;
@@ -198,12 +207,11 @@ namespace RemoteTech {
         }
 
         public void Dispose() {
-            MapView.OnEnterMapView -= mRenderer.Show;
-            MapView.OnExitMapView -= mRenderer.Hide;
-            mRenderer.Detach();
             mCore.Satellites.Registered -= OnSatelliteRegister;
             mCore.Satellites.Unregistered -= OnSatelliteUnregister;
         }
+
+        public int Count { get { return mCore.Satellites.Count + 1; } }
 
         public IEnumerator<ISatellite> GetEnumerator() {
             return
@@ -216,7 +224,7 @@ namespace RemoteTech {
     }
 
     public class MissionControlSatellite : ISatellite {
-        public bool Active { get { return true; } }
+        public bool Powered { get { return true; } }
 
         public bool Visible { get { return true; } }
         public String Name { get { return "Mission Control"; } set { return; } }
@@ -239,5 +247,7 @@ namespace RemoteTech {
         public override String ToString() {
             return Name;
         }
+
+        public bool CommandStation { get { return true; } }
     }
 }

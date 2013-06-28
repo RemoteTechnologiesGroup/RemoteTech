@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace RemoteTech {
     internal class ProtoAntenna : IAntenna {
@@ -15,16 +16,22 @@ namespace RemoteTech {
             get { return mTarget; }
             set {
                 mTarget = value;
-                mParent.moduleValues.SetValue("RTAntennaTarget", value.ToString());
-                mParent.Save(mParent.moduleValues);
+                ConfigNode n = new ConfigNode();
+                mProtoModule.Save(n);
+                n.SetValue("RTAntennaTarget", value.ToString());
+                int i = mProtoPart.modules.FindIndex(x => x == mProtoModule);
+                if (i != -1) {
+                    mProtoPart.modules[i] = new ProtoPartModuleSnapshot(n);
+                }
             }
         }
 
-        private readonly ProtoPartModuleSnapshot mParent;
+        private readonly ProtoPartSnapshot mProtoPart;
+        private readonly ProtoPartModuleSnapshot mProtoModule;
         private Guid mTarget;
 
         public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms) {
-            var n = new ConfigNode();
+            ConfigNode n = new ConfigNode();
             ppms.Save(n);
             try {
                 Name = p.partInfo.title;
@@ -40,7 +47,8 @@ namespace RemoteTech {
             catch (FormatException) {
                 mTarget = Guid.Empty;
             }
-            mParent = ppms;
+            mProtoPart = p;
+            mProtoModule = ppms;
             Vessel = v;
             RTUtil.Log("ProtoAntenna: " + DishRange + ", " + OmniRange + ", " + Name);
         }

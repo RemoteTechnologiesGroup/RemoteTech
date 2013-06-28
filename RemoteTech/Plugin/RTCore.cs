@@ -9,6 +9,7 @@ namespace RemoteTech {
         public SatelliteManager Satellites { get; protected set; }
         public AntennaManager Antennas { get; protected set; }
         public GuiManager Gui { get; protected set; }
+        public NetworkRenderer Renderer { get; protected set; }
     }
 
     [KSPAddon(KSPAddon.Startup.Flight, false)]
@@ -23,6 +24,7 @@ namespace RemoteTech {
             Antennas = new AntennaManager(this);
             Network = new NetworkManager(this);
             Gui = new GuiManager(this);
+            Renderer = NetworkRenderer.AttachToMapView(this);
 
             mFlightHandler = new FlightHandler(this);
 
@@ -46,10 +48,11 @@ namespace RemoteTech {
         }
 
         private void OnDestroy() {
+            Gui.Dispose();
+            Renderer.Detach();
+            Network.Dispose();
             Satellites.Dispose();
             Antennas.Dispose();
-            Network.Dispose();
-            Gui.Dispose();
             mFlightHandler.Dispose();
             Instance = null;
         }
@@ -64,6 +67,8 @@ namespace RemoteTech {
             Satellites = new SatelliteManager(this);
             Antennas = new AntennaManager(this);
             Network = new NetworkManager(this);
+            Gui = new GuiManager(this);
+            Renderer = NetworkRenderer.AttachToMapView(this);
         }
 
         public void Start() {
@@ -72,13 +77,21 @@ namespace RemoteTech {
                 Satellites.RegisterProtoFor(v);
                 Antennas.RegisterProtoFor(v);
             }
+            (new MapViewSatelliteWindow(false)).Show();
         }
 
         public void FixedUpdate() {
             StartCoroutine(Network.Tick());
         }
 
+        public void OnGUI() {
+            Gui.Draw();
+        }
+
         private void OnDestroy() {
+            Gui.Dispose();
+            Renderer.Detach();
+            Network.Dispose();
             Satellites.Dispose();
             Antennas.Dispose();
             Instance = null;

@@ -19,14 +19,16 @@ namespace RemoteTech {
         private RoverFragment mRover;
         private AerialFragment mAerial;
         private ProgcomFragment mProgcom;
-
         private QueueFragment mQueue;
         private bool mQueueEnabled;
-
         private VesselSatellite mSatellite;
 
+        private bool FlightComputerAllowed {
+            get { return mSatellite.Connection.Exists; }
+        }
+
         public FlightComputerWindow(VesselSatellite vs)
-        : base("Flight Computer", new Rect(100, 100, 0, 0)) {
+            : base("Flight Computer", new Rect(100, 100, 0, 0), WindowAlign.Floating) {
             mSatellite = vs;
 
             mAttitude = new AttitudeFragment(vs, OnClickQueue);
@@ -40,6 +42,9 @@ namespace RemoteTech {
 
         public override void Window(int id) {
             base.Window(id);
+            if (!FlightComputerAllowed) {
+                Hide();
+            }
             GUILayout.BeginHorizontal();
             {
                 GUILayout.BeginVertical();
@@ -81,15 +86,21 @@ namespace RemoteTech {
 
         void OnClickQueue() {
             mQueueEnabled = !mQueueEnabled;
-            mWindowPosition.width = 0;
+            mWindowPosition.width = 150;
+        }
+
+        public void OnSatellite(ISatellite s) {
+            Hide();
         }
 
         public override void Show() {
+            RTCore.Instance.Satellites.Unregistered += OnSatellite;
             base.Show();
         }
 
         public override void Hide() {
             base.Hide();
+            RTCore.Instance.Satellites.Unregistered -= OnSatellite;
         }
 
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RemoteTech {
     public interface ISatellite {
-        bool Active { get; }
+        bool Powered { get; }
         bool Visible { get; }
 
         String Name { get; }
@@ -14,5 +14,7 @@ namespace RemoteTech {
 
         float Omni { get; }
         IEnumerable<Dish> Dishes { get; }
+
+        bool CommandStation { get; }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace RemoteTech {
-    public class Path<T> where T : ISatellite {
+    public class Path<T> : IComparable<Path<T>> where T : ISatellite {
         public T Goal { get { return (Nodes.Count > 1) ? Nodes[Nodes.Count - 1] : default(T); } }
         public T Start { get { return Nodes[0]; } }
         public bool Exists { get { return Nodes.Count > 1 || RTCore.Instance.Settings.DebugAlwaysConnected; } }
@@ -13,8 +13,12 @@ namespace RemoteTech {
         public Path(List<T> nodes, float cost) {
             if (nodes == null || nodes.Count == 0) throw new ArgumentException();
             Nodes = nodes;
-            Delay = cost / RTCore.Instance.Settings.SignalSpeed;
+            Delay = cost / RTCore.Instance.Network.SignalSpeed;
             Delay += RTCore.Instance.Settings.DebugOffsetDelay;
+        }
+
+        public int CompareTo(Path<T> other) {
+            return Delay.CompareTo(other.Delay);
         }
     }
 

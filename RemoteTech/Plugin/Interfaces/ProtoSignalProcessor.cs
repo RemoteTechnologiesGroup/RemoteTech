@@ -3,13 +3,15 @@ using UnityEngine;
 
 namespace RemoteTech {
     internal class ProtoSignalProcessor : ISignalProcessor {
-        public bool Active { get; private set; }
+        public bool Powered { get; private set; }
+
+        public bool CommandStation { get; private set; }
 
         public String Name { get { return Vessel.vesselName; } }
 
         public Guid Guid { get { return Vessel.id; } }
 
-        public Vector3 Position { get { return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime()); } }
+        public Vector3 Position { get { return Vessel.GetWorldPos3D(); } }
 
         public CelestialBody Body { get { return Vessel.orbit.referenceBody; } }
 
@@ -22,7 +24,9 @@ namespace RemoteTech {
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v) {
             mParent = ppms;
             Vessel = v;
-            Active = ppms.GetBool("IsPowered");
+            Powered = ppms.GetBool("IsPowered");
+            CommandStation = Powered && v.HasCommandStation() && 
+                Vessel.protoVessel.GetVesselCrew().Count >= 4;
         }
     }
 }

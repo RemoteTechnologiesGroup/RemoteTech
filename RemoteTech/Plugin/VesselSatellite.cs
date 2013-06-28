@@ -9,7 +9,7 @@ namespace RemoteTech {
 
         public Vessel Vessel { get { return SignalProcessor.Vessel; } }
 
-        public bool Active { get { return SignalProcessor.Active; } }
+        public bool Powered { get { return SignalProcessor.Powered; } }
 
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(SignalProcessor.Vessel); } }
 
@@ -36,6 +36,7 @@ namespace RemoteTech {
                 }
             }
         }
+        public bool CommandStation { get { return SignalProcessor.CommandStation; } }
         public bool LocalControl { get { return SignalProcessor.LocalControl; } }
         public FlightComputer FlightComputer { get; private set; }
         public Path<ISatellite> Connection { get; set; }

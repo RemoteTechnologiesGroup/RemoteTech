@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace RemoteTech {
     public interface ISignalProcessor {
-        bool Active { get; }
+        bool Powered { get; }
 
         String Name { get; }
         Guid Guid { get; }
@@ -13,5 +13,7 @@ namespace RemoteTech {
         bool LocalControl { get; }
 
         Vessel Vessel { get; }
+
+        bool CommandStation { get; }
     }
 }

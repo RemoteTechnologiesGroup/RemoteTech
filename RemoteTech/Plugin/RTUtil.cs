@@ -8,15 +8,12 @@ using Object = System.Object;
 
 namespace RemoteTech {
     public static class RTUtil {
-        public static String[] DistanceUnits = {"m", "km", "Mm", "Gm", "Tm"};
+        public static readonly String[] DistanceUnits = {"", "k", "M", "G", "T"};
 
-        private static readonly Regex mDurationRegex;
-
-        static RTUtil() {
-            mDurationRegex = new Regex(@"(?:(?<seconds>\d+)\s*s[a-z]*[,\s]*)?" + 
-                                       @"(?:(?<minutes>\d+)\s*m[a-z]*[,\s]*)?" +
-                                       @"(?:(?<hours>\d+)\s*h[a-z]*[,\s]*)?");
-        }
+        private static readonly Regex mDurationRegex = 
+            new Regex(@"(?:(?<seconds>\d+)\s*s[a-z]*[,\s]*)?" +
+                      @"(?:(?<minutes>\d+)\s*m[a-z]*[,\s]*)?" +
+                      @"(?:(?<hours>\d+)\s*h[a-z]*[,\s]*)?");
 
         public static bool TryParseDuration(String duration, out TimeSpan time) {
             time = new TimeSpan();
@@ -33,17 +30,40 @@ namespace RemoteTech {
                 }
                 return true;
             } else {
-                return false;
+                double parsedDouble;
+                bool result = Double.TryParse(duration, out parsedDouble);
+                time = TimeSpan.FromSeconds(result ? parsedDouble : 0);
+                return result;
             }
         }
 
-        public static String FormatSI(double value, String unit) {
-            // Engineering notation
-            int i;
-            for (i = 0; value > 1000 && i < DistanceUnits.Length; i++) {
-                value /= 1000;
+        public static String FormatDuration(double duration) {
+            TimeSpan time = TimeSpan.FromSeconds(duration);
+            StringBuilder s = new StringBuilder();
+            if (time.TotalHours > 1) {
+                s.Append(Math.Floor(time.TotalHours));
+                s.Append("h");
             }
-            return value.ToString("G6") + DistanceUnits[i] + unit;
+            if (time.Minutes > 1) {
+                s.Append(time.Minutes);
+                s.Append("m");
+            }
+            if (time.Seconds > 1) {
+                s.Append(time.Seconds);
+                s.Append("s");
+            }
+            return s.ToString();
+        }
+
+        public static String FormatSI(double value, String unit) {
+            int i = (int) RTUtil.Clamp(Math.Floor(Math.Log10(value)) / 3, 
+                0,  DistanceUnits.Length - 1);
+            value /= Math.Pow(1000, i);
+            return value.ToString("F2") + DistanceUnits[i] + unit;
+        }
+
+        public static T Clamp<T>(T value, T min, T max) where T : IComparable<T> {
+            return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
         }
 
         public static void Log(String message) {
@@ -127,11 +147,14 @@ namespace RemoteTech {
         }
 
         public static bool IsSignalProcessor(this ProtoPartModuleSnapshot ppms) {
-            return ppms.HasValue("IsRTSignalProcessor");
+            return ppms.GetBool("IsRTSignalProcessor") &&
+                   ppms.GetBool("IsPowered");
+
         }
 
         public static bool IsSignalProcessor(this PartModule pm) {
-            return pm.Fields.GetValue<bool>("IsRTSignalProcessor");
+            return pm.Fields.GetValue<bool>("IsRTSignalProcessor") &&
+                   pm.Fields.GetValue<bool>("IsPowered");
         }
 
         public static ISignalProcessor GetSignalProcessor(this Vessel v) {
@@ -156,12 +179,53 @@ namespace RemoteTech {
             return null;
         }
 
+        public static bool IsCommandStation(this ProtoPartModuleSnapshot ppms) {
+            return ppms.GetBool("IsRTCommandStation") && 
+                   ppms.GetBool("IsPowered");
+        }
+
+        public static bool IsCommandStation(this PartModule pm) {
+            return pm.Fields.GetValue<bool>("IsRTCommandStation") &&
+                   pm.Fields.GetValue<bool>("IsPowered");
+        }
+
+        public static bool HasCommandStation(this Vessel v) {
+            Log("RTUtil: HasCommandStation: " + v);
+            if (!v.loaded) {
+                foreach (ProtoPartModuleSnapshot ppms in
+                v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules)) {
+                    if (ppms.IsCommandStation()) {
+                        return true;
+                    }
+                }
+            } else {
+                foreach (Part p in v.Parts) {
+                    foreach (PartModule pm in p.Modules) {
+                        if (pm.IsCommandStation()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         public static bool IsAntenna(this ProtoPartModuleSnapshot ppms) {
-            return ppms.HasValue("IsRTAntenna");
+            return ppms.GetBool("IsRTAntenna") && 
+                   ppms.GetBool("IsPowered") &&
+                   ppms.GetBool("IsRTActive");
         }
 
         public static bool IsAntenna(this PartModule pm) {
-            return pm.Fields.GetValue<bool>("IsRTAntenna");
+            return pm.Fields.GetValue<bool>("IsRTAntenna") && 
+                   pm.Fields.GetValue<bool>("IsPowered") &&
+                   pm.Fields.GetValue<bool>("IsRTActive");
+        }
+
+        public static void Button(Texture2D icon, OnClick onClick, params GUILayoutOption[] options) {
+            if (GUILayout.Button(icon, options)) {
+                onClick.Invoke();
+            }
         }
 
         public static void Button(String text, OnClick onClick, params GUILayoutOption[] options) {
@@ -192,7 +256,7 @@ namespace RemoteTech {
         public static void StateButton(String text, bool state, OnState onStateChange,
                                         params GUILayoutOption[] options) {
             if (GUILayout.Toggle(state, text, GUI.skin.button, options) != state) {
-                onStateChange.Invoke(state ? 1 : 0);
+                onStateChange.Invoke(state ? 0 : 1);
             }
         }
 
@@ -200,9 +264,9 @@ namespace RemoteTech {
             text = GUILayout.TextField(text, options);
         }
 
-        public static bool IsMouseInWindow(Vector2 mouse, Rect window) {
-            return (mouse.x > window.x) && (mouse.x < (window.x + window.width)) &&
-                   (mouse.y > window.y) && (mouse.y < (window.y + window.height));
+        public static bool ContainsMouse(this Rect window) {
+            return window.Contains(new Vector2(Input.mousePosition.x, 
+                Screen.height - Input.mousePosition.y));
         }
     }
 }

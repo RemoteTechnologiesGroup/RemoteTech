@@ -4,13 +4,19 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleSPU : PartModule, ISignalProcessor {
-        public bool Active { get { return IsPowered; } }
+        public bool Powered { get { return IsPowered; } }
+
+        public bool CommandStation {
+            get { return IsPowered && IsRTCommandStation && 
+                    Vessel.protoVessel.GetVesselCrew().Count >= 4;
+            }
+        }
 
         public String Name { get { return Vessel.vesselName; } }
 
         public Guid Guid { get { return Vessel.id; } }
 
-        public Vector3 Position { get { return Vessel.orbit.getTruePositionAtUT(Planetarium.GetUniversalTime()); } }
+        public Vector3 Position { get { return Vessel.GetWorldPos3D(); } }
 
         public CelestialBody Body { get { return Vessel.orbit.referenceBody; } }
 
@@ -34,7 +40,7 @@ namespace RemoteTech {
         public bool IsRTSignalProcessor = true;
 
         [KSPField(isPersistant = true)]
-        public bool IsRTCommandModule = true;
+        public bool IsRTCommandStation = true;
 
         [KSPField]
         public int minimumCrew = 0;
@@ -55,12 +61,7 @@ namespace RemoteTech {
         public List<ModuleResource> RequiredResources;
 
         public override string GetInfo() {
-            return IsRTCommandModule ? "Remote Command" : "Remote Control";
-        }
-
-        [KSPEvent(guiName = "Settings", guiActive = true)]
-        public void Settings() {
-            (new SatelliteWindow(RTCore.Instance.Satellites.For(Vessel))).Show();
+            return IsRTCommandStation ? "Remote Command" : "Remote Control";
         }
 
         public override void OnStart(StartState state) {
