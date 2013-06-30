@@ -55,6 +55,10 @@ namespace RemoteTech {
             return s.ToString();
         }
 
+        public static String FormatConsumption(double consumption) {
+            return consumption.ToString("F2") + "charge/s";
+        }
+
         public static String FormatSI(double value, String unit) {
             int i = (int) RTUtil.Clamp(Math.Floor(Math.Log10(value)) / 3, 
                 0,  DistanceUnits.Length - 1);

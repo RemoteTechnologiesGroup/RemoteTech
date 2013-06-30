@@ -123,11 +123,11 @@ namespace RemoteTech {
             } else {
                 mCommandStations.Remove(edge.A);
             }
-            /*if (edge.B.CommandStation) {
+            if (edge.B.CommandStation) {
                 mCommandStations.Add(edge.B);
             } else {
                 mCommandStations.Remove(edge.B);
-            }*/
+            }
         }
 
         private void OnConnectionUpdate(Path<ISatellite> conn) {

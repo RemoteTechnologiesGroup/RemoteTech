@@ -21,14 +21,7 @@ namespace RemoteTech {
         public CelestialBody Body { get { return Vessel.orbit.referenceBody; } }
 
         public bool LocalControl {
-            get {
-                bool isControlSource = part.isControlSource;
-                part.isControlSource = false;
-                bool otherControlSources = vessel.HasControlSources();
-                part.isControlSource = isControlSource;
-
-                return otherControlSources;
-            }
+            get { return Vessel.protoVessel.GetVesselCrew().Count > 0; }
         }
 
         public Vessel Vessel { get { return vessel; } }
@@ -65,18 +58,18 @@ namespace RemoteTech {
         }
 
         public override void OnStart(StartState state) {
+            GameEvents.onVesselWasModified.Add(OnVesselModified);
+            GameEvents.onPartUndock.Add(OnPartUndock);
             if (RTCore.Instance != null) {
                 mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this);
-                GameEvents.onVesselWasModified.Add(OnVesselModified);
-                GameEvents.onPartUndock.Add(OnPartUndock);
             }
         }
 
         public void OnDestroy() {
+            GameEvents.onVesselWasModified.Remove(OnVesselModified);
+            GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null) {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
-                GameEvents.onVesselWasModified.Remove(OnVesselModified);
-                GameEvents.onPartUndock.Remove(OnPartUndock);
             }
         }
 
@@ -92,7 +85,7 @@ namespace RemoteTech {
             }
         }
 
-        State UpdateControlState() {
+        private State UpdateControlState() {
             if (!RTCore.Instance) return State.NoConnection;
             if (part.protoModuleCrew.Count < minimumCrew) {
                 IsPowered = part.isControlSource = false;

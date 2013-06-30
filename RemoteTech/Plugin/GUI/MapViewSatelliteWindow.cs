@@ -37,8 +37,8 @@ namespace RemoteTech {
             GUI.skin.button.alignment = TextAnchor.MiddleLeft;
             if (mEnabled != mWindowPosition.ContainsMouse()) {
                 mEnabled = mWindowPosition.ContainsMouse();
-                mWindowPosition.height = 64;
-                mWindowPosition.width = 64;
+                mWindowPosition.height = 44;
+                mWindowPosition.width = 44;
             }
 
             if (mEnabled && mSatelliteFragment != null && ChangeUplinkAllowed) {

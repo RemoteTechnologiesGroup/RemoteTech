@@ -62,7 +62,6 @@
     <Compile Include="Plugin\SimpleTypes\DelayedActionGroup.cs" />
     <Compile Include="Plugin\SimpleTypes\DelayedFlightCtrlState.cs" />
     <Compile Include="Plugin\FlightCommand.cs" />
-    <Compile Include="Plugin\FlightHandler.cs" />
     <Compile Include="Plugin\GUI\AttitudeFragment.cs" />
     <Compile Include="Plugin\GUI\FlightComputerWindow.cs" />
     <Compile Include="Plugin\GUI\ProgcomFragment.cs" />
@@ -103,8 +102,5 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="PluginData\RemoteTech\button_vessel_probe.png" />
   </ItemGroup>
 </Project>

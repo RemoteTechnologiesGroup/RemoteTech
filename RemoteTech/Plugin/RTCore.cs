@@ -10,12 +10,25 @@ namespace RemoteTech {
         public AntennaManager Antennas { get; protected set; }
         public GuiManager Gui { get; protected set; }
         public NetworkRenderer Renderer { get; protected set; }
+
+        public void GetLocks() {
+            if (!InputLockManager.IsLocked(ControlTypes.STAGING)) {
+                InputLockManager.SetControlLock(ControlTypes.STAGING, "LockStaging");
+            }
+            if (!InputLockManager.IsLocked(ControlTypes.SAS)) {
+                InputLockManager.SetControlLock(ControlTypes.SAS, "LockSAS");
+            }
+            if (!InputLockManager.IsLocked(ControlTypes.RCS)) {
+                InputLockManager.SetControlLock(ControlTypes.RCS, "LockRCS");
+            }
+            if (!InputLockManager.IsLocked(ControlTypes.GROUPS_ALL)) {
+                InputLockManager.SetControlLock(ControlTypes.GROUPS_ALL, "LockActions");
+            }
+        }
     }
 
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     internal class RTCoreFlight : RTCore {
-        private FlightHandler mFlightHandler;
-
         private void Init() {
             Instance = GameObject.Find("RTCoreFlight").GetComponent<RTCoreFlight>();
 
@@ -25,8 +38,6 @@ namespace RemoteTech {
             Network = new NetworkManager(this);
             Gui = new GuiManager(this);
             Renderer = NetworkRenderer.AttachToMapView(this);
-
-            mFlightHandler = new FlightHandler(this);
 
             RTUtil.Log("RTCore loaded.");
         }
@@ -53,7 +64,10 @@ namespace RemoteTech {
             Network.Dispose();
             Satellites.Dispose();
             Antennas.Dispose();
-            mFlightHandler.Dispose();
+            InputLockManager.RemoveControlLock("LockStaging");
+            InputLockManager.RemoveControlLock("LockSAS");
+            InputLockManager.RemoveControlLock("LockRCS");
+            InputLockManager.RemoveControlLock("LockActions");
             Instance = null;
         }
     }

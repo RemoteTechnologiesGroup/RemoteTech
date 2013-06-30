@@ -26,7 +26,7 @@ namespace RemoteTech {
             mSatellite = vs;
             mPreviousCtrl.CopyFrom(vs.Vessel.ctrlState);
             mLegacyComputer = new Legacy.FlightComputer(vs.Vessel);
-            vs.Vessel.OnFlyByWire += OnFlyByWire;
+            vs.Vessel.OnFlyByWire = this.OnFlyByWire + vs.Vessel.OnFlyByWire;
         }
 
         public void Dispose() {
@@ -59,8 +59,63 @@ namespace RemoteTech {
         }
 
         private void OnFlyByWire(FlightCtrlState fs) {
+            if (mSatellite.Vessel == FlightGlobals.ActiveVessel) {
+                RTCore.Instance.GetLocks();
+                KSPActionGroup group = GetActivatedGroup();
+                double delayedTime = RTUtil.GetGameTime() + mSatellite.Connection.Delay;
+                Enqueue(new DelayedFlightCtrlState(fs, 
+                    mSatellite.LocalControl ? 0.0 : delayedTime));
+                if (group != default(KSPActionGroup)) {
+                    Enqueue(new DelayedActionGroup(group, 
+                        mSatellite.LocalControl ? 0.0 : delayedTime));
+                    
+                }
+            }
             ProcessInputBuffer(fs);
             ProcessFlightCommand(fs);
+        }
+
+        private KSPActionGroup GetActivatedGroup() {
+            KSPActionGroup action = default(KSPActionGroup);
+            if (GameSettings.LAUNCH_STAGES.GetKeyDown())
+                action = KSPActionGroup.Stage;
+            else if (GameSettings.AbortActionGroup.GetKeyDown())
+                action = KSPActionGroup.Abort;
+            else if (GameSettings.RCS_TOGGLE.GetKeyDown())
+                action = KSPActionGroup.RCS;
+            else if (GameSettings.SAS_TOGGLE.GetKeyDown())
+                action = KSPActionGroup.SAS;
+            else if (GameSettings.SAS_HOLD.GetKeyDown())
+                action = KSPActionGroup.SAS;
+            else if (GameSettings.SAS_HOLD.GetKeyUp())
+                action = KSPActionGroup.SAS;
+            else if (GameSettings.BRAKES.GetKeyDown())
+                action = KSPActionGroup.Brakes;
+            else if (GameSettings.LANDING_GEAR.GetKeyDown())
+                action = KSPActionGroup.Gear;
+            else if (GameSettings.HEADLIGHT_TOGGLE.GetKeyDown())
+                action = KSPActionGroup.Light;
+            else if (GameSettings.CustomActionGroup1.GetKeyDown())
+                action = KSPActionGroup.Custom01;
+            else if (GameSettings.CustomActionGroup2.GetKeyDown())
+                action = KSPActionGroup.Custom02;
+            else if (GameSettings.CustomActionGroup3.GetKeyDown())
+                action = KSPActionGroup.Custom03;
+            else if (GameSettings.CustomActionGroup4.GetKeyDown())
+                action = KSPActionGroup.Custom04;
+            else if (GameSettings.CustomActionGroup5.GetKeyDown())
+                action = KSPActionGroup.Custom05;
+            else if (GameSettings.CustomActionGroup6.GetKeyDown())
+                action = KSPActionGroup.Custom06;
+            else if (GameSettings.CustomActionGroup7.GetKeyDown())
+                action = KSPActionGroup.Custom07;
+            else if (GameSettings.CustomActionGroup8.GetKeyDown())
+                action = KSPActionGroup.Custom08;
+            else if (GameSettings.CustomActionGroup9.GetKeyDown())
+                action = KSPActionGroup.Custom09;
+            else if (GameSettings.CustomActionGroup10.GetKeyDown())
+                action = KSPActionGroup.Custom10;
+            return action;
         }
 
         private void ProcessFlightCommand(FlightCtrlState fs) {
@@ -93,7 +148,8 @@ namespace RemoteTech {
 
         private void ProcessInputBuffer(FlightCtrlState fcs) {
             // FlightCtrlState
-            FlightCtrlState delayed = mPreviousCtrl;
+            FlightCtrlState delayed = new FlightCtrlState();
+            delayed.CopyFrom(mPreviousCtrl);
             while (mFlightCtrlBuffer.Count > 0 &&
                     mFlightCtrlBuffer.Peek().EffectiveFrom < RTUtil.GetGameTime()) {
                 delayed = mFlightCtrlBuffer.Dequeue().State;
@@ -103,6 +159,7 @@ namespace RemoteTech {
                 delayed.Neutralize();
                 delayed.mainThrottle = keepThrottle;
             } else {
+                RTUtil.Log("Delayed {0}" + delayed.pitch);
                 mPreviousCtrl.CopyFrom(delayed);
             }
             fcs.CopyFrom(delayed);

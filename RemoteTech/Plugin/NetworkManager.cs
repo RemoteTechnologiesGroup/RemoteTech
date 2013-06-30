@@ -97,7 +97,6 @@ namespace RemoteTech {
                 EdgeType bToA = IsConnectedTo(b, a);
                 if (bToA == EdgeType.None) continue;
 
-                RTUtil.Log("Result: aToB = {0}, bToA = {1}", aToB.ToString(), bToA.ToString());
                 if (aToB == EdgeType.Dish || bToA == EdgeType.Dish) {
                     result.Add(new TypedEdge<ISatellite>(a, b, EdgeType.Dish));
                 }

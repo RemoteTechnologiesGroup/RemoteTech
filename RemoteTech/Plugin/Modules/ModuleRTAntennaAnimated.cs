@@ -3,7 +3,17 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleRTAntennaAnimated : ModuleRTAntenna {
-        [KSPField] public String AnimationName = "antenna";
+        [KSPField]
+        public String AnimationName = "antenna";
+
+        [KSPField]
+        public bool AnimationOneShot = true;
+
+        [KSPField]
+        public float SnappingForce = -1.0f;
+
+        [KSPField(isPersistant = true)]
+        public float AnimationState = 0.0f;
 
         private Animation mAnimation;
 
@@ -23,8 +33,22 @@ namespace RemoteTech {
 
         public override void SetState(bool state) {
             base.SetState(state);
-            mAnimation[AnimationName].speed = state ? 1.0f : -1.0f;
-            mAnimation.Play(AnimationName);
+            if (!(AnimationState == 1.0f && AnimationOneShot)) {
+                mAnimation[AnimationName].speed = state ? 1.0f : -1.0f;
+                AnimationState = state ? 1.0f : 0.0f;
+                mAnimation.Play(AnimationName);
+            }
+        }
+
+        // Unity uses reflection to call this, so call the hidden base member too.
+        public new void FixedUpdate() {
+            base.FixedUpdate();
+            if (SnappingForce > 0 && AnimationState == 1.0f && vessel != null) {
+                if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity * 0.5 > SnappingForce) {
+                    part.decouple(0f);
+                    SnappingForce = -1.0f;
+                }
+            }
         }
     }
 }
