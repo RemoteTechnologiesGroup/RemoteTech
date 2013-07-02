@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace RemoteTech {
-    public class DelayedActionGroup : DelayedCommand {
+    public class DelayedActionGroup : DelayedCommand, IComparable<DelayedActionGroup> {
         public KSPActionGroup ActionGroup { get; private set; }
 
         public DelayedActionGroup(KSPActionGroup group, double time) {
@@ -23,6 +23,10 @@ namespace RemoteTech {
                 s.AppendLine("s");
             }
             return s.ToString().TrimEnd('\n');
+        }
+
+        public int CompareTo(DelayedActionGroup dag) {
+            return TimeStamp.CompareTo(dag.TimeStamp);
         }
     }
 }

@@ -54,10 +54,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Plugin\External\ProgcomConsole.cs" />
     <Compile Include="Plugin\GUI\AntennaConfigFragment.cs" />
     <Compile Include="Plugin\GUI\SatelliteConfigFragment.cs" />
-    <Compile Include="Plugin\External\ProgcomUnit.cs" />
     <Compile Include="Plugin\SimpleTypes\DelayedActionGroup.cs" />
     <Compile Include="Plugin\SimpleTypes\DelayedFlightCtrlState.cs" />
     <Compile Include="Plugin\FlightCommand.cs" />
@@ -100,6 +98,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Folder Include="Plugin\External\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

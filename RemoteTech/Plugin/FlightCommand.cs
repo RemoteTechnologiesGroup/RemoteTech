@@ -38,7 +38,7 @@ namespace RemoteTech {
         }
     }
 
-    public class FlightCommand : DelayedCommand {
+    public class FlightCommand : DelayedCommand, IComparable<FlightCommand> {
         public FlightMode Mode { get; set; }
         public FlightAttitude Attitude { get; set; }
         public ReferenceFrame Frame { get; set; }
@@ -132,6 +132,10 @@ namespace RemoteTech {
                 s.Append(RTUtil.FormatDuration(ExtraDelay));
             }
             return s.ToString();
+        }
+
+        public int CompareTo(FlightCommand fc) {
+            return TimeStamp.CompareTo(fc.TimeStamp);
         }
     }
 }
