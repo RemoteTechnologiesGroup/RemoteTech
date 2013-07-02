@@ -54,7 +54,7 @@ namespace RemoteTech {
                 }
                 return duration.TotalSeconds;
             }
-            set { mDuration = value.ToString(); }
+            set { mDuration = RTUtil.FormatDuration(value); }
         }
 
         private VesselSatellite mSatellite;
@@ -90,41 +90,28 @@ namespace RemoteTech {
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.BeginVertical();
-                    {
-                        GUILayout.Label("PIT: ");
-                        GUILayout.Label("HDG: ");
-                        GUILayout.Label("RLL: ");
-                    }
-                    GUILayout.EndVertical();
+                    GUILayout.Label("PIT: ");
+                    RTUtil.Button("+", () => Pitch++, GUILayout.Width(20));
+                    RTUtil.Button("-", () => Pitch--, GUILayout.Width(20));
+                    RTUtil.TextField(ref mPitch, GUILayout.Width(50));
+                }
+                GUILayout.EndHorizontal();
 
-                    GUILayout.BeginVertical();
-                    {
-                        GUILayout.BeginHorizontal();
-                        {
-                            RTUtil.Button("+", () => Pitch++, GUILayout.ExpandWidth(false));
-                            RTUtil.Button("-", () => Pitch--, GUILayout.ExpandWidth(false));
-                            RTUtil.TextField(ref mPitch, GUILayout.ExpandWidth(true));
-                        }
-                        GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label("HDG: ");
+                    RTUtil.Button("+", () => Heading++, GUILayout.Width(20));
+                    RTUtil.Button("-", () => Heading--, GUILayout.Width(20));
+                    RTUtil.TextField(ref mHeading, GUILayout.Width(50));
+                }
+                GUILayout.EndHorizontal();
 
-                        GUILayout.BeginHorizontal();
-                        {
-                            RTUtil.Button("+", () => Heading++, GUILayout.ExpandWidth(false));
-                            RTUtil.Button("-", () => Heading--, GUILayout.ExpandWidth(false));
-                            RTUtil.TextField(ref mHeading, GUILayout.ExpandWidth(true));
-                        }
-                        GUILayout.EndHorizontal();
-
-                        GUILayout.BeginHorizontal();
-                        {
-                            RTUtil.Button("+", () => Roll++, GUILayout.ExpandWidth(false));
-                            RTUtil.Button("-", () => Roll--, GUILayout.ExpandWidth(false));
-                            RTUtil.TextField(ref mRoll, GUILayout.ExpandWidth(true));
-                        }
-                        GUILayout.EndHorizontal();
-                    }
-                    GUILayout.EndVertical();
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label("RLL: ");
+                    RTUtil.Button("+", () => Roll++, GUILayout.Width(20));
+                    RTUtil.Button("-", () => Roll--, GUILayout.Width(20));
+                    RTUtil.TextField(ref mRoll, GUILayout.Width(50));
                 }
                 GUILayout.EndHorizontal();
 

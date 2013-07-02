@@ -51,14 +51,13 @@
       <HintPath>..\..\..\Dropbox\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="nunit.framework">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugin\External\ProgcomConsole.cs" />
     <Compile Include="Plugin\GUI\AntennaConfigFragment.cs" />
     <Compile Include="Plugin\GUI\SatelliteConfigFragment.cs" />
+    <Compile Include="Plugin\External\ProgcomUnit.cs" />
     <Compile Include="Plugin\SimpleTypes\DelayedActionGroup.cs" />
     <Compile Include="Plugin\SimpleTypes\DelayedFlightCtrlState.cs" />
     <Compile Include="Plugin\FlightCommand.cs" />
@@ -102,5 +101,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Progcom\Progcom.csproj">
+      <Project>{E6773979-5EFC-4772-B47F-1E1B684DEEBE}</Project>
+      <Name>Progcom</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

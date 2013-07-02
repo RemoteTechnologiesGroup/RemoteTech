@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace RemoteTech {
     // Sadly there is no way to enforce immutability C#.
     // Do not modify sorting order externally! Increase/Decrease().
-    public class BinaryHeap<T> where T : class, IComparable<T> {
+    public class BinaryHeap<T> where T : class {
         public int Count { get { return mData.Count; } }
 
         public int Capacity { get { return mData.Capacity; } }
@@ -12,11 +12,13 @@ namespace RemoteTech {
         public bool IsReadOnly { get { return false; } }
 
         private readonly List<T> mData;
+        private readonly Comparer<T> mComparer; 
 
         public BinaryHeap() : this(0) {}
 
         public BinaryHeap(int size) {
             mData = new List<T>(size);
+            mComparer = Comparer<T>.Default;
         }
 
         public void Clear() {
@@ -46,7 +48,7 @@ namespace RemoteTech {
             T item = mData[id];
             int parent_id = (id - 1) >> 1;
             // While the item precedes its parent and hasn't reached root.
-            while ((parent_id >= 0) && (item.CompareTo(mData[parent_id]) < 0)) {
+            while ((parent_id >= 0) && (mComparer.Compare(item, mData[parent_id]) < 0)) {
                 // Propagate the parent downwards.
                 mData[id] = mData[parent_id];
                 id = parent_id;
@@ -71,10 +73,10 @@ namespace RemoteTech {
                     new_id = child1;
                 }
                 else {
-                    new_id = mData[child1].CompareTo(mData[child2]) < 0 ? child1 : child2;
+                    new_id = mComparer.Compare(mData[child1], mData[child2]) < 0 ? child1 : child2;
                 }
                 // Propagate the child upwards if needed
-                if (item.CompareTo(mData[new_id]) > 0) {
+                if (mComparer.Compare(item, mData[new_id]) > 0) {
                     mData[id] = mData[new_id];
                     id = new_id;
                 }

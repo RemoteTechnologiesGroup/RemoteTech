@@ -2,7 +2,7 @@ using System;
 
 namespace RemoteTech {
     // PriorityQueue based on a minimum-BinaryHeap.
-    public class PriorityQueue<T> where T : class, IComparable<T> {
+    public class PriorityQueue<T> where T : class {
         public int Count { get { return mHeap.Count; } }
 
         private readonly BinaryHeap<T> mHeap;

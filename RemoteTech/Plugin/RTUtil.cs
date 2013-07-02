@@ -10,23 +10,25 @@ namespace RemoteTech {
     public static class RTUtil {
         public static readonly String[] DistanceUnits = {"", "k", "M", "G", "T"};
 
-        private static readonly Regex mDurationRegex = 
-            new Regex(@"(?:(?<seconds>\d+)\s*s[a-z]*[,\s]*)?" +
-                      @"(?:(?<minutes>\d+)\s*m[a-z]*[,\s]*)?" +
-                      @"(?:(?<hours>\d+)\s*h[a-z]*[,\s]*)?");
+        private static readonly Regex mDurationRegex =
+            new Regex(@"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)?" +
+                      @"(?:(?<minutes>\d*\.?\d+)\s*m[a-z]*[,\s]*)?" +
+                      @"(?:(?<hours>\d*\.?\d+)\s*h[a-z]*[,\s]*)?");
 
         public static bool TryParseDuration(String duration, out TimeSpan time) {
             time = new TimeSpan();
-            Match match = mDurationRegex.Match(duration);
-            if (match.Success) {
-                if (match.Groups["seconds"].Success) {
-                    time += TimeSpan.FromSeconds(Int32.Parse(match.Groups["seconds"].Value));
-                }
-                if (match.Groups["minutes"].Success) {
-                    time += TimeSpan.FromMinutes(Int32.Parse(match.Groups["minutes"].Value));
-                }
-                if (match.Groups["hours"].Success) {
-                    time += TimeSpan.FromHours(Int32.Parse(match.Groups["hours"].Value));
+            MatchCollection matches = mDurationRegex.Matches(duration);
+            if (matches.Count > 0) {
+                foreach (Match match in matches) {
+                    if (match.Groups["seconds"].Success) {
+                        time += TimeSpan.FromSeconds(Double.Parse(match.Groups["seconds"].Value));
+                    }
+                    if (match.Groups["minutes"].Success) {
+                        time += TimeSpan.FromMinutes(Double.Parse(match.Groups["minutes"].Value));
+                    }
+                    if (match.Groups["hours"].Success) {
+                        time += TimeSpan.FromHours(Double.Parse(match.Groups["hours"].Value));
+                    }
                 }
                 return true;
             } else {
@@ -48,8 +50,8 @@ namespace RemoteTech {
                 s.Append(time.Minutes);
                 s.Append("m");
             }
-            if (time.Seconds > 1) {
-                s.Append(time.Seconds);
+            if (time.Seconds > 0 || time.Milliseconds > 0) {
+                s.Append((time.Seconds + time.Milliseconds / 1000.0f).ToString("F2"));
                 s.Append("s");
             }
             return s.ToString();

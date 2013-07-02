@@ -1,18 +1,19 @@
 ﻿using System;
 
 namespace RemoteTech {
-    public class DelayedFlightCtrlState : IComparable<DelayedFlightCtrlState> {
+    public class DelayedFlightCtrlState : DelayedCommand, IComparable<DelayedFlightCtrlState> {
         public FlightCtrlState State { get; private set; }
-        public double EffectiveFrom { get; set; }
 
         public DelayedFlightCtrlState(FlightCtrlState fcs, double time) {
             State = new FlightCtrlState();
             State.CopyFrom(fcs);
-            EffectiveFrom = time;
+
+            TimeStamp = time;
+            ExtraDelay = 0;
         }
 
-        public int CompareTo(DelayedFlightCtrlState fcs) {
-            return this.EffectiveFrom.CompareTo(fcs.EffectiveFrom);
+        public int CompareTo(DelayedFlightCtrlState dfcs) {
+            return TimeStamp.CompareTo(dfcs.TimeStamp);
         }
     }
 }

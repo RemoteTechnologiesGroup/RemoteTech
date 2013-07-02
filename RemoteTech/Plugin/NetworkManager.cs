@@ -168,7 +168,7 @@ namespace RemoteTech {
         public IEnumerator Tick() {
             yield return 0; // Wait for end of physics frame.
             int takeCount = (mCore.Satellites.Count/REFRESH_TICKS) +
-                            ((mCore.Satellites.Count%REFRESH_TICKS) < mTick ? 1 : 0);
+                            (((mCore.Satellites.Count%REFRESH_TICKS) > mTick) ? 1 : 0);
             if (takeCount > 0) {
                 foreach (VesselSatellite s in mCore.Satellites.Skip(mTickIndex).Take(takeCount)) {
                     UpdateGraph(s);
@@ -176,8 +176,8 @@ namespace RemoteTech {
                         FindPath(s);
                     }
                 }
-                mTickIndex += takeCount;
             }
+            mTickIndex += takeCount;
 
             mTick = (mTick + 1)%REFRESH_TICKS;
             if (mTick == 0) {

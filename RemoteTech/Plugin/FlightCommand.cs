@@ -29,7 +29,16 @@ namespace RemoteTech {
         World,
     }
 
-    public class FlightCommand : IComparable<FlightCommand> {
+    public class DelayedCommand {
+        public double TimeStamp { get; set; }
+        public double ExtraDelay { get; set; }
+
+        public int CompareTo(DelayedCommand dc) {
+            return TimeStamp.CompareTo(dc.TimeStamp);
+        }
+    }
+
+    public class FlightCommand : DelayedCommand {
         public FlightMode Mode { get; set; }
         public FlightAttitude Attitude { get; set; }
         public ReferenceFrame Frame { get; set; }
@@ -41,8 +50,6 @@ namespace RemoteTech {
 
         public float AltitudeHold { get; set; }
 
-        public double EffectiveFrom { get; set; }
-
         public FlightCommand(double effectiveTime) {
             Mode = FlightMode.Off;
             Attitude = FlightAttitude.Prograde;
@@ -52,42 +59,40 @@ namespace RemoteTech {
             Duration = Double.NaN;
             DeltaV = Double.NaN;
             AltitudeHold = Single.NaN;
-            EffectiveFrom = effectiveTime;
-        }
 
-        public int CompareTo(FlightCommand fc) {
-            return EffectiveFrom.CompareTo(fc.EffectiveFrom);
+            TimeStamp = effectiveTime;
+            ExtraDelay = 0;
         }
 
         public override String ToString() {
             StringBuilder s = new StringBuilder("Mode: ");
             switch (Mode) {
                 case FlightMode.Off:
-                    s.AppendLine("Off");
+                    s.Append("Off");
                     break;
                 case FlightMode.KillRot:
-                    s.AppendLine("Kill Rotation");
+                    s.Append("Kill Rotation");
                     break;
                 case FlightMode.AttitudeHold:
                     s.Append("Attitude, ");
                     switch (Attitude) {
                         case FlightAttitude.Prograde:
-                            s.AppendLine("Prograde");
+                            s.Append("Prograde");
                             break;
                         case FlightAttitude.Retrograde:
-                            s.AppendLine("Retrograde");
+                            s.Append("Retrograde");
                             break;
                         case FlightAttitude.NormalPlus:
-                            s.AppendLine("Normal +");
+                            s.Append("Normal +");
                             break;
                         case FlightAttitude.NormalMinus:
-                            s.AppendLine("Normal -");
+                            s.Append("Normal -");
                             break;
                         case FlightAttitude.RadialPlus:
-                            s.AppendLine("Radial +");
+                            s.Append("Radial +");
                             break;
                         case FlightAttitude.RadialMinus:
-                            s.AppendLine("Radial -");
+                            s.Append("Radial -");
                             break;
                         case FlightAttitude.Surface:
                             s.Append("Surface (");
@@ -96,7 +101,7 @@ namespace RemoteTech {
                             s.Append(Direction.y.ToString("F0"));
                             s.Append(", ");
                             s.Append(Direction.z.ToString("F0"));
-                            s.AppendLine(")");
+                            s.Append(")");
                             break;
                     }
                     break;
@@ -106,19 +111,27 @@ namespace RemoteTech {
                     break;
             }
             if (Throttle > 0) {
+                s.AppendLine();
                 s.Append("Burn (");
                 s.Append(Throttle.ToString("P"));
                 s.Append(") for ");
-                s.Append(Duration.ToString("F1"));
-                s.AppendLine("s");
+                s.Append(RTUtil.FormatDuration(Duration));
             }
-            double time = EffectiveFrom - RTUtil.GetGameTime();
+            double time = TimeStamp - RTUtil.GetGameTime();
             if (time > 0) {
-                s.Append("Active in: ");
-                s.Append(time.ToString("F2"));
-                s.AppendLine("s");
+                s.AppendLine();
+                s.Append("Signal delay: ");
+                s.Append(RTUtil.FormatDuration(time));
+                if(ExtraDelay > 0) {
+                    s.Append(" with extra delay ");
+                    s.Append(RTUtil.FormatDuration(ExtraDelay));
+                }
+            } else if (ExtraDelay > 0) {
+                s.AppendLine();
+                s.Append("Delay: ");
+                s.Append(RTUtil.FormatDuration(ExtraDelay));
             }
-            return s.ToString().TrimEnd('\n');
+            return s.ToString();
         }
     }
 }

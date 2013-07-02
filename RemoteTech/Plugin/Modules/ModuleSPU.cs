@@ -86,6 +86,7 @@ namespace RemoteTech {
         }
 
         private State UpdateControlState() {
+            // Can't remove isControlSource or autopilot won't work.
             if (!RTCore.Instance) return State.NoConnection;
             if (part.protoModuleCrew.Count < minimumCrew) {
                 IsPowered = part.isControlSource = false;
@@ -99,12 +100,11 @@ namespace RemoteTech {
                     return State.NoResources;
                 }
             }
+            IsPowered = part.isControlSource = true;
             if (mRegisteredId == Guid.Empty ||
                     !RTCore.Instance.Satellites.For(mRegisteredId).Connection.Exists) {
-                IsPowered = part.isControlSource = false;
                 return State.NoConnection;
             }
-            IsPowered = part.isControlSource = true;
             return State.Operational;
         }
 

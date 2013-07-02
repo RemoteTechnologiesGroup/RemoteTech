@@ -101,7 +101,10 @@ namespace RemoteTech {
             Guid key = vessel.protoVessel.vesselID;
             if (mLoadedSpuCache.ContainsKey(vessel.id) &&
                     mLoadedSpuCache[vessel.id].Count > 0) return;
-            mSatelliteCache.Remove(key);
+            if (mSatelliteCache.ContainsKey(key)) {
+                OnUnregister(mSatelliteCache[key]);
+                mSatelliteCache.Remove(key);
+            }
         }
 
         private void OnVesselOnRails(Vessel v) {

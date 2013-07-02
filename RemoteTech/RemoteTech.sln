@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteTech", "RemoteTech.csproj", "{70477E5D-A9B6-42EE-B3BE-1CBECDA01B8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Progcom", "..\Progcom\Progcom.csproj", "{E6773979-5EFC-4772-B47F-1E1B684DEEBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,16 @@ Global
 		{70477E5D-A9B6-42EE-B3BE-1CBECDA01B8A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{70477E5D-A9B6-42EE-B3BE-1CBECDA01B8A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{70477E5D-A9B6-42EE-B3BE-1CBECDA01B8A}.Release|x86.ActiveCfg = Release|Any CPU
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Debug|x86.ActiveCfg = Debug|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Debug|x86.Build.0 = Debug|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Release|Any CPU.ActiveCfg = Release|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Release|Mixed Platforms.Build.0 = Release|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Release|x86.ActiveCfg = Release|x86
+		{E6773979-5EFC-4772-B47F-1E1B684DEEBE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

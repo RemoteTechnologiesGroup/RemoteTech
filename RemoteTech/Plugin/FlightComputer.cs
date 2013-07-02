@@ -13,12 +13,9 @@ namespace RemoteTech {
 
         private readonly Legacy.FlightComputer mLegacyComputer;
         private readonly VesselSatellite mSatellite;
-        private readonly List<FlightCommand> mCommandBuffer =
-            new List<FlightCommand>();
-        private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer =
-            new PriorityQueue<DelayedFlightCtrlState>();
-        private readonly List<DelayedActionGroup> mActionGroupBuffer =
-            new List<DelayedActionGroup>();
+        private readonly List<FlightCommand> mFlightCommandBuffer = new List<FlightCommand>();
+        private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer = new PriorityQueue<DelayedFlightCtrlState>();
+        private readonly List<DelayedActionGroup> mActionGroupBuffer = new List<DelayedActionGroup>();
         
         public double ExtraDelay { get; set; }
 
@@ -26,158 +23,171 @@ namespace RemoteTech {
             mSatellite = vs;
             mPreviousCtrl.CopyFrom(vs.Vessel.ctrlState);
             mLegacyComputer = new Legacy.FlightComputer(vs.Vessel);
-            vs.Vessel.OnFlyByWire = this.OnFlyByWire + vs.Vessel.OnFlyByWire;
+            vs.Vessel.OnFlyByWire = this.OnFlyByWirePre + vs.Vessel.OnFlyByWire;
         }
 
         public void Dispose() {
             if (mSatellite.Vessel != null) {
-                mSatellite.Vessel.OnFlyByWire -= OnFlyByWire;
+                mSatellite.Vessel.OnFlyByWire -= OnFlyByWirePre;
+                mSatellite.Vessel.OnFlyByWire -= OnFlyByWirePost;
             }
         }
 
         public void Enqueue(FlightCommand fc) {
-            fc.EffectiveFrom += ExtraDelay;
-            mCommandBuffer.Insert(~mCommandBuffer.BinarySearch(fc), fc);
+            fc.ExtraDelay = ExtraDelay;
+            mFlightCommandBuffer.Insert(~mFlightCommandBuffer.BinarySearch(fc), fc);
         }
 
         public void Enqueue(DelayedFlightCtrlState fcs) {
-            fcs.EffectiveFrom += ExtraDelay;
+            fcs.ExtraDelay = ExtraDelay;
             mFlightCtrlBuffer.Enqueue(fcs);
         }
 
         public void Enqueue(DelayedActionGroup ag) {
-            ag.EffectiveFrom += ExtraDelay;
-
             // For some reason the system sometimes catches the key twice?
             if (mActionGroupBuffer.Count > 0 &&
                 ag.ActionGroup == mActionGroupBuffer[mActionGroupBuffer.Count - 1].ActionGroup &&
-                ag.EffectiveFrom - mActionGroupBuffer[mActionGroupBuffer.Count - 1].EffectiveFrom
+                ag.TimeStamp - mActionGroupBuffer[mActionGroupBuffer.Count - 1].TimeStamp
                     < 0.1)
                 return;
 
+            ag.ExtraDelay = ExtraDelay;
             mActionGroupBuffer.Insert(~mActionGroupBuffer.BinarySearch(ag), ag);
         }
 
-        private void OnFlyByWire(FlightCtrlState fs) {
-            if (mSatellite.Vessel == FlightGlobals.ActiveVessel) {
-                RTCore.Instance.GetLocks();
-                KSPActionGroup group = GetActivatedGroup();
-                double delayedTime = RTUtil.GetGameTime() + mSatellite.Connection.Delay;
-                Enqueue(new DelayedFlightCtrlState(fs, 
-                    mSatellite.LocalControl ? 0.0 : delayedTime));
-                if (group != default(KSPActionGroup)) {
-                    Enqueue(new DelayedActionGroup(group, 
-                        mSatellite.LocalControl ? 0.0 : delayedTime));
-                    
+        private void OnFlyByWirePre(FlightCtrlState fs) {
+            // Ensure the post-onflybywire still has correct execution order
+            mSatellite.Vessel.OnFlyByWire -= OnFlyByWirePost;
+            mSatellite.Vessel.OnFlyByWire += OnFlyByWirePost;
+            // Ensure all controls are still locked
+            RTCore.Instance.GetLocks();
+            // Take inputs if active vessel
+            if (mSatellite.Vessel == FlightGlobals.ActiveVessel && mSatellite.Connection.Exists) {
+                double delayedTime = mSatellite.LocalControl ? 0.0f : RTUtil.GetGameTime() +
+                                                                      mSatellite.Connection.Delay;
+                // Buffer action groups
+                foreach (KSPActionGroup g in GetActivatedGroup()) {
+                    Enqueue(new DelayedActionGroup(g, delayedTime));
                 }
+                // Buffer flight input
+                Enqueue(new DelayedFlightCtrlState(fs, delayedTime));
             }
-            ProcessInputBuffer(fs);
-            ProcessFlightCommand(fs);
+            // Process buffered inputs
+            ProcessInputs(fs);
+            // Process flightcomputer autopilot
+            Autopilot(fs);
         }
 
-        private KSPActionGroup GetActivatedGroup() {
-            KSPActionGroup action = default(KSPActionGroup);
+        private void OnFlyByWirePost(FlightCtrlState fs) {
+            mPreviousCtrl.CopyFrom(fs);
+        }
+
+        private IEnumerable<KSPActionGroup> GetActivatedGroup() {
             if (GameSettings.LAUNCH_STAGES.GetKeyDown())
-                action = KSPActionGroup.Stage;
-            else if (GameSettings.AbortActionGroup.GetKeyDown())
-                action = KSPActionGroup.Abort;
-            else if (GameSettings.RCS_TOGGLE.GetKeyDown())
-                action = KSPActionGroup.RCS;
-            else if (GameSettings.SAS_TOGGLE.GetKeyDown())
-                action = KSPActionGroup.SAS;
-            else if (GameSettings.SAS_HOLD.GetKeyDown())
-                action = KSPActionGroup.SAS;
-            else if (GameSettings.SAS_HOLD.GetKeyUp())
-                action = KSPActionGroup.SAS;
-            else if (GameSettings.BRAKES.GetKeyDown())
-                action = KSPActionGroup.Brakes;
-            else if (GameSettings.LANDING_GEAR.GetKeyDown())
-                action = KSPActionGroup.Gear;
-            else if (GameSettings.HEADLIGHT_TOGGLE.GetKeyDown())
-                action = KSPActionGroup.Light;
-            else if (GameSettings.CustomActionGroup1.GetKeyDown())
-                action = KSPActionGroup.Custom01;
-            else if (GameSettings.CustomActionGroup2.GetKeyDown())
-                action = KSPActionGroup.Custom02;
-            else if (GameSettings.CustomActionGroup3.GetKeyDown())
-                action = KSPActionGroup.Custom03;
-            else if (GameSettings.CustomActionGroup4.GetKeyDown())
-                action = KSPActionGroup.Custom04;
-            else if (GameSettings.CustomActionGroup5.GetKeyDown())
-                action = KSPActionGroup.Custom05;
-            else if (GameSettings.CustomActionGroup6.GetKeyDown())
-                action = KSPActionGroup.Custom06;
-            else if (GameSettings.CustomActionGroup7.GetKeyDown())
-                action = KSPActionGroup.Custom07;
-            else if (GameSettings.CustomActionGroup8.GetKeyDown())
-                action = KSPActionGroup.Custom08;
-            else if (GameSettings.CustomActionGroup9.GetKeyDown())
-                action = KSPActionGroup.Custom09;
-            else if (GameSettings.CustomActionGroup10.GetKeyDown())
-                action = KSPActionGroup.Custom10;
-            return action;
+                yield return KSPActionGroup.Stage;
+            if (GameSettings.AbortActionGroup.GetKeyDown())
+                yield return KSPActionGroup.Abort;
+            if (GameSettings.RCS_TOGGLE.GetKeyDown())
+                yield return KSPActionGroup.RCS;
+            if (GameSettings.SAS_TOGGLE.GetKeyDown())
+                yield return KSPActionGroup.SAS;
+            if (GameSettings.SAS_HOLD.GetKeyDown())
+                yield return KSPActionGroup.SAS;
+            if (GameSettings.SAS_HOLD.GetKeyUp())
+                yield return KSPActionGroup.SAS;
+            if (GameSettings.BRAKES.GetKeyDown())
+                yield return KSPActionGroup.Brakes;
+            if (GameSettings.LANDING_GEAR.GetKeyDown())
+                yield return KSPActionGroup.Gear;
+            if (GameSettings.HEADLIGHT_TOGGLE.GetKeyDown())
+                yield return KSPActionGroup.Light;
+            if (GameSettings.CustomActionGroup1.GetKeyDown())
+                yield return KSPActionGroup.Custom01;
+            if (GameSettings.CustomActionGroup2.GetKeyDown())
+                yield return KSPActionGroup.Custom02;
+            if (GameSettings.CustomActionGroup3.GetKeyDown())
+                yield return KSPActionGroup.Custom03;
+            if (GameSettings.CustomActionGroup4.GetKeyDown())
+                yield return KSPActionGroup.Custom04;
+            if (GameSettings.CustomActionGroup5.GetKeyDown())
+                yield return KSPActionGroup.Custom05;
+            if (GameSettings.CustomActionGroup6.GetKeyDown())
+                yield return KSPActionGroup.Custom06;
+            if (GameSettings.CustomActionGroup7.GetKeyDown())
+                yield return KSPActionGroup.Custom07;
+            if (GameSettings.CustomActionGroup8.GetKeyDown())
+                yield return KSPActionGroup.Custom08;
+            if (GameSettings.CustomActionGroup9.GetKeyDown())
+                yield return KSPActionGroup.Custom09;
+            if (GameSettings.CustomActionGroup10.GetKeyDown())
+                yield return KSPActionGroup.Custom10;
         }
 
-        private void ProcessFlightCommand(FlightCtrlState fs) {
-            while (mCommandBuffer.Count > 0 &&
-                mCommandBuffer[0].EffectiveFrom < RTUtil.GetGameTime()) {
+        private void Autopilot(FlightCtrlState fs) {
+            while (mFlightCommandBuffer.Count > 0 &&
+                   mFlightCommandBuffer[0].TimeStamp < RTUtil.GetGameTime()) {
                 if (mSatellite.Connection.Exists) {
-                    mCommand = mCommandBuffer[0];
+                    mCommand = mFlightCommandBuffer[0];
                     if (mCommand.Mode == FlightMode.KillRot) {
-                        mKillrot = mSatellite.Vessel.transform.rotation;
+                        mKillrot = mSatellite.Vessel.transform.rotation *
+                                   Quaternion.AngleAxis(90, Vector3.left);
                     }
                 }
-                mCommandBuffer.RemoveAt(0);
+                mFlightCommandBuffer.RemoveAt(0);
             }
-            if (mCommand.Mode == FlightMode.Off)
-                return;
-            Quaternion direction = Quaternion.identity;
-            switch (mCommand.Mode) {
-                case FlightMode.KillRot:
-                    ProcessOrientation(fs, mKillrot);
-                    break;
-                case FlightMode.AttitudeHold:
-                    HoldAttitude(fs);
-                    break;
-                case FlightMode.AltitudeHold:
-                    HoldAltitude(fs);
-                    break;
+            if (mCommand.ExtraDelay > 0) {
+                mCommand.ExtraDelay -= TimeWarp.deltaTime;
+            } else {
+                switch (mCommand.Mode) {
+                    case FlightMode.Off:
+                        return;
+                    case FlightMode.KillRot:
+                        ProcessOrientation(fs, mKillrot);
+                        break;
+                    case FlightMode.AttitudeHold:
+                        HoldAttitude(fs);
+                        break;
+                    case FlightMode.AltitudeHold:
+                        HoldAltitude(fs);
+                        break;
+                }
+                Burn(fs);
             }
-            Burn(fs);
         }
 
-        private void ProcessInputBuffer(FlightCtrlState fcs) {
+        private void ProcessInputs(FlightCtrlState fcs) {
             // FlightCtrlState
-            FlightCtrlState delayed = new FlightCtrlState();
-            delayed.CopyFrom(mPreviousCtrl);
+            FlightCtrlState delayed = mPreviousCtrl;
+            // Pop any due states off the queue
             while (mFlightCtrlBuffer.Count > 0 &&
-                    mFlightCtrlBuffer.Peek().EffectiveFrom < RTUtil.GetGameTime()) {
+                   mFlightCtrlBuffer.Peek().TimeStamp < RTUtil.GetGameTime()) {
                 delayed = mFlightCtrlBuffer.Dequeue().State;
             }
+            // Decide to nullify it if no connection exists, keep throttle.
             if (!mSatellite.Connection.Exists) {
                 float keepThrottle = delayed.mainThrottle;
                 delayed.Neutralize();
                 delayed.mainThrottle = keepThrottle;
-            } else {
-                RTUtil.Log("Delayed {0}" + delayed.pitch);
-                mPreviousCtrl.CopyFrom(delayed);
             }
+            // Apply FlightCtrlState
             fcs.CopyFrom(delayed);
-            // Action groups
-            while (mActionGroupBuffer.Count > 0 && 
-                    mActionGroupBuffer[0].EffectiveFrom < RTUtil.GetGameTime()) {
+
+            // Action groups, pop any due activations off the sorted list
+            while (mActionGroupBuffer.Count > 0 &&
+                   mActionGroupBuffer[0].TimeStamp < RTUtil.GetGameTime()) {
+                // Apply if connected
                 if (mSatellite.Connection.Exists) {
-                    KSPActionGroup delayedGroup = mActionGroupBuffer[0].ActionGroup;
-                    mSatellite.Vessel.ActionGroups.ToggleGroup(delayedGroup);
-                    if (delayedGroup == KSPActionGroup.Stage &&
-                            !FlightInputHandler.fetch.stageLock) {
+                    KSPActionGroup group = mActionGroupBuffer[0].ActionGroup;
+                    mSatellite.Vessel.ActionGroups.ToggleGroup(group);
+                    if (group == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock) {
                         Staging.ActivateNextStage();
                         ResourceDisplay.Instance.Refresh();
                     }
-                    if (delayedGroup == KSPActionGroup.RCS) {
+                    if (group == KSPActionGroup.RCS) {
                         FlightInputHandler.fetch.rcslock = !FlightInputHandler.RCSLock;
                     }
                 }
+                // Remove from list
                 mActionGroupBuffer.RemoveAt(0);
             }
         }
@@ -252,14 +262,13 @@ namespace RemoteTech {
 
         private void Burn(FlightCtrlState fs) {
             if (!Single.IsNaN(mCommand.Throttle)) {
-                if (!Double.IsNaN(mCommand.Duration) && mCommand.Duration > Double.Epsilon) {
+                if (!Double.IsNaN(mCommand.Duration) && mCommand.Duration > 0) {
                     fs.mainThrottle = mCommand.Throttle;
                     mCommand.Duration -= Time.deltaTime;
-                } else if (!Double.IsNaN(mCommand.DeltaV) && mCommand.DeltaV > Double.Epsilon) {
+                } else if (!Double.IsNaN(mCommand.DeltaV) && mCommand.DeltaV > 0) {
                     fs.mainThrottle = mCommand.Throttle;
                 } else {
                     fs.mainThrottle = 0;
-                    mCommand.Throttle = Single.NaN;
                 }
             }
         }
@@ -271,7 +280,7 @@ namespace RemoteTech {
         public IEnumerator<String> GetEnumerator() {
             yield return mCommand.ToString();
 
-            var e1 = mCommandBuffer.GetEnumerator();
+            var e1 = mFlightCommandBuffer.GetEnumerator();
             var e2 = mActionGroupBuffer.GetEnumerator();
 
             bool remaining1 = e1.MoveNext();
@@ -279,7 +288,7 @@ namespace RemoteTech {
 
             while (remaining1 || remaining2) {
                 if (remaining1 && remaining2) {
-                    if (e1.Current.EffectiveFrom.CompareTo(e2.Current.EffectiveFrom) > 0) {
+                    if (e1.Current.TimeStamp.CompareTo(e2.Current.TimeStamp) > 0) {
                         yield return e2.Current.ToString();
                         remaining2 = e2.MoveNext();
                     } else {

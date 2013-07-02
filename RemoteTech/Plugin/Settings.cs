@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RemoteTech {
     public class Settings {
         public bool DebugAlwaysConnected = false;
-        public float DebugOffsetDelay = 5.0f;
+        public float DebugOffsetDelay = 1.0f;
 
         public Texture2D IconBook = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public Texture2D IconCalc = new Texture2D(32, 32, TextureFormat.ARGB32, false);
