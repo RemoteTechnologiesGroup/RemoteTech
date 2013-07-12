@@ -5,21 +5,41 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class VesselSatellite : ISatellite, IDisposable {
-        public ISignalProcessor SignalProcessor { get; set; }
+        public bool Powered {
+            get {
+                return mSignalProcessors.Any(s => s.Powered);
+            }
+        }
 
-        public Vessel Vessel { get { return SignalProcessor.Vessel; } }
+        public bool Visible {
+            get {
+                return MapViewFiltering.CheckAgainstFilter(Vessel);
+            }
+        }
 
-        public bool Powered { get { return SignalProcessor.Powered; } }
+        public String Name {
+            get {
+                return Vessel.vesselName;
+            }
+        }
 
-        public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(SignalProcessor.Vessel); } }
+        public Guid Guid {
+            get {
+                return mSignalProcessors[0].Guid;
+            }
+        }
 
-        public String Name { get { return SignalProcessor.Name; } }
+        public Vector3 Position {
+            get {
+                return Vessel.GetWorldPos3D();
+            }
+        }
 
-        public Guid Guid { get { return SignalProcessor.Guid; } }
-
-        public Vector3 Position { get { return SignalProcessor.Position; } }
-
-        public CelestialBody Body { get { return SignalProcessor.Body; } }
+        public CelestialBody Body {
+            get {
+                return Vessel.mainBody;
+            }
+        }
 
         public float Omni {
             get {
@@ -32,19 +52,40 @@ namespace RemoteTech {
         public IEnumerable<Dish> Dishes {
             get {
                 foreach (IAntenna a in RTCore.Instance.Antennas.For(this)) {
-                    if (a.CanTarget && !a.DishTarget.Equals(Guid.Empty)) yield return new Dish(a.DishTarget, a.DishFactor, a.DishRange);
+                    if (a.CanTarget && !a.DishTarget.Equals(Guid.Empty)) {
+                        yield return new Dish(a.DishTarget, a.DishFactor, a.DishRange);
+                    }
                 }
             }
         }
-        public bool CommandStation { get { return SignalProcessor.CommandStation; } }
-        public bool LocalControl { get { return SignalProcessor.LocalControl; } }
+
+        public Vessel Vessel {
+            get {
+                return mSignalProcessors[0].Vessel;
+            }
+        }
+
+        public bool CommandStation {
+            get {
+                return mSignalProcessors.Any(s => s.CommandStation);
+            }
+        }
+
+        public bool LocalControl {
+            get {
+                return Vessel.GetVesselCrew().Count > 0;
+            }
+        }
+
         public FlightComputer FlightComputer { get; private set; }
         public Path<ISatellite> Connection { get; set; }
 
-        public VesselSatellite(ISignalProcessor parent) {
-            SignalProcessor = parent;
+        private List<ISignalProcessor> mSignalProcessors; 
+
+        public VesselSatellite(List<ISignalProcessor> parts) {
+            mSignalProcessors = parts;
             FlightComputer = new FlightComputer(this);
-            Connection = Path.Empty((ISatellite) this);
+            Connection = Path.Empty<ISatellite>(this);
             RTCore.Instance.Network.ConnectionUpdated += OnConnectionUpdate;
         }
 
@@ -57,8 +98,12 @@ namespace RemoteTech {
             RTCore.Instance.Network.ConnectionUpdated -= OnConnectionUpdate;
         }
 
-        public override string ToString() {
-            return SignalProcessor.Vessel.vesselName;
+        public override String ToString() {
+            return Vessel.vesselName;
+        }
+
+        public override int GetHashCode() {
+            return Guid.GetHashCode();
         }
     }
 }

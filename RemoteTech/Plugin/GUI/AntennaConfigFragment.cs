@@ -12,15 +12,15 @@ namespace RemoteTech {
         }
 
         public void Draw() {
-            GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(200));
+            GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(200), GUILayout.MinHeight(200));
             {
                 mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
                 {
                     Color push = GUI.color;
                     for (int i = 0; i < mEntries.Count; i++) {
                         GUI.color = mEntries[i].Color;
-                        RTUtil.StateButton(mEntries[i].Text, mSelection == i, s => {
-                            mSelection = s == 1 ? i : 0;
+                        RTUtil.StateButton(mEntries[i].Text, mSelection, i, s => {
+                            mSelection = (s > 0) ? s : 0;
                             mFocus.DishTarget = mEntries[mSelection].Guid;
                             mOnUpdate.Invoke(mFocus);
                         });    

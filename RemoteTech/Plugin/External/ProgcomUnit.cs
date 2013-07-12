@@ -4,38 +4,37 @@ using System.Reflection;
 using System.Text;
 
 namespace RemoteTech {
+#if PROGCOM
     public class ProgcomUnit {
-        public ProgcomConsole Console { get; private set; }
+        public ProgcomIO IO { get; private set; }
+        public Int32[] Memory { get { return mCPU.Memory; } }
+        public double Delay { get { return mSatellite.FlightComputer.Delay; } }
 
-        private const int VEC_ACC_OFFSET = 41;
-        private const int SPD_ACC_OFFSET = 43;
-        private const int MONITOR_MODE = 42;
-        private const int MONITOR_OFFSET = 63488;
-        private const int FONT_OFFSET = 65024;
-        private const int CLR_OFFSET = 63472;
-        private const int EXEC_OFFSET = 128;
-
+        public const int VEC_ACC_OFFSET = 41;
+        public const int SPD_ACC_OFFSET = 43;
+        public const int MONITOR_MODE = 42;
+        public const int MONITOR_OFFSET = 63488;
+        public const int FONT_OFFSET = 65024;
+        public const int CLR_OFFSET = 63472;
+        public const int EXEC_OFFSET = 128;
+ 
         private readonly VesselSatellite mSatellite;
         private readonly ProgCom.Assembler2 mAssembler;
         private readonly ProgCom.CPUem mCPU;
-        private readonly ProgCom.Monitor mMonitor;
 
         private bool mEnabled = false;
         private int mCyclesPending = 0;
 
         public ProgcomUnit(VesselSatellite vs) {
-            Console = new ProgcomConsole();
-
             mSatellite = vs;
             mCPU = CreateCPU();
             mAssembler = CreateAssembler();
-            mMonitor = CreateMonitor();
+
+            IO = new ProgcomIO(this, 32, null);
         }
 
-        
         public void Tick() {
             if (!mEnabled) return;
-
             // interrupt for updated flight data.
             if (mCPU.enabledInterruptNum(2)) {
                 mCPU.spawnException(257);
@@ -46,8 +45,30 @@ namespace RemoteTech {
             }
 
             float time = TimeWarp.deltaTime;
-            mCyclesPending += (int) (120 * time);
+            mCyclesPending += (int)(mCPU.ClockRate * time);
             mCyclesPending -= Execute(mCyclesPending);
+        }
+
+        public Int32[] Assemble(String fileName) {
+            return mAssembler.assemble(fileName, EXEC_OFFSET);
+        }
+
+        public void Run() {
+            mEnabled = true;
+            mCPU.PC = EXEC_OFFSET;
+        }
+
+        public void Reset() {
+            Pause();
+            mCPU.reset();
+        }
+
+        public void Resume() {
+            mEnabled = true;
+        }
+
+        public void Pause() {
+            mEnabled = false;
         }
 
         private int Execute(int cycles) {
@@ -57,56 +78,13 @@ namespace RemoteTech {
                 if (duration == 0) {
                     mEnabled = false;
                 } else if (duration == -1) {
-                    Console.Log("ERROR: Illegal instruction({0}) at address {1}.", 
+                    IO.Log("ERROR: Illegal instruction({0}) at address {1}.", 
                         mCPU.Memory[mCPU.PC], mCPU.PC - 1);
                     mEnabled = false;
                 }
                 elapsed += duration;
             }
             return elapsed;
-        }
-
-        public void LoadProgram(String fileName) {
-            Console.Log("Loading program \"{0}\".", fileName);
-            Int32[] newCode;
-            try {
-                newCode = mAssembler.assemble(fileName, EXEC_OFFSET);
-            } catch (FormatException) {
-                Console.Log("ERROR: Compilation failed.");
-                return;
-            } catch (Exception) {
-                Console.Log("ERROR: Unknown error.");
-                return;
-            }
-            Console.Log("Successfully assembled.");
-
-            if (EXEC_OFFSET + newCode.Length > mCPU.Memory.Length) {
-                Console.Log("ERROR: Program too large to fit in memory.");
-                return;
-            }
-
-            Console.Log("Writing...");
-            for (int i = 0; i < newCode.Length; i++) {
-                mCPU.Memory[EXEC_OFFSET + i] = newCode[i];
-            }
-            Console.Log("Program loaded at offset {0}", EXEC_OFFSET);
-        }
-
-        private ProgCom.Monitor CreateMonitor() {
-            ProgCom.Monitor monitor = new ProgCom.Monitor(mCPU.Memory, MONITOR_OFFSET, 
-                                                          FONT_OFFSET, CLR_OFFSET, MONITOR_MODE);
-
-            UInt32[] defaultFont = monitor.getDefaultFont();
-            for (int i = FONT_OFFSET; i < defaultFont.Length; i++) {
-                mCPU.Memory[i] = (Int32)defaultFont[i];
-            }
-
-            Int32[] defaultColors = monitor.getDefaultColors();
-            for (int i = CLR_OFFSET; i < defaultColors.Length; i++) {
-                mCPU.Memory[i] = defaultColors[i];
-            }
-
-            return monitor;
         }
 
         private static ProgCom.CPUem CreateCPU() {
@@ -254,6 +232,9 @@ namespace RemoteTech {
         }
 
         public void OnFlyByWire(FlightCtrlState fcs) {
+            IO.Tick();
+            if (!mEnabled)
+                return;
             UpdateMemoryMap(fcs);
             Tick();
             Actuate(fcs);
@@ -317,4 +298,5 @@ namespace RemoteTech {
             }
         }
     }
+#endif
 }

@@ -57,61 +57,103 @@ namespace RemoteTech {
             set { mDuration = RTUtil.FormatDuration(value); }
         }
 
+        private FlightAttitude Attitude {
+            get {
+                switch (mAttitude) {
+                    default:
+                        return FlightAttitude.Prograde;
+                    case 2:
+                        return FlightAttitude.RadialPlus;
+                    case 3:
+                        return FlightAttitude.NormalPlus;
+                    case 4:
+                        return FlightAttitude.Retrograde;
+                    case 5:
+                        return FlightAttitude.RadialMinus;
+                    case 6:
+                        return FlightAttitude.NormalMinus;
+                }
+            }
+        }
+
         private VesselSatellite mSatellite;
         private OnClick mOnClickQueue;
 
-        private int mModeState;
-        private int mAttitudeState;
-        private float mThrottleState;
+        private int mMode;
+        private int mAttitude;
+        private float mThrottle;
 
-        private String mPitch;
-        private String mRoll;
-        private bool mRollEnabled;
-        private String mHeading;
-        private String mDuration;
+        private String mPitch = "90";
+        private String mRoll = "0";
+        private String mHeading = "90";
+        private String mDuration = "0s";
+        private bool mRollEnabled = false;
 
         public AttitudeFragment(VesselSatellite vs, OnClick queue) {
             mSatellite = vs;
             mOnClickQueue = queue;
-            mPitch = "90";
-            mRoll = "0";
-            mHeading = "90";
-            mDuration = "0";
         }
 
         public void Draw() {
-            GUILayout.BeginVertical(GUILayout.Width(150));
+            float width3 = 156 / 3 - GUI.skin.button.margin.right * 2.0f / 3.0f;
+            GUILayout.BeginVertical();
             {
-                RTUtil.GroupButton(3, MODE_TEXT, ref mModeState);
-                RTUtil.StateButton("SURFACE", mModeState == 6, (state) => mModeState = 6);
-                GUILayout.Space(5);
-                RTUtil.GroupButton(3, ATTITUDE_TEXT, ref mAttitudeState);
+                GUILayout.BeginHorizontal();
+                {
+                    RTUtil.StateButton("KILL", mMode, 1, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("NODE", mMode, 2, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("SURF", mMode, 3, OnModeClick, GUILayout.Width(width3));
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                {
+                    RTUtil.StateButton("ORB", mMode, 4, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("SRF", mMode, 5, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("TGT", mMode, 6, OnModeClick, GUILayout.Width(width3));
+                }
+                GUILayout.EndHorizontal();
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("PIT: ");
+                    RTUtil.StateButton("GRD\n+", mAttitude, 1, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("RAD\n+", mAttitude, 2, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("NRM\n+", mAttitude, 3, OnAttitudeClick, GUILayout.Width(width3));
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                {
+                    RTUtil.StateButton("GRD\n-", mAttitude, 4, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("RAD\n-", mAttitude, 5, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("NRM\n-", mAttitude, 6, OnAttitudeClick, GUILayout.Width(width3));
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(5);
+
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label("PIT: ", GUILayout.Width(50));
                     RTUtil.Button("+", () => Pitch++, GUILayout.Width(20));
                     RTUtil.Button("-", () => Pitch--, GUILayout.Width(20));
-                    RTUtil.TextField(ref mPitch, GUILayout.Width(50));
+                    RTUtil.TextField(ref mPitch, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("HDG: ");
+                    GUILayout.Label("HDG: ", GUILayout.Width(50));
                     RTUtil.Button("+", () => Heading++, GUILayout.Width(20));
                     RTUtil.Button("-", () => Heading--, GUILayout.Width(20));
-                    RTUtil.TextField(ref mHeading, GUILayout.Width(50));
+                    RTUtil.TextField(ref mHeading, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("RLL: ");
+                    GUILayout.Label("RLL: ", GUILayout.Width(50));
                     RTUtil.Button("+", () => Roll++, GUILayout.Width(20));
                     RTUtil.Button("-", () => Roll--, GUILayout.Width(20));
-                    RTUtil.TextField(ref mRoll, GUILayout.Width(50));
+                    RTUtil.TextField(ref mRoll, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
 
@@ -119,86 +161,81 @@ namespace RemoteTech {
                 {
                     GUILayout.Label("Throttle: ");
                     GUILayout.FlexibleSpace();
-                    GUILayout.Label(mThrottleState.ToString("P"));
+                    GUILayout.Label(mThrottle.ToString("P"));
                 }
                 GUILayout.EndHorizontal();
 
-                RTUtil.HorizontalSlider(ref mThrottleState, 0, 1);
+                RTUtil.HorizontalSlider(ref mThrottle, 0, 1);
                 RTUtil.TextField(ref mDuration);
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.Button("SEND", OnClickUpdate);
+                    RTUtil.Button("Burn", OnBurnClick);
                     GUILayout.FlexibleSpace();
-                    RTUtil.Button("Q", mOnClickQueue);
+                    RTUtil.Button("Queue", mOnClickQueue);
                 }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
         }
 
-        void OnClickUpdate() {
-            if (!mSatellite.Connection.Exists) return;
-            FlightCommand fc = new FlightCommand(RTUtil.GetGameTime() + 
-                                                                mSatellite.Connection.Delay);
-            switch (mAttitudeState) {
-                default:
-                    fc.Attitude = FlightAttitude.Prograde;
+        private void OnModeClick(int state) {
+            if (!mSatellite.FlightComputer.InputAllowed)
+                return;
+            mMode = (state < 0) ? 0 : state;
+            SendAttitudeCommand();
+        }
+
+        private void OnAttitudeClick(int state) {
+            if (!mSatellite.FlightComputer.InputAllowed)
+                return;
+            mAttitude = (state < 0) ? 0 : state;
+            if (mMode < 4) {
+                mMode = 4;
+            }
+            SendAttitudeCommand();
+        }
+
+        private void SendAttitudeCommand() {
+            DelayedCommand newCommand;
+            switch (mMode) {
+                default: // Off
+                    mAttitude = 0;
+                    newCommand = AttitudeCommand.Off();
                     break;
-                case 1:
-                    fc.Attitude = FlightAttitude.RadialPlus;
+                case 1: // Killrot
+                    mAttitude = 0;
+                    newCommand = AttitudeCommand.KillRot();
                     break;
-                case 2:
-                    fc.Attitude = FlightAttitude.NormalPlus;
+                case 2: // Node
+                    mAttitude = 0;
+                    newCommand = AttitudeCommand.ManeuverNode();
                     break;
-                case 3:
-                    fc.Attitude = FlightAttitude.Retrograde;
+                case 3: // Pitch, heading, roll
+                    mAttitude = 0;
+                    newCommand = AttitudeCommand.WithSurface(Pitch, Heading, Roll);
                     break;
-                case 4:
-                    fc.Attitude = FlightAttitude.RadialMinus;
+                case 4: // Orbital reference
+                    mAttitude = (mAttitude == 0) ? 1 : mAttitude;
+                    newCommand =
+                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Orbit);
                     break;
-                case 5:
-                    fc.Attitude = FlightAttitude.NormalMinus;
+                case 5: // Surface reference
+                    mAttitude = (mAttitude == 0) ? 1 : mAttitude;
+                    newCommand =
+                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Surface);
+                    break;
+                case 6: // Target reference
+                    mAttitude = (mAttitude == 0) ? 1 : mAttitude;
+                    newCommand =
+                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Target);
                     break;
             }
+            mSatellite.FlightComputer.Enqueue(newCommand);
+        }
 
-            switch (mModeState) {
-                default:
-                    fc.Mode = FlightMode.Off;
-                    fc.Frame = ReferenceFrame.World;
-                    break;
-                case 1:
-                    fc.Mode = FlightMode.KillRot;
-                    fc.Frame = ReferenceFrame.World;
-                    break;
-                case 2:
-                    fc.Mode = FlightMode.AttitudeHold;
-                    fc.Frame = ReferenceFrame.Maneuver;
-                    break;
-                case 3:
-                    fc.Mode = FlightMode.AttitudeHold;
-                    fc.Frame = ReferenceFrame.Orbit;
-                    break;
-                case 4:
-                    fc.Mode = FlightMode.AttitudeHold;
-                    fc.Frame = ReferenceFrame.Surface;
-                    break;
-                case 5:
-                    fc.Mode = FlightMode.AttitudeHold;
-                    fc.Frame = ReferenceFrame.Target;
-                    break;
-                case 6:
-                    fc.Mode = FlightMode.AttitudeHold;
-                    fc.Frame = ReferenceFrame.North;
-                    fc.Attitude = FlightAttitude.Surface;
-                    break;
-            }
-
-            fc.Direction = new Vector3(Pitch, Heading, Roll);
-                             
-            fc.Throttle = mThrottleState;
-            fc.Duration = Duration;
-            mSatellite.FlightComputer.Enqueue(fc);
+        private void OnBurnClick() {
+            mSatellite.FlightComputer.Enqueue(BurnCommand.WithDuration(mThrottle, Duration));
         }
     }
 }

@@ -29,12 +29,21 @@ namespace RemoteTech {
         public event ConnectionHandler ConnectionUpdated;
         public event TypedEdgeHandler EdgeUpdated;
 
-        public float SignalDelayModifier = 1.0f;
-        public float SignalSpeed = 299792458.0f;
+        public float SignalSpeed;
+
+        public int Count { get { return mCore.Satellites.Count + 1; } }
 
         public Dictionary<Guid, CelestialBody> Planets { get; private set; }
         public MissionControlSatellite MissionControl { get; private set; }
-        public Dictionary<ISatellite, List<ISatellite>> Graph { get; private set; }
+        public Dictionary<Guid, List<ISatellite>> Graph { get; private set; }
+
+        public ISatellite this[Guid guid] {
+            get {
+                if (guid == MissionControl.Guid)
+                    return MissionControl;
+                return mCore.Satellites[guid];
+            }
+        }
 
         private const int REFRESH_TICKS = 50;
         private readonly RTCore mCore;
@@ -45,19 +54,34 @@ namespace RemoteTech {
         public NetworkManager(RTCore core) {
             mCore = core;
             MissionControl = new MissionControlSatellite();
-            Graph = new Dictionary<ISatellite, List<ISatellite>>();
+            Graph = new Dictionary<Guid, List<ISatellite>>();
             Planets = GeneratePlanetGuidMap();
+
+            OnSatelliteRegister(MissionControl);
 
             mCore.Satellites.Registered += OnSatelliteRegister;
             mCore.Satellites.Unregistered += OnSatelliteUnregister;
+            mCore.PhysicsUpdated += OnPhysicsUpdate;
+        }
+
+        public void Dispose() {
+            mCore.PhysicsUpdated -= OnPhysicsUpdate;
+            mCore.Satellites.Registered -= OnSatelliteRegister;
+            mCore.Satellites.Unregistered -= OnSatelliteUnregister;
         }
 
         public void Load(ConfigNode node) {
-
+            try {
+                if (node.HasValue("SignalSpeed"))
+                    throw new ArgumentException("SignalSpeed non-exist");
+                SignalSpeed = Single.Parse(node.GetValue("SignalSpeed"));
+            } catch (ArgumentException) {
+                SignalSpeed = 299792458.0f;
+            }
         }
 
         public void Save(ConfigNode node) {
-
+            node.AddValue("SignalSpeed", SignalSpeed.ToString());
         }
 
         private Dictionary<Guid, CelestialBody> GeneratePlanetGuidMap() {
@@ -74,20 +98,19 @@ namespace RemoteTech {
             return Vector3.Distance(a.Position, b.Position);
         }
 
-        public void FindPath(ISatellite start) {
-            RTUtil.Log("SatelliteNetwork: FindCommandPath");
+        public void FindPath(ISatellite start, IEnumerable<ISatellite> commandStations) {
             List<Path<ISatellite>> paths = new List<Path<ISatellite>>();
-            IEnumerable<ISatellite> commandStations = mCore.Satellites.FindCommandStations();
-            foreach (ISatellite root in commandStations.Concat(new []{ MissionControl })) {
-                paths.Add(Pathfinder.Solve(start, root,
-                    s => Graph[s].Where(x => x.Powered),
-                    Distance, Distance));
+            foreach (ISatellite root in commandStations.Concat(new[] { MissionControl })) {
+                if(start != root) {
+                    paths.Add(Pathfinder.Solve(start, root, s => {
+                        return Graph[s.Guid].Where(x => x.Powered);   
+                    }, Distance, Distance)); 
+                }
             }
             OnConnectionUpdate(paths.Min());
         }
 
         private void UpdateGraph(ISatellite a) {
-            RTUtil.Log("ConnectionManager: UpdateGraph: " + a);
             var result = new List<TypedEdge<ISatellite>>();
 
             foreach (ISatellite b in this) {
@@ -106,20 +129,18 @@ namespace RemoteTech {
             }
 
             // Process
-            foreach (ISatellite b in Graph[a]) {
+            RTUtil.Log("Debug: a={0}, Graph[a]={1}", a.Guid, Graph.ContainsKey(a.Guid));
+            foreach (ISatellite b in Graph[a.Guid]) {
                 var edge = new TypedEdge<ISatellite>(a, b, EdgeType.None);
-                // If the edge no longer exists, send an event; note TypedEdge.Equals() ignores EdgeType.
                 if (!result.Contains(edge)) {
                     OnEdgeUpdate(edge);
                 }
             }
-            Graph[a].Clear();
+            Graph[a.Guid].Clear();
             foreach (var edge in result) {
-                Graph[a].Add(edge.B);
+                Graph[a.Guid].Add(edge.B);
                 OnEdgeUpdate(edge);
             }
-
-            RTUtil.Log("Edges: " + a.Name + ": " + Graph[a].ToDebugString());
         }
 
         private EdgeType IsConnectedTo(ISatellite a, ISatellite b) {
@@ -143,7 +164,7 @@ namespace RemoteTech {
             return EdgeType.None;
         }
 
-        public static bool LineOfSight(ISatellite a, ISatellite b) {
+        private static bool LineOfSight(ISatellite a, ISatellite b) {
             foreach (CelestialBody referenceBody in FlightGlobals.Bodies) {
                 Vector3d bodyFromA = referenceBody.position - a.Position;
                 Vector3d bFromA = b.Position - a.Position;
@@ -159,62 +180,54 @@ namespace RemoteTech {
                 }
             }
             return true;
-            // Breaks under timewarp. Unreliable for some reason
-            //Vector3 scaledA = ScaledSpace.LocalToScaledSpace(a.Position);
-            //Vector3 scaledB = ScaledSpace.LocalToScaledSpace(b.Position);
-            //return !Physics.Linecast(scaledA, scaledB, 1 << LayerMask.NameToLayer("Scaled Scenery"));
         }
 
-        public IEnumerator Tick() {
-            yield return 0; // Wait for end of physics frame.
+        public void OnPhysicsUpdate() {
             int takeCount = (mCore.Satellites.Count/REFRESH_TICKS) +
                             (((mCore.Satellites.Count%REFRESH_TICKS) > mTick) ? 1 : 0);
-            if (takeCount > 0) {
-                foreach (VesselSatellite s in mCore.Satellites.Skip(mTickIndex).Take(takeCount)) {
-                    UpdateGraph(s);
-                    if (s.Vessel.loaded && !s.Vessel.packed) {
-                        FindPath(s);
-                    }
+            IEnumerable<ISatellite> commandStations = mCore.Satellites.FindCommandStations();
+            foreach (VesselSatellite s in mCore.Satellites.Skip(mTickIndex).Take(takeCount)) {
+                UpdateGraph(s);
+                RTUtil.Log("Status for {0}: CS?{1}, E?{2}", 
+                    s, commandStations.Contains(s), Graph[s.Guid].ToDebugString());
+                if (s.Vessel.loaded || RTCore.Instance.IsTrackingStation) {
+                    FindPath(s, commandStations);
                 }
             }
             mTickIndex += takeCount;
-
             mTick = (mTick + 1)%REFRESH_TICKS;
             if (mTick == 0) {
                 mTickIndex = 0;
             }
         }
 
-        public void OnSatelliteUnregister(ISatellite s) {
-            Graph.Remove(s);
+        private void OnSatelliteUnregister(ISatellite s) {
+            RTUtil.Log("NetworkManager: SatelliteUnregister {0} {1}", s, s.Guid);
+            Graph.Remove(s.Guid);
         }
 
-        public void OnSatelliteRegister(ISatellite s) {
-            Graph[s] = new List<ISatellite>();
+        private void OnSatelliteRegister(ISatellite s) {
+            RTUtil.Log("NetworkManager: SatelliteRegister {0} {1}", s, s.Guid);
+            Graph[s.Guid] = new List<ISatellite>();
         }
 
-        public void OnEdgeUpdate(TypedEdge<ISatellite> edge) {
+        private void OnEdgeUpdate(TypedEdge<ISatellite> edge) {
             if (EdgeUpdated != null) {
                 EdgeUpdated.Invoke(edge);
+                RTUtil.Log(edge.ToString());
             }
         }
 
-        public void OnConnectionUpdate(Path<ISatellite> path) {
+        private void OnConnectionUpdate(Path<ISatellite> path) {
             if (ConnectionUpdated != null) {
                 ConnectionUpdated.Invoke(path);
             }
         }
-
-        public void Dispose() {
-            mCore.Satellites.Registered -= OnSatelliteRegister;
-            mCore.Satellites.Unregistered -= OnSatelliteUnregister;
-        }
-
-        public int Count { get { return mCore.Satellites.Count + 1; } }
-
+    
         public IEnumerator<ISatellite> GetEnumerator() {
-            return
-            mCore.Satellites.Cast<ISatellite>().Concat(new[] {MissionControl}).GetEnumerator();
+            return mCore.Satellites.Cast<ISatellite>().Concat(new[] {
+                MissionControl
+            }).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
@@ -224,7 +237,6 @@ namespace RemoteTech {
 
     public class MissionControlSatellite : ISatellite {
         public bool Powered { get { return true; } }
-
         public bool Visible { get { return true; } }
         public String Name { get { return "Mission Control"; } set { return; } }
         public Guid Guid { get { return new Guid("5105f5a9d62841c6ad4b21154e8fc488"); } }
@@ -235,16 +247,17 @@ namespace RemoteTech {
                        FlightGlobals.Bodies[1].GetSurfaceNVector(-0.11641926192966, -74.606391806057);
             }
         }
-
         public CelestialBody Body { get { return FlightGlobals.Bodies[1]; } }
-
         public bool LocalControl { get { return false; } }
-
         public float Omni { get { return 9e30f; } }
         public IEnumerable<Dish> Dishes { get { return Enumerable.Empty<Dish>(); } }
 
         public override String ToString() {
             return Name;
+        }
+
+        public override int GetHashCode() {
+            return Guid.GetHashCode();
         }
 
         public bool CommandStation { get { return true; } }

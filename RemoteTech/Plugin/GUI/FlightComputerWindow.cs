@@ -6,102 +6,101 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class FlightComputerWindow : AbstractWindow {
-        private enum Tab {
+        private enum FragmentTab {
             Attitude = 0,
             Rover    = 1,
             Aerial   = 2,
             Progcom  = 3,
         }
 
-        private Tab mTab;
-        private const int NUMBER_OF_TABS = 3;
-        private AttitudeFragment mAttitude;
-        private RoverFragment mRover;
-        private AerialFragment mAerial;
-        private ProgcomFragment mProgcom;
-        private QueueFragment mQueue;
+        private FragmentTab mTab;
+        private const int NUMBER_OF_TABS = 4;
+        private readonly AttitudeFragment mAttitude;
+        private readonly RoverFragment mRover;
+        private readonly AerialFragment mAerial;
+        private readonly ProgcomFragment mProgcom;
+        private readonly QueueFragment mQueue;
         private bool mQueueEnabled;
-        private VesselSatellite mSatellite;
+        private readonly VesselSatellite mSatellite;
 
-        private bool FlightComputerAllowed {
-            get { return mSatellite.Connection.Exists; }
+        private FragmentTab Tab {
+            get {
+                return mTab;
+            }
+            set {
+                if ((int) value >= NUMBER_OF_TABS) {
+                    mTab = (FragmentTab) 0;
+                } else if ((int) value < 0) {
+                    mTab = (FragmentTab)(NUMBER_OF_TABS - 1);
+                } else {
+                    mTab = value;
+                }
+            }
         }
 
         public FlightComputerWindow(VesselSatellite vs)
-            : base("Flight Computer", new Rect(100, 100, 0, 0), WindowAlign.Floating) {
+            : base("", new Rect(100, 100, 0, 0), WindowAlign.Floating) {
             mSatellite = vs;
 
-            mAttitude = new AttitudeFragment(vs, OnClickQueue);
+            mAttitude = new AttitudeFragment(vs, () => mQueueEnabled = !mQueueEnabled);
             mRover = new RoverFragment();
             mAerial = new AerialFragment();
-            mProgcom = new ProgcomFragment();
+            mProgcom = new ProgcomFragment(vs);
 
             mQueue = new QueueFragment(vs);
             mQueueEnabled = false;
         }
 
         public override void Window(int id) {
-            base.Window(id);
-            if (!FlightComputerAllowed) {
-                Hide();
-            }
             GUILayout.BeginHorizontal();
             {
-                GUILayout.BeginVertical();
-                {
-                    GUILayout.BeginHorizontal(GUILayout.Width(150));
-                    {
-                        RTUtil.Button("<", () => {
-                            mTab = mTab == 0
-                                   ? (Tab) NUMBER_OF_TABS - 1
-                                   : (Tab) (((int) mTab - 1)%NUMBER_OF_TABS);
-                        }, GUILayout.ExpandWidth(false));
-                        GUILayout.Label("Mode: " + mTab.ToString(), GUILayout.ExpandWidth(true));
-                        RTUtil.Button(">", () => {
-                            mTab = (Tab) (((int) mTab + 1)%NUMBER_OF_TABS);
-                        }, GUILayout.ExpandWidth(false));
-                    }
-                    GUILayout.EndHorizontal();
-                    switch (mTab) {
-                        case Tab.Attitude:
-                            mAttitude.Draw();
-                            break;
-                        case Tab.Rover:
-                            mRover.Draw();
-                            break;
-                        case Tab.Aerial:
-                            mAerial.Draw();
-                            break;
-                        case Tab.Progcom:
-                            mProgcom.Draw();
-                            break;
-                    }
+                switch (mTab) {
+                    case FragmentTab.Attitude:
+                        mAttitude.Draw();
+                        break;
+                    case FragmentTab.Rover:
+                        mRover.Draw();
+                        break;
+                    case FragmentTab.Aerial:
+                        mAerial.Draw();
+                        break;
+                    case FragmentTab.Progcom:
+                        mProgcom.Draw();
+                        break;
                 }
-                GUILayout.EndVertical();
-                if (mQueueEnabled)
+                if (mQueueEnabled) {
                     mQueue.Draw();
+                }
             }
             GUILayout.EndHorizontal();
+            if (GUI.Button(new Rect(1, 1, 16, 16), "<")) {
+                Tab--;
+            }
+            if (GUI.Button(new Rect(19, 1, 16, 16), ">")) {
+                Tab++;
+            }
+            base.Window(id);
         }
 
-        void OnClickQueue() {
-            mQueueEnabled = !mQueueEnabled;
-            mWindowPosition.width = 150;
+        protected override void Draw() {
+            if (!mSatellite.FlightComputer.InputAllowed) {
+                Hide();
+            }
+            base.Draw();
         }
 
-        public void OnSatellite(ISatellite s) {
+        public void OnSatelliteUnregister(ISatellite s) {
             Hide();
         }
 
         public override void Show() {
-            RTCore.Instance.Satellites.Unregistered += OnSatellite;
+            RTCore.Instance.Satellites.Unregistered += OnSatelliteUnregister;
             base.Show();
         }
 
         public override void Hide() {
             base.Hide();
-            RTCore.Instance.Satellites.Unregistered -= OnSatellite;
+            RTCore.Instance.Satellites.Unregistered -= OnSatelliteUnregister;
         }
-
     }
 }

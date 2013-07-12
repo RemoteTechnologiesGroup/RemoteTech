@@ -20,5 +20,9 @@ namespace RemoteTech {
         public override int GetHashCode() {
             return A.GetHashCode() + B.GetHashCode();
         }
+
+        public override string ToString() {
+            return "TypedEdge(" + A + ", " + B + ", " + Type.ToString() + ")";
+        }
     }
 }

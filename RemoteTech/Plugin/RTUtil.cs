@@ -1,4 +1,5 @@
 using System;
+using KSP.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using UnityEngine;
 using Object = System.Object;
 
 namespace RemoteTech {
-    public static class RTUtil {
+    public static partial class RTUtil {
         public static readonly String[] DistanceUnits = {"", "k", "M", "G", "T"};
 
         private static readonly Regex mDurationRegex =
@@ -108,7 +109,7 @@ namespace RemoteTech {
             if (RTCore.Instance.Network.Planets.ContainsKey(guid)) {
                 return RTCore.Instance.Network.Planets[guid].name;
             }
-            if ((sat = RTCore.Instance.Satellites.For(guid)) != null) {
+            if ((sat = RTCore.Instance.Satellites[guid]) != null) {
                 return sat.Name;
             }
             if (guid.Equals((sat = RTCore.Instance.Network.MissionControl).Guid)) {
@@ -150,70 +151,6 @@ namespace RemoteTech {
             catch (ArgumentException) {
                 return false;
             }
-        }
-
-        public static bool IsSignalProcessor(this ProtoPartModuleSnapshot ppms) {
-            return ppms.GetBool("IsRTSignalProcessor") &&
-                   ppms.GetBool("IsPowered");
-
-        }
-
-        public static bool IsSignalProcessor(this PartModule pm) {
-            return pm.Fields.GetValue<bool>("IsRTSignalProcessor") &&
-                   pm.Fields.GetValue<bool>("IsPowered");
-        }
-
-        public static ISignalProcessor GetSignalProcessor(this Vessel v) {
-            Log("RTUtil: HasSignalProcessor: " + v);
-            if (!v.loaded) {
-                foreach (ProtoPartModuleSnapshot ppms in
-                v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules)) {
-                    if (ppms.IsSignalProcessor()) {
-                        return new ProtoSignalProcessor(ppms, v);
-                    }
-                }
-            }
-            else {
-                foreach (Part p in v.Parts) {
-                    foreach (PartModule pm in p.Modules) {
-                        if (pm.IsSignalProcessor()) {
-                            return pm as ISignalProcessor;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        public static bool IsCommandStation(this ProtoPartModuleSnapshot ppms) {
-            return ppms.GetBool("IsRTCommandStation") && 
-                   ppms.GetBool("IsPowered");
-        }
-
-        public static bool IsCommandStation(this PartModule pm) {
-            return pm.Fields.GetValue<bool>("IsRTCommandStation") &&
-                   pm.Fields.GetValue<bool>("IsPowered");
-        }
-
-        public static bool HasCommandStation(this Vessel v) {
-            Log("RTUtil: HasCommandStation: " + v);
-            if (!v.loaded) {
-                foreach (ProtoPartModuleSnapshot ppms in
-                v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules)) {
-                    if (ppms.IsCommandStation()) {
-                        return true;
-                    }
-                }
-            } else {
-                foreach (Part p in v.Parts) {
-                    foreach (PartModule pm in p.Modules) {
-                        if (pm.IsCommandStation()) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
         }
 
         public static bool IsAntenna(this ProtoPartModuleSnapshot ppms) {
@@ -259,10 +196,12 @@ namespace RemoteTech {
             }
         }
 
-        public static void StateButton(String text, bool state, OnState onStateChange,
-                                        params GUILayoutOption[] options) {
-            if (GUILayout.Toggle(state, text, GUI.skin.button, options) != state) {
-                onStateChange.Invoke(state ? 0 : 1);
+        public static void StateButton(String text, int state, int value, OnState onStateChange,
+                                       params GUILayoutOption[] options) {
+            bool result;
+            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options)) 
+                                                                            != (state == value)) {
+                onStateChange.Invoke(result ? value : ~value);
             }
         }
 
@@ -273,6 +212,14 @@ namespace RemoteTech {
         public static bool ContainsMouse(this Rect window) {
             return window.Contains(new Vector2(Input.mousePosition.x, 
                 Screen.height - Input.mousePosition.y));
+        }
+
+        public static void LoadImage(out Texture2D texture, String fileName) {
+            fileName = fileName.Split('.')[0];
+            texture = GameDatabase.Instance.GetTexture("RemoteTech2/Textures/" + fileName, false);
+            if (texture == null) {
+                texture = new Texture2D(32, 32);
+            }
         }
     }
 }

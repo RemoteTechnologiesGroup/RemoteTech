@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>..\..\..\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;PROGCOM</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -54,14 +54,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugin\External\ProgcomIO.cs" />
+    <Compile Include="Plugin\External\ProgcomUnit.cs" />
     <Compile Include="Plugin\GUI\AntennaConfigFragment.cs" />
+    <Compile Include="Plugin\GUI\GUITextureButtonFactory.cs" />
+    <Compile Include="Plugin\GUI\MapViewConfigFragment.cs" />
     <Compile Include="Plugin\GUI\SatelliteConfigFragment.cs" />
-    <Compile Include="Plugin\SimpleTypes\DelayedActionGroup.cs" />
-    <Compile Include="Plugin\SimpleTypes\DelayedFlightCtrlState.cs" />
-    <Compile Include="Plugin\FlightCommand.cs" />
+    <Compile Include="Plugin\GUI\TimeQuadrantPatcher.cs" />
+    <Compile Include="Plugin\DelayedCommand.cs" />
     <Compile Include="Plugin\GUI\AttitudeFragment.cs" />
     <Compile Include="Plugin\GUI\FlightComputerWindow.cs" />
-    <Compile Include="Plugin\GUI\ProgcomFragment.cs" />
+    <Compile Include="Plugin\External\ProgcomFragment.cs" />
     <Compile Include="Plugin\GUI\QueueFragment.cs" />
     <Compile Include="Plugin\GUI\RoverFragment.cs" />
     <Compile Include="Plugin\GUI\AerialFragment.cs" />
@@ -73,7 +76,7 @@
     <Compile Include="Plugin\AntennaManager.cs" />
     <Compile Include="Plugin\GUI\AntennaWindow.cs" />
     <Compile Include="Plugin\GuiManager.cs" />
-    <Compile Include="Plugin\GUI\MapViewSatelliteWindow.cs" />
+    <Compile Include="Plugin\GUI\SatelliteConfigWindow.cs" />
     <Compile Include="Plugin\Interfaces\IAntenna.cs" />
     <Compile Include="Plugin\Interfaces\IFragment.cs" />
     <Compile Include="Plugin\Interfaces\IGuiWindow.cs" />
@@ -98,7 +101,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Plugin\External\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

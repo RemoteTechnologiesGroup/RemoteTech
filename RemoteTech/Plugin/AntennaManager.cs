@@ -39,7 +39,7 @@ namespace RemoteTech {
         }
 
         public void RegisterProtoFor(Vessel vessel) {
-            RTUtil.Log("AntennaManager: RegisterProtoFor: " + vessel);
+            RTUtil.Log("AntennaManager: RegisterProto: " + vessel);
             Guid key = vessel.id;
 
             if (!mProtoAntennaCache.ContainsKey(key)) {
@@ -61,7 +61,7 @@ namespace RemoteTech {
         }
 
         public void UnregisterProtoFor(Vessel vessel) {
-            RTUtil.Log("AntennaManager: UnregisterProtoFor: " + vessel);
+            RTUtil.Log("AntennaManager: UnregisterProto: " + vessel);
             Guid key = vessel.id;
 
             if (!mProtoAntennaCache.ContainsKey(key)) return;

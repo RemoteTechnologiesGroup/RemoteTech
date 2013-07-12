@@ -9,7 +9,6 @@ namespace RemoteTech {
         public float DishRange { get; private set; }
         public double DishFactor { get; private set; }
         public float OmniRange { get; private set; }
-        public float Consumption { get; private set; }
         public Vessel Vessel { get; private set; }
 
         public Guid DishTarget {
@@ -33,29 +32,30 @@ namespace RemoteTech {
         public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms) {
             ConfigNode n = new ConfigNode();
             ppms.Save(n);
+            Name = p.partInfo.title;
             try {
-                Name = p.partInfo.title;
                 mTarget = new Guid(n.GetValue("RTAntennaTarget"));
                 DishRange = Single.Parse(n.GetValue("RTDishRange"));
                 DishFactor = Double.Parse(n.GetValue("RTDishFactor"));
                 OmniRange = Single.Parse(n.GetValue("RTOmniRange"));
-                Consumption = 0.0f;
             }
             catch (ArgumentException) {
-                throw new ArgumentException("Malformed argument. Could not read values.");
-            }
-            catch (FormatException) {
                 mTarget = Guid.Empty;
+                DishRange = 0.0f;
+                DishFactor = 1.0f;
+                OmniRange = 0.0f;
             }
+
             mProtoPart = p;
             mProtoModule = ppms;
             Vessel = v;
-            RTUtil.Log("ProtoAntenna: " + DishRange + ", " + OmniRange + ", " + Name);
+            RTUtil.Log("ProtoAntenna({0}, {1}, {2}, {3})", 
+                DishRange, OmniRange, Vessel.vesselName, DishTarget);
         }
 
         public override String ToString() {
-            return "ProtoAntenna {" + mTarget + ", " + DishRange + ", " + OmniRange + ", " +
-                   Vessel.vesselName + "}";
+            return String.Format("ProtoAntenna({0}, {1}, {2}, {3})",
+                DishRange, OmniRange, Vessel.vesselName, DishTarget);
         }
     }
 }

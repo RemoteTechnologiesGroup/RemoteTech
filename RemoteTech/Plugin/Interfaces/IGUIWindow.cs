@@ -15,26 +15,26 @@ namespace RemoteTech {
     internal interface IGUIWindow {
         void Show();
         void Hide();
-
     }
 
     public abstract class AbstractWindow : IGUIWindow {
+        public Rect Position;
+        public String Title { get; set; }
+        public bool Enabled = false;
         public static GUIStyle Frame = new GUIStyle(HighLogic.Skin.window);
-
-        private readonly String mTitle;
+        
         private readonly WindowAlign mAlign;
         private readonly int mWindowId;
         private readonly bool[] mUsedPointers;
-        protected Rect mWindowPosition;
 
         static AbstractWindow() {
             Frame.padding = new RectOffset(5, 5, 5, 5);
         }
 
         public AbstractWindow(String title, Rect position, WindowAlign align) {
-            mTitle = title;
+            Title = title;
             mAlign = align;
-            mWindowPosition = position;
+            Position = position;
             mWindowId = (new Random()).Next();
 
             // Dirty reflection hack to remove EZGUI mouse events over the Unity GUI.
@@ -44,21 +44,31 @@ namespace RemoteTech {
         }
 
         public virtual void Show() {
+            if (Enabled)
+                return;
+            Enabled = true;
+            RTUtil.Log("Enabled");
             RenderingManager.AddToPostDrawQueue(0, Draw);
             UIManager.instance.AddMouseTouchPtrListener(EZGUIMouseTouchPtrListener);
         }
 
         public virtual void Hide() {
+            if (!Enabled)
+                return;
+            Enabled = false;
             RenderingManager.RemoveFromPostDrawQueue(0, Draw);
             UIManager.instance.RemoveMouseTouchPtrListener(EZGUIMouseTouchPtrListener);
         }
 
         public virtual void Window(int uid) {
-            if (mTitle != null) {
-                if (GUI.Button(new Rect(mWindowPosition.width - 18, 2, 16, 16), "")) {
+            if (Title != null) {
+                if (GUI.Button(new Rect(Position.width - 18, 2, 16, 16), "")) {
                     Hide();
                 }
                 GUI.DragWindow(new Rect(0, 0, 100000, 20));
+            }
+            if (Event.current.isMouse && Position.ContainsMouse()) {
+                Event.current.Use();
             }
         }
 
@@ -67,33 +77,35 @@ namespace RemoteTech {
                 default:
                     break;
                 case WindowAlign.BottomLeft:
-                    mWindowPosition.x = 0;
-                    mWindowPosition.y = Screen.height - mWindowPosition.height;
+                    Position.x = 0;
+                    Position.y = Screen.height - Position.height;
                     break;
                 case WindowAlign.BottomRight:
-                    mWindowPosition.x = Screen.width - mWindowPosition.width;
-                    mWindowPosition.y = Screen.height - mWindowPosition.height;
+                    Position.x = Screen.width - Position.width;
+                    Position.y = Screen.height - Position.height;
                     break;
                 case WindowAlign.TopLeft:
-                    mWindowPosition.x = 0;
-                    mWindowPosition.y = 0;
+                    Position.x = 0;
+                    Position.y = 0;
                     break;
                 case WindowAlign.TopRight:
-                    mWindowPosition.x = Screen.width - mWindowPosition.width;
-                    mWindowPosition.y = 0;
+                    Position.x = Screen.width - Position.width;
+                    Position.y = 0;
                     break;
             }
-            if (mTitle == null) {
-                mWindowPosition = GUILayout.Window(mWindowId, mWindowPosition, Window, mTitle,
-                    GUIStyle.none);
+            if (Event.current.type == EventType.Layout) {
+                Position.width = 0;
+                Position.height = 0;
+            }
+            if (Title == null) {
+                Position = GUILayout.Window(mWindowId, Position, Window, Title, GUIStyle.none);
             } else {
-                mWindowPosition = GUILayout.Window(mWindowId, mWindowPosition, Window, mTitle);
+                Position = GUILayout.Window(mWindowId, Position, Window, Title);
             }
         }
 
         private void EZGUIMouseTouchPtrListener(POINTER_INFO ptr) {
-            if (mWindowPosition.Contains(new Vector2(ptr.devicePos.x, 
-                                                     Screen.height - ptr.devicePos.y))) {
+            if (Position.Contains(new Vector2(ptr.devicePos.x, Screen.height - ptr.devicePos.y))) {
                 mUsedPointers[0] = true;
             }
         }

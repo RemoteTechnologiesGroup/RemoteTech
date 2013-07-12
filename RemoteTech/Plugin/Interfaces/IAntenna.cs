@@ -7,8 +7,6 @@ namespace RemoteTech {
         double DishFactor { get; }
         float DishRange { get; }
         float OmniRange { get; }
-        float Consumption { get; }
-        Vessel Vessel { get; }
         bool CanTarget { get; }
     }
 }

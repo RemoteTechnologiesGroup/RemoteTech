@@ -8,28 +8,28 @@ namespace RemoteTech {
         public void Draw() {
             GUILayout.BeginVertical(GUILayout.Width(200), GUILayout.ExpandHeight(true));
             {
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Box(mFocus.Name);
+                    RTUtil.Button("Name", () => mFocus.Vessel.RenameVessel(),
+                                  GUILayout.ExpandWidth(false));
+                }
+                GUILayout.EndHorizontal();
+
                 GUILayout.BeginVertical(GUI.skin.box);
                 {
                     mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
                     {
                         for (int i = 0; i < mFocusAntennas.Count; i++) {
-                            RTUtil.StateButton(mFocusAntennas[i].Name, mSelection == i, s => {
-                                mSelection = s == 1 ? i : 0;
-                                mOnClick.Invoke(mFocusAntennas[i]);
+                            RTUtil.StateButton(mFocusAntennas[i].Name, mSelection, i, s => {
+                                mSelection = (s > 0) ? s : 0;
+                                mOnClick.Invoke(mFocusAntennas[mSelection]);
                             });
                         }
                     }
                     GUILayout.EndScrollView();
                 }
                 GUILayout.EndVertical();
-
-                GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Box(mFocus.Name);
-                    RTUtil.Button("Name", () => mFocus.SignalProcessor.Vessel.RenameVessel(),
-                                  GUILayout.ExpandWidth(false));
-                }
-                GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
         }

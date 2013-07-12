@@ -27,7 +27,6 @@ namespace RemoteTech {
                 Node<T> current = priorityQueue.Dequeue();
                 if (current.Closed) continue;
                 current.Closed = true;
-                RTUtil.Log("Current: " + current.Item);
                 if (current.Item.Equals(goal)) {
                     // Return path and cost
                     var reversePath = new List<T>();

@@ -7,13 +7,7 @@ namespace RemoteTech {
         public bool DebugAlwaysConnected = false;
         public float DebugOffsetDelay = 1.0f;
 
-        public Texture2D IconBook = new Texture2D(32, 32, TextureFormat.ARGB32, false);
-        public Texture2D IconCalc = new Texture2D(32, 32, TextureFormat.ARGB32, false);
-        public Texture2D IconConf = new Texture2D(32, 32, TextureFormat.ARGB32, false);
-        public Texture2D IconConn = new Texture2D(32, 32, TextureFormat.ARGB32, false);
-        public Texture2D IconId = new Texture2D(32, 32, TextureFormat.ARGB32, false);
-        public Texture2D IconSat = new Texture2D(32, 32, TextureFormat.ARGB32, false);
-        public Texture2D IconMark = new Texture2D(32, 32, TextureFormat.ARGB32, false);
+        public Texture2D IconCalc;
 
         private readonly RTCore mCore;
 
@@ -23,41 +17,30 @@ namespace RemoteTech {
         }
 
         public void Load() {
-            Load(ref IconBook, "book.png");
-            Load(ref IconCalc, "calc.png");
-            Load(ref IconConf, "conf.png");
-            Load(ref IconConn, "conn.png");
-            Load(ref IconId, "id.png");
-            Load(ref IconSat, "sat.png");
-            Load(ref IconMark, "mark.png");
+            RTUtil.LoadImage(out IconCalc, "calc.png");
+
+            ConfigNode root = ConfigNode.Load("RemoteTech.cfg");
+            ConfigNode rt;
+            if (root != null && root.HasNode("REMOTE_TECH")) {
+                rt = root.GetNode("REMOTE_TECH");
+            } else {
+                rt = new ConfigNode();
+            }
+            mCore.Network.Load(rt);
+            mCore.Gui.Load(rt);
+            mCore.Renderer.Load(rt);
         }
 
         public void Save() {
-            ConfigNode root = new ConfigNode("REMOTE_TECH");
-            ConfigNode renderer = new ConfigNode("RENDERER");
-            ConfigNode network = new ConfigNode("NETWORK");
-            ConfigNode gui = new ConfigNode("GUI");
-            ConfigNode debug = new ConfigNode("DEBUG");
+            ConfigNode root = new ConfigNode();
+            ConfigNode rt = new ConfigNode("REMOTE_TECH");
+            root.AddNode(rt);
 
-            root.AddNode(renderer);
-            root.AddNode(network);
-            root.AddNode(gui);
-            root.AddNode(debug);
+            mCore.Network.Save(rt);
+            mCore.Gui.Save(rt);
+            mCore.Renderer.Save(rt);
 
-            mCore.Network.Save(network);
-            mCore.Gui.Save(gui);
-            mCore.Renderer.Save(renderer);
-            mCore.Network.Save(network);
-
-            root.Save("RemoteTech.cfg");
-        }
-
-        private void Load(ref Texture2D texture, String fileName) {
-            try {
-                texture.LoadImage(KSP.IO.File.ReadAllBytes<RTCore>(fileName));
-            } catch (IOException) {
-                texture = null;
-            }
+            root.Save("RemoteTech.cfg", " RemoteTech2 configuration file.");
         }
     }
 }

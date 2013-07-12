@@ -4,27 +4,21 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleSPU : PartModule, ISignalProcessor {
-        public bool Powered { get { return IsPowered; } }
+        public bool Powered {
+            get { return IsPowered; }
+        }
 
         public bool CommandStation {
-            get { return IsPowered && IsRTCommandStation && 
-                    Vessel.protoVessel.GetVesselCrew().Count >= 4;
-            }
+            get { return IsPowered && IsRTCommandStation && Vessel.GetVesselCrew().Count >= 4; }
         }
 
-        public String Name { get { return Vessel.vesselName; } }
-
-        public Guid Guid { get { return Vessel.id; } }
-
-        public Vector3 Position { get { return Vessel.GetWorldPos3D(); } }
-
-        public CelestialBody Body { get { return Vessel.orbit.referenceBody; } }
-
-        public bool LocalControl {
-            get { return Vessel.protoVessel.GetVesselCrew().Count > 0; }
+        public Guid Guid {
+            get { return Vessel.id; }
         }
 
-        public Vessel Vessel { get { return vessel; } }
+        public Vessel Vessel {
+            get { return vessel; }
+        }
 
         [KSPField(isPersistant = true)]
         public bool IsPowered = false;
@@ -102,7 +96,7 @@ namespace RemoteTech {
             }
             IsPowered = part.isControlSource = true;
             if (mRegisteredId == Guid.Empty ||
-                    !RTCore.Instance.Satellites.For(mRegisteredId).Connection.Exists) {
+                    !RTCore.Instance.Satellites[mRegisteredId].Connection.Exists) {
                 return State.NoConnection;
             }
             return State.Operational;
@@ -132,7 +126,7 @@ namespace RemoteTech {
         public void OnVesselModified(Vessel v) {
             if (IsPowered) {
                 if (vessel == null || (mRegisteredId != Vessel.id)) {
-                    RTCore.Instance.Satellites.Unregister(Vessel.id, this);
+                    RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
                     if (vessel != null) {
                         mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this); 
                     }

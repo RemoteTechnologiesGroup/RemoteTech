@@ -5,77 +5,105 @@ using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech {
-    public class FlightComputer : IDisposable, IEnumerable<String> {
-        private FlightCommand mCommand = new FlightCommand(0.0f);
+    public partial class FlightComputer : IDisposable, IEnumerable<DelayedCommand> {
+#if PROGCOM
+        public ProgcomUnit Progcom { get; private set; }
+#endif
+        public double ExtraDelay { get; set; }
+
+        public bool InputAllowed {
+            get {
+                return mSatellite.Connection.Exists || mSatellite.LocalControl;
+            }
+        }
+
+        public double Delay {
+            get {
+                if (mSatellite.LocalControl) {
+                    return 0.0f;
+                } else {
+                    return mSatellite.Connection.Delay;
+                }
+            }
+        }
+
+        private DelayedCommand mAttitude = AttitudeCommand.Off();
+        private DelayedCommand mBurn = BurnCommand.Off();
         private Vector3 mManeuver;
         private Quaternion mKillrot;
+        private double mLastSpeed;
         private FlightCtrlState mPreviousCtrl = new FlightCtrlState();
 
         private readonly Legacy.FlightComputer mLegacyComputer;
         private readonly VesselSatellite mSatellite;
-        private readonly List<FlightCommand> mFlightCommandBuffer = new List<FlightCommand>();
-        private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer = new PriorityQueue<DelayedFlightCtrlState>();
-        private readonly List<DelayedActionGroup> mActionGroupBuffer = new List<DelayedActionGroup>();
-        
-        public double ExtraDelay { get; set; }
+        private Vessel mAttachedVessel;
+        private readonly List<DelayedCommand> mCommandBuffer
+            = new List<DelayedCommand>();
+        private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer
+            = new PriorityQueue<DelayedFlightCtrlState>();
 
         public FlightComputer(VesselSatellite vs) {
             mSatellite = vs;
             mPreviousCtrl.CopyFrom(vs.Vessel.ctrlState);
             mLegacyComputer = new Legacy.FlightComputer(vs.Vessel);
-            vs.Vessel.OnFlyByWire = this.OnFlyByWirePre + vs.Vessel.OnFlyByWire;
+            mAttachedVessel = vs.Vessel;
+            mAttachedVessel.OnFlyByWire = this.OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
+            RTCore.Instance.FrameUpdated += OnInput;
+#if PROGCOM
+            Progcom = new ProgcomUnit(vs);
+#endif
         }
 
         public void Dispose() {
-            if (mSatellite.Vessel != null) {
-                mSatellite.Vessel.OnFlyByWire -= OnFlyByWirePre;
-                mSatellite.Vessel.OnFlyByWire -= OnFlyByWirePost;
+            RTCore.Instance.FrameUpdated -= OnInput;
+            if (mAttachedVessel != null) {
+                mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
+                mAttachedVessel.OnFlyByWire -= OnFlyByWirePost;
             }
         }
 
-        public void Enqueue(FlightCommand fc) {
-            fc.ExtraDelay = ExtraDelay;
-            mFlightCommandBuffer.Insert(~mFlightCommandBuffer.BinarySearch(fc), fc);
+        public void Enqueue(DelayedCommand fc) {
+            fc.TimeStamp += Delay;
+            fc.ExtraDelay += ExtraDelay;
+            int pos = mCommandBuffer.BinarySearch(fc);
+            if (pos < 0) {
+                mCommandBuffer.Insert(~pos, fc);
+            }
         }
 
-        public void Enqueue(DelayedFlightCtrlState fcs) {
-            fcs.ExtraDelay = ExtraDelay;
-            mFlightCtrlBuffer.Enqueue(fcs);
+        private void Enqueue(FlightCtrlState fs) {
+            DelayedFlightCtrlState dfs = new DelayedFlightCtrlState(fs);
+            dfs.TimeStamp += Delay;
+            mFlightCtrlBuffer.Enqueue(dfs);
         }
 
-        public void Enqueue(DelayedActionGroup ag) {
-            // For some reason the system sometimes catches the key twice?
-            if (mActionGroupBuffer.Count > 0 &&
-                ag.ActionGroup == mActionGroupBuffer[mActionGroupBuffer.Count - 1].ActionGroup &&
-                ag.TimeStamp - mActionGroupBuffer[mActionGroupBuffer.Count - 1].TimeStamp
-                    < 0.1)
+        private void OnInput() {
+            if (mSatellite.Vessel != FlightGlobals.ActiveVessel || !InputAllowed)
                 return;
-
-            ag.ExtraDelay = ExtraDelay;
-            mActionGroupBuffer.Insert(~mActionGroupBuffer.BinarySearch(ag), ag);
+            RTCore.Instance.GetLocks();
+            foreach (KSPActionGroup g in GetActivatedGroup()) {
+                Enqueue(ActionGroupCommand.Group(g));
+            }
         }
 
         private void OnFlyByWirePre(FlightCtrlState fs) {
-            // Ensure the post-onflybywire still has correct execution order
-            mSatellite.Vessel.OnFlyByWire -= OnFlyByWirePost;
-            mSatellite.Vessel.OnFlyByWire += OnFlyByWirePost;
-            // Ensure all controls are still locked
-            RTCore.Instance.GetLocks();
-            // Take inputs if active vessel
-            if (mSatellite.Vessel == FlightGlobals.ActiveVessel && mSatellite.Connection.Exists) {
-                double delayedTime = mSatellite.LocalControl ? 0.0f : RTUtil.GetGameTime() +
-                                                                      mSatellite.Connection.Delay;
-                // Buffer action groups
-                foreach (KSPActionGroup g in GetActivatedGroup()) {
-                    Enqueue(new DelayedActionGroup(g, delayedTime));
-                }
-                // Buffer flight input
-                Enqueue(new DelayedFlightCtrlState(fs, delayedTime));
+            // Ensure the onflybywire is still on the correct vessel, in the correct order
+            mAttachedVessel.OnFlyByWire -= OnFlyByWirePost;
+            mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
+            mAttachedVessel = mSatellite.Vessel;
+            mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
+            mAttachedVessel.OnFlyByWire += OnFlyByWirePost;
+
+            if (mSatellite.Vessel == FlightGlobals.ActiveVessel && InputAllowed) {
+                Enqueue(fs);
             }
-            // Process buffered inputs
-            ProcessInputs(fs);
-            // Process flightcomputer autopilot
+
+            PopBuffers(fs);
             Autopilot(fs);
+
+#if PROGCOM
+            Progcom.OnFlyByWire(fs);
+#endif
         }
 
         private void OnFlyByWirePost(FlightCtrlState fs) {
@@ -124,75 +152,74 @@ namespace RemoteTech {
         }
 
         private void Autopilot(FlightCtrlState fs) {
-            while (mFlightCommandBuffer.Count > 0 &&
-                   mFlightCommandBuffer[0].TimeStamp < RTUtil.GetGameTime()) {
-                if (mSatellite.Connection.Exists) {
-                    mCommand = mFlightCommandBuffer[0];
-                    if (mCommand.Mode == FlightMode.KillRot) {
-                        mKillrot = mSatellite.Vessel.transform.rotation *
-                                   Quaternion.AngleAxis(90, Vector3.left);
-                    }
-                }
-                mFlightCommandBuffer.RemoveAt(0);
+            switch (mAttitude.AttitudeCommand.Mode) {
+                case FlightMode.Off:
+                    break;
+                case FlightMode.KillRot:
+                    HoldOrientation(fs, mKillrot);
+                    break;
+                case FlightMode.AttitudeHold:
+                    HoldAttitude(fs);
+                    break;
+                case FlightMode.AltitudeHold:
+                    HoldAltitude(fs);
+                    break;
             }
-            if (mCommand.ExtraDelay > 0) {
-                mCommand.ExtraDelay -= TimeWarp.deltaTime;
-            } else {
-                switch (mCommand.Mode) {
-                    case FlightMode.Off:
-                        return;
-                    case FlightMode.KillRot:
-                        ProcessOrientation(fs, mKillrot);
-                        break;
-                    case FlightMode.AttitudeHold:
-                        HoldAttitude(fs);
-                        break;
-                    case FlightMode.AltitudeHold:
-                        HoldAltitude(fs);
-                        break;
-                }
-                Burn(fs);
-            }
+            Burn(fs);
         }
 
-        private void ProcessInputs(FlightCtrlState fcs) {
-            // FlightCtrlState
+        private void PopBuffers(FlightCtrlState fcs) {
             FlightCtrlState delayed = mPreviousCtrl;
-            // Pop any due states off the queue
+            // Pop any due flightctrlstates off the queue
             while (mFlightCtrlBuffer.Count > 0 &&
                    mFlightCtrlBuffer.Peek().TimeStamp < RTUtil.GetGameTime()) {
                 delayed = mFlightCtrlBuffer.Dequeue().State;
             }
-            // Decide to nullify it if no connection exists, keep throttle.
-            if (!mSatellite.Connection.Exists) {
-                float keepThrottle = delayed.mainThrottle;
+            if (!InputAllowed) {
+                float keepThrottle = mPreviousCtrl.mainThrottle;
                 delayed.Neutralize();
                 delayed.mainThrottle = keepThrottle;
             }
-            // Apply FlightCtrlState
             fcs.CopyFrom(delayed);
 
-            // Action groups, pop any due activations off the sorted list
-            while (mActionGroupBuffer.Count > 0 &&
-                   mActionGroupBuffer[0].TimeStamp < RTUtil.GetGameTime()) {
-                // Apply if connected
-                if (mSatellite.Connection.Exists) {
-                    KSPActionGroup group = mActionGroupBuffer[0].ActionGroup;
-                    mSatellite.Vessel.ActionGroups.ToggleGroup(group);
-                    if (group == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock) {
-                        Staging.ActivateNextStage();
-                        ResourceDisplay.Instance.Refresh();
-                    }
-                    if (group == KSPActionGroup.RCS) {
-                        FlightInputHandler.fetch.rcslock = !FlightInputHandler.RCSLock;
+            // Pop any due commands
+            if (mCommandBuffer.Count > 0) {
+                for (int i = 0; i < mCommandBuffer.Count && 
+                                        mCommandBuffer[i].TimeStamp < RTUtil.GetGameTime(); i++) {
+                    DelayedCommand dc = mCommandBuffer[i];
+                    if (dc.ExtraDelay > 0) {
+                        dc.ExtraDelay -= TimeWarp.deltaTime;
+                    } else {
+                        if (dc.ActionGroupCommand != null) {
+                            KSPActionGroup ag = dc.ActionGroupCommand.ActionGroup;
+                            mSatellite.Vessel.ActionGroups.ToggleGroup(ag);
+                            if (ag == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock) {
+                                Staging.ActivateNextStage();
+                                ResourceDisplay.Instance.Refresh();
+                            }
+                            if (ag == KSPActionGroup.RCS) {
+                                FlightInputHandler.fetch.rcslock = !FlightInputHandler.RCSLock;
+                            } 
+                        }
+
+                        if (dc.AttitudeCommand != null) {
+                            mKillrot = mSatellite.Vessel.transform.rotation * 
+                                Quaternion.AngleAxis(90, Vector3.left);
+                            mAttitude = dc;
+                        }
+
+                        if (dc.BurnCommand != null) {
+                            mLastSpeed = mSatellite.Vessel.obt_velocity.magnitude;
+                            mBurn = dc; 
+                        }
+
+                        mCommandBuffer.RemoveAt(i);
                     }
                 }
-                // Remove from list
-                mActionGroupBuffer.RemoveAt(0);
             }
         }
 
-        private void ProcessOrientation(FlightCtrlState fs, Quaternion target) {
+        private void HoldOrientation(FlightCtrlState fs, Quaternion target) {
             mLegacyComputer.drive(fs, target);
         }
 
@@ -201,7 +228,7 @@ namespace RemoteTech {
             Vector3 forward = Vector3.zero;
             Vector3 up = Vector3.zero;
             Quaternion rotationReference;
-            switch (mCommand.Frame) {
+            switch (mAttitude.AttitudeCommand.Frame) {
                 case ReferenceFrame.Orbit:
                     forward = v.GetObtVelocity();
                     up = (v.mainBody.position - v.CoM);
@@ -228,7 +255,7 @@ namespace RemoteTech {
             }
             Vector3.OrthoNormalize(ref forward, ref up);
             rotationReference = Quaternion.LookRotation(forward, up);
-            switch (mCommand.Attitude) {
+            switch (mAttitude.AttitudeCommand.Attitude) {
                 case FlightAttitude.Prograde:
                     break;
                 case FlightAttitude.Retrograde:
@@ -247,12 +274,10 @@ namespace RemoteTech {
                     rotationReference = rotationReference * Quaternion.AngleAxis(90, Vector3.left);
                     break;
                 case FlightAttitude.Surface:
-                    rotationReference = rotationReference * Quaternion.Euler(mCommand.Direction.x, 
-                                                                            -mCommand.Direction.y,
-                                                                            mCommand.Direction.z + 180);
+                    rotationReference = rotationReference * mAttitude.AttitudeCommand.Orientation;
                     break;
             }
-            ProcessOrientation(fs, rotationReference);
+            HoldOrientation(fs, rotationReference);
             // Leave out the mapping of the vessel's forward to up because of legacy code.
         }
 
@@ -261,14 +286,17 @@ namespace RemoteTech {
         }
 
         private void Burn(FlightCtrlState fs) {
-            if (!Single.IsNaN(mCommand.Throttle)) {
-                if (!Double.IsNaN(mCommand.Duration) && mCommand.Duration > 0) {
-                    fs.mainThrottle = mCommand.Throttle;
-                    mCommand.Duration -= Time.deltaTime;
-                } else if (!Double.IsNaN(mCommand.DeltaV) && mCommand.DeltaV > 0) {
-                    fs.mainThrottle = mCommand.Throttle;
+            if (!Single.IsNaN(mBurn.BurnCommand.Throttle)) {
+                if (mBurn.BurnCommand.Duration > 0) {
+                    fs.mainThrottle = mBurn.BurnCommand.Throttle;
+                    mBurn.BurnCommand.Duration -= TimeWarp.deltaTime;
+                } else if (mBurn.BurnCommand.DeltaV > 0) {
+                    fs.mainThrottle = mBurn.BurnCommand.Throttle;
+                    mBurn.BurnCommand.DeltaV -= 
+                        Math.Abs(mLastSpeed - mSatellite.Vessel.obt_velocity.magnitude);
+                    mLastSpeed = mSatellite.Vessel.obt_velocity.magnitude;
                 } else {
-                    fs.mainThrottle = 0;
+                    mBurn.BurnCommand.Throttle = Single.NaN;
                 }
             }
         }
@@ -277,31 +305,11 @@ namespace RemoteTech {
             return GetEnumerator();
         }
 
-        public IEnumerator<String> GetEnumerator() {
-            yield return mCommand.ToString();
-
-            var e1 = mFlightCommandBuffer.GetEnumerator();
-            var e2 = mActionGroupBuffer.GetEnumerator();
-
-            bool remaining1 = e1.MoveNext();
-            bool remaining2 = e2.MoveNext();
-
-            while (remaining1 || remaining2) {
-                if (remaining1 && remaining2) {
-                    if (e1.Current.TimeStamp.CompareTo(e2.Current.TimeStamp) > 0) {
-                        yield return e2.Current.ToString();
-                        remaining2 = e2.MoveNext();
-                    } else {
-                        yield return e1.Current.ToString();
-                        remaining1 = e1.MoveNext();
-                    }
-                } else if (remaining2) {
-                    yield return e2.Current.ToString();
-                    remaining2 = e2.MoveNext();
-                } else {
-                    yield return e1.Current.ToString();
-                    remaining1 = e1.MoveNext();
-                }
+        public IEnumerator<DelayedCommand> GetEnumerator() {
+            yield return mAttitude;
+            yield return mBurn;
+            foreach (DelayedCommand dc in mCommandBuffer) {
+                yield return dc;
             }
         } 
     }

@@ -3,20 +3,22 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class GuiManager : IDisposable, IConfigNode {
-        private enum State {
-            NotConnected,
-            LocalControl,
-            Connected,
-        }
-
-        private State mIndicator;
-        private String mTooltip;
-
+        private readonly MapViewConfigFragment mConfig = new MapViewConfigFragment();
+        private readonly TimeQuadrantPatcher mPatcher = new TimeQuadrantPatcher();
         private readonly RTCore mCore;
 
         public GuiManager(RTCore core) {
             mCore = core;
-            MapView.OnEnterMapView += OnEnterMapView;
+            if (TimeWarp.fetch != null) {
+                mPatcher.Patch(TimeWarp.fetch);
+            }
+            mCore.GuiUpdated += Draw;
+        }
+
+        public void Dispose() {
+            mCore.GuiUpdated -= Draw;
+            mPatcher.Undo();
+            mConfig.Dispose();
         }
 
         public void Load(ConfigNode node) {
@@ -27,30 +29,27 @@ namespace RemoteTech {
 
         }
 
-        public void Dispose() {
-            MapView.OnEnterMapView -= OnEnterMapView;
-        }
-
         public void Draw() {
-            if (!MapView.MapIsEnabled) {
-                DrawIndicator();
+            if(MapView.MapIsEnabled) {
+                mConfig.Draw();
             }
         }
 
-        private void OnEnterMapView() {
-            (new MapViewSatelliteWindow(true)).Show();
+        public void OpenFlightComputer() {
+            Vessel v = FlightGlobals.ActiveVessel;
+            OpenFlightComputer(v);
         }
 
         public void OpenFlightComputer(Vessel v) {
-            VesselSatellite s;
-            if ((s = mCore.Satellites.For(v.id)) != null && s.Connection.Exists) {
+            VesselSatellite s = mCore.Satellites[v];
+            if (s!= null && (s.Connection.Exists || s.LocalControl)) {
                 (new FlightComputerWindow(s)).Show();
             }
             
         }
 
         public void OpenAntennaConfig(IAntenna a, Vessel v) {
-            ISatellite s = mCore.Satellites.For(v);
+            ISatellite s = mCore.Satellites[v];
             if (s != null) {
                 (new AntennaWindow(a, s)).Show();
             }
@@ -58,42 +57,6 @@ namespace RemoteTech {
 
         public void OpenAntennaConfig(IAntenna a, ISatellite s) {
             (new AntennaWindow(a, s)).Show();
-        }
-
-        private void DrawIndicator() {
-            GUI.skin = HighLogic.Skin;
-            if (Event.current.type == EventType.Repaint) {
-                VesselSatellite focus = mCore.Satellites.For(FlightGlobals.ActiveVessel);
-                mIndicator = focus.Connection.Exists
-                             ? State.Connected
-                             : (focus.LocalControl ? State.LocalControl : State.NotConnected);
-                mTooltip = (mIndicator != State.NotConnected)
-                           ? "Delay: " + focus.Connection.Delay.ToString("F1") + " seconds."
-                           : "No connection";
-            }
-            switch (mIndicator) {
-                case State.Connected:
-                    GUI.backgroundColor = Color.green;
-                    break;
-                case State.LocalControl:
-                    GUI.backgroundColor = Color.yellow;
-                    break;
-                case State.NotConnected:
-                    GUI.backgroundColor = Color.red;
-                    break;
-            }
-            GUILayout.BeginArea(new Rect(0, 50, 200, 64));
-            {
-                RTUtil.Button(RTCore.Instance.Settings.IconCalc,
-                    () => OpenFlightComputer(FlightGlobals.ActiveVessel),
-                    GUILayout.Width(32), GUILayout.Height(32));
-                GUILayout.Label(
-                    GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) ||
-                        Event.current.control
-                    ? mTooltip
-                    : "", GUILayout.Width(200), GUILayout.Height(32));
-            }
-            GUILayout.EndArea();
         }
     }
 }
