@@ -15,7 +15,7 @@ namespace RemoteTech {
         public override void Window(int id) {
             GUI.skin = null;
 
-            GUILayout.BeginHorizontal(Frame, GUILayout.Height(300), GUILayout.MinWidth(200));
+            GUILayout.BeginHorizontal(Frame, GUILayout.Height(400));
             {
                 if (mAntennaFragment != null) {
                     mAntennaFragment.Draw();

@@ -48,14 +48,12 @@ namespace RemoteTech {
             mLegacyComputer = new Legacy.FlightComputer(vs.Vessel);
             mAttachedVessel = vs.Vessel;
             mAttachedVessel.OnFlyByWire = this.OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
-            RTCore.Instance.FrameUpdated += OnInput;
 #if PROGCOM
             Progcom = new ProgcomUnit(vs);
 #endif
         }
 
         public void Dispose() {
-            RTCore.Instance.FrameUpdated -= OnInput;
             if (mAttachedVessel != null) {
                 mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
                 mAttachedVessel.OnFlyByWire -= OnFlyByWirePost;
@@ -75,15 +73,6 @@ namespace RemoteTech {
             DelayedFlightCtrlState dfs = new DelayedFlightCtrlState(fs);
             dfs.TimeStamp += Delay;
             mFlightCtrlBuffer.Enqueue(dfs);
-        }
-
-        private void OnInput() {
-            if (mSatellite.Vessel != FlightGlobals.ActiveVessel || !InputAllowed)
-                return;
-            RTCore.Instance.GetLocks();
-            foreach (KSPActionGroup g in GetActivatedGroup()) {
-                Enqueue(ActionGroupCommand.Group(g));
-            }
         }
 
         private void OnFlyByWirePre(FlightCtrlState fs) {
@@ -108,47 +97,6 @@ namespace RemoteTech {
 
         private void OnFlyByWirePost(FlightCtrlState fs) {
             mPreviousCtrl.CopyFrom(fs);
-        }
-
-        private IEnumerable<KSPActionGroup> GetActivatedGroup() {
-            if (GameSettings.LAUNCH_STAGES.GetKeyDown())
-                yield return KSPActionGroup.Stage;
-            if (GameSettings.AbortActionGroup.GetKeyDown())
-                yield return KSPActionGroup.Abort;
-            if (GameSettings.RCS_TOGGLE.GetKeyDown())
-                yield return KSPActionGroup.RCS;
-            if (GameSettings.SAS_TOGGLE.GetKeyDown())
-                yield return KSPActionGroup.SAS;
-            if (GameSettings.SAS_HOLD.GetKeyDown())
-                yield return KSPActionGroup.SAS;
-            if (GameSettings.SAS_HOLD.GetKeyUp())
-                yield return KSPActionGroup.SAS;
-            if (GameSettings.BRAKES.GetKeyDown())
-                yield return KSPActionGroup.Brakes;
-            if (GameSettings.LANDING_GEAR.GetKeyDown())
-                yield return KSPActionGroup.Gear;
-            if (GameSettings.HEADLIGHT_TOGGLE.GetKeyDown())
-                yield return KSPActionGroup.Light;
-            if (GameSettings.CustomActionGroup1.GetKeyDown())
-                yield return KSPActionGroup.Custom01;
-            if (GameSettings.CustomActionGroup2.GetKeyDown())
-                yield return KSPActionGroup.Custom02;
-            if (GameSettings.CustomActionGroup3.GetKeyDown())
-                yield return KSPActionGroup.Custom03;
-            if (GameSettings.CustomActionGroup4.GetKeyDown())
-                yield return KSPActionGroup.Custom04;
-            if (GameSettings.CustomActionGroup5.GetKeyDown())
-                yield return KSPActionGroup.Custom05;
-            if (GameSettings.CustomActionGroup6.GetKeyDown())
-                yield return KSPActionGroup.Custom06;
-            if (GameSettings.CustomActionGroup7.GetKeyDown())
-                yield return KSPActionGroup.Custom07;
-            if (GameSettings.CustomActionGroup8.GetKeyDown())
-                yield return KSPActionGroup.Custom08;
-            if (GameSettings.CustomActionGroup9.GetKeyDown())
-                yield return KSPActionGroup.Custom09;
-            if (GameSettings.CustomActionGroup10.GetKeyDown())
-                yield return KSPActionGroup.Custom10;
         }
 
         private void Autopilot(FlightCtrlState fs) {
