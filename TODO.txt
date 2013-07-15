@@ -1,0 +1,5 @@
+Make dish ranges additive;
+FlightComputer rover + aerial;
+Finish TimeQuadrant;
+Document, document, document;
+Get new parts ready;

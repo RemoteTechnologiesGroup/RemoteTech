@@ -25,8 +25,6 @@ namespace RemoteTech {
         
         private readonly WindowAlign mAlign;
         private readonly int mWindowId;
-        private readonly bool[] mUsedPointers;
-
         static AbstractWindow() {
             Frame.padding = new RectOffset(5, 5, 5, 5);
         }
@@ -35,12 +33,7 @@ namespace RemoteTech {
             Title = title;
             mAlign = align;
             Position = position;
-            mWindowId = (new Random()).Next();
-
-            // Dirty reflection hack to remove EZGUI mouse events over the Unity GUI.
-            // Not illegal, no decompilation necessary to obtain data.
-            mUsedPointers = (bool[]) typeof(UIManager).GetField("usedPointers",
-    BindingFlags.NonPublic | BindingFlags.Instance).GetValue(UIManager.instance);
+            mWindowId = (new Random()).Next(); 
         }
 
         public virtual void Show() {
@@ -49,7 +42,7 @@ namespace RemoteTech {
             Enabled = true;
             RTUtil.Log("Enabled");
             RenderingManager.AddToPostDrawQueue(0, Draw);
-            UIManager.instance.AddMouseTouchPtrListener(EZGUIMouseTouchPtrListener);
+            EZGUIPointerDisablePatcher.Register(GetArea);
         }
 
         public virtual void Hide() {
@@ -57,7 +50,7 @@ namespace RemoteTech {
                 return;
             Enabled = false;
             RenderingManager.RemoveFromPostDrawQueue(0, Draw);
-            UIManager.instance.RemoveMouseTouchPtrListener(EZGUIMouseTouchPtrListener);
+            EZGUIPointerDisablePatcher.Unregister(GetArea);
         }
 
         public virtual void Window(int uid) {
@@ -104,10 +97,8 @@ namespace RemoteTech {
             }
         }
 
-        private void EZGUIMouseTouchPtrListener(POINTER_INFO ptr) {
-            if (Position.Contains(new Vector2(ptr.devicePos.x, Screen.height - ptr.devicePos.y))) {
-                mUsedPointers[0] = true;
-            }
+        private Rect GetArea() {
+            return Position;
         }
     }
 }

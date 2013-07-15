@@ -8,7 +8,7 @@ namespace RemoteTech {
         private class Entry {
             public String Text { get; set; }
             public Guid Guid { get; set; }
-            public Color Color { get; set; }
+            public Color Color;
             public List<Entry> SubEntries { get; private set; }
             public bool Expanded { get; set; }
             public int Depth { get; set; }
@@ -24,7 +24,7 @@ namespace RemoteTech {
             {
                 mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
                 {
-                    Color pushColor = GUI.color;
+                    Color pushColor = GUI.backgroundColor;
                     TextAnchor pushAlign = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     // Depth-first tree traversal.
@@ -34,10 +34,11 @@ namespace RemoteTech {
                     }
                     while (dfs.Count > 0) {
                         Entry current = dfs.Pop();
+                        GUI.backgroundColor = current.Color;
 
                         GUILayout.BeginHorizontal();
                         {
-                            GUILayout.Space(20 * current.Depth);
+                            GUILayout.Space(current.Depth * (GUI.skin.button.margin.left + 18));
                             if (current.SubEntries.Count > 0) {
                                 RTUtil.Button(current.Expanded ? "<" : ">", 
                                     () => {
@@ -61,7 +62,7 @@ namespace RemoteTech {
                     }
 
                     GUI.skin.button.alignment = pushAlign;
-                    GUI.color = pushColor;
+                    GUI.backgroundColor = pushColor;
                 }
                 GUILayout.EndScrollView();
             }
@@ -102,10 +103,15 @@ namespace RemoteTech {
                     mEntries[cb.Value] = new Entry();
                 }
 
+
                 Entry current = mEntries[cb.Value];
                 current.Text = cb.Value.bodyName;
                 current.Guid = cb.Key;
-                current.Color = Color.white;
+                current.Color = cb.Value.GetOrbitDriver() != null
+                    ? cb.Value.GetOrbitDriver().Renderer.orbitColor : Color.yellow;
+                current.Color.a = 1.0f;
+                
+                
 
                 if (cb.Value.referenceBody != cb.Value) {
                     CelestialBody parent = cb.Value.referenceBody;
@@ -145,6 +151,7 @@ namespace RemoteTech {
             }
 
             // Set a local depth variable so we can refer to it when rendering.
+            mRootEntry.SubEntries.Reverse();
             Stack<Entry> dfs = new Stack<Entry>();
             foreach (Entry child in mRootEntry.SubEntries) {
                 child.Depth = 0;

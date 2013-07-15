@@ -20,12 +20,21 @@ namespace RemoteTech {
                 {
                     mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
                     {
+                        Color pushColor = GUI.contentColor;
+                        TextAnchor pushAlign = GUI.skin.button.alignment;
+                        GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                         for (int i = 0; i < mFocusAntennas.Count; i++) {
-                            RTUtil.StateButton(mFocusAntennas[i].Name, mSelection, i, s => {
+                            GUI.contentColor = 
+                                (mFocusAntennas[i].DishRange > 0) ? Color.green : Color.red;
+                            String text = mFocusAntennas[i].Name + '\n' +
+                                "Target: " + RTUtil.TargetName(mFocusAntennas[i].DishTarget);
+                            RTUtil.StateButton(text, mSelection, i, s => {
                                 mSelection = (s > 0) ? s : 0;
                                 mOnClick.Invoke(mFocusAntennas[mSelection]);
                             });
                         }
+                        GUI.skin.button.alignment = pushAlign;
+                        GUI.contentColor = pushColor;
                     }
                     GUILayout.EndScrollView();
                 }

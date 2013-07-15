@@ -94,11 +94,13 @@ namespace RemoteTech {
         public MapViewConfigFragment() {
             GameEvents.onPlanetariumTargetChanged.Add(ChangeTarget);
             MapView.OnExitMapView += OnExitMapView;
+            EZGUIPointerDisablePatcher.Register(GetArea);
         }
 
         public void Dispose() {
             GameEvents.onPlanetariumTargetChanged.Remove(ChangeTarget);
             MapView.OnExitMapView -= OnExitMapView;
+            EZGUIPointerDisablePatcher.Unregister(GetArea);
         }
 
         public void OnExitMapView() {
@@ -185,6 +187,10 @@ namespace RemoteTech {
             if (StyleStatusButton != mStyleButtonRed && StyleStatusButton != mStyleButtonGray) {
                 mConfig.Show();
             }
+        }
+
+        private Rect GetArea() {
+            return Position;
         }
     }
 }
