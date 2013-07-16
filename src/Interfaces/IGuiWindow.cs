@@ -66,26 +66,6 @@ namespace RemoteTech {
         }
 
         protected virtual void Draw() {
-            switch (mAlign) {
-                default:
-                    break;
-                case WindowAlign.BottomLeft:
-                    Position.x = 0;
-                    Position.y = Screen.height - Position.height;
-                    break;
-                case WindowAlign.BottomRight:
-                    Position.x = Screen.width - Position.width;
-                    Position.y = Screen.height - Position.height;
-                    break;
-                case WindowAlign.TopLeft:
-                    Position.x = 0;
-                    Position.y = 0;
-                    break;
-                case WindowAlign.TopRight:
-                    Position.x = Screen.width - Position.width;
-                    Position.y = 0;
-                    break;
-            }
             if (Event.current.type == EventType.Layout) {
                 Position.width = 0;
                 Position.height = 0;
@@ -93,7 +73,29 @@ namespace RemoteTech {
             if (Title == null) {
                 Position = GUILayout.Window(mWindowId, Position, Window, Title, GUIStyle.none);
             } else {
-                Position = GUILayout.Window(mWindowId, Position, Window, Title);
+                Position = GUILayout.Window(mWindowId, Position, Window, Title, HighLogic.Skin.window);
+            }
+            if (Event.current.type == EventType.Repaint) {
+                switch (mAlign) {
+                    default:
+                        break;
+                    case WindowAlign.BottomLeft:
+                        Position.x = 0;
+                        Position.y = Screen.height - Position.height;
+                        break;
+                    case WindowAlign.BottomRight:
+                        Position.x = Screen.width - Position.width;
+                        Position.y = Screen.height - Position.height;
+                        break;
+                    case WindowAlign.TopLeft:
+                        Position.x = 0;
+                        Position.y = 0;
+                        break;
+                    case WindowAlign.TopRight:
+                        Position.x = Screen.width - Position.width;
+                        Position.y = 0;
+                        break;
+                }
             }
         }
 

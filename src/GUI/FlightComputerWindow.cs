@@ -14,13 +14,12 @@ namespace RemoteTech {
         }
 
         private FragmentTab mTab;
-        private const int NUMBER_OF_TABS = 4;
         private readonly AttitudeFragment mAttitude;
         private readonly RoverFragment mRover;
         private readonly AerialFragment mAerial;
-#if PROGCOM
+
         private readonly ProgcomFragment mProgcom;
-#endif
+
         private readonly QueueFragment mQueue;
         private bool mQueueEnabled;
         private readonly VesselSatellite mSatellite;
@@ -30,10 +29,11 @@ namespace RemoteTech {
                 return mTab;
             }
             set {
-                if ((int) value >= NUMBER_OF_TABS) {
+                int NumberOfTabs = mProgcom != null ? 4 : 3;
+                if ((int)value >= NumberOfTabs) {
                     mTab = (FragmentTab) 0;
                 } else if ((int) value < 0) {
-                    mTab = (FragmentTab)(NUMBER_OF_TABS - 1);
+                    mTab = (FragmentTab)(NumberOfTabs - 1);
                 } else {
                     mTab = value;
                 }
@@ -47,9 +47,10 @@ namespace RemoteTech {
             mAttitude = new AttitudeFragment(vs, () => mQueueEnabled = !mQueueEnabled);
             mRover = new RoverFragment();
             mAerial = new AerialFragment();
-#if PROGCOM
-            mProgcom = new ProgcomFragment(vs);
-#endif
+
+            if (ProgcomSupport.IsProgcomLoaded) {
+                mProgcom = new ProgcomFragment(vs);
+            }
 
             mQueue = new QueueFragment(vs);
             mQueueEnabled = false;
@@ -68,11 +69,10 @@ namespace RemoteTech {
                     case FragmentTab.Aerial:
                         mAerial.Draw();
                         break;
-#if PROGCOM
                     case FragmentTab.Progcom:
                         mProgcom.Draw();
                         break;
-#endif
+
                 }
                 if (mQueueEnabled) {
                     mQueue.Draw();

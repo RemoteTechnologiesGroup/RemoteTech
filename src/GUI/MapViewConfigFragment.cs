@@ -110,7 +110,7 @@ namespace RemoteTech {
         }
 
         public void Draw() {
-            GUI.depth = 99;
+            GUI.depth = 0;
             GUILayout.BeginArea(Position, mTextures[Texture.Background]);
             {
                 GUILayout.BeginHorizontal();
@@ -184,7 +184,9 @@ namespace RemoteTech {
         }
 
         private void OnClickStatus() {
-            if (StyleStatusButton != mStyleButtonRed && StyleStatusButton != mStyleButtonGray) {
+            if (mConfig.Enabled) {
+                mConfig.Hide();
+            } else if (StyleStatusButton != mStyleButtonRed && StyleStatusButton != mStyleButtonGray) {
                 mConfig.Show();
             }
         }

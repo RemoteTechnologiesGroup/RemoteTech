@@ -5,8 +5,8 @@ using System.Text;
 using UnityEngine;
 
 namespace RemoteTech {
-#if PROGCOM
-    public class ProgcomIO : ProgCom.ISerial {
+
+    public class ProgcomIO : IProgcomSerial {
         private class DelayedCommand {
             public double TimeStamp { get; set; }
 
@@ -81,7 +81,7 @@ namespace RemoteTech {
                 if(Event.current.type == EventType.Repaint) {
                     mMonitor.update();
                 }
-                return mMonitor.image;
+                return mMonitorTexture;
             }
         }
 
@@ -95,19 +95,21 @@ namespace RemoteTech {
 
         private int mNumpad;
         private readonly PriorityQueue<DelayedCommand> mQueue = new PriorityQueue<DelayedCommand>();
-        private readonly ProgCom.Monitor mMonitor;
+        private readonly IProgcomMonitor mMonitor;
+        private readonly Texture2D mMonitorTexture;
         private readonly StringBuilder mConsole = new StringBuilder();
         private readonly ProgcomUnit mProgcom;
         private readonly int mOffset;
-        private ProgCom.ISerial mBus;
+        private IProgcomSerialBus mBus;
         private int mBitOffset;
         private bool mSending;
 
-        public ProgcomIO(ProgcomUnit pcu, int offset, ProgCom.ISerial bus) {
+        public ProgcomIO(ProgcomUnit pcu, int offset, IProgcomSerialBus bus) {
             mProgcom = pcu;
             mOffset = offset;
             mBus = bus;
             mMonitor = CreateMonitor();
+            mMonitorTexture = mMonitor.GetMonitorTexture();
 
             Log("Cleared console.");
         }
@@ -147,7 +149,7 @@ namespace RemoteTech {
             Log(String.Format(message, param));
         }
 
-        public void connect(ProgCom.ISerial bus) {
+        public void connect(IProgcomSerialBus bus) {
             mBus = bus;
         }
 
@@ -200,8 +202,8 @@ namespace RemoteTech {
             }
         }
 
-        private ProgCom.Monitor CreateMonitor() {
-            ProgCom.Monitor monitor = new ProgCom.Monitor(mProgcom.Memory, 
+        private IProgcomMonitor CreateMonitor() {
+            IProgcomMonitor monitor = ProgcomSupport.CreateMonitor(mProgcom.Memory, 
                                                           ProgcomUnit.MONITOR_OFFSET,
                                                           ProgcomUnit.FONT_OFFSET, 
                                                           ProgcomUnit.CLR_OFFSET, 
@@ -218,10 +220,8 @@ namespace RemoteTech {
                 ++i;
             }
 
-            monitor.visible = true;
-
             return monitor;
         }
     }
-#endif
+
 }

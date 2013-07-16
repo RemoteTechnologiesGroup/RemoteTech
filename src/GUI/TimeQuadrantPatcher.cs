@@ -98,13 +98,15 @@ namespace RemoteTech {
         }
 
         public void Undo() {
-            if (mBackup == null && mBackup.TimeQuadrant != null)
+            if (mBackup == null)
                 return;
 
             ScreenSafeUISlideTab tab = mBackup.TimeQuadrant.timeQuadrantTab;
 
-            ((BoxCollider)tab.collider).center = mBackup.Center;
-
+            if (tab.collider != null) {
+                ((BoxCollider)tab.collider).center = mBackup.Center;
+            }
+            
             List<Transform> children = new List<Transform>();
 
             foreach (Transform child in tab.transform) {

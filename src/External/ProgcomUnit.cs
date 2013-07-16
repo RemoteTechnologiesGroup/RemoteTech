@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 
 namespace RemoteTech {
-#if PROGCOM
+
     public class ProgcomUnit {
         public ProgcomIO IO { get; private set; }
         public Int32[] Memory { get { return mCPU.Memory; } }
@@ -19,8 +19,8 @@ namespace RemoteTech {
         public const int EXEC_OFFSET = 128;
  
         private readonly VesselSatellite mSatellite;
-        private readonly ProgCom.Assembler2 mAssembler;
-        private readonly ProgCom.CPUem mCPU;
+        private readonly IProgcomAssembler mAssembler;
+        private readonly IProgcomCPU mCPU;
 
         private bool mEnabled = false;
         private int mCyclesPending = 0;
@@ -87,15 +87,15 @@ namespace RemoteTech {
             return elapsed;
         }
 
-        private static ProgCom.CPUem CreateCPU() {
-            ProgCom.CPUem cpu = new ProgCom.CPUem();
+        private static IProgcomCPU CreateCPU() {
+            IProgcomCPU cpu = ProgcomSupport.CreateCPU();
             cpu.Memory[41] = 1024; // vector precision
             cpu.Memory[43] = 16; // speed precision
             return cpu;
         }
 
-        private ProgCom.Assembler2 CreateAssembler() {
-            ProgCom.Assembler2 assembler = mCPU.getCompatibleAssembler();
+        private IProgcomAssembler CreateAssembler() {
+            IProgcomAssembler assembler = mCPU.GetCompatibleAssembler();
             assembler.bindGlobalCall("GLOBAL_MAINTHROTTLE", 0);
             assembler.bindGlobalCall("GLOBAL_YAW", 1);
             assembler.bindGlobalCall("GLOBAL_PITCH", 2);
@@ -298,5 +298,5 @@ namespace RemoteTech {
             }
         }
     }
-#endif
+
 }
