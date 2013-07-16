@@ -221,5 +221,20 @@ namespace RemoteTech {
                 texture = new Texture2D(32, 32);
             }
         }
+
+        public static float DirectionalSpeed(Vector3 Direction, Vector3d Velocity)
+        {
+            return Math.Abs(Vector3.Dot(Direction, Velocity));
+        }
+
+        public static void findTransformsWithCollider(Transform input, ref HashSet<Transform> list)
+        {
+            if (input.collider != null)
+            {
+                list.Add(input);
+            }
+            foreach (Transform t in input)
+                findTransformsWithCollider(t, ref list);
+        }
     }
 }
