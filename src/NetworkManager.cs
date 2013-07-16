@@ -37,22 +37,19 @@ namespace RemoteTech {
         public MissionControlSatellite MissionControl { get; private set; }
         public Dictionary<Guid, List<ISatellite>> Graph { get; private set; }
 
-        public DynamicTarget GetTarget(Guid guid)
-        {
+        public DynamicTarget GetTarget(Guid guid) {
             if (guid == Guid.Empty)
                 return new DynamicTarget();
             if (guid == MissionControl.Guid)
                 return new DynamicTarget(MissionControl);
 
-            try
-            {
+            try {
                 if (mCore.Satellites[guid] != null)
                     return new DynamicTarget(mCore.Satellites[guid]);
             }
             catch { }
 
-            try
-            {
+            try {
                 if (Planets[guid] != null)
                     return new DynamicTarget(Planets[guid]);
             }
@@ -71,7 +68,7 @@ namespace RemoteTech {
 
         private const int REFRESH_TICKS = 50;
         private readonly RTCore mCore;
-        
+
         private int mTick;
         private int mTickIndex;
 
@@ -99,7 +96,8 @@ namespace RemoteTech {
                 if (node.HasValue("SignalSpeed"))
                     throw new ArgumentException("SignalSpeed non-exist");
                 SignalSpeed = Single.Parse(node.GetValue("SignalSpeed"));
-            } catch (ArgumentException) {
+            }
+            catch (ArgumentException) {
                 SignalSpeed = 299792458.0f;
             }
         }
@@ -125,10 +123,10 @@ namespace RemoteTech {
         public void FindPath(ISatellite start, IEnumerable<ISatellite> commandStations) {
             List<Path<ISatellite>> paths = new List<Path<ISatellite>>();
             foreach (ISatellite root in commandStations.Concat(new[] { MissionControl })) {
-                if(start != root) {
+                if (start != root) {
                     paths.Add(Pathfinder.Solve(start, root, s => {
-                        return Graph[s.Guid].Where(x => x.Powered);   
-                    }, Distance, Distance)); 
+                        return Graph[s.Guid].Where(x => x.Powered);
+                    }, Distance, Distance));
                 }
             }
             OnConnectionUpdate(paths.Min());
@@ -196,7 +194,7 @@ namespace RemoteTech {
                     Vector3d bFromAnorm = bFromA.normalized;
                     if (Vector3d.Dot(bodyFromA, bFromAnorm) < bFromA.magnitude) {
                         Vector3d lateralOffset = bodyFromA -
-                                                 Vector3d.Dot(bodyFromA, bFromAnorm)*bFromAnorm;
+                                                 Vector3d.Dot(bodyFromA, bFromAnorm) * bFromAnorm;
                         if (lateralOffset.magnitude < (referenceBody.Radius - 5)) {
                             return false;
                         }
@@ -207,19 +205,19 @@ namespace RemoteTech {
         }
 
         public void OnPhysicsUpdate() {
-            int takeCount = (mCore.Satellites.Count/REFRESH_TICKS) +
-                            (((mCore.Satellites.Count%REFRESH_TICKS) > mTick) ? 1 : 0);
+            int takeCount = (mCore.Satellites.Count / REFRESH_TICKS) +
+                            (((mCore.Satellites.Count % REFRESH_TICKS) > mTick) ? 1 : 0);
             IEnumerable<ISatellite> commandStations = mCore.Satellites.FindCommandStations();
             foreach (VesselSatellite s in mCore.Satellites.Skip(mTickIndex).Take(takeCount)) {
                 UpdateGraph(s);
-                RTUtil.Log("Status for {0}: CS?{1}, E?{2}", 
+                RTUtil.Log("Status for {0}: CS?{1}, E?{2}",
                     s, commandStations.Contains(s), Graph[s.Guid].ToDebugString());
                 if (s.Vessel.loaded || RTCore.Instance.IsTrackingStation) {
                     FindPath(s, commandStations);
                 }
             }
             mTickIndex += takeCount;
-            mTick = (mTick + 1)%REFRESH_TICKS;
+            mTick = (mTick + 1) % REFRESH_TICKS;
             if (mTick == 0) {
                 mTickIndex = 0;
             }
@@ -247,7 +245,7 @@ namespace RemoteTech {
                 ConnectionUpdated.Invoke(path);
             }
         }
-    
+
         public IEnumerator<ISatellite> GetEnumerator() {
             return mCore.Satellites.Cast<ISatellite>().Concat(new[] {
                 MissionControl
@@ -267,7 +265,7 @@ namespace RemoteTech {
         public Vector3 Position {
             get {
                 return FlightGlobals.Bodies[1].position +
-                       600094*
+                       600094 *
                        FlightGlobals.Bodies[1].GetSurfaceNVector(-0.11641926192966, -74.606391806057);
             }
         }

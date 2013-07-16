@@ -98,15 +98,13 @@ namespace RemoteTech {
         }
 
         public void Undo() {
-            if (mBackup == null)
+            if (mBackup == null && mBackup.TimeQuadrant != null)
                 return;
 
             ScreenSafeUISlideTab tab = mBackup.TimeQuadrant.timeQuadrantTab;
 
-            if (tab.collider != null) {
-                ((BoxCollider)tab.collider).center = mBackup.Center;
-            }
-            
+            ((BoxCollider)tab.collider).center = mBackup.Center;
+
             List<Transform> children = new List<Transform>();
 
             foreach (Transform child in tab.transform) {
@@ -139,7 +137,7 @@ namespace RemoteTech {
                 screenCoord += new Vector2(0, -10f);
                 Rect screenPos = new Rect(5.0f, Screen.height - screenCoord.y, 50, 20);
                 GUI.Label(screenPos, DisplayText, mTextStyle);
-                screenPos.x += 100f;
+                screenPos.x += 80f;
                 if (GUI.Button(screenPos, "", mFlightButton)) {
                     RTCore.Instance.Gui.OpenFlightComputer();
                 }

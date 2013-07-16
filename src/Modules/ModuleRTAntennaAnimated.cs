@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RemoteTech
-{
-    public class ModuleRTAntennaAnimated : ModuleRTAntenna
-    {
+namespace RemoteTech {
+    public class ModuleRTAntennaAnimated : ModuleRTAntenna {
         [KSPField]
         public String
             AnimationName = "antenna",
@@ -30,25 +28,21 @@ namespace RemoteTech
 
         private Transform BreakTransform;
 
-        public override void OnStart(StartState state)
-        {
+        public override void OnStart(StartState state) {
 
             if (BreakTransformName != "")
                 BreakTransform = part.FindModelTransform(BreakTransformName);
 
             mAnimation = part.FindModelAnimators(AnimationName)[0];
-            if (mAnimation == null || mAnimation[AnimationName] == null)
-            {
+            if (mAnimation == null || mAnimation[AnimationName] == null) {
                 RTUtil.Log("ModuleRTAntennaAnimated: Animation error");
                 enabled = false;
                 return;
             }
 
-            if (FixAnimLayers)
-            {
+            if (FixAnimLayers) {
                 int i = 0;
-                foreach (AnimationState s in mAnimation)
-                {
+                foreach (AnimationState s in mAnimation) {
                     s.layer = i;
                     i++;
                 }
@@ -58,8 +52,7 @@ namespace RemoteTech
             mAnimation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
             mAnimation.Play(AnimationName);
 
-            if (Broken)
-            {
+            if (Broken) {
                 HashSet<Transform> toRemove = new HashSet<Transform>();
                 RTUtil.findTransformsWithCollider(BreakTransform, ref toRemove);
                 foreach (Transform t in toRemove)
@@ -78,11 +71,9 @@ namespace RemoteTech
 
         }
 
-        public override void SetState(bool state)
-        {
+        public override void SetState(bool state) {
             base.SetState(state);
-            if (!(AnimationState == 1.0f && AnimationOneShot))
-            {
+            if (!(AnimationState == 1.0f && AnimationOneShot)) {
                 mAnimation[AnimationName].speed = state ? 1.0f : -1.0f;
                 AnimationState = state ? 1.0f : 0.0f;
                 mAnimation.Play(AnimationName);
@@ -90,24 +81,18 @@ namespace RemoteTech
         }
 
         // Unity uses reflection to call this, so call the hidden base member too.
-        public new void FixedUpdate()
-        {
+        public new void FixedUpdate() {
             if (Broken) return;
             base.FixedUpdate();
-            if (SnappingForce > 0 && vessel != null && vessel.atmDensity > 0 && AnimationState == 1.0f)
-            {
-                if (BreakTransform == null)
-                {
-                    if ((Math.Pow(vessel.srf_velocity.magnitude, 2) * vessel.atmDensity * 0.5) > SnappingForce)
-                    {
+            if (SnappingForce > 0 && vessel != null && vessel.atmDensity > 0 && AnimationState == 1.0f) {
+                if (BreakTransform == null) {
+                    if ((Math.Pow(vessel.srf_velocity.magnitude, 2) * vessel.atmDensity * 0.5) > SnappingForce) {
                         part.decouple(0f);
                         SnappingForce = -1.0f;
                     }
                 }
-                else
-                {
-                    if (UseTransformDir)
-                    {
+                else {
+                    if (UseTransformDir) {
                         if ((Math.Pow(RTUtil.DirectionalSpeed(BreakTransform.up, vessel.srf_velocity), 2) * vessel.atmDensity * 0.5) > SnappingForce)
                             BreakApart();
                     }
@@ -117,13 +102,11 @@ namespace RemoteTech
             }
         }
 
-        private void BreakApart()
-        {
+        private void BreakApart() {
             HashSet<Transform> toRemove = new HashSet<Transform>();
             RTUtil.findTransformsWithCollider(BreakTransform, ref toRemove);
 
-            foreach (Transform t in toRemove)
-            {
+            foreach (Transform t in toRemove) {
                 Rigidbody rb = t.gameObject.AddComponent<Rigidbody>();
 
                 rb.angularDrag = 0;

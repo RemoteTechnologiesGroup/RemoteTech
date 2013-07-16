@@ -2,21 +2,17 @@ using System;
 using System.Collections;
 using System.Text;
 
-namespace RemoteTech
-{
-    public class ModuleRTAntenna : PartModule, IAntenna
-    {
+namespace RemoteTech {
+    public class ModuleRTAntenna : PartModule, IAntenna {
         public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
 
         public String Name { get { return part.partInfo.title; } }
 
         protected DynamicTarget DynamicTarget = new DynamicTarget();
 
-        public Guid DishTarget
-        {
+        public Guid DishTarget {
             get { return RTAntennaTargetGuid; }
-            set
-            {
+            set {
                 RTAntennaTargetGuid = value;
                 RTAntennaTarget = value.ToString();
 
@@ -76,8 +72,7 @@ namespace RemoteTech
         [KSPField(isPersistant = true)]
         public String RTAntennaTarget = Guid.Empty.ToString();
 
-        private enum State
-        {
+        private enum State {
             Off,
             Operational,
             NoResources,
@@ -85,33 +80,28 @@ namespace RemoteTech
 
         private Guid mRegisteredId;
 
-        public override string GetInfo()
-        {
+        public override string GetInfo() {
             var info = new StringBuilder();
-            if (Mode1OmniRange > 0)
-            {
+            if (Mode1OmniRange > 0) {
                 info.Append("Omni range: ");
                 info.Append(RTUtil.FormatSI(Mode0OmniRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1OmniRange, "m"));
             }
-            if (Mode1DishRange > 0)
-            {
+            if (Mode1DishRange > 0) {
                 info.Append("Dish range: ");
                 info.Append(RTUtil.FormatSI(Mode0DishRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1DishRange, "m"));
             }
-            if (EnergyCost > 0)
-            {
+            if (EnergyCost > 0) {
                 info.Append("Energy req.: ");
                 info.Append(RTUtil.FormatConsumption(EnergyCost));
             }
             return info.ToString();
         }
 
-        public virtual void SetState(bool state)
-        {
+        public virtual void SetState(bool state) {
             IsRTActive = state;
             RTDishRange = IsRTActive ? Mode1DishRange : Mode0DishRange;
             RTOmniRange = IsRTActive ? Mode1OmniRange : Mode0OmniRange;
@@ -123,59 +113,49 @@ namespace RemoteTech
         }
 
         [KSPEvent(name = "EventToggle", guiActive = false)]
-        public void EventToggle()
-        {
-            if (IsRTActive)
-            {
+        public void EventToggle() {
+            if (IsRTActive) {
                 EventClose();
             }
-            else
-            {
+            else {
                 EventOpen();
             }
         }
 
         [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target")]
-        public void EventTarget()
-        {
+        public void EventTarget() {
             RTCore.Instance.Gui.OpenAntennaConfig(this, vessel);
         }
 
         [KSPEvent(name = "EventOpen", guiActive = false)]
-        public void EventOpen()
-        {
+        public void EventOpen() {
             SetState(true);
         }
 
         [KSPEvent(name = "EventClose", guiActive = false)]
-        public void EventClose()
-        {
+        public void EventClose() {
             SetState(false);
         }
 
         [KSPAction("ActionToggle", KSPActionGroup.None)]
-        public void ActionToggle(KSPActionParam param)
-        {
+        public void ActionToggle(KSPActionParam param) {
             if (Broken) return;
             EventToggle();
         }
 
         [KSPAction("ActionOpen", KSPActionGroup.None)]
-        public void ActionOpen(KSPActionParam param)
-        {
+        public void ActionOpen(KSPActionParam param) {
             if (Broken) return;
             EventOpen();
         }
 
         [KSPAction("ActionClose", KSPActionGroup.None)]
-        public void ActionClose(KSPActionParam param)
-        {
+        public void ActionClose(KSPActionParam param) {
             if (Broken) return;
             EventClose();
         }
 
-        public override void OnStart(StartState state)
-        {
+        public override void OnStart(StartState state) {
             Actions["ActionOpen"].guiName = ActionMode1Name;
             Actions["ActionOpen"].active = true;
             Actions["ActionClose"].guiName = ActionMode0Name;
@@ -195,14 +175,11 @@ namespace RemoteTech
             Fields["GUI_Status"].guiActive = true;
 
 
-            if (RTCore.Instance != null)
-            {
-                try
-                {
+            if (RTCore.Instance != null) {
+                try {
                     DishTarget = new Guid(RTAntennaTarget);
                 }
-                catch (FormatException)
-                {
+                catch (FormatException) {
                     DishTarget = Guid.Empty;
                 }
                 RTDishFactor = Math.Cos(DishAngle * Math.PI / 180);
@@ -214,8 +191,7 @@ namespace RemoteTech
             }
         }
 
-        private IEnumerator UpdateContext()
-        {
+        private IEnumerator UpdateContext() {
             GUI_OmniRange = RTUtil.FormatSI(OmniRange, "m");
             GUI_DishRange = RTUtil.FormatSI(DishRange, "m");
             GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
@@ -225,14 +201,12 @@ namespace RemoteTech
             Events["EventTarget"].active = true;
         }
 
-        private State UpdateControlState()
-        {
+        private State UpdateControlState() {
             if (!IsRTActive) return State.Off;
             ModuleResource request = new ModuleResource();
             float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
-            if (resourceAmount < resourceRequest * 0.9)
-            {
+            if (resourceAmount < resourceRequest * 0.9) {
                 IsPowered = false;
                 return State.NoResources;
             }
@@ -240,11 +214,9 @@ namespace RemoteTech
             return State.Operational;
         }
 
-        public void FixedUpdate()
-        {
+        public void FixedUpdate() {
             if (Broken) return;
-            switch (UpdateControlState())
-            {
+            switch (UpdateControlState()) {
                 case State.Off:
                     GUI_Status = Mode0Name;
                     break;
@@ -257,38 +229,30 @@ namespace RemoteTech
             }
         }
 
-        public void OnDestroy()
-        {
+        public void OnDestroy() {
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
-            if (RTCore.Instance != null)
-            {
+            if (RTCore.Instance != null) {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
             }
         }
 
-        public void OnPartUndock(Part p)
-        {
-            if (p.vessel == vessel)
-            {
+        public void OnPartUndock(Part p) {
+            if (p.vessel == vessel) {
                 OnVesselModified(p.vessel);
             }
         }
 
-        public void OnVesselModified(Vessel v)
-        {
-            if (vessel == null || (mRegisteredId != vessel.id))
-            {
+        public void OnVesselModified(Vessel v) {
+            if (vessel == null || (mRegisteredId != vessel.id)) {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
-                if (vessel != null)
-                {
+                if (vessel != null) {
                     mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
                 }
             }
         }
 
-        public override String ToString()
-        {
+        public override String ToString() {
             return "ModuleRTAntenna {" + DishTarget + ", " + DishRange + ", " + OmniRange + ", " +
                    Vessel.vesselName + "}";
         }

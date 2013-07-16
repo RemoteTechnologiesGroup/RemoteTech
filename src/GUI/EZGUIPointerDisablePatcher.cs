@@ -4,31 +4,19 @@ using UnityEngine;
 
 namespace RemoteTech {
     
-    public class EZGUIPointerDisablePatcher : IDisposable {
+    public class EZGUIPointerDisablePatcher {
         public delegate Rect EZGUIRequestRectDelegate();
         private static EZGUIPointerDisablePatcher mInstance;
         private EZGUIRequestRectDelegate mDelegate;
-        private UIManager mManager;
         private bool[] mUsedPointers;
         
         private EZGUIPointerDisablePatcher() {
-            mManager = UIManager.instance;
             mUsedPointers = (bool[])typeof(UIManager).GetField("usedPointers",
                 BindingFlags.NonPublic | BindingFlags.Instance).GetValue(UIManager.instance);
-            mManager.AddMouseTouchPtrListener(EZGUIMouseTouchPtrListener);
-        }
-
-        public void Dispose() {
-            mManager.RemoveMouseTouchPtrListener(EZGUIMouseTouchPtrListener);
-            mUsedPointers = null;
+            UIManager.instance.AddMouseTouchPtrListener(EZGUIMouseTouchPtrListener);
         }
 
         public static void Register(EZGUIRequestRectDelegate del) {
-            if (mInstance != null && 
-                    mInstance.mManager != UIManager.instance) {
-                mInstance.Dispose();
-                mInstance = null;
-            }
             if (mInstance == null) {
                 mInstance = new EZGUIPointerDisablePatcher();
             }
@@ -38,7 +26,8 @@ namespace RemoteTech {
         public static void Unregister(EZGUIRequestRectDelegate del) {
             mInstance.mDelegate -= del;
             if (mInstance.mDelegate.GetInvocationList().Length == 0) {
-                mInstance.Dispose();
+                UIManager.instance.RemoveMouseTouchPtrListener(mInstance.EZGUIMouseTouchPtrListener);
+                mInstance = null;
             }
         }
 
