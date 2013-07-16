@@ -2,12 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RemoteTech
-{
-    public class ModuleRTTrackAntennaAnimated : ModuleRTAntenna
-    {
-        public enum TrackingModes
-        {
+namespace RemoteTech {
+    public class ModuleRTTrackAntennaAnimated : ModuleRTAntenna {
+        public enum TrackingModes {
             RETRACTED,
             EXTENDING,
             TRACKING,
@@ -48,28 +45,23 @@ namespace RemoteTech
         TrackingModes TrackingMode = TrackingModes.RETRACTED;
 
         bool FlightStarted = false;
-        public override void OnStart(StartState state)
-        {
-            if (Pivot1Name != "" && Pivot2Name != "")
-            {
+        public override void OnStart(StartState state) {
+            if (Pivot1Name != "" && Pivot2Name != "") {
                 Pivot2Dir = part.FindModelTransform(Pivot2Name);
             }
             else
                 RTUtil.Log("ModuleRTAntennaAnimated: Pivot error");
 
             mAnimation = part.FindModelAnimators(AnimationName)[0];
-            if (mAnimation == null || mAnimation[AnimationName] == null)
-            {
+            if (mAnimation == null || mAnimation[AnimationName] == null) {
                 RTUtil.Log("ModuleRTAntennaAnimated: Animation error");
                 enabled = false;
                 return;
             }
 
-            if (FixAnimLayers)
-            {
+            if (FixAnimLayers) {
                 int i = 0;
-                foreach (AnimationState s in mAnimation)
-                {
+                foreach (AnimationState s in mAnimation) {
                     s.layer = i;
                     i++;
                 }
@@ -79,8 +71,7 @@ namespace RemoteTech
             mAnimation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
             mAnimation.Play(AnimationName);
 
-            if (Broken)
-            {
+            if (Broken) {
                 HashSet<Transform> toRemove = new HashSet<Transform>();
                 RTUtil.findTransformsWithCollider(part.FindModelTransform(Pivot1Name), ref toRemove);
                 foreach (Transform t in toRemove)
@@ -96,17 +87,14 @@ namespace RemoteTech
 
             base.OnStart(state);
 
-            if (state != StartState.Editor)
-            {
+            if (state != StartState.Editor) {
                 FlightStarted = true;
                 Pivot1 = new Pivot(part.FindModelTransform(Pivot1Name), Pivot1Speed, Pivot1Range);
                 Pivot2 = new Pivot(part.FindModelTransform(Pivot2Name), Pivot2Speed, Pivot2Range);
 
-                if (IsRTActive)
-                {
+                if (IsRTActive) {
                     TrackingMode = TrackingModes.TRACKING;
-                    if (!DynamicTarget.NoTarget)
-                    {
+                    if (!DynamicTarget.NoTarget) {
                         Pivot1.SnapToTarget(DynamicTarget);
                         Pivot2.SnapToTarget(DynamicTarget);
                     }
@@ -114,29 +102,23 @@ namespace RemoteTech
             }
         }
 
-        public override void SetState(bool state)
-        {
+        public override void SetState(bool state) {
             base.SetState(state);
-            if (!(IsRTActive && AnimationOneShot))
-            {
-                if (state)
-                {
+            if (!(IsRTActive && AnimationOneShot)) {
+                if (state) {
                     if (TrackingMode == TrackingModes.RESETTING)
                         TrackingMode = TrackingModes.TRACKING;
-                    else
-                    {
+                    else {
                         TrackingMode = TrackingModes.EXTENDING;
 
                         mAnimation[AnimationName].speed = Math.Abs(mAnimation[AnimationName].speed);
                         mAnimation.Play(AnimationName);
                     }
                 }
-                else
-                {
+                else {
                     if (TrackingMode == TrackingModes.TRACKING)
                         TrackingMode = TrackingModes.RESETTING;
-                    else
-                    {
+                    else {
                         TrackingMode = TrackingModes.RETRACTING;
 
                         mAnimation[AnimationName].speed = -Math.Abs(mAnimation[AnimationName].speed);
@@ -148,17 +130,14 @@ namespace RemoteTech
 
 
         // Unity uses reflection to call this, so call the hidden base member too.
-        public new void FixedUpdate()
-        {
+        public new void FixedUpdate() {
             if (Broken || !FlightStarted) return;
             base.FixedUpdate();
 
 
-            switch (TrackingMode)
-            {
+            switch (TrackingMode) {
                 case TrackingModes.TRACKING:
-                    if (IsPowered)
-                    {
+                    if (IsPowered) {
                         Pivot1.RotToTarget(DynamicTarget);
                         Pivot2.RotToTarget(DynamicTarget);
 
@@ -175,8 +154,7 @@ namespace RemoteTech
                         TrackingMode = TrackingModes.RETRACTED;
                     break;
                 case TrackingModes.RESETTING:
-                    if (IsPowered && Pivot1.RotToOrigin() & Pivot2.RotToOrigin())
-                    {
+                    if (IsPowered && Pivot1.RotToOrigin() & Pivot2.RotToOrigin()) {
                         mAnimation[AnimationName].speed = -Mathf.Abs(mAnimation[AnimationName].speed);
 
                         mAnimation.Play(AnimationName);
@@ -189,13 +167,11 @@ namespace RemoteTech
             }
         }
 
-        private void BreakApart()
-        {
+        private void BreakApart() {
             HashSet<Transform> toRemove = new HashSet<Transform>();
             RTUtil.findTransformsWithCollider(part.FindModelTransform(Pivot1Name), ref toRemove);
 
-            foreach (Transform t in toRemove)
-            {
+            foreach (Transform t in toRemove) {
                 Rigidbody rb = t.gameObject.AddComponent<Rigidbody>();
 
                 rb.angularDrag = 0;

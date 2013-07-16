@@ -1,25 +1,19 @@
 using System;
 using UnityEngine;
 
-namespace RemoteTech
-{
-    public class DragModel : MonoBehaviour
-    {
+namespace RemoteTech {
+    public class DragModel : MonoBehaviour {
         public float dc = 0, maxDistance = 1000;
         public CelestialBody mb;
-        
-        public float atmDensity
-        {
-            get
-            {
+
+        public float atmDensity {
+            get {
                 return (float)FlightGlobals.getAtmDensity(FlightGlobals.getStaticPressure(mb.GetAltitude(transform.position), mb));
             }
         }
 
-        float area
-        {
-            get
-            {
+        float area {
+            get {
                 if (transform.collider == null) return 0;
 
                 Vector3
@@ -35,34 +29,27 @@ namespace RemoteTech
             }
         }
 
-        Vector3 dragForceDir
-        {
-            get
-            {
+        Vector3 dragForceDir {
+            get {
                 return -((Krakensbane.GetFrameVelocity() + rigidbody.velocity).normalized * dragForce);
             }
         }
 
 
-        float dragForce
-        {
-            get
-            {
+        float dragForce {
+            get {
                 float spd = Speed;
                 return Mathf.Clamp(((float)(Math.Pow(spd, 2) * atmDensity * 0.5F) * area * dc), 0, (spd / TimeWarp.deltaTime) * rigidbody.mass);
             }
         }
 
-        float Speed
-        {
-            get
-            {
+        float Speed {
+            get {
                 return (float)(Krakensbane.GetFrameVelocity() + rigidbody.velocity).magnitude;
             }
         }
 
-        public void FixedUpdate()
-        {
+        public void FixedUpdate() {
             if (mb.atmosphere && mb.GetAltitude(transform.position) < mb.maxAtmosphereAltitude)
                 rigidbody.AddForce(dragForceDir);
         }

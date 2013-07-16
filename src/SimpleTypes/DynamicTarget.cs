@@ -2,12 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RemoteTech
-{
-    public class DynamicTarget
-    {
-        enum TargetTypes
-        {
+namespace RemoteTech {
+    public class DynamicTarget {
+        enum TargetTypes {
             NOTARGET,
             BODY,
             ISATELLITE
@@ -17,19 +14,14 @@ namespace RemoteTech
         CelestialBody body = null;
         ISatellite sat = null;
 
-        public bool NoTarget
-        {
-            get
-            {
+        public bool NoTarget {
+            get {
                 return type == TargetTypes.NOTARGET;
             }
         }
-        public Vector3 Position
-        {
-            get
-            {
-                switch (type)
-                {
+        public Vector3 Position {
+            get {
+                switch (type) {
                     case TargetTypes.ISATELLITE:
                         return sat.Position;
                     case TargetTypes.NOTARGET:
@@ -41,19 +33,16 @@ namespace RemoteTech
             }
         }
 
-        public DynamicTarget(CelestialBody b)
-        {
+        public DynamicTarget(CelestialBody b) {
             body = b;
             type = TargetTypes.BODY;
         }
-        public DynamicTarget(ISatellite s)
-        {
+        public DynamicTarget(ISatellite s) {
             sat = s;
             type = TargetTypes.ISATELLITE;
         }
 
-        public DynamicTarget()
-        {
+        public DynamicTarget() {
             type = TargetTypes.NOTARGET;
         }
 
