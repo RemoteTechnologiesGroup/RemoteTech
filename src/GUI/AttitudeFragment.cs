@@ -3,16 +3,6 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class AttitudeFragment : IFragment {
-        private static String[] MODE_TEXT = new String[] {
-            "OFF", "KILL", "NOD",
-            "ORB", "SRF",  "TGT",
-        };
-
-        private static String[] ATTITUDE_TEXT = new String[] {
-            "GRD\n+", "RAD\n+", "NRM\n+",
-            "GRD\n-", "RAD\n-", "NRM\n-",
-        };
-
         private float Pitch {
             get {
                 float pitch;
@@ -76,7 +66,7 @@ namespace RemoteTech {
             }
         }
 
-        private VesselSatellite mSatellite;
+        private FlightComputer mFlightComputer;
         private OnClick mOnClickQueue;
 
         private int mMode;
@@ -89,8 +79,8 @@ namespace RemoteTech {
         private String mDuration = "0s";
         private bool mRollEnabled = false;
 
-        public AttitudeFragment(VesselSatellite vs, OnClick queue) {
-            mSatellite = vs;
+        public AttitudeFragment(FlightComputer fc, OnClick queue) {
+            mFlightComputer = fc;
             mOnClickQueue = queue;
         }
 
@@ -180,14 +170,14 @@ namespace RemoteTech {
         }
 
         private void OnModeClick(int state) {
-            if (!mSatellite.FlightComputer.InputAllowed)
+            if (!mFlightComputer.InputAllowed)
                 return;
             mMode = (state < 0) ? 0 : state;
             SendAttitudeCommand();
         }
 
         private void OnAttitudeClick(int state) {
-            if (!mSatellite.FlightComputer.InputAllowed)
+            if (!mFlightComputer.InputAllowed)
                 return;
             mAttitude = (state < 0) ? 0 : state;
             if (mMode < 4) {
@@ -231,11 +221,11 @@ namespace RemoteTech {
                         AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Target);
                     break;
             }
-            mSatellite.FlightComputer.Enqueue(newCommand);
+            mFlightComputer.Enqueue(newCommand);
         }
 
         private void OnBurnClick() {
-            mSatellite.FlightComputer.Enqueue(BurnCommand.WithDuration(mThrottle, Duration));
+            mFlightComputer.Enqueue(BurnCommand.WithDuration(mThrottle, Duration));
         }
     }
 }

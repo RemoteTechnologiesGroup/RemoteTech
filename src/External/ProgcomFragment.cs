@@ -7,23 +7,23 @@ namespace RemoteTech {
         private String mCommand = "";
 
         private String Output1 {
-            get { return mSatellite.FlightComputer.Progcom.IO.Output1.ToString(); }
+            get { return mFlightComputer.Progcom.IO.Output1.ToString(); }
         }
 
         private String Output2 {
-            get { return mSatellite.FlightComputer.Progcom.IO.Output2.ToString(); }
+            get { return mFlightComputer.Progcom.IO.Output2.ToString(); }
         }
 
         private String Output3 {
-            get { return mSatellite.FlightComputer.Progcom.IO.Output3.ToString(); }
+            get { return mFlightComputer.Progcom.IO.Output3.ToString(); }
         }
 
         private String Output4 {
-            get { return mSatellite.FlightComputer.Progcom.IO.Output4.ToString(); }
+            get { return mFlightComputer.Progcom.IO.Output4.ToString(); }
         }
 
         private String OutputMsg {
-            get { return mSatellite.FlightComputer.Progcom.IO.OutputMsg.ToString(); }
+            get { return mFlightComputer.Progcom.IO.OutputMsg.ToString(); }
         }
 
         private Vector2 mScrollPosition = Vector2.zero;
@@ -31,19 +31,23 @@ namespace RemoteTech {
         private bool mEnableMonitor;
         private float mMonitorDimension;
 
-        private readonly VesselSatellite mSatellite;
+        private readonly FlightComputer mFlightComputer;
 
-        public ProgcomFragment(VesselSatellite vs) {
-            mSatellite = vs;
-            mTextConsole = new GUIStyle(GUI.skin.box) { wordWrap = true, 
-                                                          alignment = TextAnchor.LowerLeft
-            };
+        public ProgcomFragment(FlightComputer fc) {
+            mFlightComputer = fc;
         }
 
         public void Draw() {
+            if (mTextConsole == null) {
+                mTextConsole = new GUIStyle(GUI.skin.box) {
+                    wordWrap = true,
+                    alignment = TextAnchor.LowerLeft
+                };
+            }
+
             float width3 = 125 / 3 - GUI.skin.button.margin.right * 2.0f / 3.0f;
             float width4 = 125 / 4 - GUI.skin.button.margin.right * 3.0f / 4.0f;
-            ProgcomIO io = mSatellite.FlightComputer.Progcom.IO;
+            ProgcomIO io = mFlightComputer.Progcom.IO;
 
             if (Event.current.type == EventType.KeyDown &&
                     Event.current.keyCode == KeyCode.Return) {
@@ -140,8 +144,8 @@ namespace RemoteTech {
         }
 
         private void Parse(String s) {
-            ProgcomIO io = mSatellite.FlightComputer.Progcom.IO;
-            ProgcomUnit progcom = mSatellite.FlightComputer.Progcom;
+            ProgcomIO io = mFlightComputer.Progcom.IO;
+            ProgcomUnit progcom = mFlightComputer.Progcom;
             if (String.IsNullOrEmpty(s))
                 return;
             io.Log("> " + s);

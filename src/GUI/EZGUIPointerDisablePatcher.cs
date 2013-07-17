@@ -24,8 +24,7 @@ namespace RemoteTech {
         }
 
         public static void Register(EZGUIRequestRectDelegate del) {
-            if (mInstance != null && 
-                    mInstance.mManager != UIManager.instance) {
+            if (mInstance != null && mInstance.mManager != UIManager.instance) {
                 mInstance.Dispose();
                 mInstance = null;
             }
@@ -36,9 +35,11 @@ namespace RemoteTech {
         }
 
         public static void Unregister(EZGUIRequestRectDelegate del) {
-            mInstance.mDelegate -= del;
-            if (mInstance.mDelegate.GetInvocationList().Length == 0) {
-                mInstance.Dispose();
+            if (mInstance != null && mInstance.mDelegate != null) {
+                mInstance.mDelegate -= del;
+                if (mInstance.mDelegate.GetInvocationList().Length == 0) {
+                    mInstance.Dispose();
+                } 
             }
         }
 

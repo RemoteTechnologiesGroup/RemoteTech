@@ -98,38 +98,41 @@ namespace RemoteTech {
         }
 
         public void Undo() {
-            if (mBackup == null)
-                return;
+            try {
 
-            ScreenSafeUISlideTab tab = mBackup.TimeQuadrant.timeQuadrantTab;
+                RenderingManager.RemoveFromPostDrawQueue(0, Draw);
 
-            if (tab.collider != null) {
-                ((BoxCollider)tab.collider).center = mBackup.Center;
-            }
-            
-            List<Transform> children = new List<Transform>();
+                if (mBackup == null)
+                    return;
 
-            foreach (Transform child in tab.transform) {
-                children.Add(child);
-                child.parent = tab.transform.parent;
-            }
+                ScreenSafeUISlideTab tab = mBackup.TimeQuadrant.timeQuadrantTab;
 
-            tab.transform.localScale = mBackup.Scale;
-            tab.expandedPos = mBackup.ExpandedPosition;
-            tab.collapsedPos = mBackup.CollapsedPosition;
-            foreach (Transform child in children) {
-                child.localPosition += new Vector3(0, -0.013f, 0);
-            }
-            tab.Collapse();
-            tab.renderer.material.mainTexture = mBackup.Texture;
+                if (tab.collider != null) {
+                    ((BoxCollider)tab.collider).center = mBackup.Center;
+                }
 
-            foreach (Transform child in children) {
-                child.parent = tab.transform;
-            }
+                List<Transform> children = new List<Transform>();
 
-            mBackup = null;
+                foreach (Transform child in tab.transform) {
+                    children.Add(child);
+                    child.parent = tab.transform.parent;
+                }
 
-            RenderingManager.RemoveFromPostDrawQueue(0, Draw);
+                tab.transform.localScale = mBackup.Scale;
+                tab.expandedPos = mBackup.ExpandedPosition;
+                tab.collapsedPos = mBackup.CollapsedPosition;
+                foreach (Transform child in children) {
+                    child.localPosition += new Vector3(0, -0.013f, 0);
+                }
+                tab.Collapse();
+                tab.renderer.material.mainTexture = mBackup.Texture;
+
+                foreach (Transform child in children) {
+                    child.parent = tab.transform;
+                }
+
+                mBackup = null;
+            } catch (Exception) { }
         }
 
         public void Draw() {

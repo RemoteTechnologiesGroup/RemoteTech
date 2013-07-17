@@ -17,12 +17,10 @@ namespace RemoteTech {
         private readonly AttitudeFragment mAttitude;
         private readonly RoverFragment mRover;
         private readonly AerialFragment mAerial;
-
         private readonly ProgcomFragment mProgcom;
-
         private readonly QueueFragment mQueue;
         private bool mQueueEnabled;
-        private readonly VesselSatellite mSatellite;
+        private readonly FlightComputer mFlightComputer;
 
         private FragmentTab Tab {
             get {
@@ -40,19 +38,19 @@ namespace RemoteTech {
             }
         }
 
-        public FlightComputerWindow(VesselSatellite vs)
+        public FlightComputerWindow(FlightComputer fc)
             : base("", new Rect(100, 100, 0, 0), WindowAlign.Floating) {
-            mSatellite = vs;
+            mFlightComputer = fc;
 
-            mAttitude = new AttitudeFragment(vs, () => mQueueEnabled = !mQueueEnabled);
+            mAttitude = new AttitudeFragment(fc, () => mQueueEnabled = !mQueueEnabled);
             mRover = new RoverFragment();
             mAerial = new AerialFragment();
 
             if (ProgcomSupport.IsProgcomLoaded) {
-                mProgcom = new ProgcomFragment(vs);
+                mProgcom = new ProgcomFragment(fc);
             }
 
-            mQueue = new QueueFragment(vs);
+            mQueue = new QueueFragment(fc);
             mQueueEnabled = false;
         }
 
@@ -89,24 +87,18 @@ namespace RemoteTech {
         }
 
         protected override void Draw() {
-            if (!mSatellite.FlightComputer.InputAllowed) {
+            if (!mFlightComputer.InputAllowed) {
                 Hide();
             }
             base.Draw();
         }
 
-        public void OnSatelliteUnregister(ISatellite s) {
-            Hide();
-        }
-
         public override void Show() {
-            RTCore.Instance.Satellites.Unregistered += OnSatelliteUnregister;
             base.Show();
         }
 
         public override void Hide() {
             base.Hide();
-            RTCore.Instance.Satellites.Unregistered -= OnSatelliteUnregister;
         }
     }
 }

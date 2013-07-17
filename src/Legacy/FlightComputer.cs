@@ -44,10 +44,10 @@ namespace RemoteTech.Legacy {
         bool attitideActive = true;
         double attitudeError;
 
-        private Vessel vessel;
+        public Vessel Vessel { get; set; }
 
         public FlightComputer(Vessel v) {
-            vessel = v;
+            Vessel = v;
         }
 
         public bool roverActive = false;
@@ -58,9 +58,9 @@ namespace RemoteTech.Legacy {
         public void setRover(RoverState StateIn) {
             throttlePID = new RoverPidController(10, 1e-5F, 1e-5F, 50, 1);
             this.roverState = StateIn;
-            altitude = Vector3d.Distance(vessel.mainBody.position, vessel.transform.position);
+            altitude = Vector3d.Distance(Vessel.mainBody.position, Vessel.transform.position);
             roverActive = true;
-            vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, false);
+            Vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, false);
         }
 
         public void drive(FlightCtrlState s, Quaternion Target) {
@@ -68,12 +68,12 @@ namespace RemoteTech.Legacy {
 
                 updateAvailableTorque();
 
-                attitudeError = Math.Abs(Vector3d.Angle(Target * Vector3d.forward, vessel.ReferenceTransform.up));
+                attitudeError = Math.Abs(Vector3d.Angle(Target * Vector3d.forward, Vessel.ReferenceTransform.up));
                 // Used in the drive_limit calculation
                 double precision = Math.Max(0.5, Math.Min(10.0, (torquePYAvailable + torqueThrustPYAvailable * s.mainThrottle) * 20.0 / MoI.magnitude));
 
                 // Direction we want to be facing
-                Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vessel.ReferenceTransform.rotation) * Target);
+                Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(Vessel.ReferenceTransform.rotation) * Target);
 
 
                 Vector3d deltaEuler = new Vector3d(
@@ -123,7 +123,7 @@ namespace RemoteTech.Legacy {
                 act.z = Mathf.Clamp((float)act.z, drive_limit * -1, drive_limit);
 
                 // Met is the time in seconds from take off
-                double met = Planetarium.GetUniversalTime() - vessel.launchTime;
+                double met = Planetarium.GetUniversalTime() - Vessel.launchTime;
 
                 // Reduce effects of controls after launch and returns them gradually
                 // This helps to reduce large wobbles experienced in the first few seconds
@@ -158,24 +158,24 @@ namespace RemoteTech.Legacy {
             }
             if (roverActive) {
                 if (roverState.Steer) {
-                    if (Quaternion.Angle(roverState.roverRotation, vessel.ReferenceTransform.rotation) < roverState.Target) {
-                        s.wheelThrottle = roverState.reverse ? -throttlePID.Control(roverState.Speed - (float)vessel.horizontalSrfSpeed) : throttlePID.Control(roverState.Speed - (float)vessel.horizontalSrfSpeed);
+                    if (Quaternion.Angle(roverState.roverRotation, Vessel.ReferenceTransform.rotation) < roverState.Target) {
+                        s.wheelThrottle = roverState.reverse ? -throttlePID.Control(roverState.Speed - (float)Vessel.horizontalSrfSpeed) : throttlePID.Control(roverState.Speed - (float)Vessel.horizontalSrfSpeed);
                         s.wheelSteer = roverState.Steering;
                     } else {
                         s.wheelThrottle = 0;
                         s.wheelSteer = 0;
                         roverActive = false;
-                        vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+                        Vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
                     }
                 } else {
-                    if ((float)Vector3d.Distance(vessel.mainBody.position + altitude * vessel.mainBody.GetSurfaceNVector(roverState.latitude, roverState.longitude), vessel.transform.position) < roverState.Target) {
-                        s.wheelThrottle = roverState.reverse ? -throttlePID.Control(roverState.Speed - (float)vessel.horizontalSrfSpeed) : throttlePID.Control(roverState.Speed - (float)vessel.horizontalSrfSpeed);
+                    if ((float)Vector3d.Distance(Vessel.mainBody.position + altitude * Vessel.mainBody.GetSurfaceNVector(roverState.latitude, roverState.longitude), Vessel.transform.position) < roverState.Target) {
+                        s.wheelThrottle = roverState.reverse ? -throttlePID.Control(roverState.Speed - (float)Vessel.horizontalSrfSpeed) : throttlePID.Control(roverState.Speed - (float)Vessel.horizontalSrfSpeed);
                         s.wheelSteer = roverState.Steering;
                     } else {
                         s.wheelThrottle = 0;
                         s.wheelSteer = 0;
                         roverActive = false;
-                        vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+                        Vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
                     }
                 }
             }
@@ -183,31 +183,31 @@ namespace RemoteTech.Legacy {
 
         public Vector3d velocityVesselSurfaceUnit {
             get {
-                return (vessel.srf_velocity).normalized;
+                return (Vessel.srf_velocity).normalized;
             }
         }
 
         public Vector3d velocityVesselOrbitNorm {
             get {
-                return vessel.orbit.GetVel().normalized;
+                return Vessel.orbit.GetVel().normalized;
             }
         }
 
         public Vector3d up {
             get {
-                return (CoM - vessel.mainBody.position).normalized;
+                return (CoM - Vessel.mainBody.position).normalized;
             }
         }
 
         public Vector3d CoM {
             get {
-                return vessel.findWorldCenterOfMass();
+                return Vessel.findWorldCenterOfMass();
             }
         }
 
         public Quaternion rotationSurface {
             get {
-                return Quaternion.LookRotation(Vector3d.Exclude(up, (vessel.mainBody.position + vessel.mainBody.transform.up * (float)vessel.mainBody.Radius) - CoM).normalized, up);
+                return Quaternion.LookRotation(Vector3d.Exclude(up, (Vessel.mainBody.position + Vessel.mainBody.transform.up * (float)Vessel.mainBody.Radius) - CoM).normalized, up);
             }
         }
 
@@ -215,15 +215,15 @@ namespace RemoteTech.Legacy {
 
         public Vector3d angularMomentum {
             get {
-                return new Vector3d((Quaternion.Inverse(vessel.ReferenceTransform.rotation) * vessel.rigidbody.angularVelocity).x * MoI.x, (Quaternion.Inverse(vessel.ReferenceTransform.rotation) * vessel.rigidbody.angularVelocity).y * MoI.y, (Quaternion.Inverse(vessel.ReferenceTransform.rotation) * vessel.rigidbody.angularVelocity).z * MoI.z);
+                return new Vector3d((Quaternion.Inverse(Vessel.ReferenceTransform.rotation) * Vessel.rigidbody.angularVelocity).x * MoI.x, (Quaternion.Inverse(Vessel.ReferenceTransform.rotation) * Vessel.rigidbody.angularVelocity).y * MoI.y, (Quaternion.Inverse(Vessel.ReferenceTransform.rotation) * Vessel.rigidbody.angularVelocity).z * MoI.z);
             }
         }
 
         public void updateAvailableTorque() {
-            MoI = vessel.findLocalMOI(CoM);
+            MoI = Vessel.findLocalMOI(CoM);
             torqueRAvailable = torquePYAvailable = torqueThrustPYAvailable = 0;
 
-            foreach (Part p in vessel.parts) {
+            foreach (Part p in Vessel.parts) {
                 MoI += p.Rigidbody.inertiaTensor;
                 if (((p.State == PartStates.ACTIVE) || ((Staging.CurrentStage > Staging.lastStage) && (p.inverseStage == Staging.lastStage)))) {
                     if (p is LiquidEngine && p.RequestFuel(p, 0, Part.getFuelReqId()) && ((LiquidEngine)p).thrustVectoringCapable) {
@@ -238,7 +238,7 @@ namespace RemoteTech.Legacy {
                     }
                 }
 
-                if (vessel.ActionGroups[KSPActionGroup.RCS] && (p is RCSModule || p.Modules.Contains("ModuleRCS"))) {
+                if (Vessel.ActionGroups[KSPActionGroup.RCS] && (p is RCSModule || p.Modules.Contains("ModuleRCS"))) {
                     double maxT = 0;
                     for (int i = 0; i < 6; i++) {
                         if (p is RCSModule && ((RCSModule)p).thrustVectors[i] != Vector3.zero) {

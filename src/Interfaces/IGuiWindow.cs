@@ -55,9 +55,6 @@ namespace RemoteTech {
 
         public virtual void Window(int uid) {
             if (Title != null) {
-                if (GUI.Button(new Rect(Position.width - 18, 2, 16, 16), "")) {
-                    Hide();
-                }
                 GUI.DragWindow(new Rect(0, 0, 100000, 20));
             }
             if (Event.current.isMouse && Position.ContainsMouse()) {
@@ -96,6 +93,9 @@ namespace RemoteTech {
                         Position.y = 0;
                         break;
                 }
+            }
+            if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), "")) {
+                Hide();
             }
         }
 

@@ -54,7 +54,7 @@ namespace RemoteTech {
                 VesselSatellite vs = Satellites[FlightGlobals.ActiveVessel];
                 if (vs != null) {
                     GetLocks();
-                    if (vs.FlightComputer.InputAllowed) {
+                    if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed) {
                         foreach (KSPActionGroup g in GetActivatedGroup()) {
                             vs.FlightComputer.Enqueue(ActionGroupCommand.Group(g));
                         }

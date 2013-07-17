@@ -48,7 +48,7 @@ namespace RemoteTech {
             if (instance == null) {
                 mLoadedSpuCache[key].Add(spu);
                 // Create a new satellite if it's the only loaded signal processor.
-                if(mLoadedSpuCache.Count == 1) {
+                if(mLoadedSpuCache[key].Count == 1) {
                     mSatelliteCache[key] = new VesselSatellite(mLoadedSpuCache[key]);
                     OnRegister(mSatelliteCache[key]);
                 }
@@ -63,7 +63,7 @@ namespace RemoteTech {
         /// <param name="key">The key the signal processor was registered under.</param>
         /// <param name="spu">The signal processor.</param>
         public void Unregister(Guid key, ISignalProcessor spu) {
-            RTUtil.Log("SatelliteManager: Unregister {0}, {1} ", key, spu.Vessel.vesselName);
+            RTUtil.Log("SatelliteManager: Unregister {0}", key);
             // Return if nothing to unregister.
             if (!mLoadedSpuCache.ContainsKey(key)) return;
             // Find instance of the signal processor.
@@ -71,11 +71,13 @@ namespace RemoteTech {
             if (instance_id != -1) {
                 // Remove satellite if no signal processors remain.
                 if (mLoadedSpuCache[key].Count == 1) {
-                    VesselSatellite sat = mSatelliteCache[key];
-                    OnUnregister(sat);
+                    if (mSatelliteCache.ContainsKey(key)) {
+                        VesselSatellite sat = mSatelliteCache[key];
+                        OnUnregister(sat);
+                        mSatelliteCache.Remove(key);
+                    }
                     mLoadedSpuCache[key].RemoveAt(instance_id);
                     mLoadedSpuCache.Remove(key);
-                    mSatelliteCache.Remove(key);
                 } else {
                     mLoadedSpuCache[key].RemoveAt(instance_id);
                 }
@@ -143,12 +145,14 @@ namespace RemoteTech {
         }
 
         private void OnRegister(VesselSatellite vs) {
+            RTUtil.Log("SatelliteManager: Successful register {0}", vs.Name);
             if (Registered != null) {
                 Registered(vs);
             }
         }
 
         private void OnUnregister(VesselSatellite vs) {
+            RTUtil.Log("SatelliteManager: Successful unregister {0}", vs.Name);
             if (Unregistered != null) {
                 Unregistered(vs);
             }

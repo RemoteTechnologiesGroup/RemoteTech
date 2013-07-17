@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class QueueFragment : IFragment {
-        private readonly VesselSatellite mSatellite;
+        private readonly FlightComputer mFlightComputer;
 
         private Vector2 mScrollPosition;
         private String mExtraDelay;
@@ -20,8 +20,8 @@ namespace RemoteTech {
             set { mExtraDelay = value.ToString(); }
         }
 
-        public QueueFragment(VesselSatellite vs) {
-            mSatellite = vs;
+        public QueueFragment(FlightComputer fc) {
+            mFlightComputer = fc;
             mExtraDelay = "0";
         }
 
@@ -31,7 +31,7 @@ namespace RemoteTech {
                 mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, 
                     GUILayout.ExpandHeight(true));
                 {
-                    foreach (DelayedCommand dc in mSatellite.FlightComputer) {
+                    foreach (DelayedCommand dc in mFlightComputer) {
                         GUILayout.Label(Format(dc), GUI.skin.textField);
                     }
                 }

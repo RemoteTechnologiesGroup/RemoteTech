@@ -7,5 +7,8 @@ namespace RemoteTech {
         Guid Guid { get; }
         Vessel Vessel { get; }
         bool CommandStation { get; }
+
+        FlightComputer FlightComputer { get; }
+        VesselSatellite Satellite { get; }
     }
 }

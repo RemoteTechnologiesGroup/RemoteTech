@@ -8,7 +8,7 @@ namespace RemoteTech {
     public class ProgcomUnit {
         public ProgcomIO IO { get; private set; }
         public Int32[] Memory { get { return mCPU.Memory; } }
-        public double Delay { get { return mSatellite.FlightComputer.Delay; } }
+        public double Delay { get { return mSignalProcessor.FlightComputer.Delay; } }
 
         public const int VEC_ACC_OFFSET = 41;
         public const int SPD_ACC_OFFSET = 43;
@@ -18,15 +18,15 @@ namespace RemoteTech {
         public const int CLR_OFFSET = 63472;
         public const int EXEC_OFFSET = 128;
  
-        private readonly VesselSatellite mSatellite;
+        private readonly ISignalProcessor mSignalProcessor;
         private readonly IProgcomAssembler mAssembler;
         private readonly IProgcomCPU mCPU;
 
         private bool mEnabled = false;
         private int mCyclesPending = 0;
 
-        public ProgcomUnit(VesselSatellite vs) {
-            mSatellite = vs;
+        public ProgcomUnit(ISignalProcessor s) {
+            mSignalProcessor = s;
             mCPU = CreateCPU();
             mAssembler = CreateAssembler();
 
@@ -157,21 +157,21 @@ namespace RemoteTech {
         }
 
         private void UpdateMemoryMap(FlightCtrlState fcs) {
-            Vector3d position = mSatellite.Vessel.findWorldCenterOfMass();
+            Vector3d position = mSignalProcessor.Vessel.findWorldCenterOfMass();
 
-            Vector3d eastUnit = mSatellite.Vessel.mainBody.getRFrmVel(position).normalized;
-            Vector3d upUnit = (position - mSatellite.Vessel.mainBody.position).normalized;
+            Vector3d eastUnit = mSignalProcessor.Vessel.mainBody.getRFrmVel(position).normalized;
+            Vector3d upUnit = (position - mSignalProcessor.Vessel.mainBody.position).normalized;
             Vector3d northUnit = Vector3d.Cross(upUnit, eastUnit);
 
-            Vector3d orbitalVelocity = mSatellite.Vessel.GetObtVelocity();
-            Vector3d surfaceVelocity = mSatellite.Vessel.GetSrfVelocity();
-            Vector3d angularVelocity = mSatellite.Vessel.angularVelocity;
+            Vector3d orbitalVelocity = mSignalProcessor.Vessel.GetObtVelocity();
+            Vector3d surfaceVelocity = mSignalProcessor.Vessel.GetSrfVelocity();
+            Vector3d angularVelocity = mSignalProcessor.Vessel.angularVelocity;
 
-            Vector3d shipEastUnit = mSatellite.Vessel.transform.TransformDirection(Vector3d.right);
-            Vector3d shipUpUnit = mSatellite.Vessel.transform.TransformDirection(Vector3d.up);
-            Vector3d shipFwdUnit = mSatellite.Vessel.transform.TransformDirection(Vector3d.forward);
+            Vector3d shipEastUnit = mSignalProcessor.Vessel.transform.TransformDirection(Vector3d.right);
+            Vector3d shipUpUnit = mSignalProcessor.Vessel.transform.TransformDirection(Vector3d.up);
+            Vector3d shipFwdUnit = mSignalProcessor.Vessel.transform.TransformDirection(Vector3d.forward);
 
-            double altitude = mSatellite.Vessel.altitude;
+            double altitude = mSignalProcessor.Vessel.altitude;
 
             Int32[] mem = mCPU.Memory;
             int vectorAccuracy = mem[VEC_ACC_OFFSET];
@@ -232,12 +232,11 @@ namespace RemoteTech {
         }
 
         public void OnFlyByWire(FlightCtrlState fcs) {
-            IO.Tick();
-            if (!mEnabled)
-                return;
-            UpdateMemoryMap(fcs);
-            Tick();
-            Actuate(fcs);
+            if (mEnabled) {
+                UpdateMemoryMap(fcs);
+                Tick();
+                Actuate(fcs);
+            }
         }
 
         private void Actuate(FlightCtrlState fcs) {
@@ -246,18 +245,24 @@ namespace RemoteTech {
             fcs.pitch = RTUtil.Clamp(mCPU.Memory[2] / 1024.0f, -1.0f, 1.0f);
             fcs.roll = RTUtil.Clamp(mCPU.Memory[3] / 1024.0f, -1.0f, 1.0f);
 
+            // Does this even work in stock Progcom? Written data gets 
             fcs.X = RTUtil.Clamp(mCPU.Memory[52] / 1024.0f, -1.0f, 1.0f);
             fcs.Y = RTUtil.Clamp(mCPU.Memory[53] / 1024.0f, -1.0f, 1.0f);
             fcs.Z = RTUtil.Clamp(mCPU.Memory[54] / 1024.0f, -1.0f, 1.0f);
+        }
 
-            if (mCPU.Memory[55] != 0) {
-                ActivateActionGroup(mCPU.Memory[55]);
-                mCPU.Memory[55] = 0;
+        public void OnFixedUpdate() {
+            IO.OnFixedUpdate();
+            if (mEnabled) {
+                if (mCPU.Memory[55] != 0) {
+                    ActivateActionGroup(mCPU.Memory[55]);
+                    mCPU.Memory[55] = 0;
+                } 
             }
         }
 
         private void ActivateActionGroup(int i) {
-            ActionGroupList a = mSatellite.Vessel.ActionGroups;
+            ActionGroupList a = mSignalProcessor.Vessel.ActionGroups;
             switch (i) {
                 case 1:
                     a.ToggleGroup(KSPActionGroup.Custom01);

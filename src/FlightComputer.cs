@@ -10,18 +10,28 @@ namespace RemoteTech {
 
         public double ExtraDelay { get; set; }
 
+        public bool Master {
+            get {
+                return mSignalProcessor.Satellite != null && 
+                       mSignalProcessor.Satellite.FlightComputer == this;
+            }
+        }
+
         public bool InputAllowed {
             get {
-                return mSatellite.Connection.Exists || mSatellite.LocalControl;
+                return mSignalProcessor.Powered && 
+                       mSignalProcessor.Satellite != null &&
+                      (mSignalProcessor.Satellite.Connection.Exists ||
+                       mSignalProcessor.Satellite.LocalControl);
             }
         }
 
         public double Delay {
             get {
-                if (mSatellite.LocalControl) {
+                if (mSignalProcessor.Satellite.LocalControl) {
                     return 0.0f;
                 } else {
-                    return mSatellite.Connection.Delay;
+                    return mSignalProcessor.Satellite.Connection.Delay;
                 }
             }
         }
@@ -34,29 +44,31 @@ namespace RemoteTech {
         private FlightCtrlState mPreviousCtrl = new FlightCtrlState();
 
         private readonly Legacy.FlightComputer mLegacyComputer;
-        private readonly VesselSatellite mSatellite;
-        private Vessel mAttachedVessel;
         private readonly List<DelayedCommand> mCommandBuffer
             = new List<DelayedCommand>();
         private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer
             = new PriorityQueue<DelayedFlightCtrlState>();
 
-        public FlightComputer(VesselSatellite vs) {
-            mSatellite = vs;
-            mPreviousCtrl.CopyFrom(vs.Vessel.ctrlState);
-            mLegacyComputer = new Legacy.FlightComputer(vs.Vessel);
-            mAttachedVessel = vs.Vessel;
-            mAttachedVessel.OnFlyByWire = this.OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
+        private readonly ISignalProcessor mSignalProcessor;
+        private Vessel mAttachedVessel;
 
+        public FlightComputer(ISignalProcessor s) {
+            mSignalProcessor = s;
+            mPreviousCtrl.CopyFrom(s.Vessel.ctrlState);
+            mAttachedVessel = s.Vessel;
+            
+            RTCore.Instance.PhysicsUpdated += OnFixedUpdate;
+
+            mLegacyComputer = new Legacy.FlightComputer(s.Vessel);
             if (ProgcomSupport.IsProgcomLoaded) {
-                Progcom = new ProgcomUnit(vs);
+                Progcom = new ProgcomUnit(s);
             }
         }
 
         public void Dispose() {
+            RTCore.Instance.PhysicsUpdated -= OnFixedUpdate;
             if (mAttachedVessel != null) {
                 mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
-                mAttachedVessel.OnFlyByWire -= OnFlyByWirePost;
             }
         }
 
@@ -76,27 +88,39 @@ namespace RemoteTech {
         }
 
         private void OnFlyByWirePre(FlightCtrlState fs) {
-            // Ensure the onflybywire is still on the correct vessel, in the correct order
-            if (mSatellite.Vessel != null) {
-                mAttachedVessel.OnFlyByWire -= OnFlyByWirePost;
-                mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
-                mAttachedVessel = mSatellite.Vessel;
-                mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
-                mAttachedVessel.OnFlyByWire += OnFlyByWirePost; 
+            if (Master) {
+                if (mAttachedVessel == FlightGlobals.ActiveVessel && InputAllowed) {
+                    Enqueue(fs);
+                }
+
+                PopFlightCtrlState(fs);
+
+                if (mSignalProcessor.Powered) {
+                    Autopilot(fs);
+                    if (Progcom != null) {
+                        Progcom.OnFlyByWire(fs);
+                    }
+                }
+
+                mPreviousCtrl.CopyFrom(fs); 
             }
-
-            if (mSatellite.Vessel == FlightGlobals.ActiveVessel && InputAllowed) {
-                Enqueue(fs);
-            }
-
-            PopBuffers(fs);
-            Autopilot(fs);
-
-            Progcom.OnFlyByWire(fs);
         }
 
-        private void OnFlyByWirePost(FlightCtrlState fs) {
-            mPreviousCtrl.CopyFrom(fs);
+        private void OnFixedUpdate() {
+            // Ensure the onflybywire is still on the correct vessel, in the correct order
+            if (mSignalProcessor.Vessel != null) {
+                mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
+                mAttachedVessel = mSignalProcessor.Vessel;
+                mLegacyComputer.Vessel = mAttachedVessel;
+                mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
+            }
+
+            if (mSignalProcessor.Powered && Master) {
+                PopCommand();
+                if (Progcom != null) {
+                    Progcom.OnFixedUpdate();
+                }  
+            }
         }
 
         private void Autopilot(FlightCtrlState fs) {
@@ -116,7 +140,7 @@ namespace RemoteTech {
             Burn(fs);
         }
 
-        private void PopBuffers(FlightCtrlState fcs) {
+        private void PopFlightCtrlState(FlightCtrlState fcs) {
             FlightCtrlState delayed = mPreviousCtrl;
             // Pop any due flightctrlstates off the queue
             while (mFlightCtrlBuffer.Count > 0 &&
@@ -129,10 +153,11 @@ namespace RemoteTech {
                 delayed.mainThrottle = keepThrottle;
             }
             fcs.CopyFrom(delayed);
+        }
 
-            // Pop any due commands
+        private void PopCommand() {
             if (mCommandBuffer.Count > 0) {
-                for (int i = 0; i < mCommandBuffer.Count && 
+                for (int i = 0; i < mCommandBuffer.Count &&
                                         mCommandBuffer[i].TimeStamp < RTUtil.GetGameTime(); i++) {
                     DelayedCommand dc = mCommandBuffer[i];
                     if (dc.ExtraDelay > 0) {
@@ -140,25 +165,25 @@ namespace RemoteTech {
                     } else {
                         if (dc.ActionGroupCommand != null) {
                             KSPActionGroup ag = dc.ActionGroupCommand.ActionGroup;
-                            mSatellite.Vessel.ActionGroups.ToggleGroup(ag);
+                            mAttachedVessel.ActionGroups.ToggleGroup(ag);
                             if (ag == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock) {
                                 Staging.ActivateNextStage();
                                 ResourceDisplay.Instance.Refresh();
                             }
                             if (ag == KSPActionGroup.RCS) {
                                 FlightInputHandler.fetch.rcslock = !FlightInputHandler.RCSLock;
-                            } 
+                            }
                         }
 
                         if (dc.AttitudeCommand != null) {
-                            mKillrot = mSatellite.Vessel.transform.rotation * 
+                            mKillrot = mAttachedVessel.transform.rotation *
                                 Quaternion.AngleAxis(90, Vector3.left);
                             mAttitude = dc;
                         }
 
                         if (dc.BurnCommand != null) {
-                            mLastSpeed = mSatellite.Vessel.obt_velocity.magnitude;
-                            mBurn = dc; 
+                            mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
+                            mBurn = dc;
                         }
 
                         mCommandBuffer.RemoveAt(i);
@@ -172,7 +197,7 @@ namespace RemoteTech {
         }
 
         private void HoldAttitude(FlightCtrlState fs) {
-            Vessel v = mSatellite.Vessel;
+            Vessel v = mAttachedVessel;
             Vector3 forward = Vector3.zero;
             Vector3 up = Vector3.zero;
             Quaternion rotationReference;
@@ -240,9 +265,9 @@ namespace RemoteTech {
                     mBurn.BurnCommand.Duration -= TimeWarp.deltaTime;
                 } else if (mBurn.BurnCommand.DeltaV > 0) {
                     fs.mainThrottle = mBurn.BurnCommand.Throttle;
-                    mBurn.BurnCommand.DeltaV -= 
-                        Math.Abs(mLastSpeed - mSatellite.Vessel.obt_velocity.magnitude);
-                    mLastSpeed = mSatellite.Vessel.obt_velocity.magnitude;
+                    mBurn.BurnCommand.DeltaV -=
+                        Math.Abs(mLastSpeed - mAttachedVessel.obt_velocity.magnitude);
+                    mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
                 } else {
                     mBurn.BurnCommand.Throttle = Single.NaN;
                 }

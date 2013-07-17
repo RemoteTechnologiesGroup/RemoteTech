@@ -41,11 +41,16 @@ namespace RemoteTech {
         }
 
         public void OpenFlightComputer(Vessel v) {
-            VesselSatellite s = mCore.Satellites[v];
-            if (s!= null && (s.Connection.Exists || s.LocalControl)) {
-                (new FlightComputerWindow(s)).Show();
+            VesselSatellite vs = mCore.Satellites[v];
+            if (vs != null && vs.FlightComputer != null) {
+                (new FlightComputerWindow(vs.FlightComputer)).Show();
             }
-            
+        }
+
+        public void OpenFlightComputer(ISignalProcessor sp) {
+            if (sp.FlightComputer != null) {
+                (new FlightComputerWindow(sp.FlightComputer)).Show();
+            }
         }
 
         public void OpenAntennaConfig(IAntenna a, Vessel v) {

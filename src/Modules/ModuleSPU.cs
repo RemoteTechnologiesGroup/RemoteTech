@@ -5,20 +5,30 @@ using UnityEngine;
 namespace RemoteTech {
     public class ModuleSPU : PartModule, ISignalProcessor {
         public bool Powered {
-            get { return IsPowered; }
+            get { return mRegisteredId != Guid.Empty && IsPowered; }
         }
 
         public bool CommandStation {
-            get { return IsPowered && IsRTCommandStation && Vessel.GetVesselCrew().Count >= 4; }
+            get { return Powered && IsRTCommandStation && Vessel.GetVesselCrew().Count >= 6; }
         }
 
         public Guid Guid {
-            get { return Vessel.id; }
+            get { return Vessel == null ? Guid.Empty : Vessel.id; }
         }
 
         public Vessel Vessel {
             get { return vessel; }
         }
+
+        public VesselSatellite Satellite {
+            get {
+                return mRegisteredId == Guid.Empty 
+                    ? null 
+                    : RTCore.Instance.Satellites[mRegisteredId];
+            }
+        }
+
+        public FlightComputer FlightComputer { get; private set; }
 
         [KSPField(isPersistant = true)]
         public bool IsPowered = false;
@@ -34,6 +44,11 @@ namespace RemoteTech {
 
         [KSPField(guiName = "State", guiActive = true)]
         public String Status;
+
+        [KSPEvent(name = "OpenFC", active = true, guiActive = true, guiName = "Flight Computer")]
+        public void OpenFC() {
+            RTCore.Instance.Gui.OpenFlightComputer(this);
+        }
 
         private enum State {
             Operational,
@@ -57,6 +72,9 @@ namespace RemoteTech {
             if (RTCore.Instance != null) {
                 mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this);
             }
+            if (FlightComputer == null) {
+                FlightComputer = new FlightComputer(this);
+            }
         }
 
         public void OnDestroy() {
@@ -64,6 +82,10 @@ namespace RemoteTech {
             GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null) {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
+                mRegisteredId = Guid.Empty;
+            }
+            if (FlightComputer != null) {
+                FlightComputer.Dispose();
             }
         }
 
@@ -95,8 +117,7 @@ namespace RemoteTech {
                 }
             }
             IsPowered = part.isControlSource = true;
-            if (mRegisteredId == Guid.Empty ||
-                    !RTCore.Instance.Satellites[mRegisteredId].Connection.Exists) {
+            if (Satellite == null || !Satellite.Connection.Exists) {
                 return State.NoConnection;
             }
             return State.Operational;

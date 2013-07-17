@@ -114,7 +114,7 @@ namespace RemoteTech {
             Log("Cleared console.");
         }
 
-        public void Tick() {
+        public void OnFixedUpdate() {
             PopQueue();
         }
 

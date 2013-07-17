@@ -65,8 +65,10 @@ namespace RemoteTech
             IsRTActive = false,
             IsRTAntenna = true,
             Broken = false;
+
         [KSPField(isPersistant = true)]
         public double RTDishFactor = 1.0f;
+
         [KSPField(isPersistant = true)]
         public float
             RTOmniRange = 0.0f,

@@ -228,6 +228,9 @@ namespace RemoteTech {
         private void OnSatelliteUnregister(ISatellite s) {
             RTUtil.Log("NetworkManager: SatelliteUnregister {0} {1}", s, s.Guid);
             Graph.Remove(s.Guid);
+            foreach (var list in Graph.Values) {
+                list.Remove(s);
+            }
         }
 
         private void OnSatelliteRegister(ISatellite s) {

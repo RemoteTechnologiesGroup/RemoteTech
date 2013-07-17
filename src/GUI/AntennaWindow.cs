@@ -13,8 +13,12 @@ namespace RemoteTech {
         }
 
         public override void Window(int id) {
+            GUILayout.BeginVertical(GUILayout.Height(400));
+            {
+                mAntennaFragment.Draw();  
+            }
+            GUILayout.EndVertical();
             base.Window(id);
-            mAntennaFragment.Draw();
         }
 
         public override void Show() {

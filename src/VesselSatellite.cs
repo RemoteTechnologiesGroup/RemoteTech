@@ -77,14 +77,18 @@ namespace RemoteTech {
             }
         }
 
-        public FlightComputer FlightComputer { get; private set; }
+        public FlightComputer FlightComputer {
+            get {
+                return mSignalProcessors[0].FlightComputer;
+            }
+        }
+
         public Path<ISatellite> Connection { get; set; }
 
         private List<ISignalProcessor> mSignalProcessors; 
 
         public VesselSatellite(List<ISignalProcessor> parts) {
             mSignalProcessors = parts;
-            FlightComputer = new FlightComputer(this);
             Connection = Path.Empty<ISatellite>(this);
             RTCore.Instance.Network.ConnectionUpdated += OnConnectionUpdate;
         }
@@ -94,7 +98,6 @@ namespace RemoteTech {
         }
 
         public void Dispose() {
-            FlightComputer.Dispose();
             RTCore.Instance.Network.ConnectionUpdated -= OnConnectionUpdate;
         }
 
