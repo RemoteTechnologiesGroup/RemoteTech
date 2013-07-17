@@ -6,9 +6,8 @@ using UnityEngine;
 
 namespace RemoteTech {
     public partial class FlightComputer : IDisposable, IEnumerable<DelayedCommand> {
-#if PROGCOM
         public ProgcomUnit Progcom { get; private set; }
-#endif
+
         public double ExtraDelay { get; set; }
 
         public bool InputAllowed {
@@ -48,9 +47,10 @@ namespace RemoteTech {
             mLegacyComputer = new Legacy.FlightComputer(vs.Vessel);
             mAttachedVessel = vs.Vessel;
             mAttachedVessel.OnFlyByWire = this.OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
-#if PROGCOM
-            Progcom = new ProgcomUnit(vs);
-#endif
+
+            if (ProgcomSupport.IsProgcomLoaded) {
+                Progcom = new ProgcomUnit(vs);
+            }
         }
 
         public void Dispose() {
@@ -77,11 +77,13 @@ namespace RemoteTech {
 
         private void OnFlyByWirePre(FlightCtrlState fs) {
             // Ensure the onflybywire is still on the correct vessel, in the correct order
-            mAttachedVessel.OnFlyByWire -= OnFlyByWirePost;
-            mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
-            mAttachedVessel = mSatellite.Vessel;
-            mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
-            mAttachedVessel.OnFlyByWire += OnFlyByWirePost;
+            if (mSatellite.Vessel != null) {
+                mAttachedVessel.OnFlyByWire -= OnFlyByWirePost;
+                mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
+                mAttachedVessel = mSatellite.Vessel;
+                mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
+                mAttachedVessel.OnFlyByWire += OnFlyByWirePost; 
+            }
 
             if (mSatellite.Vessel == FlightGlobals.ActiveVessel && InputAllowed) {
                 Enqueue(fs);
@@ -90,9 +92,7 @@ namespace RemoteTech {
             PopBuffers(fs);
             Autopilot(fs);
 
-#if PROGCOM
             Progcom.OnFlyByWire(fs);
-#endif
         }
 
         private void OnFlyByWirePost(FlightCtrlState fs) {

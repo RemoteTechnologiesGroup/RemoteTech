@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace RemoteTech {
-#if PROGCOM
+
     public class ProgcomFragment : IFragment {
         private String mCommand = "";
 
@@ -176,5 +176,5 @@ namespace RemoteTech {
             }
         }
     }
-#endif
+
 }

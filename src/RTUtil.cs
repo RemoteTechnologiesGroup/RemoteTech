@@ -9,7 +9,7 @@ using Object = System.Object;
 
 namespace RemoteTech {
     public static partial class RTUtil {
-        public static readonly String[] DistanceUnits = { "", "k", "M", "G", "T" };
+        public static readonly String[] DistanceUnits = {"", "k", "M", "G", "T"};
 
         private static readonly Regex mDurationRegex =
             new Regex(@"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)?" +
@@ -32,8 +32,7 @@ namespace RemoteTech {
                     }
                 }
                 return true;
-            }
-            else {
+            } else {
                 double parsedDouble;
                 bool result = Double.TryParse(duration, out parsedDouble);
                 time = TimeSpan.FromSeconds(result ? parsedDouble : 0);
@@ -64,8 +63,8 @@ namespace RemoteTech {
         }
 
         public static String FormatSI(double value, String unit) {
-            int i = (int)RTUtil.Clamp(Math.Floor(Math.Log10(value)) / 3,
-                0, DistanceUnits.Length - 1);
+            int i = (int) RTUtil.Clamp(Math.Floor(Math.Log10(value)) / 3, 
+                0,  DistanceUnits.Length - 1);
             value /= Math.Pow(1000, i);
             return value.ToString("F2") + DistanceUnits[i] + unit;
         }
@@ -103,7 +102,7 @@ namespace RemoteTech {
 
         public static String TargetName(Guid guid) {
             ISatellite sat;
-
+            
             if (guid == System.Guid.Empty) {
                 return "No Target";
             }
@@ -123,7 +122,7 @@ namespace RemoteTech {
             char[] name = cb.GetName().ToCharArray();
             var s = new StringBuilder();
             for (int i = 0; i < 16; i++) {
-                s.Append(((short)name[i % name.Length]).ToString("x"));
+                s.Append(((short) name[i%name.Length]).ToString("x"));
             }
             Log("cb.Guid: " + s);
             return new Guid(s.ToString());
@@ -155,13 +154,13 @@ namespace RemoteTech {
         }
 
         public static bool IsAntenna(this ProtoPartModuleSnapshot ppms) {
-            return ppms.GetBool("IsRTAntenna") &&
+            return ppms.GetBool("IsRTAntenna") && 
                    ppms.GetBool("IsPowered") &&
                    ppms.GetBool("IsRTActive");
         }
 
         public static bool IsAntenna(this PartModule pm) {
-            return pm.Fields.GetValue<bool>("IsRTAntenna") &&
+            return pm.Fields.GetValue<bool>("IsRTAntenna") && 
                    pm.Fields.GetValue<bool>("IsPowered") &&
                    pm.Fields.GetValue<bool>("IsRTActive");
         }
@@ -178,7 +177,7 @@ namespace RemoteTech {
             }
         }
 
-        public static void HorizontalSlider(ref float state, float min, float max,
+        public static void HorizontalSlider(ref float state, float min, float max, 
                                     params GUILayoutOption[] options) {
             state = GUILayout.HorizontalSlider(state, min, max, options);
         }
@@ -200,7 +199,7 @@ namespace RemoteTech {
         public static void StateButton(String text, int state, int value, OnState onStateChange,
                                        params GUILayoutOption[] options) {
             bool result;
-            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options))
+            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options)) 
                                                                             != (state == value)) {
                 onStateChange.Invoke(result ? value : ~value);
             }
@@ -211,7 +210,7 @@ namespace RemoteTech {
         }
 
         public static bool ContainsMouse(this Rect window) {
-            return window.Contains(new Vector2(Input.mousePosition.x,
+            return window.Contains(new Vector2(Input.mousePosition.x, 
                 Screen.height - Input.mousePosition.y));
         }
 
@@ -223,12 +222,15 @@ namespace RemoteTech {
             }
         }
 
-        public static float DirectionalSpeed(Vector3 Direction, Vector3d Velocity) {
+        public static float DirectionalSpeed(Vector3 Direction, Vector3d Velocity)
+        {
             return Math.Abs(Vector3.Dot(Direction, Velocity));
         }
 
-        public static void findTransformsWithCollider(Transform input, ref HashSet<Transform> list) {
-            if (input.collider != null) {
+        public static void findTransformsWithCollider(Transform input, ref HashSet<Transform> list)
+        {
+            if (input.collider != null)
+            {
                 list.Add(input);
             }
             foreach (Transform t in input)
