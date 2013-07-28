@@ -2,128 +2,110 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RemoteTech
-{
-    public class ModuleRTAntennaAnimated : ModuleRTAntenna
-    {
+namespace RemoteTech {
+    public class ModuleRTAntennaAnimated : ModuleRTAntenna {
         [KSPField]
         public String
             AnimationName = "antenna",
-            BreakTransformName = "";
+            BreakTransformName = "",
+            ForceTransformName = "";
 
         [KSPField]
         public bool
             AnimationOneShot = true,
-            FixAnimLayers = false,
-            UseTransformDir = false;
+            FixAnimLayers = false;
 
         [KSPField]
         public float
-            SnappingForce = -1.0f,
+            SnappingForce = 0.0f,
             ShrapnelDragCoeff = 2,
             ShrapnelDensity = 1;
 
         [KSPField(isPersistant = true)]
         public float AnimationState = 0.0f;
 
-        private Animation mAnimation;
+        public Animation Animation { get; protected set; }
+        public Transform BreakTransform { get; protected set; }
+        public Transform ForceTransform { get; protected set; }
 
-        private Transform BreakTransform;
-
-        public override void OnStart(StartState state)
-        {
-
-            if (BreakTransformName != "")
+        public override void OnStart(StartState state) {
+            if (!String.IsNullOrEmpty(BreakTransformName)) {
                 BreakTransform = part.FindModelTransform(BreakTransformName);
+            }
+            if (!String.IsNullOrEmpty(ForceTransformName)) {
+                ForceTransform = part.FindModelTransform(ForceTransformName);
+            }
 
-            mAnimation = part.FindModelAnimators(AnimationName)[0];
-            if (mAnimation == null || mAnimation[AnimationName] == null)
-            {
+            Animation = part.FindModelAnimators(AnimationName)[0];
+            if (Animation == null || Animation[AnimationName] == null) {
                 RTUtil.Log("ModuleRTAntennaAnimated: Animation error");
                 enabled = false;
                 return;
             }
 
-            if (FixAnimLayers)
-            {
+            if (FixAnimLayers) {
                 int i = 0;
-                foreach (AnimationState s in mAnimation)
-                {
-                    s.layer = i;
-                    i++;
+                foreach (AnimationState s in Animation) {
+                    s.layer = i++;
                 }
-            }
-
-            mAnimation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
-            mAnimation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
-            mAnimation.Play(AnimationName);
-
-            if (Broken)
-            {
-                HashSet<Transform> toRemove = new HashSet<Transform>();
-                RTUtil.findTransformsWithCollider(BreakTransform, ref toRemove);
-                foreach (Transform t in toRemove)
-                    Destroy(t.gameObject);
-                toRemove.Clear();
-
-                enabled = false;
-
-                IsRTAntenna = false;
-
-                SetState(false);
-                return;
             }
 
             base.OnStart(state);
 
+            Animation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
+            Animation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
+            Animation.Play(AnimationName);
+
+            if (IsRTBroken && BreakTransform != null) {
+                foreach (Transform t in RTUtil.FindTransformsWithCollider(BreakTransform)) {
+                    Destroy(t.gameObject);
+                }
+                enabled = false;
+            }
         }
 
-        public override void SetState(bool state)
-        {
+        public override void SetState(bool state) {
             base.SetState(state);
-            if (!(AnimationState == 1.0f && AnimationOneShot))
-            {
-                mAnimation[AnimationName].speed = state ? 1.0f : -1.0f;
-                AnimationState = state ? 1.0f : 0.0f;
-                mAnimation.Play(AnimationName);
+            if (!IsRTActive && Animation[AnimationName].normalizedTime == 0.0f) {
+                Animation[AnimationName].normalizedTime = 1.0f;
+            } else if (IsRTActive && Animation[AnimationName].normalizedTime == 1.0f) {
+                Animation[AnimationName].normalizedTime = 0.0f;
+            }
+            if (!(AnimationState == 1.0f && AnimationOneShot)) {
+                Animation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
+                AnimationState = IsRTActive ? 1.0f : 0.0f;
+                Animation.Play(AnimationName);
             }
         }
 
         // Unity uses reflection to call this, so call the hidden base member too.
-        public new void FixedUpdate()
-        {
-            if (Broken) return;
+        public new void FixedUpdate() {
             base.FixedUpdate();
-            if (SnappingForce > 0 && vessel != null && vessel.atmDensity > 0 && AnimationState == 1.0f)
-            {
-                if (BreakTransform == null)
-                {
-                    if ((Math.Pow(vessel.srf_velocity.magnitude, 2) * vessel.atmDensity * 0.5) > SnappingForce)
-                    {
-                        part.decouple(0f);
-                        SnappingForce = -1.0f;
+
+            // TODO: Clean this shit up.
+            if (IsRTBroken || vessel == null || part == null || SnappingForce < 0) {
+                return;
+            }
+            if (vessel.atmDensity > 0 && AnimationState > 0.0f) {
+                if (ForceTransform == null) {
+                    if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > SnappingForce) {
+                        if (BreakTransform == null) {
+                            part.decouple(0.0f);
+                            SnappingForce = -1.0f;
+                        } else {
+                            Break();
+                        }
                     }
-                }
-                else
-                {
-                    if (UseTransformDir)
-                    {
-                        if ((Math.Pow(RTUtil.DirectionalSpeed(BreakTransform.up, vessel.srf_velocity), 2) * vessel.atmDensity * 0.5) > SnappingForce)
-                            BreakApart();
+                } else {
+                    if (Math.Pow(Vector3d.Dot(ForceTransform.up, vessel.srf_velocity), 2) * vessel.atmDensity * 0.5 > SnappingForce) {
+                        Break();
                     }
-                    else if ((Math.Pow(vessel.srf_velocity.magnitude, 2) * vessel.atmDensity * 0.5) > SnappingForce)
-                        BreakApart();
                 }
             }
         }
 
-        private void BreakApart()
-        {
-            HashSet<Transform> toRemove = new HashSet<Transform>();
-            RTUtil.findTransformsWithCollider(BreakTransform, ref toRemove);
-
-            foreach (Transform t in toRemove)
-            {
+        private void Break() {
+            foreach (Transform t in RTUtil.FindTransformsWithCollider(BreakTransform)) {
                 Rigidbody rb = t.gameObject.AddComponent<Rigidbody>();
 
                 rb.angularDrag = 0;
@@ -153,14 +135,10 @@ namespace RemoteTech
 
             Fields["GUI_OmniRange"].guiActive =
             Fields["GUI_DishRange"].guiActive =
-            Fields["GUI_EnergyReq"].guiActive =
-            Fields["GUI_Status"].guiActive = false;
+            Fields["GUI_EnergyReq"].guiActive = false;
 
-            Broken = true;
-            IsRTAntenna = false;
-            base.OnDestroy();
+            IsRTBroken = true;
+            base.SetState(false);
         }
-
-
     }
 }

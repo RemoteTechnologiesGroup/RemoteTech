@@ -6,16 +6,9 @@ using UnityEngine;
 
 namespace RemoteTech {
     public partial class FlightComputer : IDisposable, IEnumerable<DelayedCommand> {
-        public ProgcomUnit Progcom { get; private set; }
+        public BifrostUnit Bifrost { get; private set; }
 
         public double ExtraDelay { get; set; }
-
-        public bool Master {
-            get {
-                return mSignalProcessor.Satellite != null && 
-                       mSignalProcessor.Satellite.FlightComputer == this;
-            }
-        }
 
         public bool InputAllowed {
             get {
@@ -56,17 +49,12 @@ namespace RemoteTech {
             mSignalProcessor = s;
             mPreviousCtrl.CopyFrom(s.Vessel.ctrlState);
             mAttachedVessel = s.Vessel;
-            
-            RTCore.Instance.PhysicsUpdated += OnFixedUpdate;
 
             mLegacyComputer = new Legacy.FlightComputer(s.Vessel);
-            if (ProgcomSupport.IsProgcomLoaded) {
-                Progcom = new ProgcomUnit(s);
-            }
+            Bifrost = new BifrostUnit(s);
         }
 
         public void Dispose() {
-            RTCore.Instance.PhysicsUpdated -= OnFixedUpdate;
             if (mAttachedVessel != null) {
                 mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
             }
@@ -88,7 +76,7 @@ namespace RemoteTech {
         }
 
         private void OnFlyByWirePre(FlightCtrlState fs) {
-            if (Master) {
+            if (mSignalProcessor.Master) {
                 if (mAttachedVessel == FlightGlobals.ActiveVessel && InputAllowed) {
                     Enqueue(fs);
                 }
@@ -97,16 +85,13 @@ namespace RemoteTech {
 
                 if (mSignalProcessor.Powered) {
                     Autopilot(fs);
-                    if (Progcom != null) {
-                        Progcom.OnFlyByWire(fs);
-                    }
                 }
 
                 mPreviousCtrl.CopyFrom(fs); 
             }
         }
 
-        private void OnFixedUpdate() {
+        public void OnFixedUpdate() {
             // Ensure the onflybywire is still on the correct vessel, in the correct order
             if (mSignalProcessor.Vessel != null) {
                 mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
@@ -115,11 +100,11 @@ namespace RemoteTech {
                 mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
             }
 
-            if (mSignalProcessor.Powered && Master) {
+            if (mSignalProcessor.Powered && mSignalProcessor.Master) {
                 PopCommand();
-                if (Progcom != null) {
-                    Progcom.OnFixedUpdate();
-                }  
+                if (Bifrost != null) {
+                    Bifrost.OnFixedUpdate();
+                }
             }
         }
 
@@ -184,6 +169,10 @@ namespace RemoteTech {
                         if (dc.BurnCommand != null) {
                             mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
                             mBurn = dc;
+                        }
+
+                        if (dc.Event != null) {
+                            dc.Event.BaseEvent.Invoke();
                         }
 
                         mCommandBuffer.RemoveAt(i);
@@ -255,7 +244,22 @@ namespace RemoteTech {
         }
 
         private void HoldAltitude(FlightCtrlState fs) {
+            const double damping = 1000.0f;
+            Vessel v = mAttachedVessel;
+            double target_height = mAttitude.AttitudeCommand.Altitude;
+            float target_pitch = (float) (Math.Atan2(target_height - v.orbit.ApA, damping) / Math.PI * 180.0f);
+            Vector3 up = (v.mainBody.position - v.CoM);
+            Vector3 forward = Vector3.Exclude(up,
+                v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM
+            );
+            Vector3.OrthoNormalize(ref forward, ref up);
+            Vector3 direction = Vector3.Exclude(up, v.obt_velocity).normalized;
+            float target_heading = Vector3.Angle(forward, direction);
 
+            Quaternion rotationReference = Quaternion.LookRotation(forward, up);
+            RTUtil.Log("Pitch: {0}, Heading: {1}", target_pitch, target_heading);
+            HoldOrientation(fs, rotationReference * 
+                Quaternion.Euler(new Vector3(target_pitch, target_heading, 0)));
         }
 
         private void Burn(FlightCtrlState fs) {

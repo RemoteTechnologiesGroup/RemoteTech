@@ -8,6 +8,7 @@ namespace RemoteTech {
         Vessel Vessel { get; }
         bool CommandStation { get; }
 
+        bool Master { get; }
         FlightComputer FlightComputer { get; }
         VesselSatellite Satellite { get; }
     }

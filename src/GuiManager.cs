@@ -5,18 +5,19 @@ namespace RemoteTech {
     public class GuiManager : IDisposable, IConfigNode {
         private readonly MapViewConfigFragment mConfig = new MapViewConfigFragment();
         private readonly TimeQuadrantPatcher mPatcher = new TimeQuadrantPatcher();
-        private readonly RTCore mCore;
 
-        public GuiManager(RTCore core) {
-            mCore = core;
+        public GuiManager() {
             if (TimeWarp.fetch != null) {
                 mPatcher.Patch(TimeWarp.fetch);
             }
-            mCore.GuiUpdated += Draw;
+            RTCore.Instance.GuiUpdated += Draw;
         }
 
         public void Dispose() {
-            mCore.GuiUpdated -= Draw;
+            if (RTCore.Instance != null) {
+                RTCore.Instance.GuiUpdated -= Draw;
+            }
+            
             mPatcher.Undo();
             mConfig.Dispose();
         }
@@ -41,9 +42,9 @@ namespace RemoteTech {
         }
 
         public void OpenFlightComputer(Vessel v) {
-            VesselSatellite vs = mCore.Satellites[v];
-            if (vs != null && vs.FlightComputer != null) {
-                (new FlightComputerWindow(vs.FlightComputer)).Show();
+            VesselSatellite vs = RTCore.Instance.Satellites[v];
+            if (vs != null && vs.Master.FlightComputer != null) {
+                (new FlightComputerWindow(vs.Master.FlightComputer)).Show();
             }
         }
 
@@ -54,7 +55,7 @@ namespace RemoteTech {
         }
 
         public void OpenAntennaConfig(IAntenna a, Vessel v) {
-            ISatellite s = mCore.Satellites[v];
+            ISatellite s = RTCore.Instance.Satellites[v];
             if (s != null) {
                 (new AntennaWindow(a, s)).Show();
             }

@@ -1,5 +1,6 @@
 using System;
 using KSP.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -102,18 +103,21 @@ namespace RemoteTech {
 
         public static String TargetName(Guid guid) {
             ISatellite sat;
-            
-            if (guid == System.Guid.Empty) {
-                return "No Target";
-            }
-            if (RTCore.Instance.Network.Planets.ContainsKey(guid)) {
-                return RTCore.Instance.Network.Planets[guid].name;
-            }
-            if ((sat = RTCore.Instance.Satellites[guid]) != null) {
-                return sat.Name;
-            }
-            if (guid.Equals((sat = RTCore.Instance.Network.MissionControl).Guid)) {
-                return sat.Name;
+            if (RTCore.Instance != null && 
+                    RTCore.Instance.Network != null && 
+                    RTCore.Instance.Satellites != null) {
+                if (guid == System.Guid.Empty) {
+                    return "No Target";
+                }
+                if (RTCore.Instance.Network.Planets.ContainsKey(guid)) {
+                    return RTCore.Instance.Network.Planets[guid].name;
+                }
+                if ((sat = RTCore.Instance.Satellites[guid]) != null) {
+                    return sat.Name;
+                }
+                if (guid.Equals((sat = RTCore.Instance.Network.MissionControl).Guid)) {
+                    return sat.Name;
+                }
             }
             return "[Unknown Target]";
         }
@@ -222,19 +226,16 @@ namespace RemoteTech {
             }
         }
 
-        public static float DirectionalSpeed(Vector3 Direction, Vector3d Velocity)
-        {
-            return Math.Abs(Vector3.Dot(Direction, Velocity));
-        }
-
-        public static void findTransformsWithCollider(Transform input, ref HashSet<Transform> list)
-        {
-            if (input.collider != null)
-            {
-                list.Add(input);
+        public static IEnumerable<Transform> FindTransformsWithCollider(Transform input) {
+            if (input.collider != null) {
+                yield return input;
             }
-            foreach (Transform t in input)
-                findTransformsWithCollider(t, ref list);
+
+            foreach (Transform t in input) {
+                foreach (Transform x in FindTransformsWithCollider(t)) {
+                    yield return x;
+                }
+            }
         }
     }
 }

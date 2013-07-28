@@ -33,18 +33,20 @@ namespace RemoteTech {
             }
         }
 
-        public DynamicTarget(CelestialBody b) {
-            body = b;
-            type = TargetTypes.BODY;
-        }
-        public DynamicTarget(ISatellite s) {
-            sat = s;
-            type = TargetTypes.ISATELLITE;
+        public DynamicTarget(Guid g) {
+            if (RTCore.Instance.Network[g] != null) {
+                sat = RTCore.Instance.Network[g];
+                type = TargetTypes.ISATELLITE;
+            } else if (RTCore.Instance.Network.Planets.ContainsKey(g)) {
+                body = RTCore.Instance.Network.Planets[g];
+                type = TargetTypes.BODY;
+            } else {
+                type = TargetTypes.NOTARGET;
+            }
         }
 
         public DynamicTarget() {
             type = TargetTypes.NOTARGET;
         }
-
     }
 }

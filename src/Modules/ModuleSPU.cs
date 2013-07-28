@@ -46,8 +46,15 @@ namespace RemoteTech {
         public String Status;
 
         [KSPEvent(name = "OpenFC", active = true, guiActive = true, guiName = "Flight Computer")]
+        [IgnoreSignalDelayAttribute]
         public void OpenFC() {
             RTCore.Instance.Gui.OpenFlightComputer(this);
+        }
+
+        public bool Master {
+            get {
+                return (Satellite == null) ? false : (Satellite.Master == (ISignalProcessor) this);
+            }
         }
 
         private enum State {
@@ -67,13 +74,13 @@ namespace RemoteTech {
         }
 
         public override void OnStart(StartState state) {
-            GameEvents.onVesselWasModified.Add(OnVesselModified);
-            GameEvents.onPartUndock.Add(OnPartUndock);
             if (RTCore.Instance != null) {
+                GameEvents.onVesselWasModified.Add(OnVesselModified);
+                GameEvents.onPartUndock.Add(OnPartUndock);
                 mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this);
-            }
-            if (FlightComputer == null) {
-                FlightComputer = new FlightComputer(this);
+                if (FlightComputer == null) {
+                    FlightComputer = new FlightComputer(this);
+                }
             }
         }
 
@@ -102,8 +109,10 @@ namespace RemoteTech {
         }
 
         private State UpdateControlState() {
-            // Can't remove isControlSource or autopilot won't work.
-            if (!RTCore.Instance) return State.NoConnection;
+            IsPowered = part.isControlSource = true;
+            if (!RTCore.Instance) {
+                return State.Operational;
+            }
             if (part.protoModuleCrew.Count < minimumCrew) {
                 IsPowered = part.isControlSource = false;
                 return State.NoCrew;
@@ -116,7 +125,6 @@ namespace RemoteTech {
                     return State.NoResources;
                 }
             }
-            IsPowered = part.isControlSource = true;
             if (Satellite == null || !Satellite.Connection.Exists) {
                 return State.NoConnection;
             }
@@ -124,6 +132,10 @@ namespace RemoteTech {
         }
 
         public void FixedUpdate() {
+            if (FlightComputer != null) {
+                FlightComputer.OnFixedUpdate();
+            }
+            HookPartMenus();
             switch (UpdateControlState()) {
                 case State.Operational:
                     Status = "Operational.";
@@ -141,18 +153,30 @@ namespace RemoteTech {
         }
 
         public void OnPartUndock(Part p) {
-            if (p.vessel == vessel) OnVesselModified(p.vessel);
+            OnVesselModified(p.vessel);
         }
 
         public void OnVesselModified(Vessel v) {
-            if (IsPowered) {
-                if (vessel == null || (mRegisteredId != Vessel.id)) {
-                    RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
-                    if (vessel != null) {
-                        mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this); 
-                    }
+            if ((mRegisteredId != Vessel.id)) {
+                RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
+                if (vessel != null) {
+                    mRegisteredId = RTCore.Instance.Satellites.Register(Vessel, this);
                 }
             }
+        }
+
+        public void HookPartMenus() {
+            UIPartActionMenuPatcher.Wrap(vessel, (e) => {
+                Vessel v = e.listParent.part.vessel;
+                if (v != null && v.loaded) {
+                    var vs = RTCore.Instance.Satellites[v];
+                    if (vs != null) {
+                        vs.Master.FlightComputer.Enqueue(EventCommand.Event(e));
+                    }
+                } else {
+                    e.Invoke();
+                }
+            });
         }
     }
 }

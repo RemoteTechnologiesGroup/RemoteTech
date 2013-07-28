@@ -25,7 +25,7 @@ namespace RemoteTech {
 
         public Guid Guid {
             get {
-                return mSignalProcessors[0].Guid;
+                return Master.Guid;
             }
         }
 
@@ -61,7 +61,7 @@ namespace RemoteTech {
 
         public Vessel Vessel {
             get {
-                return mSignalProcessors[0].Vessel;
+                return Master.Vessel;
             }
         }
 
@@ -77,9 +77,15 @@ namespace RemoteTech {
             }
         }
 
-        public FlightComputer FlightComputer {
+        public ISignalProcessor Master {
             get {
-                return mSignalProcessors[0].FlightComputer;
+                return mSignalProcessors[0];
+            }
+            set {
+                if (mSignalProcessors.Contains(value)) {
+                    mSignalProcessors.Remove(value);
+                    mSignalProcessors.Insert(0, value);
+                }
             }
         }
 
@@ -98,7 +104,9 @@ namespace RemoteTech {
         }
 
         public void Dispose() {
-            RTCore.Instance.Network.ConnectionUpdated -= OnConnectionUpdate;
+            if (RTCore.Instance != null) {
+                RTCore.Instance.Network.ConnectionUpdated -= OnConnectionUpdate;
+            }
         }
 
         public override String ToString() {

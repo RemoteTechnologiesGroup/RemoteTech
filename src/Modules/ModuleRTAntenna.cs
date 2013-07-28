@@ -1,39 +1,69 @@
 using System;
-using System.Collections;
+using System.Linq;
 using System.Text;
+using UnityEngine;
 
-namespace RemoteTech
-{
-    public class ModuleRTAntenna : PartModule, IAntenna
-    {
-        public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
+namespace RemoteTech {
+    public class ModuleRTAntenna : PartModule, IAntenna {
+        public bool CanTarget { 
+            get { 
+                return Mode1DishRange != -1.0f; 
+            } 
+        }
 
-        public String Name { get { return part.partInfo.title; } }
-
-        protected DynamicTarget DynamicTarget = new DynamicTarget();
-
-        public Guid DishTarget
-        {
-            get { return RTAntennaTargetGuid; }
-            set
-            {
-                RTAntennaTargetGuid = value;
-                RTAntennaTarget = value.ToString();
-
-                DynamicTarget = RTCore.Instance.Network.GetTarget(value);
-                StartCoroutine(UpdateContext());
+        public String Name { 
+            get { 
+                return part.partInfo.title;
             }
         }
 
-        public float DishRange { get { return IsRTActive && IsPowered ? Mode1DishRange : Mode0DishRange; } }
+        public Guid DishTarget {
+            get { return RTAntennaTargetGuid; }
+            set {
+                RTAntennaTargetGuid = value;
+                RTAntennaTarget = value.ToString();
+                UpdateContext();
+            }
+        }
 
-        public double DishFactor { get { return RTDishFactor; } }
+        public float DishRange { 
+            get {
+                if (IsRTBroken) {
+                    return 0.0f;
+                }
+                return IsRTActive && IsRTPowered ? Mode1DishRange : Mode0DishRange; 
+            }
+        }
 
-        public float OmniRange { get { return IsRTActive && IsPowered ? Mode1OmniRange : Mode0OmniRange; } }
+        public double DishFactor { 
+            get { 
+                return RTDishFactor; 
+            } 
+        }
 
-        public float Consumption { get { return IsRTActive ? EnergyCost : 0.0f; } }
+        public float OmniRange { 
+            get {
+                if (IsRTBroken) {
+                    return 0.0f;
+                }
+                return IsRTActive && IsRTPowered ? Mode1OmniRange : Mode0OmniRange; 
+            }
+        }
 
-        public Vessel Vessel { get { return vessel; } }
+        public float Consumption { 
+            get {
+                if (IsRTBroken) {
+                    return 0.0f;
+                }
+                return IsRTActive ? EnergyCost : 0.0f; 
+            }
+        }
+
+        public Vessel Vessel { 
+            get {
+                return vessel; 
+            }
+        }
 
         [KSPField(guiName = "Dish range")]
         public String GUI_DishRange;
@@ -43,8 +73,10 @@ namespace RemoteTech
         public String GUI_OmniRange;
         [KSPField(guiName = "Status")]
         public String GUI_Status;
+
         [KSPField]
-        public String Mode0Name = "Off",
+        public String 
+            Mode0Name = "Off",
             Mode1Name = "Operational",
             ActionMode0Name = "Deactivate",
             ActionMode1Name = "Activate",
@@ -61,10 +93,10 @@ namespace RemoteTech
 
         [KSPField(isPersistant = true)]
         public bool
-            IsPowered = true,
-            IsRTActive = false,
             IsRTAntenna = true,
-            Broken = false;
+            IsRTActive = false,
+            IsRTPowered = false,
+            IsRTBroken = false;
 
         [KSPField(isPersistant = true)]
         public double RTDishFactor = 1.0f;
@@ -78,137 +110,130 @@ namespace RemoteTech
         [KSPField(isPersistant = true)]
         public String RTAntennaTarget = Guid.Empty.ToString();
 
-        private enum State
-        {
+        private enum State {
             Off,
             Operational,
             NoResources,
+            Malfunction,
         }
 
         private Guid mRegisteredId;
 
-        public override string GetInfo()
-        {
+        public override string GetInfo() {
             var info = new StringBuilder();
-            if (Mode1OmniRange > 0)
-            {
+            if (Mode1OmniRange > 0) {
                 info.Append("Omni range: ");
                 info.Append(RTUtil.FormatSI(Mode0OmniRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1OmniRange, "m"));
             }
-            if (Mode1DishRange > 0)
-            {
+            if (Mode1DishRange > 0) {
                 info.Append("Dish range: ");
                 info.Append(RTUtil.FormatSI(Mode0DishRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1DishRange, "m"));
             }
-            if (EnergyCost > 0)
-            {
+            if (EnergyCost > 0) {
                 info.Append("Energy req.: ");
                 info.Append(RTUtil.FormatConsumption(EnergyCost));
             }
-            return info.ToString();
+            return info.ToString().TrimEnd('\n');
         }
 
-        public virtual void SetState(bool state)
-        {
+        public virtual void SetState(bool state) {
+            if (IsRTBroken) {
+                state = false;
+            }
             IsRTActive = state;
-            RTDishRange = IsRTActive ? Mode1DishRange : Mode0DishRange;
-            RTOmniRange = IsRTActive ? Mode1OmniRange : Mode0OmniRange;
-            Events["EventOpen"].guiActive = !IsRTActive && !Broken;
+            RTDishRange = DishRange;
+            RTOmniRange = OmniRange;
+            Events["EventOpen"].guiActive = !IsRTActive && !IsRTBroken;
             Events["EventOpen"].active = Events["EventOpen"].guiActive;
-            Events["EventClose"].guiActive = IsRTActive && !Broken;
+            Events["EventClose"].guiActive = IsRTActive && !IsRTBroken;
             Events["EventClose"].active = Events["EventClose"].guiActive;
-            StartCoroutine(UpdateContext());
+            UpdateContext();
         }
 
         [KSPEvent(name = "EventToggle", guiActive = false)]
-        public void EventToggle()
-        {
-            if (IsRTActive)
-            {
+        public void EventToggle() {
+            if (IsRTActive) {
                 EventClose();
-            }
-            else
-            {
+            } else {
                 EventOpen();
             }
         }
 
         [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target")]
-        public void EventTarget()
-        {
+        [IgnoreSignalDelayAttribute]
+        public void EventTarget() {
             RTCore.Instance.Gui.OpenAntennaConfig(this, vessel);
         }
 
         [KSPEvent(name = "EventOpen", guiActive = false)]
-        public void EventOpen()
-        {
+        public void EventOpen() {
             SetState(true);
         }
 
         [KSPEvent(name = "EventClose", guiActive = false)]
-        public void EventClose()
-        {
+        public void EventClose() {
             SetState(false);
         }
 
         [KSPAction("ActionToggle", KSPActionGroup.None)]
-        public void ActionToggle(KSPActionParam param)
-        {
-            if (Broken) return;
+        public void ActionToggle(KSPActionParam param) {
             EventToggle();
         }
 
         [KSPAction("ActionOpen", KSPActionGroup.None)]
-        public void ActionOpen(KSPActionParam param)
-        {
-            if (Broken) return;
+        public void ActionOpen(KSPActionParam param) {
             EventOpen();
         }
 
         [KSPAction("ActionClose", KSPActionGroup.None)]
-        public void ActionClose(KSPActionParam param)
-        {
-            if (Broken) return;
+        public void ActionClose(KSPActionParam param) {
             EventClose();
         }
 
-        public override void OnStart(StartState state)
-        {
+        [KSPEvent(name = "OverrideTarget", active = false, guiActiveUnfocused = true, 
+            unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Jack-in!")]
+        [IgnoreSignalDelayAttribute]
+        public void OverrideTarget() {
+            RTCore.Instance.Gui.OpenAntennaConfig(this, Vessel);
+        }
+
+        public override void OnLoad(ConfigNode node) {
+            if (node.HasValue("RTAntennaTarget")) {
+                try {
+                    DishTarget = new Guid(RTAntennaTarget);
+                } catch (FormatException) {
+                    DishTarget = Guid.Empty;
+                }
+            }
+            if (node.HasValue("DishAngle")) {
+                RTDishFactor = Math.Cos(DishAngle * Math.PI / 180);
+            }
+        }
+
+        public override void OnStart(StartState state) {
             Actions["ActionOpen"].guiName = ActionMode1Name;
-            Actions["ActionOpen"].active = true;
+            Actions["ActionOpen"].active = !IsRTBroken;
             Actions["ActionClose"].guiName = ActionMode0Name;
-            Actions["ActionClose"].active = true;
+            Actions["ActionClose"].active = !IsRTBroken;
             Actions["ActionToggle"].guiName = ActionToggleName;
-            Actions["ActionToggle"].active = true;
+            Actions["ActionToggle"].active = !IsRTBroken;
 
             Events["EventOpen"].guiName = ActionMode1Name;
             Events["EventClose"].guiName = ActionMode0Name;
             Events["EventToggle"].guiName = ActionToggleName;
-            Events["EventTarget"].guiActive = Mode1DishRange > 0;
+            Events["EventTarget"].guiActive = (Mode1DishRange > 0);
             Events["EventTarget"].active = Events["EventTarget"].guiActive;
 
-            Fields["GUI_OmniRange"].guiActive = Mode1OmniRange > 0;
-            Fields["GUI_DishRange"].guiActive = Mode1DishRange > 0;
-            Fields["GUI_EnergyReq"].guiActive = EnergyCost > 0;
+            Fields["GUI_OmniRange"].guiActive = (Mode1OmniRange > 0);
+            Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0);
+            Fields["GUI_EnergyReq"].guiActive = (EnergyCost > 0);
             Fields["GUI_Status"].guiActive = true;
 
-
-            if (RTCore.Instance != null)
-            {
-                try
-                {
-                    DishTarget = new Guid(RTAntennaTarget);
-                }
-                catch (FormatException)
-                {
-                    DishTarget = Guid.Empty;
-                }
-                RTDishFactor = Math.Cos(DishAngle * Math.PI / 180);
-
+            if (RTCore.Instance != null) {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
@@ -216,37 +241,41 @@ namespace RemoteTech
             }
         }
 
-        private IEnumerator UpdateContext()
-        {
+        private void UpdateContext() {
             GUI_OmniRange = RTUtil.FormatSI(OmniRange, "m");
             GUI_DishRange = RTUtil.FormatSI(DishRange, "m");
             GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
             Events["EventTarget"].guiName = RTUtil.TargetName(DishTarget);
-            Events["EventTarget"].active = false;
-            yield return 1;
-            Events["EventTarget"].active = true;
+            foreach (var w in GameObject.FindObjectsOfType(typeof(UIPartActionWindow))
+                                        .OfType<UIPartActionWindow>()
+                                        .Where(w => w.part == part)) {
+                w.displayDirty = true;
+            }
         }
 
-        private State UpdateControlState()
-        {
-            if (!IsRTActive) return State.Off;
+        private State UpdateControlState() {
+            if (!RTCore.Instance) {
+                return State.Operational;
+            }
+            if (IsRTBroken) {
+                return State.Malfunction;
+            }
+            if (!IsRTActive) {
+                return State.Off;
+            }
             ModuleResource request = new ModuleResource();
             float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
-            if (resourceAmount < resourceRequest * 0.9)
-            {
-                IsPowered = false;
+            if (resourceAmount < resourceRequest * 0.9) {
+                IsRTPowered = false;
                 return State.NoResources;
             }
-            IsPowered = true;
+            IsRTPowered = true;
             return State.Operational;
         }
 
-        public void FixedUpdate()
-        {
-            if (Broken) return;
-            switch (UpdateControlState())
-            {
+        public void FixedUpdate() {
+            switch (UpdateControlState()) {
                 case State.Off:
                     GUI_Status = Mode0Name;
                     break;
@@ -256,43 +285,35 @@ namespace RemoteTech
                 case State.NoResources:
                     GUI_Status = "Out of power";
                     break;
+                case State.Malfunction:
+                    GUI_Status = "Malfunction";
+                    break;
             }
         }
 
-        public void OnDestroy()
-        {
+        public void OnDestroy() {
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
-            if (RTCore.Instance != null)
-            {
+            if (RTCore.Instance != null && mRegisteredId != Guid.Empty) {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
+                mRegisteredId = Guid.Empty;
             }
         }
 
-        public void OnPartUndock(Part p)
-        {
-            if (p.vessel == vessel)
-            {
+        private void OnPartUndock(Part p) {
+            if (p.vessel == vessel) {
                 OnVesselModified(p.vessel);
             }
         }
 
-        public void OnVesselModified(Vessel v)
-        {
-            if (vessel == null || (mRegisteredId != vessel.id))
-            {
+        private void OnVesselModified(Vessel v) {
+            if ((mRegisteredId != vessel.id)) {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
-                if (vessel != null)
-                {
+                mRegisteredId = Guid.Empty;
+                if (vessel != null) {
                     mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
                 }
             }
-        }
-
-        public override String ToString()
-        {
-            return "ModuleRTAntenna {" + DishTarget + ", " + DishRange + ", " + OmniRange + ", " +
-                   Vessel.vesselName + "}";
         }
     }
 }

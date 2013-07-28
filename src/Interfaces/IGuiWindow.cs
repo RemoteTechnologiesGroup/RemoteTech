@@ -94,8 +94,10 @@ namespace RemoteTech {
                         break;
                 }
             }
-            if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), "")) {
-                Hide();
+            if (Title != null) {
+                if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), "")) {
+                    Hide();
+                }
             }
         }
 

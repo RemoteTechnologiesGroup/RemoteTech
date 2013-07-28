@@ -8,16 +8,16 @@ namespace RemoteTech {
     public class FlightComputerWindow : AbstractWindow {
         private enum FragmentTab {
             Attitude = 0,
-            Rover    = 1,
-            Aerial   = 2,
-            Progcom  = 3,
+            Aerial   = 1,
+            Rover    = 2,
+            Bifrost  = 3,
         }
 
         private FragmentTab mTab;
         private readonly AttitudeFragment mAttitude;
         private readonly RoverFragment mRover;
         private readonly AerialFragment mAerial;
-        private readonly ProgcomFragment mProgcom;
+        private readonly BifrostFragment mBifrost;
         private readonly QueueFragment mQueue;
         private bool mQueueEnabled;
         private readonly FlightComputer mFlightComputer;
@@ -27,7 +27,7 @@ namespace RemoteTech {
                 return mTab;
             }
             set {
-                int NumberOfTabs = mProgcom != null ? 4 : 3;
+                int NumberOfTabs = 4;
                 if ((int)value >= NumberOfTabs) {
                     mTab = (FragmentTab) 0;
                 } else if ((int) value < 0) {
@@ -44,12 +44,8 @@ namespace RemoteTech {
 
             mAttitude = new AttitudeFragment(fc, () => mQueueEnabled = !mQueueEnabled);
             mRover = new RoverFragment();
-            mAerial = new AerialFragment();
-
-            if (ProgcomSupport.IsProgcomLoaded) {
-                mProgcom = new ProgcomFragment(fc);
-            }
-
+            mAerial = new AerialFragment(fc);
+            mBifrost = new BifrostFragment(fc);
             mQueue = new QueueFragment(fc);
             mQueueEnabled = false;
         }
@@ -67,20 +63,19 @@ namespace RemoteTech {
                     case FragmentTab.Aerial:
                         mAerial.Draw();
                         break;
-                    case FragmentTab.Progcom:
-                        mProgcom.Draw();
+                    case FragmentTab.Bifrost:
+                        mBifrost.Draw();
                         break;
-
                 }
                 if (mQueueEnabled) {
                     mQueue.Draw();
                 }
             }
             GUILayout.EndHorizontal();
-            if (GUI.Button(new Rect(1, 1, 16, 16), "<")) {
+            if (GUI.Button(new Rect(2, 2, 16, 16), "<")) {
                 Tab--;
             }
-            if (GUI.Button(new Rect(19, 1, 16, 16), ">")) {
+            if (GUI.Button(new Rect(20, 2, 16, 16), ">")) {
                 Tab++;
             }
             base.Window(id);
@@ -89,6 +84,20 @@ namespace RemoteTech {
         protected override void Draw() {
             if (!mFlightComputer.InputAllowed) {
                 Hide();
+            }
+            switch (mTab) {
+                case FragmentTab.Attitude:
+                    Title = "Attitude";
+                    break;
+                case FragmentTab.Rover:
+                    Title = "Rover";
+                    break;
+                case FragmentTab.Aerial:
+                    Title = "Aerial";
+                    break;
+                case FragmentTab.Bifrost:
+                    Title = "Bifrost";
+                    break;
             }
             base.Draw();
         }

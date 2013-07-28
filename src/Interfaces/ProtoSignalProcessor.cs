@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace RemoteTech {
-    internal class ProtoSignalProcessor : ISignalProcessor {
+    public class ProtoSignalProcessor : ISignalProcessor {
         public bool Powered { get; private set; }
         public bool CommandStation { get; private set; }
         public Guid Guid { get { return Vessel.id; } }
@@ -13,6 +13,12 @@ namespace RemoteTech {
             }
         }
 
+        public bool Master {
+            get {
+                return true;
+            }
+        }
+
         public FlightComputer FlightComputer {
             get { return null; }
         }
@@ -20,7 +26,7 @@ namespace RemoteTech {
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v) {
             Vessel = v;
             Powered = ppms.GetBool("IsPowered");
-            CommandStation = Powered && v.HasCommandStation() && Vessel.GetVesselCrew().Count >= 4;
+            CommandStation = Powered && v.HasCommandStation() && Vessel.GetVesselCrew().Count >= 6;
         }
     }
 }

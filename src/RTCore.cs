@@ -33,7 +33,7 @@ namespace RemoteTech {
             Satellites = new SatelliteManager(this);
             Antennas = new AntennaManager(this);
             Network = new NetworkManager(this);
-            Gui = new GuiManager(this);
+            Gui = new GuiManager();
             Renderer = NetworkRenderer.AttachToMapView(this);
             Settings = new Settings(this);
 
@@ -54,9 +54,10 @@ namespace RemoteTech {
                 VesselSatellite vs = Satellites[FlightGlobals.ActiveVessel];
                 if (vs != null) {
                     GetLocks();
-                    if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed) {
+                    if (vs.Master.FlightComputer != null && 
+                                vs.Master.FlightComputer.InputAllowed) {
                         foreach (KSPActionGroup g in GetActivatedGroup()) {
-                            vs.FlightComputer.Enqueue(ActionGroupCommand.Group(g));
+                            vs.Master.FlightComputer.Enqueue(ActionGroupCommand.Group(g));
                         }
                     }
                 } else {

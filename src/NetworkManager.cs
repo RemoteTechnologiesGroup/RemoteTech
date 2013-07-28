@@ -37,30 +37,6 @@ namespace RemoteTech {
         public MissionControlSatellite MissionControl { get; private set; }
         public Dictionary<Guid, List<ISatellite>> Graph { get; private set; }
 
-        public DynamicTarget GetTarget(Guid guid)
-        {
-            if (guid == Guid.Empty)
-                return new DynamicTarget();
-            if (guid == MissionControl.Guid)
-                return new DynamicTarget(MissionControl);
-
-            try
-            {
-                if (mCore.Satellites[guid] != null)
-                    return new DynamicTarget(mCore.Satellites[guid]);
-            }
-            catch { }
-
-            try
-            {
-                if (Planets[guid] != null)
-                    return new DynamicTarget(Planets[guid]);
-            }
-            catch { }
-
-            return new DynamicTarget();
-        }
-
         public ISatellite this[Guid guid] {
             get {
                 if (guid == MissionControl.Guid)

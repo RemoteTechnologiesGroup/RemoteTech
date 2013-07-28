@@ -35,6 +35,7 @@ namespace RemoteTech {
         public AttitudeCommand AttitudeCommand { get; set; }
         public BurnCommand BurnCommand { get; set; }
         public ActionGroupCommand ActionGroupCommand { get; set; }
+        public EventCommand Event { get; set; }
 
         public int CompareTo(DelayedCommand dc) {
             return TimeStamp.CompareTo(dc.TimeStamp);
@@ -139,6 +140,19 @@ namespace RemoteTech {
             };
         }
 
+        public static DelayedCommand WithAltitude(float height) {
+            return new DelayedCommand() {
+                AttitudeCommand = new AttitudeCommand() {
+                    Mode = FlightMode.AltitudeHold,
+                    Attitude = FlightAttitude.Prograde,
+                    Frame = ReferenceFrame.North,
+                    Orientation = Quaternion.identity,
+                    Altitude = height,
+                },
+                TimeStamp = RTUtil.GetGameTime()
+            };
+        }
+
         public static DelayedCommand WithSurface(double pitch, double yaw, double roll) {
             Quaternion rotation = Quaternion.Euler(new Vector3d(Double.IsNaN(pitch) ? 0 : pitch,
                                                                 Double.IsNaN(yaw) ? 0 : yaw,
@@ -163,6 +177,19 @@ namespace RemoteTech {
             return new DelayedCommand() {
                 ActionGroupCommand = new ActionGroupCommand() {
                     ActionGroup = group,
+                },
+                TimeStamp = RTUtil.GetGameTime(),
+            };
+        }
+    }
+
+    public class EventCommand {
+        public BaseEvent BaseEvent { get; private set; }
+
+        public static DelayedCommand Event(BaseEvent ev) {
+            return new DelayedCommand() {
+                Event = new EventCommand() {
+                    BaseEvent = ev,
                 },
                 TimeStamp = RTUtil.GetGameTime(),
             };
