@@ -159,13 +159,13 @@ namespace RemoteTech {
 
         public static bool IsAntenna(this ProtoPartModuleSnapshot ppms) {
             return ppms.GetBool("IsRTAntenna") && 
-                   ppms.GetBool("IsPowered") &&
+                   ppms.GetBool("IsRTPowered") &&
                    ppms.GetBool("IsRTActive");
         }
 
         public static bool IsAntenna(this PartModule pm) {
             return pm.Fields.GetValue<bool>("IsRTAntenna") && 
-                   pm.Fields.GetValue<bool>("IsPowered") &&
+                   pm.Fields.GetValue<bool>("IsRTPowered") &&
                    pm.Fields.GetValue<bool>("IsRTActive");
         }
 
@@ -224,6 +224,21 @@ namespace RemoteTech {
             if (texture == null) {
                 texture = new Texture2D(32, 32);
             }
+        }
+
+        public static double ClampDegrees360(double angle) {
+            angle = angle % 360.0;
+            if (angle < 0)
+                return angle + 360.0;
+            else
+                return angle;
+        }
+
+        public static double ClampDegrees180(double angle) {
+            angle = ClampDegrees360(angle);
+            if (angle > 180)
+                angle -= 360;
+            return angle;
         }
 
         public static IEnumerable<Transform> FindTransformsWithCollider(Transform input) {

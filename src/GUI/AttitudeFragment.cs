@@ -86,6 +86,19 @@ namespace RemoteTech {
 
         public void Draw() {
             float width3 = 156 / 3 - GUI.skin.button.margin.right * 2.0f / 3.0f;
+            if (Event.current.Equals(Event.KeyboardEvent("return"))) {
+                if (GUI.GetNameOfFocusedControl().StartsWith("phr")) {
+                    mPitch = Pitch.ToString();
+                    mHeading = Heading.ToString();
+                    mRoll = Roll.ToString();
+                    if (mFlightComputer.InputAllowed) {
+                        mMode = 3;
+                        Confirm();
+                    }
+                } else if(GUI.GetNameOfFocusedControl() == "burn") {
+                    OnBurnClick();
+                }
+            }
             GUILayout.BeginVertical();
             {
                 GUILayout.BeginHorizontal();
@@ -122,27 +135,32 @@ namespace RemoteTech {
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("PIT: ", GUILayout.Width(50));
+                    GUILayout.Label("PIT:", GUILayout.Width(50));
                     RTUtil.Button("+", () => Pitch++, GUILayout.Width(20));
                     RTUtil.Button("-", () => Pitch--, GUILayout.Width(20));
+                    GUI.SetNextControlName("phr1");
                     RTUtil.TextField(ref mPitch, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("HDG: ", GUILayout.Width(50));
+                    GUILayout.Label("HDG:", GUILayout.Width(50));
                     RTUtil.Button("+", () => Heading++, GUILayout.Width(20));
                     RTUtil.Button("-", () => Heading--, GUILayout.Width(20));
+                    GUI.SetNextControlName("phr2");
                     RTUtil.TextField(ref mHeading, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("RLL: ", GUILayout.Width(50));
+                    GUILayout.Label("RLL:", GUILayout.Width(40));
+                    RTUtil.StateButton(" ", mRollEnabled ? 1 : 0, 1, 
+                        (s) => mRollEnabled = (s == 1) ? true : false, GUILayout.Width(10));
                     RTUtil.Button("+", () => Roll++, GUILayout.Width(20));
                     RTUtil.Button("-", () => Roll--, GUILayout.Width(20));
+                    GUI.SetNextControlName("phr3");
                     RTUtil.TextField(ref mRoll, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
@@ -156,6 +174,7 @@ namespace RemoteTech {
                 GUILayout.EndHorizontal();
 
                 RTUtil.HorizontalSlider(ref mThrottle, 0, 1);
+                GUI.SetNextControlName("burn");
                 RTUtil.TextField(ref mDuration);
 
                 GUILayout.BeginHorizontal();
@@ -173,7 +192,7 @@ namespace RemoteTech {
             if (!mFlightComputer.InputAllowed)
                 return;
             mMode = (state < 0) ? 0 : state;
-            SendAttitudeCommand();
+            Confirm();
         }
 
         private void OnAttitudeClick(int state) {
@@ -183,10 +202,10 @@ namespace RemoteTech {
             if (mMode < 4) {
                 mMode = 4;
             }
-            SendAttitudeCommand();
+            Confirm();
         }
 
-        private void SendAttitudeCommand() {
+        private void Confirm() {
             DelayedCommand newCommand;
             switch (mMode) {
                 default: // Off
@@ -203,7 +222,10 @@ namespace RemoteTech {
                     break;
                 case 3: // Pitch, heading, roll
                     mAttitude = 0;
-                    newCommand = AttitudeCommand.WithSurface(Pitch, Heading, Roll);
+                    newCommand = AttitudeCommand.WithSurface(
+                        Pitch, 
+                        Heading, 
+                        mRollEnabled ? Roll : Single.NaN);
                     break;
                 case 4: // Orbital reference
                     mAttitude = (mAttitude == 0) ? 1 : mAttitude;

@@ -15,17 +15,22 @@ namespace RemoteTech {
                 if (!Double.TryParse(mExtraDelay, out delay)) {
                     delay = 0;
                 }
-                return delay;
+                return Math.Max(delay, 0);
             }
             set { mExtraDelay = value.ToString(); }
         }
 
         public QueueFragment(FlightComputer fc) {
             mFlightComputer = fc;
-            mExtraDelay = "0";
+            Delay = 0;
         }
 
         public void Draw() {
+            if (Event.current.Equals(Event.KeyboardEvent ("return")) &&
+                    GUI.GetNameOfFocusedControl() == "xd") {
+                mExtraDelay = Delay.ToString();
+                mFlightComputer.ExtraDelay = Delay;
+            }
             GUILayout.BeginVertical(GUILayout.Width(250));
             {
                 mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, 
@@ -40,6 +45,7 @@ namespace RemoteTech {
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label("Artificial delay: ");
+                    GUI.SetNextControlName("xd");
                     RTUtil.TextField(ref mExtraDelay, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
@@ -58,7 +64,7 @@ namespace RemoteTech {
                         s.Append("Mode: Kill rotation");
                         break;
                     case FlightMode.AttitudeHold:
-                        s.Append("Mode: Hold attitude, ");
+                        s.Append("Mode: Hold, ");
                         switch (dc.AttitudeCommand.Attitude) {
                             case FlightAttitude.Prograde:
                                 s.Append("Prograde");
@@ -79,17 +85,16 @@ namespace RemoteTech {
                                 s.Append("Radial -");
                                 break;
                             case FlightAttitude.Surface:
-                                s.Append("Surface: ");
-                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.x.ToString("F2"));
+                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.x.ToString("F1"));
                                 s.Append(", ");
-                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.y.ToString("F2"));
+                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.y.ToString("F1"));
                                 s.Append(", ");
-                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.z.ToString("F2"));
+                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.z.ToString("F1"));
                                 break;
                         }
                         break;
                     case FlightMode.AltitudeHold:
-                        s.Append("Mode: Hold attitude, ");
+                        s.Append("Mode: Hold, ");
                         s.Append(RTUtil.FormatSI(dc.AttitudeCommand.Altitude, "m"));
                         break;
                 }
@@ -99,20 +104,34 @@ namespace RemoteTech {
             } else if (dc.BurnCommand != null) {
                 s.Append("Burn ");
                 s.Append(dc.BurnCommand.Throttle.ToString("P2"));
-                s.Append(", ");
-                s.Append(dc.BurnCommand.Duration.ToString("F2"));
-                s.Append("s");
-                s.Append(", ");
-                s.Append(dc.BurnCommand.DeltaV.ToString("F2"));
-                s.Append("m/s");
+                if (dc.BurnCommand.Duration != Single.NaN) {
+                    s.Append(", ");
+                    s.Append(dc.BurnCommand.Duration.ToString("F2"));
+                    s.Append("s");
+                }
+                if (dc.BurnCommand.DeltaV != Single.NaN) {
+                    s.Append(", ");
+                    s.Append(dc.BurnCommand.DeltaV.ToString("F2"));
+                    s.Append("m/s");
+                }
+
+            } else if (dc.Event != null) {
+                s.Append(dc.Event.BaseEvent.listParent.part.partInfo.title);
+                s.Append(": ");
+                s.Append(dc.Event.BaseEvent.GUIName);
             }
 
-            double delay = dc.TimeStamp - RTUtil.GetGameTime();
-            if (delay > 0) {
+            double delay = Math.Max(dc.TimeStamp - RTUtil.GetGameTime(), 0);
+            if (delay > 0 || dc.ExtraDelay > 0) {
                 s.AppendLine();
-                s.Append("Active in: ");
+                s.Append("Signal delay: ");
                 s.Append(delay.ToString("F2"));
                 s.Append("s");
+                if (dc.ExtraDelay > 0) {
+                    s.Append(" (+");
+                    s.Append(dc.ExtraDelay.ToString("F2"));
+                    s.Append("s)");
+                }
             }
             return s.ToString();
         }

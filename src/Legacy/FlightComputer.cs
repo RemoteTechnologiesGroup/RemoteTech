@@ -220,44 +220,7 @@ namespace RemoteTech.Legacy {
         }
 
         public void updateAvailableTorque() {
-            MoI = Vessel.findLocalMOI(CoM);
-            torqueRAvailable = torquePYAvailable = torqueThrustPYAvailable = 0;
 
-            foreach (Part p in Vessel.parts) {
-                MoI += p.Rigidbody.inertiaTensor;
-                if (((p.State == PartStates.ACTIVE) || ((Staging.CurrentStage > Staging.lastStage) && (p.inverseStage == Staging.lastStage)))) {
-                    if (p is LiquidEngine && p.RequestFuel(p, 0, Part.getFuelReqId()) && ((LiquidEngine)p).thrustVectoringCapable) {
-                        torqueThrustPYAvailable += Math.Sin(Math.Abs(((LiquidEngine)p).gimbalRange) * Math.PI / 180) * ((LiquidEngine)p).maxThrust * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
-                    } else if (p is LiquidFuelEngine && p.RequestFuel(p, 0, Part.getFuelReqId()) && ((LiquidFuelEngine)p).thrustVectoringCapable) {
-                        torqueThrustPYAvailable += Math.Sin(Math.Abs(((LiquidFuelEngine)p).gimbalRange) * Math.PI / 180) * ((LiquidFuelEngine)p).maxThrust * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
-                    } else if (p is AtmosphericEngine && p.RequestFuel(p, 0, Part.getFuelReqId()) && ((AtmosphericEngine)p).thrustVectoringCapable) {
-                        torqueThrustPYAvailable += Math.Sin(Math.Abs(((AtmosphericEngine)p).gimbalRange) * Math.PI / 180) * ((AtmosphericEngine)p).maximumEnginePower * ((AtmosphericEngine)p).totalEfficiency * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
-                    }
-                    if (p.Modules.Contains("ModuleGimbal") && p.Modules.Contains("ModuleEngines")) {
-                        torqueThrustPYAvailable += Math.Sin(Math.Abs(((ModuleGimbal)p.Modules["ModuleGimbal"]).gimbalRange) * Math.PI / 180) * ((ModuleEngines)p.Modules["ModuleEngines"]).maxThrust * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
-                    }
-                }
-
-                if (Vessel.ActionGroups[KSPActionGroup.RCS] && (p is RCSModule || p.Modules.Contains("ModuleRCS"))) {
-                    double maxT = 0;
-                    for (int i = 0; i < 6; i++) {
-                        if (p is RCSModule && ((RCSModule)p).thrustVectors[i] != Vector3.zero) {
-                            maxT = Math.Max(maxT, ((RCSModule)p).thrusterPowers[i]);
-                        }
-                    }
-                    torquePYAvailable += maxT * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
-
-                    foreach (PartModule m in p.Modules) {
-                        if (m is ModuleRCS)
-                            torquePYAvailable += ((ModuleRCS)m).thrusterPower * (p.Rigidbody.worldCenterOfMass - CoM).magnitude;
-                    }
-                }
-
-                if (p is CommandPod) {
-                    torqueRAvailable += Math.Abs(((CommandPod)p).rotPower);
-                    torquePYAvailable += Math.Abs(((CommandPod)p).rotPower);
-                }
-            }
         }
 
         class RoverPidController {

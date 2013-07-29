@@ -29,8 +29,7 @@ namespace RemoteTech {
             }
         }
 
-        private DelayedCommand mAttitude = AttitudeCommand.Off();
-        private DelayedCommand mBurn = BurnCommand.Off();
+        private DelayedCommand mCommand = AttitudeCommand.Off();
         private Vector3 mManeuver;
         private Quaternion mKillrot;
         private double mLastSpeed;
@@ -50,7 +49,7 @@ namespace RemoteTech {
             mPreviousCtrl.CopyFrom(s.Vessel.ctrlState);
             mAttachedVessel = s.Vessel;
 
-            mLegacyComputer = new Legacy.FlightComputer(s.Vessel);
+            mLegacyComputer = new Legacy.FlightComputer();
             Bifrost = new BifrostUnit(s);
         }
 
@@ -96,7 +95,6 @@ namespace RemoteTech {
             if (mSignalProcessor.Vessel != null) {
                 mAttachedVessel.OnFlyByWire -= OnFlyByWirePre;
                 mAttachedVessel = mSignalProcessor.Vessel;
-                mLegacyComputer.Vessel = mAttachedVessel;
                 mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
             }
 
@@ -109,7 +107,7 @@ namespace RemoteTech {
         }
 
         private void Autopilot(FlightCtrlState fs) {
-            switch (mAttitude.AttitudeCommand.Mode) {
+            switch (mCommand.AttitudeCommand.Mode) {
                 case FlightMode.Off:
                     break;
                 case FlightMode.KillRot:
@@ -163,12 +161,12 @@ namespace RemoteTech {
                         if (dc.AttitudeCommand != null) {
                             mKillrot = mAttachedVessel.transform.rotation *
                                 Quaternion.AngleAxis(90, Vector3.left);
-                            mAttitude = dc;
+                            mCommand = dc;
                         }
 
                         if (dc.BurnCommand != null) {
                             mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
-                            mBurn = dc;
+                            mCommand.BurnCommand = dc.BurnCommand;
                         }
 
                         if (dc.Event != null) {
@@ -182,7 +180,7 @@ namespace RemoteTech {
         }
 
         private void HoldOrientation(FlightCtrlState fs, Quaternion target) {
-            mLegacyComputer.drive(fs, target);
+            mLegacyComputer.HoldOrientation(fs, mAttachedVessel, target, true);
         }
 
         private void HoldAttitude(FlightCtrlState fs) {
@@ -190,7 +188,7 @@ namespace RemoteTech {
             Vector3 forward = Vector3.zero;
             Vector3 up = Vector3.zero;
             Quaternion rotationReference;
-            switch (mAttitude.AttitudeCommand.Frame) {
+            switch (mCommand.AttitudeCommand.Frame) {
                 case ReferenceFrame.Orbit:
                     forward = v.GetObtVelocity();
                     up = (v.mainBody.position - v.CoM);
@@ -217,7 +215,7 @@ namespace RemoteTech {
             }
             Vector3.OrthoNormalize(ref forward, ref up);
             rotationReference = Quaternion.LookRotation(forward, up);
-            switch (mAttitude.AttitudeCommand.Attitude) {
+            switch (mCommand.AttitudeCommand.Attitude) {
                 case FlightAttitude.Prograde:
                     break;
                 case FlightAttitude.Retrograde:
@@ -236,7 +234,7 @@ namespace RemoteTech {
                     rotationReference = rotationReference * Quaternion.AngleAxis(90, Vector3.left);
                     break;
                 case FlightAttitude.Surface:
-                    rotationReference = rotationReference * mAttitude.AttitudeCommand.Orientation;
+                    rotationReference = rotationReference * mCommand.AttitudeCommand.Orientation;
                     break;
             }
             HoldOrientation(fs, rotationReference);
@@ -246,7 +244,7 @@ namespace RemoteTech {
         private void HoldAltitude(FlightCtrlState fs) {
             const double damping = 1000.0f;
             Vessel v = mAttachedVessel;
-            double target_height = mAttitude.AttitudeCommand.Altitude;
+            double target_height = mCommand.AttitudeCommand.Altitude;
             float target_pitch = (float) (Math.Atan2(target_height - v.orbit.ApA, damping) / Math.PI * 180.0f);
             Vector3 up = (v.mainBody.position - v.CoM);
             Vector3 forward = Vector3.Exclude(up,
@@ -263,17 +261,19 @@ namespace RemoteTech {
         }
 
         private void Burn(FlightCtrlState fs) {
-            if (!Single.IsNaN(mBurn.BurnCommand.Throttle)) {
-                if (mBurn.BurnCommand.Duration > 0) {
-                    fs.mainThrottle = mBurn.BurnCommand.Throttle;
-                    mBurn.BurnCommand.Duration -= TimeWarp.deltaTime;
-                } else if (mBurn.BurnCommand.DeltaV > 0) {
-                    fs.mainThrottle = mBurn.BurnCommand.Throttle;
-                    mBurn.BurnCommand.DeltaV -=
+            if (mCommand.BurnCommand == null)
+                return;
+            if (!Single.IsNaN(mCommand.BurnCommand.Throttle)) {
+                if (mCommand.BurnCommand.Duration > 0) {
+                    fs.mainThrottle = mCommand.BurnCommand.Throttle;
+                    mCommand.BurnCommand.Duration -= TimeWarp.deltaTime;
+                } else if (mCommand.BurnCommand.DeltaV > 0) {
+                    fs.mainThrottle = mCommand.BurnCommand.Throttle;
+                    mCommand.BurnCommand.DeltaV -=
                         Math.Abs(mLastSpeed - mAttachedVessel.obt_velocity.magnitude);
                     mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
                 } else {
-                    mBurn.BurnCommand.Throttle = Single.NaN;
+                    mCommand.BurnCommand = null;
                 }
             }
         }
@@ -283,8 +283,7 @@ namespace RemoteTech {
         }
 
         public IEnumerator<DelayedCommand> GetEnumerator() {
-            yield return mAttitude;
-            yield return mBurn;
+            yield return mCommand;
             foreach (DelayedCommand dc in mCommandBuffer) {
                 yield return dc;
             }

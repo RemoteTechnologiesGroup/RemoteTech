@@ -24,15 +24,14 @@ namespace RemoteTech {
         }
 
         public void Draw() {
-            GUILayout.BeginVertical();
+            if (Event.current.Equals(Event.KeyboardEvent("return")) &&
+                    GUI.GetNameOfFocusedControl() == "alt") {
+                Submit();
+            }
+            GUILayout.BeginVertical(GUILayout.Width(156), GUILayout.Height(300));
             {
                 GUILayout.Label("Altitude: ");
                 GUI.SetNextControlName("alt");
-                if (Event.current.type == EventType.KeyDown &&
-                        Event.current.keyCode == KeyCode.Return &&
-                            GUI.GetNameOfFocusedControl() == "alt") {
-                    Submit();
-                }
                 RTUtil.TextField(ref mAltitude);
             }
             GUILayout.EndVertical();

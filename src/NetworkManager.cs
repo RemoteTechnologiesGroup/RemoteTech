@@ -114,18 +114,9 @@ namespace RemoteTech {
             var result = new List<TypedEdge<ISatellite>>();
 
             foreach (ISatellite b in this) {
-                EdgeType aToB = IsConnectedTo(a, b);
-                if (aToB == EdgeType.None) continue;
-
-                EdgeType bToA = IsConnectedTo(b, a);
-                if (bToA == EdgeType.None) continue;
-
-                if (aToB == EdgeType.Dish || bToA == EdgeType.Dish) {
-                    result.Add(new TypedEdge<ISatellite>(a, b, EdgeType.Dish));
-                }
-                else {
-                    result.Add(new TypedEdge<ISatellite>(a, b, EdgeType.Omni));
-                }
+                EdgeType edge = IsConnectedTo(a, b);
+                if (edge == EdgeType.None) continue;
+                result.Add(new TypedEdge<ISatellite>(a, b, edge));
             }
 
             // Process
@@ -148,18 +139,43 @@ namespace RemoteTech {
             if (a == b || !los) return EdgeType.None;
 
             float distance = Distance(a, b);
-            if (distance < a.Omni) return EdgeType.Omni;
+            if (distance < (a.Omni + b.Omni)) return EdgeType.Omni;
 
-            foreach (Dish dish in a.Dishes.Where(dish => distance <= dish.Distance)) {
-                if (dish.Target == b.Guid) return EdgeType.Dish;
-                if (!Planets.ContainsKey(dish.Target) || Planets[dish.Target] != b.Body) continue;
-                // Planet being targeted. Is b in the dish cone?
+            float a_range = 0.0f;
+            float b_range = 0.0f;
+
+            foreach (Dish dish in a.Dishes.Where(d => d.Target == b.Guid)) {
+                a_range = Math.Max(a_range, dish.Distance);
+            }
+
+            foreach (Dish dish in a.Dishes.Where(d => Planets.ContainsKey(d.Target) && 
+                                                      Planets[d.Target] == b.Body)) {
                 Vector3 dir_cb = (Planets[dish.Target].position - a.Position);
                 Vector3 dir_b = (b.Position - a.Position);
                 if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= dish.Factor) {
-                    return EdgeType.Dish;
+                    a_range = Math.Max(a_range, dish.Distance);
                 }
             }
+
+            foreach (Dish dish in b.Dishes.Where(d => d.Target == a.Guid)) {
+                b_range = Math.Max(b_range, dish.Distance);
+            }
+
+            foreach (Dish dish in b.Dishes.Where(d => Planets.ContainsKey(d.Target) &&
+                                                      Planets[d.Target] == a.Body)) {
+                Vector3 dir_cb = (Planets[dish.Target].position - b.Position);
+                Vector3 dir_a = (a.Position - b.Position);
+                if (Vector3.Dot(dir_cb.normalized, dir_a.normalized) >= dish.Factor) {
+                    b_range = Math.Max(b_range, dish.Distance);
+                }
+            }
+
+            if (distance < (a_range + b_range) || 
+                distance < (a.Omni + b_range) ||
+                distance < (b.Omni + a_range)) {
+                return EdgeType.Dish;
+            }
+                
 
             return EdgeType.None;
         }
@@ -252,7 +268,7 @@ namespace RemoteTech {
         }
         public CelestialBody Body { get { return FlightGlobals.Bodies[1]; } }
         public bool LocalControl { get { return false; } }
-        public float Omni { get { return 9e30f; } }
+        public float Omni { get { return 70000; } }
         public IEnumerable<Dish> Dishes { get { return Enumerable.Empty<Dish>(); } }
 
         public override String ToString() {

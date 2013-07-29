@@ -23,6 +23,11 @@ namespace RemoteTech {
                 RTAntennaTargetGuid = value;
                 RTAntennaTarget = value.ToString();
                 UpdateContext();
+                foreach (var w in GameObject.FindObjectsOfType(typeof(UIPartActionWindow))
+                            .OfType<UIPartActionWindow>()
+                            .Where(w => w.part == part)) {
+                    w.displayDirty = true;
+                }
             }
         }
 
@@ -246,21 +251,19 @@ namespace RemoteTech {
             GUI_DishRange = RTUtil.FormatSI(DishRange, "m");
             GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
             Events["EventTarget"].guiName = RTUtil.TargetName(DishTarget);
-            foreach (var w in GameObject.FindObjectsOfType(typeof(UIPartActionWindow))
-                                        .OfType<UIPartActionWindow>()
-                                        .Where(w => w.part == part)) {
-                w.displayDirty = true;
-            }
         }
 
         private State UpdateControlState() {
             if (!RTCore.Instance) {
+                IsRTPowered = true;
                 return State.Operational;
             }
             if (IsRTBroken) {
+                IsRTPowered = false;
                 return State.Malfunction;
             }
             if (!IsRTActive) {
+                IsRTPowered = false;
                 return State.Off;
             }
             ModuleResource request = new ModuleResource();
@@ -289,6 +292,7 @@ namespace RemoteTech {
                     GUI_Status = "Malfunction";
                     break;
             }
+            UpdateContext();
         }
 
         public void OnDestroy() {
