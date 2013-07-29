@@ -155,8 +155,8 @@ namespace RemoteTech {
 
         public static DelayedCommand WithSurface(double pitch, double yaw, double roll) {
             Quaternion rotation = Quaternion.Euler(new Vector3d(Double.IsNaN(pitch) ? 0 : pitch,
-                                                                Double.IsNaN(yaw) ? 0 : yaw,
-                                                                Double.IsNaN(roll) ? 0 : roll));
+                                                                Double.IsNaN(yaw) ? 0 : -yaw,
+                                                                Double.IsNaN(roll) ? 0 : 180-roll));
             return new DelayedCommand() {
                 AttitudeCommand = new AttitudeCommand() {
                     Mode = FlightMode.AttitudeHold,

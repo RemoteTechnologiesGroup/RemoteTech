@@ -139,7 +139,9 @@ namespace RemoteTech {
             if (a == b || !los) return EdgeType.None;
 
             float distance = Distance(a, b);
-            if (distance < (a.Omni + b.Omni)) return EdgeType.Omni;
+            if (distance < (a.Omni + b.Omni) / 2 && a.Omni > 0 && b.Omni > 0) {
+                return EdgeType.Omni;              
+            }
 
             float a_range = 0.0f;
             float b_range = 0.0f;
@@ -170,9 +172,9 @@ namespace RemoteTech {
                 }
             }
 
-            if (distance < (a_range + b_range) || 
-                distance < (a.Omni + b_range) ||
-                distance < (b.Omni + a_range)) {
+            if ((distance < (a_range + b_range) / 2 && a_range > 0 && b_range > 0) || 
+                (distance < (a.Omni + b_range) / 2 && a.Omni > 0 && b_range > 0) ||
+                (distance < (a_range + b.Omni) / 2 && a_range > 0 && b.Omni > 0)) {
                 return EdgeType.Dish;
             }
                 
