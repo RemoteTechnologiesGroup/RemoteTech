@@ -70,6 +70,13 @@ namespace RemoteTech {
             }
         }
 
+        [KSPField]
+        public bool
+            ShowGUI_DishRange = true,
+            ShowGUI_OmniRange = true,
+            ShowGUI_EnergyReq = true,
+            ShowGUI_Status = true;
+
         [KSPField(guiName = "Dish range")]
         public String GUI_DishRange;
         [KSPField(guiName = "Energy")]
@@ -233,10 +240,10 @@ namespace RemoteTech {
             Events["EventTarget"].guiActive = (Mode1DishRange > 0);
             Events["EventTarget"].active = Events["EventTarget"].guiActive;
 
-            Fields["GUI_OmniRange"].guiActive = (Mode1OmniRange > 0);
-            Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0);
-            Fields["GUI_EnergyReq"].guiActive = (EnergyCost > 0);
-            Fields["GUI_Status"].guiActive = true;
+            Fields["GUI_OmniRange"].guiActive = (Mode1OmniRange > 0) && ShowGUI_OmniRange;
+            Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0) && ShowGUI_DishRange;
+            Fields["GUI_EnergyReq"].guiActive = (EnergyCost > 0) && ShowGUI_EnergyReq;
+            Fields["GUI_Status"].guiActive = ShowGUI_Status;
 
             if (RTCore.Instance != null) {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);

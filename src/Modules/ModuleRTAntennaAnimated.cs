@@ -52,30 +52,38 @@ namespace RemoteTech {
 
             base.OnStart(state);
 
-            Animation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
-            Animation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
-            Animation.Play(AnimationName);
-
             if (IsRTBroken && BreakTransform != null) {
                 foreach (Transform t in RTUtil.FindTransformsWithCollider(BreakTransform)) {
                     Destroy(t.gameObject);
                 }
                 enabled = false;
+                return;
             }
+
+            Animation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
+            Animation[AnimationName].normalizedTime = IsRTActive ? 1.0f : 0.0f;
+            Animation.Play(AnimationName);
         }
 
         public override void SetState(bool state) {
+
+            if (IsRTActive && AnimationOneShot)
+                return;
+
             base.SetState(state);
+
             if (!IsRTActive && Animation[AnimationName].normalizedTime == 0.0f) {
                 Animation[AnimationName].normalizedTime = 1.0f;
-            } else if (IsRTActive && Animation[AnimationName].normalizedTime == 1.0f) {
+            }
+            else if (IsRTActive && Animation[AnimationName].normalizedTime == 1.0f) {
                 Animation[AnimationName].normalizedTime = 0.0f;
             }
-            if (!(AnimationState == 1.0f && AnimationOneShot)) {
-                Animation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
-                AnimationState = IsRTActive ? 1.0f : 0.0f;
-                Animation.Play(AnimationName);
-            }
+            Animation[AnimationName].speed = IsRTActive ? 1.0f : -1.0f;
+            AnimationState = IsRTActive ? 1.0f : 0.0f;
+            Animation.Play(AnimationName);
+
+            if (IsRTActive && AnimationOneShot)
+                Events["EventClose"].active = false;
         }
 
         // Unity uses reflection to call this, so call the hidden base member too.
@@ -86,17 +94,19 @@ namespace RemoteTech {
             if (IsRTBroken || vessel == null || part == null || SnappingForce < 0) {
                 return;
             }
-            if (vessel.atmDensity > 0 && AnimationState > 0.0f) {
+            if (vessel.atmDensity > 0 && AnimationState > 0.0f && SnappingForce > 0 && !vessel.HoldPhysics) {
                 if (ForceTransform == null) {
                     if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > SnappingForce) {
                         if (BreakTransform == null) {
                             part.decouple(0.0f);
                             SnappingForce = -1.0f;
-                        } else {
+                        }
+                        else {
                             Break();
                         }
                     }
-                } else {
+                }
+                else {
                     if (Math.Pow(Vector3d.Dot(ForceTransform.up, vessel.srf_velocity), 2) * vessel.atmDensity * 0.5 > SnappingForce) {
                         Break();
                     }

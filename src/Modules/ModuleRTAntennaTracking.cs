@@ -63,6 +63,7 @@ namespace RemoteTech {
             base.SetState(state);
 
             if (IsRTActive) {
+                if (AnimationOneShot) return;
                 if (TrackingMode == TrackingModes.Resetting)
                     TrackingMode = TrackingModes.Tracking;
                 else {
