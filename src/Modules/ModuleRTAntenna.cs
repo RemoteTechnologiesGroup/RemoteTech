@@ -75,7 +75,12 @@ namespace RemoteTech {
             ShowGUI_DishRange = true,
             ShowGUI_OmniRange = true,
             ShowGUI_EnergyReq = true,
-            ShowGUI_Status = true;
+            ShowGUI_Status = true,
+            ShowEditor_Class = true,
+            ShowEditor_OmniRange = true,
+            ShowEditor_DishRange = true,
+            ShowEditor_EnergyReq = true,
+            ShowEditor_AllEnergyReq = false;
 
         [KSPField(guiName = "Dish range")]
         public String GUI_DishRange;
@@ -134,24 +139,34 @@ namespace RemoteTech {
         public override string GetInfo() {
             var info = new StringBuilder();
 
-            if (Mode0OmniRange + Mode1OmniRange + Mode0DishRange + Mode1DishRange > 0)
+            if (ShowEditor_Class && Mode0OmniRange + Mode1OmniRange + Mode0DishRange + Mode1DishRange > 0)
                 info.AppendLine("Class: " + RTUtil.FormatClass(Math.Max(Math.Max(Mode0DishRange, Mode1DishRange), Math.Max(Mode0OmniRange, Mode1OmniRange))));
-            if (Mode1OmniRange > 0) {
+            if (ShowEditor_OmniRange && Mode1OmniRange > 0) {
                 info.Append("Omni range: ");
                 info.Append(RTUtil.FormatSI(Mode0OmniRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1OmniRange, "m"));
             }
-            if (Mode1DishRange > 0) {
+            if (ShowEditor_DishRange && Mode1DishRange > 0) {
                 info.Append("Dish range: ");
                 info.Append(RTUtil.FormatSI(Mode0DishRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1DishRange, "m"));
             }
-            if (EnergyCost > 0) {
+            if (ShowEditor_EnergyReq && EnergyCost > 0) {
                 info.Append("Energy req.: ");
                 info.Append(RTUtil.FormatConsumption(EnergyCost));
             }
+            if (ShowEditor_AllEnergyReq) {
+                float AllEnergyReq = 0;
+                foreach (ModuleRTAntenna m in part.Modules.OfType<ModuleRTAntenna>())
+                    AllEnergyReq += m.EnergyCost;
+                if (AllEnergyReq > 0) {
+                    info.Append("Energy req.: ");
+                    info.Append(RTUtil.FormatConsumption(AllEnergyReq));
+                }
+            }
+
             return info.ToString().TrimEnd('\n');
         }
 

@@ -42,6 +42,11 @@ namespace RemoteTech {
         [KSPField]
         public int minimumCrew = 0;
 
+        [KSPField]
+        public bool
+            ShowGUI_Status = true,
+            ShowEditor_Type = true;
+
         [KSPField(guiName = "State", guiActive = true)]
         public String Status;
 
@@ -79,6 +84,9 @@ namespace RemoteTech {
         public List<ModuleResource> RequiredResources;
 
         public override string GetInfo() {
+
+            if (!ShowEditor_Type) return String.Empty;
+
             return IsRTCommandStation ? "Remote Command" : "Remote Control";
         }
 
@@ -91,6 +99,7 @@ namespace RemoteTech {
                     FlightComputer = new FlightComputer(this);
                 }
             }
+            Fields["Status"].guiActive = ShowGUI_Status;
         }
 
         public void OnDestroy() {
