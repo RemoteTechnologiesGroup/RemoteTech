@@ -60,24 +60,20 @@ namespace RemoteTech {
         }
 
         public override void SetState(bool state) {
-            base.SetState(state);
-
             if (IsRTActive) {
                 if (AnimationOneShot) return;
-                if (TrackingMode == TrackingModes.Resetting)
-                    TrackingMode = TrackingModes.Tracking;
-                else {
-                    TrackingMode = TrackingModes.Extending;
-                    Animation[AnimationName].speed = Math.Abs(Animation[AnimationName].speed);
-                    Animation.Play(AnimationName);
-                }
-            } else {
                 if (TrackingMode == TrackingModes.Tracking)
                     TrackingMode = TrackingModes.Resetting;
                 else {
                     TrackingMode = TrackingModes.Retracting;
-                    Animation[AnimationName].speed = -Math.Abs(Animation[AnimationName].speed);
-                    Animation.Play(AnimationName);
+                    base.SetState(state);
+                }
+            } else {
+                if (TrackingMode == TrackingModes.Resetting)
+                    TrackingMode = TrackingModes.Tracking;
+                else {
+                    TrackingMode = TrackingModes.Extending;
+                    base.SetState(state);
                 }
             }
         }
@@ -106,12 +102,8 @@ namespace RemoteTech {
                     break;
                 case TrackingModes.Resetting:
                     if (IsRTPowered && mPivot1.RotToOrigin() & mPivot2.RotToOrigin()) {
-                        Animation[AnimationName].speed = -Mathf.Abs(Animation[AnimationName].speed);
-                        Animation.Play(AnimationName);
-                        if (Animation[AnimationName].normalizedTime == 0) {
-                            Animation[AnimationName].normalizedTime = 1;
-                        }
                         TrackingMode = TrackingModes.Retracting;
+                        base.SetState(false);
                     }
                     break;
             }

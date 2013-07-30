@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleRTAntenna : PartModule, IAntenna {
-        public bool CanTarget { 
-            get { 
-                return Mode1DishRange != -1.0f; 
-            } 
+        public bool CanTarget {
+            get {
+                return Mode1DishRange != -1.0f;
+            }
         }
 
-        public String Name { 
-            get { 
+        public String Name {
+            get {
                 return part.partInfo.title;
             }
         }
@@ -31,42 +31,42 @@ namespace RemoteTech {
             }
         }
 
-        public float DishRange { 
+        public float DishRange {
             get {
                 if (IsRTBroken) {
                     return 0.0f;
                 }
-                return IsRTActive && IsRTPowered ? Mode1DishRange : Mode0DishRange; 
+                return IsRTActive && IsRTPowered ? Mode1DishRange : Mode0DishRange;
             }
         }
 
-        public double DishFactor { 
-            get { 
-                return RTDishFactor; 
-            } 
+        public double DishFactor {
+            get {
+                return RTDishFactor;
+            }
         }
 
-        public float OmniRange { 
+        public float OmniRange {
             get {
                 if (IsRTBroken) {
                     return 0.0f;
                 }
-                return IsRTActive && IsRTPowered ? Mode1OmniRange : Mode0OmniRange; 
+                return IsRTActive && IsRTPowered ? Mode1OmniRange : Mode0OmniRange;
             }
         }
 
-        public float Consumption { 
+        public float Consumption {
             get {
                 if (IsRTBroken) {
                     return 0.0f;
                 }
-                return IsRTActive ? EnergyCost : 0.0f; 
+                return IsRTActive ? EnergyCost : 0.0f;
             }
         }
 
-        public Vessel Vessel { 
+        public Vessel Vessel {
             get {
-                return vessel; 
+                return vessel;
             }
         }
 
@@ -87,7 +87,7 @@ namespace RemoteTech {
         public String GUI_Status;
 
         [KSPField]
-        public String 
+        public String
             Mode0Name = "Off",
             Mode1Name = "Operational",
             ActionMode0Name = "Deactivate",
@@ -133,6 +133,9 @@ namespace RemoteTech {
 
         public override string GetInfo() {
             var info = new StringBuilder();
+
+            if (Mode0OmniRange + Mode1OmniRange + Mode0DishRange + Mode1DishRange > 0)
+                info.AppendLine("Class: " + RTUtil.FormatClass(Math.Max(Math.Max(Mode0DishRange, Mode1DishRange), Math.Max(Mode0OmniRange, Mode1OmniRange))));
             if (Mode1OmniRange > 0) {
                 info.Append("Omni range: ");
                 info.Append(RTUtil.FormatSI(Mode0OmniRange, "m"));
@@ -206,7 +209,7 @@ namespace RemoteTech {
             EventClose();
         }
 
-        [KSPEvent(name = "OverrideTarget", active = false, guiActiveUnfocused = true, 
+        [KSPEvent(name = "OverrideTarget", active = false, guiActiveUnfocused = true,
             unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Jack-in!")]
         [IgnoreSignalDelayAttribute]
         public void OverrideTarget() {
