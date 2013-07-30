@@ -270,5 +270,13 @@ namespace RemoteTech {
                 }
             }
         }
+
+        public static void findTransformsWithPrefix(Transform input, ref List<Transform> list, string prefix)
+        {
+            if (input.name.ToLower().StartsWith(prefix.ToLower()))
+                list.Add(input);
+            foreach (Transform t in input)
+                findTransformsWithPrefix(t, ref list, prefix);
+        }
     }
 }

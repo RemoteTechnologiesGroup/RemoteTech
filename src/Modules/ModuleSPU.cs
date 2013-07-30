@@ -37,13 +37,22 @@ namespace RemoteTech {
         public bool IsRTSignalProcessor = true;
 
         [KSPField(isPersistant = true)]
-        public bool IsRTCommandStation = true;
+        public bool IsRTCommandStation = false;
 
         [KSPField]
         public int minimumCrew = 0;
 
         [KSPField(guiName = "State", guiActive = true)]
         public String Status;
+
+        [KSPEvent(name = "ToggleDebugDelay", active = true, guiActive = true, guiName = "Toggle debug delay")]
+        [IgnoreSignalDelayAttribute]
+        public void ToggleDebugDelay() {
+            if (RTCore.Instance.Settings.DebugOffsetDelay == 0)
+                RTCore.Instance.Settings.DebugOffsetDelay = 1;
+            else
+                RTCore.Instance.Settings.DebugOffsetDelay = 0;
+        }
 
         [KSPEvent(name = "OpenFC", active = true, guiActive = true, guiName = "Flight Computer")]
         [IgnoreSignalDelayAttribute]
@@ -177,6 +186,28 @@ namespace RemoteTech {
                     e.Invoke();
                 }
             });
+        }
+
+        [KSPEvent]
+        public void RTdata(BaseEventData data) {
+            bool success = true;
+            try {
+                data.Set<float>("controlDelay", Satellite.Connection.Delay);
+            } catch { data.Set<float>("controlDelay", 0); success = false; }
+
+            try {
+                data.Set<bool>("localControl", Satellite.LocalControl);
+            } catch { data.Set<bool>("localControl", true); success = false; }
+
+            try {
+                data.Set<bool>("inRadioContact", Satellite.Connection.Exists);
+            } catch { data.Set<bool>("inRadioContact", true); success = false; }
+
+            try {
+                data.Set<bool>("isCommandStation", Satellite.CommandStation);
+            } catch { data.Set<bool>("isCommandStation", true); success = false; }
+
+            data.Set<bool>("success", success);
         }
     }
 }
