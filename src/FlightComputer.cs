@@ -36,6 +36,7 @@ namespace RemoteTech {
         private FlightCtrlState mPreviousCtrl = new FlightCtrlState();
 
         private readonly Legacy.FlightComputer mLegacyComputer;
+        private Legacy.PidController mRoverPid;
         private readonly List<DelayedCommand> mCommandBuffer
             = new List<DelayedCommand>();
         private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer
@@ -51,6 +52,7 @@ namespace RemoteTech {
 
             mLegacyComputer = new Legacy.FlightComputer();
             Bifrost = new BifrostUnit(s);
+            mRoverPid = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, 1);
         }
 
         public void Dispose() {
@@ -121,6 +123,7 @@ namespace RemoteTech {
                     break;
             }
             Burn(fs);
+            Drive(fs);
         }
 
         private void PopFlightCtrlState(FlightCtrlState fcs) {
@@ -167,6 +170,16 @@ namespace RemoteTech {
                         if (dc.BurnCommand != null) {
                             mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
                             mCommand.BurnCommand = dc.BurnCommand;
+                        }
+
+                        if (dc.DriveCommand != null) {
+                            mRoverAlt = Vector3.Distance(mAttachedVessel.mainBody.position, mAttachedVessel.transform.position);
+                            mRoverRot = mAttachedVessel.ReferenceTransform.rotation;
+                            mRoverLat = (float)mAttachedVessel.latitude;
+                            mRoverLon = (float)mAttachedVessel.longitude;
+                            mRoverPid.Reset();
+                            mAttachedVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, false);
+                            mCommand.DriveCommand = dc.DriveCommand;
                         }
 
                         if (dc.Event != null) {
@@ -274,6 +287,40 @@ namespace RemoteTech {
                     mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
                 } else {
                     mCommand.BurnCommand = null;
+                }
+            }
+        }
+
+        private float
+            mRoverAlt,
+            mRoverLat,
+            mRoverLon;
+        private Quaternion mRoverRot;
+
+
+        private void Drive(FlightCtrlState fs) {
+            if (mCommand.DriveCommand == null) 
+                return;
+            
+            if (mCommand.DriveCommand.steering !=0) {
+                if (Quaternion.Angle(mRoverRot, mAttachedVessel.ReferenceTransform.rotation) < mCommand.DriveCommand.target) {
+                    fs.wheelThrottle = (mCommand.DriveCommand.speed < 0 ? -1 : 1) * mRoverPid.Control(Math.Abs(mCommand.DriveCommand.speed) - (float)mAttachedVessel.horizontalSrfSpeed);
+                    fs.wheelSteer = mCommand.DriveCommand.steering;
+                } else {
+                    fs.wheelThrottle = 0;
+                    fs.wheelSteer = 0;
+                    mAttachedVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+                    mCommand.DriveCommand = null;
+                }
+            } else {
+                if (Vector3.Distance(mAttachedVessel.mainBody.position + mRoverAlt * mAttachedVessel.mainBody.GetSurfaceNVector(mRoverLat, mRoverLon), mAttachedVessel.transform.position) < Math.Abs(mCommand.DriveCommand.target)) {
+                    fs.wheelThrottle = (mCommand.DriveCommand.speed < 0 ? -1 : 1) * mRoverPid.Control(Math.Abs(mCommand.DriveCommand.speed) - (float)mAttachedVessel.horizontalSrfSpeed);
+                    fs.wheelSteer = mCommand.DriveCommand.steering;
+                } else {
+                    fs.wheelThrottle = 0;
+                    fs.wheelSteer = 0;
+                    mAttachedVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+                    mCommand.DriveCommand = null;
                 }
             }
         }

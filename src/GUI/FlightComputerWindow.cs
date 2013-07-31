@@ -43,7 +43,7 @@ namespace RemoteTech {
             mFlightComputer = fc;
 
             mAttitude = new AttitudeFragment(fc, () => mQueueEnabled = !mQueueEnabled);
-            mRover = new RoverFragment();
+            mRover = new RoverFragment(fc, () => mQueueEnabled = !mQueueEnabled);
             mAerial = new AerialFragment(fc);
             mBifrost = new BifrostFragment(fc);
             mQueue = new QueueFragment(fc);

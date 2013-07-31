@@ -77,6 +77,41 @@ namespace RemoteTech {
             return value.ToString("F2") + DistanceUnits[i] + unit;
         }
 
+        public static string ConstrictNum(string s) {
+            return ConstrictNum(s, true);
+        }
+
+        public static String ConstrictNum(string s, float max) {
+
+            string tmp = ConstrictNum(s, false);
+
+            float f = 0;
+
+            Single.TryParse(tmp, out f);
+
+            if (f > max)
+                return max.ToString("00");
+            else
+                return tmp;
+        }
+
+        public static String ConstrictNum(string s, bool allowNegative) {
+            StringBuilder tmp = new StringBuilder();
+            if (allowNegative && s.StartsWith("-"))
+                tmp.Append(s[0]);
+            bool point = false;
+
+            foreach (char c in s) {
+                if (char.IsNumber(c))
+                    tmp.Append(c);
+                else if (!point && (c == '.' || c == ',')) {
+                    point = true;
+                    tmp.Append('.');
+                }
+            }
+            return tmp.ToString();
+        }
+
         public static String FormatClass(float range) {
             List<float> classes = new List<float>();
 
@@ -271,8 +306,7 @@ namespace RemoteTech {
             }
         }
 
-        public static void findTransformsWithPrefix(Transform input, ref List<Transform> list, string prefix)
-        {
+        public static void findTransformsWithPrefix(Transform input, ref List<Transform> list, string prefix) {
             if (input.name.ToLower().StartsWith(prefix.ToLower()))
                 list.Add(input);
             foreach (Transform t in input)

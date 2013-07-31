@@ -107,7 +107,7 @@ namespace RemoteTech.Legacy {
                     s.yaw = Mathf.Clamp((float)(act.y), -drive_limit, drive_limit);
             }
         }
-    }
+    }    
 
     public class PIDControllerV : IConfigNode {
         public Vector3d prevError, intAccum;
