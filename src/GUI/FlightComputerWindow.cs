@@ -82,9 +82,6 @@ namespace RemoteTech {
         }
 
         protected override void Draw() {
-            if (!mFlightComputer.InputAllowed) {
-                Hide();
-            }
             switch (mTab) {
                 case FragmentTab.Attitude:
                     Title = "Attitude";

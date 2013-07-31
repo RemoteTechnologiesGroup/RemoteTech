@@ -78,6 +78,7 @@ namespace RemoteTech {
                     }
                     mLoadedSpuCache[key].RemoveAt(instance_id);
                     mLoadedSpuCache.Remove(key);
+                    RegisterProto(spu.Vessel);
                 } else {
                     mLoadedSpuCache[key].RemoveAt(instance_id);
                 }
@@ -216,24 +217,13 @@ namespace RemoteTech {
 
         public static bool HasCommandStation(this Vessel v) {
             Log("RTUtil: HasCommandStation {0}", v.vesselName);
-            if (!v.loaded) {
-                foreach (Part p in v.Parts) {
-                    foreach (PartModule pm in p.Modules) {
-                        if (pm.IsCommandStation()) {
-                            return true;
-                        }
-                    }
-                }
-
+            if (v.loaded) {
+                return v.Parts.SelectMany<Part, PartModule>(p => p.Modules.Cast<PartModule>())
+                              .Any(pm => pm.IsCommandStation());
             } else {
-                foreach (ProtoPartModuleSnapshot ppms in
-                                    v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules)) {
-                    if (ppms.IsCommandStation()) {
-                        return true;
-                    }
-                }
+                return v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules)
+                                                       .Any(pm => pm.IsCommandStation());
             }
-            return false;
         }
     }
 }

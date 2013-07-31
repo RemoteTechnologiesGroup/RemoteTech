@@ -49,12 +49,7 @@ namespace RemoteTech {
             mProtoPart = p;
             mProtoModule = ppms;
             Vessel = v;
-            RTUtil.Log("ProtoAntenna({0}, {1}, {2}, {3})", 
-                DishRange, OmniRange, Vessel.vesselName, DishTarget);
-        }
-
-        public override String ToString() {
-            return String.Format("ProtoAntenna({0}, {1}, {2}, {3})",
+            RTUtil.Log("ProtoAntenna: DishRange: {0}, OmniRange: {1}, Name: {2}, DishTarget: {3})", 
                 DishRange, OmniRange, Vessel.vesselName, DishTarget);
         }
     }

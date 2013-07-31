@@ -25,8 +25,10 @@ namespace RemoteTech {
 
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v) {
             Vessel = v;
-            Powered = ppms.GetBool("IsPowered");
-            CommandStation = Powered && v.HasCommandStation() && Vessel.GetVesselCrew().Count >= 6;
+            Powered = ppms.GetBool("IsRTPowered");
+            CommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= 6;
+            RTUtil.Log("ProtoSignalProcessor: Powered: {0}, CommandStation: {1}, Crew: {2}",
+                Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
         }
     }
 }

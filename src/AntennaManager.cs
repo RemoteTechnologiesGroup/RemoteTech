@@ -123,4 +123,18 @@ namespace RemoteTech {
             GameEvents.onVesselGoOnRails.Remove(OnVesselGoOnRails);
         }
     }
+
+    public static partial class RTUtil {
+        public static bool IsAntenna(this ProtoPartModuleSnapshot ppms) {
+            return ppms.GetBool("IsRTAntenna") &&
+                   ppms.GetBool("IsRTPowered") &&
+                   ppms.GetBool("IsRTActive");
+        }
+
+        public static bool IsAntenna(this PartModule pm) {
+            return pm.Fields.GetValue<bool>("IsRTAntenna") &&
+                   pm.Fields.GetValue<bool>("IsRTPowered") &&
+                   pm.Fields.GetValue<bool>("IsRTActive");
+        }
+    }
 }

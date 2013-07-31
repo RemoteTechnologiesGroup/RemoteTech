@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RemoteTech {
     public class ModuleSPU : PartModule, ISignalProcessor {
         public bool Powered {
-            get { return mRegisteredId != Guid.Empty && IsPowered; }
+            get { return mRegisteredId != Guid.Empty && IsRTPowered; }
         }
 
         public bool CommandStation {
@@ -31,7 +31,7 @@ namespace RemoteTech {
         public FlightComputer FlightComputer { get; private set; }
 
         [KSPField(isPersistant = true)]
-        public bool IsPowered = false;
+        public bool IsRTPowered = false;
 
         [KSPField(isPersistant = true)]
         public bool IsRTSignalProcessor = true;
@@ -109,19 +109,19 @@ namespace RemoteTech {
         }
 
         private State UpdateControlState() {
-            IsPowered = part.isControlSource = true;
+            IsRTPowered = part.isControlSource = true;
             if (!RTCore.Instance) {
                 return State.Operational;
             }
             if (part.protoModuleCrew.Count < minimumCrew) {
-                IsPowered = part.isControlSource = false;
+                IsRTPowered = part.isControlSource = false;
                 return State.NoCrew;
             }
             foreach (ModuleResource rs in RequiredResources) {
                 rs.currentRequest = rs.rate * TimeWarp.deltaTime;
                 rs.currentAmount = part.RequestResource(rs.id, rs.currentRequest);
                 if (rs.currentAmount < rs.currentRequest * 0.9) {
-                    IsPowered = part.isControlSource = false;
+                    IsRTPowered = part.isControlSource = false;
                     return State.NoResources;
                 }
             }

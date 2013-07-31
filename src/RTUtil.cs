@@ -157,18 +157,6 @@ namespace RemoteTech {
             }
         }
 
-        public static bool IsAntenna(this ProtoPartModuleSnapshot ppms) {
-            return ppms.GetBool("IsRTAntenna") && 
-                   ppms.GetBool("IsRTPowered") &&
-                   ppms.GetBool("IsRTActive");
-        }
-
-        public static bool IsAntenna(this PartModule pm) {
-            return pm.Fields.GetValue<bool>("IsRTAntenna") && 
-                   pm.Fields.GetValue<bool>("IsRTPowered") &&
-                   pm.Fields.GetValue<bool>("IsRTActive");
-        }
-
         public static void Button(Texture2D icon, OnClick onClick, params GUILayoutOption[] options) {
             if (GUILayout.Button(icon, options)) {
                 onClick.Invoke();
