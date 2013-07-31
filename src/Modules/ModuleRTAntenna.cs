@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleRTAntenna : PartModule, IAntenna {
-        public bool CanTarget { 
-            get { 
-                return Mode1DishRange != -1.0f; 
-            } 
+        public bool CanTarget {
+            get {
+                return Mode1DishRange != -1.0f;
+            }
         }
 
-        public String Name { 
-            get { 
+        public String Name {
+            get {
                 return part.partInfo.title;
             }
         }
@@ -31,44 +31,56 @@ namespace RemoteTech {
             }
         }
 
-        public float DishRange { 
+        public float DishRange {
             get {
                 if (IsRTBroken) {
                     return 0.0f;
                 }
-                return IsRTActive && IsRTPowered ? Mode1DishRange : Mode0DishRange; 
+                return IsRTActive && IsRTPowered ? Mode1DishRange : Mode0DishRange;
             }
         }
 
-        public double DishFactor { 
-            get { 
-                return RTDishFactor; 
-            } 
+        public double DishFactor {
+            get {
+                return RTDishFactor;
+            }
         }
 
-        public float OmniRange { 
+        public float OmniRange {
             get {
                 if (IsRTBroken) {
                     return 0.0f;
                 }
-                return IsRTActive && IsRTPowered ? Mode1OmniRange : Mode0OmniRange; 
+                return IsRTActive && IsRTPowered ? Mode1OmniRange : Mode0OmniRange;
             }
         }
 
-        public float Consumption { 
+        public float Consumption {
             get {
                 if (IsRTBroken) {
                     return 0.0f;
                 }
-                return IsRTActive ? EnergyCost : 0.0f; 
+                return IsRTActive ? EnergyCost : 0.0f;
             }
         }
 
-        public Vessel Vessel { 
+        public Vessel Vessel {
             get {
-                return vessel; 
+                return vessel;
             }
         }
+
+        [KSPField]
+        public bool
+            ShowGUI_DishRange = true,
+            ShowGUI_OmniRange = true,
+            ShowGUI_EnergyReq = true,
+            ShowGUI_Status = true,
+            ShowEditor_Class = true,
+            ShowEditor_OmniRange = true,
+            ShowEditor_DishRange = true,
+            ShowEditor_EnergyReq = true,
+            ShowEditor_AllEnergyReq = false;
 
         [KSPField(guiName = "Dish range")]
         public String GUI_DishRange;
@@ -80,7 +92,7 @@ namespace RemoteTech {
         public String GUI_Status;
 
         [KSPField]
-        public String 
+        public String
             Mode0Name = "Off",
             Mode1Name = "Operational",
             ActionMode0Name = "Deactivate",
@@ -126,22 +138,35 @@ namespace RemoteTech {
 
         public override string GetInfo() {
             var info = new StringBuilder();
-            if (Mode1OmniRange > 0) {
+
+            if (ShowEditor_Class && Mode0OmniRange + Mode1OmniRange + Mode0DishRange + Mode1DishRange > 0)
+                info.AppendLine("Class: " + RTUtil.FormatClass(Math.Max(Math.Max(Mode0DishRange, Mode1DishRange), Math.Max(Mode0OmniRange, Mode1OmniRange))));
+            if (ShowEditor_OmniRange && Mode1OmniRange > 0) {
                 info.Append("Omni range: ");
                 info.Append(RTUtil.FormatSI(Mode0OmniRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1OmniRange, "m"));
             }
-            if (Mode1DishRange > 0) {
+            if (ShowEditor_DishRange && Mode1DishRange > 0) {
                 info.Append("Dish range: ");
                 info.Append(RTUtil.FormatSI(Mode0DishRange, "m"));
                 info.Append(" / ");
                 info.AppendLine(RTUtil.FormatSI(Mode1DishRange, "m"));
             }
-            if (EnergyCost > 0) {
+            if (ShowEditor_EnergyReq && EnergyCost > 0) {
                 info.Append("Energy req.: ");
                 info.Append(RTUtil.FormatConsumption(EnergyCost));
             }
+            if (ShowEditor_AllEnergyReq) {
+                float AllEnergyReq = 0;
+                foreach (ModuleRTAntenna m in part.Modules.OfType<ModuleRTAntenna>())
+                    AllEnergyReq += m.EnergyCost;
+                if (AllEnergyReq > 0) {
+                    info.Append("Energy req.: ");
+                    info.Append(RTUtil.FormatConsumption(AllEnergyReq));
+                }
+            }
+
             return info.ToString().TrimEnd('\n');
         }
 
@@ -199,7 +224,7 @@ namespace RemoteTech {
             EventClose();
         }
 
-        [KSPEvent(name = "OverrideTarget", active = false, guiActiveUnfocused = true, 
+        [KSPEvent(name = "OverrideTarget", active = false, guiActiveUnfocused = true,
             unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Jack-in!")]
         [IgnoreSignalDelayAttribute]
         public void OverrideTarget() {
@@ -233,10 +258,10 @@ namespace RemoteTech {
             Events["EventTarget"].guiActive = (Mode1DishRange > 0);
             Events["EventTarget"].active = Events["EventTarget"].guiActive;
 
-            Fields["GUI_OmniRange"].guiActive = (Mode1OmniRange > 0);
-            Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0);
-            Fields["GUI_EnergyReq"].guiActive = (EnergyCost > 0);
-            Fields["GUI_Status"].guiActive = true;
+            Fields["GUI_OmniRange"].guiActive = (Mode1OmniRange > 0) && ShowGUI_OmniRange;
+            Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0) && ShowGUI_DishRange;
+            Fields["GUI_EnergyReq"].guiActive = (EnergyCost > 0) && ShowGUI_EnergyReq;
+            Fields["GUI_Status"].guiActive = ShowGUI_Status;
 
             if (RTCore.Instance != null) {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);

@@ -270,7 +270,7 @@ namespace RemoteTech {
         }
         public CelestialBody Body { get { return FlightGlobals.Bodies[1]; } }
         public bool LocalControl { get { return false; } }
-        public float Omni { get { return 70000; } }
+        public float Omni { get { return 8000000; } }
         public IEnumerable<Dish> Dishes { get { return Enumerable.Empty<Dish>(); } }
 
         public override String ToString() {

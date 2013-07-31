@@ -10,7 +10,14 @@ using Object = System.Object;
 
 namespace RemoteTech {
     public static partial class RTUtil {
-        public static readonly String[] DistanceUnits = {"", "k", "M", "G", "T"};
+        public static readonly String[]
+            DistanceUnits = { "", "k", "M", "G", "T" },
+            ClassDescripts = {  "Short-Planetary (SP)",
+                                "Medium-Planetary (MP)",
+                                "Long-Planetary (LP)",
+                                "Short-Interplanetary (SI)",
+                                "Medium-Interplanetary (MI)",
+                                "Long-Interplanetary (LI)"};
 
         private static readonly Regex mDurationRegex =
             new Regex(@"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)?" +
@@ -64,10 +71,58 @@ namespace RemoteTech {
         }
 
         public static String FormatSI(double value, String unit) {
-            int i = (int) RTUtil.Clamp(Math.Floor(Math.Log10(value)) / 3, 
-                0,  DistanceUnits.Length - 1);
+            int i = (int)RTUtil.Clamp(Math.Floor(Math.Log10(value)) / 3,
+                0, DistanceUnits.Length - 1);
             value /= Math.Pow(1000, i);
             return value.ToString("F2") + DistanceUnits[i] + unit;
+        }
+
+        public static string ConstrictNum(string s) {
+            return ConstrictNum(s, true);
+        }
+
+        public static String ConstrictNum(string s, float max) {
+
+            string tmp = ConstrictNum(s, false);
+
+            float f = 0;
+
+            Single.TryParse(tmp, out f);
+
+            if (f > max)
+                return max.ToString("00");
+            else
+                return tmp;
+        }
+
+        public static String ConstrictNum(string s, bool allowNegative) {
+            StringBuilder tmp = new StringBuilder();
+            if (allowNegative && s.StartsWith("-"))
+                tmp.Append(s[0]);
+            bool point = false;
+
+            foreach (char c in s) {
+                if (char.IsNumber(c))
+                    tmp.Append(c);
+                else if (!point && (c == '.' || c == ',')) {
+                    point = true;
+                    tmp.Append('.');
+                }
+            }
+            return tmp.ToString();
+        }
+
+        public static String FormatClass(float range) {
+            List<float> classes = new List<float>();
+
+            classes.Add(Math.Abs(500000 - range));
+            classes.Add(Math.Abs(7500000 - range));
+            classes.Add(Math.Abs(50000000 - range));
+            classes.Add(Math.Abs(50000000000 - range));
+            classes.Add(Math.Abs(200000000000 - range));
+            classes.Add(Math.Abs(900000000000 - range));
+
+            return ClassDescripts[classes.IndexOf(classes.Min())];
         }
 
         public static T Clamp<T>(T value, T min, T max) where T : IComparable<T> {
@@ -103,8 +158,8 @@ namespace RemoteTech {
 
         public static String TargetName(Guid guid) {
             ISatellite sat;
-            if (RTCore.Instance != null && 
-                    RTCore.Instance.Network != null && 
+            if (RTCore.Instance != null &&
+                    RTCore.Instance.Network != null &&
                     RTCore.Instance.Satellites != null) {
                 if (guid == System.Guid.Empty) {
                     return "No Target";
@@ -126,7 +181,7 @@ namespace RemoteTech {
             char[] name = cb.GetName().ToCharArray();
             var s = new StringBuilder();
             for (int i = 0; i < 16; i++) {
-                s.Append(((short) name[i%name.Length]).ToString("x"));
+                s.Append(((short)name[i % name.Length]).ToString("x"));
             }
             Log("cb.Guid: " + s);
             return new Guid(s.ToString());
@@ -139,8 +194,7 @@ namespace RemoteTech {
                 if (Boolean.Parse(n.GetValue(value))) {
                     return true;
                 }
-            }
-            catch (ArgumentException) {
+            } catch (ArgumentException) {
                 /* nothing */
             }
             return false;
@@ -151,8 +205,7 @@ namespace RemoteTech {
             ppms.Save(n);
             try {
                 return Boolean.Parse(n.GetValue(value) ?? "False");
-            }
-            catch (ArgumentException) {
+            } catch (ArgumentException) {
                 return false;
             }
         }
@@ -169,7 +222,7 @@ namespace RemoteTech {
             }
         }
 
-        public static void HorizontalSlider(ref float state, float min, float max, 
+        public static void HorizontalSlider(ref float state, float min, float max,
                                     params GUILayoutOption[] options) {
             state = GUILayout.HorizontalSlider(state, min, max, options);
         }
@@ -191,7 +244,7 @@ namespace RemoteTech {
         public static void StateButton(String text, int state, int value, OnState onStateChange,
                                        params GUILayoutOption[] options) {
             bool result;
-            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options)) 
+            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options))
                                                                             != (state == value)) {
                 onStateChange.Invoke(result ? value : ~value);
             }
@@ -202,7 +255,7 @@ namespace RemoteTech {
         }
 
         public static bool ContainsMouse(this Rect window) {
-            return window.Contains(new Vector2(Input.mousePosition.x, 
+            return window.Contains(new Vector2(Input.mousePosition.x,
                 Screen.height - Input.mousePosition.y));
         }
 
@@ -239,6 +292,13 @@ namespace RemoteTech {
                     yield return x;
                 }
             }
+        }
+
+        public static void findTransformsWithPrefix(Transform input, ref List<Transform> list, string prefix) {
+            if (input.name.ToLower().StartsWith(prefix.ToLower()))
+                list.Add(input);
+            foreach (Transform t in input)
+                findTransformsWithPrefix(t, ref list, prefix);
         }
     }
 }

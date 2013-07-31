@@ -8,6 +8,7 @@ namespace RemoteTech {
         KillRot,
         AttitudeHold,
         AltitudeHold,
+        Rover,
     }
 
     public enum FlightAttitude {
@@ -34,11 +35,29 @@ namespace RemoteTech {
         public double ExtraDelay { get; set; }
         public AttitudeCommand AttitudeCommand { get; set; }
         public BurnCommand BurnCommand { get; set; }
+        public DriveCommand DriveCommand { get; set; }
         public ActionGroupCommand ActionGroupCommand { get; set; }
         public EventCommand Event { get; set; }
 
         public int CompareTo(DelayedCommand dc) {
             return TimeStamp.CompareTo(dc.TimeStamp);
+        }
+    }
+
+    public class DriveCommand {
+        public float steering { get; set; }
+        public float target { get; set; }
+        public float speed { get; set; }
+
+        public static DelayedCommand On(float steering, float target, float speed) {
+            return new DelayedCommand(){
+                DriveCommand = new DriveCommand(){
+                    steering = steering,
+                    target = target,
+                    speed = speed,
+                },
+                TimeStamp = RTUtil.GetGameTime()
+            };
         }
     }
 
