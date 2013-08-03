@@ -263,9 +263,7 @@ namespace RemoteTech {
         public Guid Guid { get { return new Guid("5105f5a9d62841c6ad4b21154e8fc488"); } }
         public Vector3 Position {
             get {
-                return FlightGlobals.Bodies[1].position +
-                       600094*
-                       FlightGlobals.Bodies[1].GetSurfaceNVector(-0.11641926192966, -74.606391806057);
+                return FlightGlobals.Bodies[1].GetWorldSurfacePosition(-0.1313315, -74.59484, 75.0151197366649);
             }
         }
         public CelestialBody Body { get { return FlightGlobals.Bodies[1]; } }

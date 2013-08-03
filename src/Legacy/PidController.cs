@@ -8,18 +8,19 @@ namespace RemoteTech.Legacy {
     class PidController {
         public /* private */ float mKp, mKd, mKi;
         private float mOldVal, mOldTime, mOldD;
-        private float mClamp;
+        private float McMin, McMax;
         private float[] mBuffer = null;
         private int mPtr;
         private float mSum;
         private float mValue;
 
         public PidController(float Kp, float Ki, float Kd,
-                              int integrationBuffer, float clamp) {
+                              int integrationBuffer, float clampMin, float clampMax) {
             mKp = Kp;
             mKi = Ki;
             mKd = Kd;
-            mClamp = clamp;
+            McMin = clampMin;
+            McMax = clampMax;
             if (integrationBuffer >= 1)
                 mBuffer = new float[integrationBuffer];
             Reset();
@@ -33,6 +34,11 @@ namespace RemoteTech.Legacy {
                 for (int i = 0; i < mBuffer.Length; i++)
                     mBuffer[i] = 0;
             mPtr = 0;
+        }
+
+        public void setClamp(float clampMin, float clampMax) {
+            McMin = clampMin;
+            McMax = clampMax;
         }
 
         public float Control(float v) {
@@ -57,12 +63,12 @@ namespace RemoteTech.Legacy {
 
             mValue = mKp * v + mKi * mSum + mKd * mOldD;
 
-            if (mClamp > 0) {
-                if (mValue > mClamp)
-                    mValue = mClamp;
-                if (mValue < -mClamp)
-                    mValue = -mClamp;
-            }
+            
+                if (mValue > McMax)
+                    mValue = McMax;
+                if (mValue < McMin)
+                    mValue = McMin;
+            
 
             return mValue;
         }

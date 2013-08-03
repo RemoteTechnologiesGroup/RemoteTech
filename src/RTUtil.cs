@@ -282,6 +282,21 @@ namespace RemoteTech {
             return angle;
         }
 
+        public static float ClampDegrees360(float angle) {
+            angle = angle % 360f;
+            if (angle < 0)
+                return angle + 360f;
+            else
+                return angle;
+        }
+
+        public static float ClampDegrees180(float angle) {
+            angle = ClampDegrees360(angle);
+            if (angle > 180)
+                angle -= 360;
+            return angle;
+        }
+
         public static IEnumerable<Transform> FindTransformsWithCollider(Transform input) {
             if (input.collider != null) {
                 yield return input;
@@ -299,6 +314,105 @@ namespace RemoteTech {
                 list.Add(input);
             foreach (Transform t in input)
                 findTransformsWithPrefix(t, ref list, prefix);
+        }
+
+        public static bool CBhit(CelestialBody body, out Vector2 latlon) {
+
+            Vector3d hitA;
+            Vector3 origin, dir;
+                        
+            if (MapView.MapIsEnabled) {
+                //Use Scaled camera and don't attempt physics raycast if in map view.
+                Ray ray = ScaledCamera.Instance.camera.ScreenPointToRay(Input.mousePosition);
+                origin = ScaledSpace.ScaledToLocalSpace(ray.origin);
+                dir = ray.direction.normalized;
+            } else {
+                //Attempt ray cast and return results if successfull.
+                Ray ray = FlightCamera.fetch.mainCamera.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hitB;
+                float dist = (float)(Vector3.Distance(body.position, ray.origin) - body.Radius/2);
+                if (Physics.Raycast(ray, out hitB, dist)) {
+                    latlon = new Vector2((float)body.GetLatitude(hitB.point), (float)body.GetLongitude(hitB.point));
+                    return true;
+                }
+                //if all else fails, try with good oldfashioned arithmetic.
+                origin = ray.origin;
+                dir = ray.direction.normalized;
+            }
+                        
+            if (CBhit(body, origin, dir, out hitA)) {
+                latlon = new Vector2((float)body.GetLatitude(hitA), (float)body.GetLongitude(hitA));
+                return true;
+            } else {
+                latlon = Vector2.zero;
+                return false;
+            }
+        }
+
+        public static bool CBhit(CelestialBody body, Vector3d originalOrigin, Vector3d direction, out Vector3d hit) {
+            double r = body.Radius;
+            //convert the origin point from world space to body local space and assume body center as (0,0,0).
+            Vector3d origin = originalOrigin - body.position;
+
+            //Compute A, B and C coefficients
+            double a = Vector3d.Dot(direction, direction);
+            double b = 2 * Vector3d.Dot(direction, origin);
+            double c = Vector3d.Dot(origin, origin) - (r * r);
+
+            //Find discriminant
+            double disc = b * b - 4 * a * c;
+
+            // if discriminant is negative there are no real roots, so return 
+            // false as ray misses sphere
+            if (disc < 0) {
+                hit = Vector3d.zero;
+                return false;
+            }
+
+            // compute q.
+            double distSqrt = Math.Sqrt(disc);
+            double q;
+            if (b < 0)
+                q = (-b - distSqrt) / 2.0;
+            else
+                q = (-b + distSqrt) / 2.0;
+
+            // compute t0 and t1
+            double t0 = q / a;
+            double t1 = c / q;
+
+            // make sure t0 is smaller than t1
+            if (t0 > t1) {
+                // if t0 is bigger than t1 swap them around
+                double temp = t0;
+                t0 = t1;
+                t1 = temp;
+            }
+
+            // if t1 is less than zero, the body is in the ray's negative direction
+            // and consequently the ray misses the sphere
+            if (t1 < 0) {
+                hit = Vector3d.zero;
+                return false;
+            }
+
+            // if t0 is less than zero, the intersection point is at t1
+            if (t0 < 0) {
+                hit = originalOrigin + (t1 * direction);
+                return true;
+            }
+                // else the intersection point is at t0
+            else {
+                hit = originalOrigin + (t0 * direction);
+                return true;
+            }
+        }
+
+        public static Quaternion GetRotationVesselSurface(this Vessel vessel) {
+            Vector3 up = (vessel.CoM - vessel.mainBody.position).normalized;
+            Vector3 north = Vector3d.Exclude(up, (vessel.mainBody.position + vessel.mainBody.transform.up * (float)vessel.mainBody.Radius) - vessel.CoM).normalized;
+            Quaternion rotationSurface = Quaternion.LookRotation(north, up);
+            return Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vessel.GetTransform().rotation) * rotationSurface);
         }
     }
 }

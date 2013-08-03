@@ -114,27 +114,8 @@ namespace RemoteTech {
                     s.Append(dc.BurnCommand.DeltaV.ToString("F2"));
                     s.Append("m/s");
                 }
-
             } else if (dc.DriveCommand != null) {
-                if (dc.DriveCommand.steering != 0) {
-                    s.Append("Turn: ");
-                    s.Append(dc.DriveCommand.target.ToString("0.0"));
-                    if (dc.DriveCommand.steering < 0)
-                        s.Append("° right @");
-                    else
-                        s.Append("° left @");
-                    s.Append(Math.Abs(dc.DriveCommand.steering).ToString("P"));
-                    s.Append(" steering");
-                } else {
-                    s.Append("Drive: ");
-                    s.Append(RTUtil.FormatSI(dc.DriveCommand.target, "m"));
-                    if (dc.DriveCommand.speed > 0)
-                        s.Append(" forwards @");
-                    else
-                        s.Append(" backwards @");
-                    s.Append(RTUtil.FormatSI(Math.Abs(dc.DriveCommand.speed), "m"));
-                    s.Append("/s");
-                }
+                dc.DriveCommand.GetDescription(s);
             } else if (dc.Event != null) {
                 s.Append(dc.Event.BaseEvent.listParent.part.partInfo.title);
                 s.Append(": ");

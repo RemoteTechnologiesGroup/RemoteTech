@@ -12,7 +12,7 @@ namespace RemoteTech {
 
         public bool InputAllowed {
             get {
-                return mSignalProcessor.Powered && 
+                return mSignalProcessor.Powered &&
                        mSignalProcessor.Satellite != null &&
                       (mSignalProcessor.Satellite.Connection.Exists ||
                        mSignalProcessor.Satellite.LocalControl);
@@ -28,31 +28,28 @@ namespace RemoteTech {
                 }
             }
         }
-
         private DelayedCommand mCommand = AttitudeCommand.Off();
         private Vector3 mManeuver;
         private Quaternion mKillrot;
         private double mLastSpeed;
         private FlightCtrlState mPreviousCtrl = new FlightCtrlState();
-
         private readonly Legacy.FlightComputer mLegacyComputer;
-        private Legacy.PidController mRoverPid;
+        private RoverComputer mRoverComputer;
         private readonly List<DelayedCommand> mCommandBuffer
             = new List<DelayedCommand>();
         private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer
             = new PriorityQueue<DelayedFlightCtrlState>();
 
         private readonly ISignalProcessor mSignalProcessor;
-        private Vessel mAttachedVessel;
+        public Vessel mAttachedVessel;
 
         public FlightComputer(ISignalProcessor s) {
             mSignalProcessor = s;
             mPreviousCtrl.CopyFrom(s.Vessel.ctrlState);
             mAttachedVessel = s.Vessel;
-
             mLegacyComputer = new Legacy.FlightComputer();
+            mRoverComputer = new RoverComputer(s.Vessel);
             Bifrost = new BifrostUnit(s);
-            mRoverPid = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, 1);
         }
 
         public void Dispose() {
@@ -88,7 +85,7 @@ namespace RemoteTech {
                     Autopilot(fs);
                 }
 
-                mPreviousCtrl.CopyFrom(fs); 
+                mPreviousCtrl.CopyFrom(fs);
             }
         }
 
@@ -109,21 +106,24 @@ namespace RemoteTech {
         }
 
         private void Autopilot(FlightCtrlState fs) {
-            switch (mCommand.AttitudeCommand.Mode) {
-                case FlightMode.Off:
-                    break;
-                case FlightMode.KillRot:
-                    HoldOrientation(fs, mKillrot);
-                    break;
-                case FlightMode.AttitudeHold:
-                    HoldAttitude(fs);
-                    break;
-                case FlightMode.AltitudeHold:
-                    HoldAltitude(fs);
-                    break;
-            }
+            if (mCommand.AttitudeCommand != null)
+                switch (mCommand.AttitudeCommand.Mode) {
+                    case FlightMode.Off:
+                        break;
+                    case FlightMode.KillRot:
+                        HoldOrientation(fs, mKillrot);
+                        break;
+                    case FlightMode.AttitudeHold:
+                        HoldAttitude(fs);
+                        break;
+                    case FlightMode.AltitudeHold:
+                        HoldAltitude(fs);
+                        break;
+                }
+
             Burn(fs);
-            Drive(fs);
+
+            mRoverComputer.Drive(mCommand.DriveCommand, fs);
         }
 
         private void PopFlightCtrlState(FlightCtrlState fcs) {
@@ -173,12 +173,7 @@ namespace RemoteTech {
                         }
 
                         if (dc.DriveCommand != null) {
-                            mRoverAlt = Vector3.Distance(mAttachedVessel.mainBody.position, mAttachedVessel.transform.position);
-                            mRoverRot = mAttachedVessel.ReferenceTransform.rotation;
-                            mRoverLat = (float)mAttachedVessel.latitude;
-                            mRoverLon = (float)mAttachedVessel.longitude;
-                            mRoverPid.Reset();
-                            mAttachedVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, false);
+                            mRoverComputer.InitMode(dc.DriveCommand);
                             mCommand.DriveCommand = dc.DriveCommand;
                         }
 
@@ -217,8 +212,8 @@ namespace RemoteTech {
                 case ReferenceFrame.North:
                     up = (v.mainBody.position - v.CoM);
                     forward = Vector3.Exclude(
-                        up, 
-                        v.mainBody.position + v.mainBody.transform.up * (float) v.mainBody.Radius - v.CoM
+                        up,
+                        v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM
                      );
                     break;
                 case ReferenceFrame.Maneuver: // TODO
@@ -258,7 +253,7 @@ namespace RemoteTech {
             const double damping = 1000.0f;
             Vessel v = mAttachedVessel;
             double target_height = mCommand.AttitudeCommand.Altitude;
-            float target_pitch = (float) (Math.Atan2(target_height - v.orbit.ApA, damping) / Math.PI * 180.0f);
+            float target_pitch = (float)(Math.Atan2(target_height - v.orbit.ApA, damping) / Math.PI * 180.0f);
             Vector3 up = (v.mainBody.position - v.CoM);
             Vector3 forward = Vector3.Exclude(up,
                 v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM
@@ -269,7 +264,7 @@ namespace RemoteTech {
 
             Quaternion rotationReference = Quaternion.LookRotation(forward, up);
             RTUtil.Log("Pitch: {0}, Heading: {1}", target_pitch, target_heading);
-            HoldOrientation(fs, rotationReference * 
+            HoldOrientation(fs, rotationReference *
                 Quaternion.Euler(new Vector3(target_pitch, target_heading, 0)));
         }
 
@@ -291,40 +286,6 @@ namespace RemoteTech {
             }
         }
 
-        private float
-            mRoverAlt,
-            mRoverLat,
-            mRoverLon;
-        private Quaternion mRoverRot;
-
-
-        private void Drive(FlightCtrlState fs) {
-            if (mCommand.DriveCommand == null) 
-                return;
-            
-            if (mCommand.DriveCommand.steering !=0) {
-                if (Quaternion.Angle(mRoverRot, mAttachedVessel.ReferenceTransform.rotation) < mCommand.DriveCommand.target) {
-                    fs.wheelThrottle = (mCommand.DriveCommand.speed < 0 ? -1 : 1) * mRoverPid.Control(Math.Abs(mCommand.DriveCommand.speed) - (float)mAttachedVessel.horizontalSrfSpeed);
-                    fs.wheelSteer = mCommand.DriveCommand.steering;
-                } else {
-                    fs.wheelThrottle = 0;
-                    fs.wheelSteer = 0;
-                    mAttachedVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
-                    mCommand.DriveCommand = null;
-                }
-            } else {
-                if (Vector3.Distance(mAttachedVessel.mainBody.position + mRoverAlt * mAttachedVessel.mainBody.GetSurfaceNVector(mRoverLat, mRoverLon), mAttachedVessel.transform.position) < Math.Abs(mCommand.DriveCommand.target)) {
-                    fs.wheelThrottle = (mCommand.DriveCommand.speed < 0 ? -1 : 1) * mRoverPid.Control(Math.Abs(mCommand.DriveCommand.speed) - (float)mAttachedVessel.horizontalSrfSpeed);
-                    fs.wheelSteer = mCommand.DriveCommand.steering;
-                } else {
-                    fs.wheelThrottle = 0;
-                    fs.wheelSteer = 0;
-                    mAttachedVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
-                    mCommand.DriveCommand = null;
-                }
-            }
-        }
-
         IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
         }
@@ -334,6 +295,6 @@ namespace RemoteTech {
             foreach (DelayedCommand dc in mCommandBuffer) {
                 yield return dc;
             }
-        } 
+        }
     }
 }
