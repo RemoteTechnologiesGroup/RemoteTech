@@ -408,11 +408,8 @@ namespace RemoteTech {
             }
         }
 
-        public static Quaternion GetRotationVesselSurface(this Vessel vessel) {
-            Vector3 up = (vessel.CoM - vessel.mainBody.position).normalized;
-            Vector3 north = Vector3d.Exclude(up, (vessel.mainBody.position + vessel.mainBody.transform.up * (float)vessel.mainBody.Radius) - vessel.CoM).normalized;
-            Quaternion rotationSurface = Quaternion.LookRotation(north, up);
-            return Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vessel.GetTransform().rotation) * rotationSurface);
+        public static float GetHDG(Vector3 dir, Vector3 up, Vector3 north) {
+            return Quaternion.Inverse(Quaternion.Inverse(Quaternion.LookRotation(dir, up)) * Quaternion.LookRotation(north, up)).eulerAngles.y;
         }
     }
 }

@@ -84,10 +84,15 @@ namespace RemoteTech {
         public List<ModuleResource> RequiredResources;
 
         public override string GetInfo() {
-
+            
             if (!ShowEditor_Type) return String.Empty;
 
             return IsRTCommandStation ? "Remote Command" : "Remote Control";
+        }
+
+        // This is required in order to pass control source test on flight start directly from launchpad/runway.
+        public override void OnAwake() {
+            part.isControlSource = true;
         }
 
         public override void OnStart(StartState state) {

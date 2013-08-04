@@ -95,11 +95,10 @@ namespace RemoteTech {
         }
 
         private void EnqueueTurn() {
-            Turn = Mathf.Clamp(Turn, 0, 90);
-            mFlightComputer.Enqueue(DriveCommand.Turn(mSteering, Turn, Speed));
+                mFlightComputer.Enqueue(DriveCommand.Turn(mSteering, Turn, Speed));
         }
         private void EnqueueDist() {
-            mFlightComputer.Enqueue(DriveCommand.Distance(Dist, 0, Speed));
+                mFlightComputer.Enqueue(DriveCommand.Distance(Dist, 0, Speed));
         }
         int selected = 0;
         private bool MouseClick = false;

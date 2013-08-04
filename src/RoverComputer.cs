@@ -15,24 +15,46 @@ namespace RemoteTech {
             mRoverLon,
             mTargetLat,
             mTargetLon,
-            mRoverRot;
+            mKeepHDG;
 
-        private Quaternion RR;
+        private Quaternion mRoverRot;
 
-        private float RoverRotation {
+        private ModuleWheel.AlignmentAxis axis;
+
+        public RoverComputer(Vessel v) {
+            mVessel = v;
+
+            mThrottlePID = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, -1, 1);
+            mWheelPID = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, -1, 1);
+        }
+
+        private float RoverHDG {
             get {
-                return mVessel.GetRotationVesselSurface().eulerAngles.y;
+                Vector3 dir = mVessel.srf_velocity.normalized;
+
+                switch (axis) {
+                    case ModuleWheel.AlignmentAxis.Forward:
+                        dir = mVessel.ReferenceTransform.forward;
+                        break;
+                    case ModuleWheel.AlignmentAxis.Right:
+                        dir = mVessel.ReferenceTransform.right;
+                        break;
+                    case ModuleWheel.AlignmentAxis.Up:
+                        dir = mVessel.ReferenceTransform.up;
+                        break;
+                }
+
+                Vector3d up = (mVessel.CoM - mVessel.mainBody.position).normalized;
+                Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
+                return RTUtil.GetHDG(dir, up, north);
             }
         }
 
-        private float TargetDir {
+        private float TargetHDG {
             get {
                 Vector3d up = (mVessel.CoM - mVessel.mainBody.position).normalized;
                 Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
-                Quaternion rotationSurface = Quaternion.LookRotation(north, up);
-                Quaternion rotationTarget = Quaternion.LookRotation((TargetPos - mVessel.CoM).normalized, up);
-
-                return Quaternion.Inverse(Quaternion.Inverse(rotationTarget) * rotationSurface).eulerAngles.y;
+                return RTUtil.GetHDG((TargetPos - mVessel.CoM).normalized, up, north);
             }
         }
 
@@ -42,31 +64,51 @@ namespace RemoteTech {
             }
         }
 
-        private float ForwardSpeed {
+        private Vector3 RoverOrigPos {
             get {
-                return Vector3.Dot(mVessel.srf_velocity, mVessel.ReferenceTransform.up);
+                return mVessel.mainBody.GetWorldSurfacePosition(mRoverLat, mRoverLon, mRoverAlt);
             }
         }
 
-        public RoverComputer(Vessel v) {
-            mVessel = v;
+        private float RoverSpeed {
+            get {
 
-            mThrottlePID = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, -1, 1);
-            mWheelPID = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, -1, 1);
+                switch (axis) {
+                    case ModuleWheel.AlignmentAxis.None:
+                        return (float)mVessel.srf_velocity.magnitude;
+                    case ModuleWheel.AlignmentAxis.Forward:
+                        return Vector3.Dot(mVessel.srf_velocity, mVessel.ReferenceTransform.forward);
+                    case ModuleWheel.AlignmentAxis.Right:
+                        return Vector3.Dot(mVessel.srf_velocity, mVessel.ReferenceTransform.right);
+                    case ModuleWheel.AlignmentAxis.Up:
+                        return Vector3.Dot(mVessel.srf_velocity, mVessel.ReferenceTransform.up);
+                }
+
+                return (float)mVessel.srf_velocity.magnitude;
+            }
         }
 
         public void InitMode(DriveCommand dc) {
-            mRoverAlt = Vector3.Distance(mVessel.mainBody.position, mVessel.transform.position);
+
+            axis = ModuleWheel.AlignmentAxis.None;
+            foreach (Part p in mVessel.parts) {
+                if (p.Modules.Contains("ModuleWheel")) {
+                    axis = (p.Modules["ModuleWheel"] as ModuleWheel).alignmentAxis;
+                    if (axis != ModuleWheel.AlignmentAxis.None)
+                        break;
+                }
+            }
+            mRoverAlt = (float)mVessel.altitude;
             mRoverLat = (float)mVessel.latitude;
             mRoverLon = (float)mVessel.longitude;
 
             switch (dc.mode) {
                 case DriveCommand.DriveMode.Turn:
-                    RR = mVessel.ReferenceTransform.rotation;
+                    mRoverRot = mVessel.ReferenceTransform.rotation;
                     break;
                 case DriveCommand.DriveMode.Distance:
                     mWheelPID.setClamp(-1, 1);
-                    mRoverRot = RoverRotation;
+                    mKeepHDG = RoverHDG;
                     break;
                 case DriveCommand.DriveMode.DistanceHeading:
                     mWheelPID.setClamp(-dc.steering, dc.steering);
@@ -101,10 +143,10 @@ namespace RemoteTech {
             }
         }
 
-        public void Turn(DriveCommand dc, FlightCtrlState fs) {
-
-            if (Math.Abs(Quaternion.Angle(RR, mVessel.ReferenceTransform.rotation)) < dc.target) {
-                fs.wheelThrottle = mThrottlePID.Control(dc.speed - ForwardSpeed);
+        private void Turn(DriveCommand dc, FlightCtrlState fs) {
+            ModuleWheel m = new ModuleWheel();
+            if (Math.Abs(Quaternion.Angle(mRoverRot, mVessel.ReferenceTransform.rotation)) < dc.target) {
+                fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
                 fs.wheelSteer = dc.steering;
             } else {
                 fs.wheelThrottle = 0;
@@ -116,9 +158,9 @@ namespace RemoteTech {
         }
 
         private void Distance(DriveCommand dc, FlightCtrlState fs) {
-            if (Vector3.Distance(mVessel.mainBody.position + mRoverAlt * mVessel.mainBody.GetSurfaceNVector(mRoverLat, mRoverLon), mVessel.transform.position) < Math.Abs(dc.target)) {
-                fs.wheelThrottle = mThrottlePID.Control(dc.speed - ForwardSpeed);
-                fs.wheelSteer = (dc.speed < 0 ? -1 : 1) * mWheelPID.Control(RTUtil.ClampDegrees180(RoverRotation - mRoverRot));
+            if (Vector3.Distance(RoverOrigPos, mVessel.CoM) < Math.Abs(dc.target)) {
+                fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
+                fs.wheelSteer = (dc.speed < 0 ? -1 : 1) * mWheelPID.Control(RTUtil.ClampDegrees180(RoverHDG - mKeepHDG));
             } else {
                 fs.wheelThrottle = 0;
                 fs.wheelSteer = 0;
@@ -129,9 +171,9 @@ namespace RemoteTech {
         }
 
         private void DistanceHeading(DriveCommand dc, FlightCtrlState fs) {
-            if (Vector3.Distance(mVessel.mainBody.position + mRoverAlt * mVessel.mainBody.GetSurfaceNVector(mRoverLat, mRoverLon), mVessel.transform.position) < Math.Abs(dc.target)) {
-                fs.wheelThrottle = mThrottlePID.Control(dc.speed - ForwardSpeed);
-                fs.wheelSteer = mWheelPID.Control(RTUtil.ClampDegrees180(RoverRotation - dc.target2));
+            if (Vector3.Distance(RoverOrigPos, mVessel.CoM) < Math.Abs(dc.target)) {
+                fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
+                fs.wheelSteer = mWheelPID.Control(RTUtil.ClampDegrees180(RoverHDG - dc.target2));
             } else {
                 fs.wheelThrottle = 0;
                 fs.wheelSteer = 0;
@@ -144,10 +186,10 @@ namespace RemoteTech {
         private void Coord(DriveCommand dc, FlightCtrlState fs) {
             float
                 dist = Vector3.Distance(mVessel.CoM, TargetPos),
-                deg = RTUtil.ClampDegrees180(RoverRotation - TargetDir);
+                deg = RTUtil.ClampDegrees180(RoverHDG - TargetHDG);
 
-            if (dist > Math.Abs(deg) / 5) {
-                fs.wheelThrottle = mThrottlePID.Control(dc.speed - ForwardSpeed);
+            if (dist > Math.Abs(deg) / 36) {
+                fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
                 fs.wheelSteer = mWheelPID.Control(deg);
             } else {
                 fs.wheelThrottle = 0;
