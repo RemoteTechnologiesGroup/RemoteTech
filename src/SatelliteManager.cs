@@ -38,9 +38,7 @@ namespace RemoteTech {
             RTUtil.Log("SatelliteManager: Register {0}, {1} ", key, spu.Vessel.vesselName);
             // Unregister any unloaded proto-satellites if necessary.
             if (!mLoadedSpuCache.ContainsKey(key)) {
-                if (mSatelliteCache.ContainsKey(key)) {
-                    UnregisterProto(vessel);
-                }
+                UnregisterProto(vessel.id);
                 mLoadedSpuCache[key] = new List<ISignalProcessor>();
             }
             // Add if non duplicate
@@ -109,12 +107,12 @@ namespace RemoteTech {
         /// Unregisters the protosatellite which was compiled from the unloaded vessel data.
         /// </summary>
         /// <param name="vessel">The vessel.</param>
-        public void UnregisterProto(Vessel vessel) {
-            Guid key = vessel.protoVessel.vesselID;
-            RTUtil.Log("SatelliteManager: UnregisterProto {0}", vessel);
+        public void UnregisterProto(Guid key) {
+            RTUtil.Log("SatelliteManager: UnregisterProto {0}", key);
             // Return if there are still signal processors loaded.
-            if (mLoadedSpuCache.ContainsKey(vessel.id))
+            if (mLoadedSpuCache.ContainsKey(key)) {
                 return;
+            }
             // Unregister satellite if it exists.
             if (mSatelliteCache.ContainsKey(key)) {
                 OnUnregister(mSatelliteCache[key]);
@@ -142,7 +140,7 @@ namespace RemoteTech {
 
         private void OnVesselDestroy(Vessel v) {
             RTUtil.Log("SatelliteManager: OnVesselDestroy {0}", v.vesselName);
-            UnregisterProto(v);
+            UnregisterProto(v.id);
         }
 
         private void OnRegister(VesselSatellite vs) {

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace RemoteTech {
     public class Settings {
         public bool DebugAlwaysConnected = false;
-        public float DebugOffsetDelay = 1.0f;
+        public float DebugOffsetDelay = 0.0f;
 
         public Texture2D IconCalc;
 

@@ -44,6 +44,7 @@ namespace RemoteTech {
                 DishRange = 0.0f;
                 DishFactor = 1.0f;
                 OmniRange = 0.0f;
+                RTUtil.Log("ProtoAntenna parsing error. Default values assumed.");
             }
 
             mProtoPart = p;

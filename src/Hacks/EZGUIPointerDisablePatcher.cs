@@ -42,8 +42,9 @@ namespace RemoteTech {
 
         private void EZGUIMouseTouchPtrListener(POINTER_INFO ptr) {
             if (mDelegate == null || mDelegate.GetInvocationList().Length == 0) {
-                this.Dispose();
+                Dispose();
                 mInstance = null;
+                return;
             }
             foreach (EZGUIRequestRectDelegate d in mDelegate.GetInvocationList()) {
                 if (d().Contains(new Vector2(ptr.devicePos.x, Screen.height - ptr.devicePos.y))) {

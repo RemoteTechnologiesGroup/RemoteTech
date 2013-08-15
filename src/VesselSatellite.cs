@@ -43,16 +43,16 @@ namespace RemoteTech {
 
         public float Omni {
             get {
-                return RTCore.Instance.Antennas.For(Guid).Any()
-                       ? RTCore.Instance.Antennas.For(Guid).Max(a => a.OmniRange)
+                return RTCore.Instance.Antennas[Guid].Any()
+                       ? RTCore.Instance.Antennas[Guid].Max(a => a.OmniRange)
                        : 0.0f;
             }
         }
 
         public IEnumerable<Dish> Dishes {
             get {
-                foreach (IAntenna a in RTCore.Instance.Antennas.For(this)) {
-                    if (a.CanTarget && !a.DishTarget.Equals(Guid.Empty)) {
+                foreach (IAntenna a in RTCore.Instance.Antennas[this]) {
+                    if (a.CanTarget) {
                         yield return new Dish(a.DishTarget, a.DishFactor, a.DishRange);
                     }
                 }

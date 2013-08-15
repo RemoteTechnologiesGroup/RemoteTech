@@ -175,8 +175,6 @@ namespace RemoteTech {
                 state = false;
             }
             IsRTActive = state;
-            RTDishRange = DishRange;
-            RTOmniRange = OmniRange;
             Events["EventOpen"].guiActive = !IsRTActive && !IsRTBroken;
             Events["EventOpen"].active = Events["EventOpen"].guiActive;
             Events["EventClose"].guiActive = IsRTActive && !IsRTBroken;
@@ -240,7 +238,7 @@ namespace RemoteTech {
                 }
             }
             if (node.HasValue("DishAngle")) {
-                RTDishFactor = Math.Cos(DishAngle * Math.PI / 180);
+                RTDishFactor = Math.Cos(DishAngle / 2 * Math.PI / 180);
             }
         }
 
@@ -266,7 +264,8 @@ namespace RemoteTech {
             if (RTCore.Instance != null) {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
-                mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
+                mRegisteredId = vessel.id;
+                RTCore.Instance.Antennas.Register(vessel.id, this);
                 SetState(IsRTActive);
             }
         }
@@ -317,6 +316,8 @@ namespace RemoteTech {
                     GUI_Status = "Malfunction";
                     break;
             }
+            RTDishRange = DishRange;
+            RTOmniRange = OmniRange;
             UpdateContext();
         }
 
@@ -340,7 +341,8 @@ namespace RemoteTech {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
                 mRegisteredId = Guid.Empty;
                 if (vessel != null) {
-                    mRegisteredId = RTCore.Instance.Antennas.Register(vessel.id, this);
+                    mRegisteredId = vessel.id;
+                    RTCore.Instance.Antennas.Register(vessel.id, this);
                 }
             }
         }
