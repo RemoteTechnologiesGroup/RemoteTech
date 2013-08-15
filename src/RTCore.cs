@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace RemoteTech {
-    public delegate void RTOnUpdate();
-    public delegate void RTOnFixedUpdate();
-    public delegate void RTOnGui();
+    public delegate void OnTick();
     public abstract class RTCore : MonoBehaviour {
         public static RTCore Instance { get; protected set; }
 
@@ -15,12 +12,13 @@ namespace RemoteTech {
         public AntennaManager Antennas { get; protected set; }
         public GuiManager Gui { get; protected set; }
         public NetworkRenderer Renderer { get; protected set; }
+        public DebugUnit Debug { get; protected set; }
 
         public bool IsTrackingStation { get; protected set; }
 
-        public event RTOnUpdate FrameUpdated;
-        public event RTOnFixedUpdate PhysicsUpdated;
-        public event RTOnGui GuiUpdated;
+        public event OnTick FrameUpdated;
+        public event OnTick PhysicsUpdated;
+        public event OnTick GuiUpdated;
 
         public void Start() {
             if(Instance != null) {
@@ -36,20 +34,17 @@ namespace RemoteTech {
             Gui = new GuiManager();
             Renderer = NetworkRenderer.AttachToMapView(this);
             Settings = new Settings(this);
+            Debug = new DebugUnit(this);
 
             RTUtil.Log("RTCore loaded.");
 
-            foreach (Vessel v in FlightGlobals.Vessels) {
+            foreach (var v in FlightGlobals.Vessels) {
                 Satellites.RegisterProto(v);
-                Antennas.RegisterProtoFor(v);
+                Antennas.RegisterProtos(v);
             }
         }
 
         public void Update() {
-            if (FrameUpdated != null) {
-                FrameUpdated.Invoke();
-            }
-
             if (FlightGlobals.ActiveVessel != null) {
                 VesselSatellite vs = Satellites[FlightGlobals.ActiveVessel];
                 if (vs != null) {
@@ -85,6 +80,7 @@ namespace RemoteTech {
             Network.Dispose();
             Satellites.Dispose();
             Antennas.Dispose();
+            Debug.Dispose();
 
             Instance = null;
         }
@@ -148,16 +144,16 @@ namespace RemoteTech {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class RTCoreFlight : RTCore {
         public new void Start() {
-            base.Start();
             IsTrackingStation = false;
+            base.Start();
         }
     }
 
     [KSPAddon(KSPAddon.Startup.TrackingStation, false)]
     public class RTCoreTracking : RTCore {
         public new void Start() {
-            base.Start();
             IsTrackingStation = true;
+            base.Start();
         }
     }
 }

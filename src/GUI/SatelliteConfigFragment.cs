@@ -64,7 +64,7 @@ namespace RemoteTech {
         }
 
         public void RebuildAntennaList() {
-            mFocusAntennas = RTCore.Instance.Antennas.For(mFocus).Where(a => a.CanTarget).ToList();
+            mFocusAntennas = RTCore.Instance.Antennas[mFocus].Where(a => a.CanTarget).ToList();
         }
 
         private void OnSatellite(ISatellite satellite) {

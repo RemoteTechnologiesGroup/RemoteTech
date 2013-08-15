@@ -25,7 +25,7 @@ namespace RemoteTech {
                 } else if (vs.LocalControl) {
                     return "Local Control";
                 } else if (vs.Connection.Exists) {
-                    return "D+" + vs.Connection.Delay + "s";
+                    return "D+" + vs.Connection.Delay.ToString("F3") + "s";
                 }
                 return "Not Connected";
             }
