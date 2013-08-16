@@ -60,7 +60,9 @@ namespace RemoteTech {
 
         public void Enqueue(DelayedCommand fc) {
             fc.TimeStamp += Delay;
-            fc.ExtraDelay += ExtraDelay;
+            if (fc.CancelCommand == null) {
+                fc.ExtraDelay += ExtraDelay;
+            }          
             int pos = mCommandBuffer.BinarySearch(fc);
             if (pos < 0) {
                 mCommandBuffer.Insert(~pos, fc);
@@ -177,11 +179,22 @@ namespace RemoteTech {
                             mCommand.DriveCommand = dc.DriveCommand;
                         }
 
-                        if (dc.Event != null) {
-                            dc.Event.BaseEvent.Invoke();
+                        if (dc.EventCommand != null) {
+                            dc.EventCommand.BaseEvent.Invoke();
                         }
 
-                        mCommandBuffer.RemoveAt(i);
+                        if (dc.CancelCommand != null) {
+                            mCommandBuffer.Remove(dc.CancelCommand);
+                            if (mCommand == dc.CancelCommand) {
+                                if (mCommand.BurnCommand != null) {
+                                    mCommand.BurnCommand.Duration = mCommand.BurnCommand.DeltaV = 0;
+                                }
+                            }
+                            mCommandBuffer.Remove(dc);
+                        } else {
+                            mCommandBuffer.RemoveAt(i);
+                        }
+
                     }
                 }
             }
@@ -269,9 +282,7 @@ namespace RemoteTech {
         }
 
         private void Burn(FlightCtrlState fs) {
-            if (mCommand.BurnCommand == null)
-                return;
-            if (!Single.IsNaN(mCommand.BurnCommand.Throttle)) {
+            if (mCommand.BurnCommand != null) {
                 if (mCommand.BurnCommand.Duration > 0) {
                     fs.mainThrottle = mCommand.BurnCommand.Throttle;
                     mCommand.BurnCommand.Duration -= TimeWarp.deltaTime;
@@ -281,8 +292,11 @@ namespace RemoteTech {
                         Math.Abs(mLastSpeed - mAttachedVessel.obt_velocity.magnitude);
                     mLastSpeed = mAttachedVessel.obt_velocity.magnitude;
                 } else {
+                    fs.mainThrottle = 0.0f;
                     mCommand.BurnCommand = null;
                 }
+            } else if (!InputAllowed) {
+                fs.mainThrottle = 0.0f;
             }
         }
 

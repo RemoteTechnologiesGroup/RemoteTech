@@ -60,8 +60,8 @@ namespace RemoteTech {
                     antenna_dict.Add("Name", antenna.Name);
                     antenna_dict.Add("Proto?", antenna is ProtoAntenna);
                     antenna_dict.Add("Powered", "N/A");
-                    antenna_dict.Add("OmniRange", antenna.OmniRange);
-                    antenna_dict.Add("DishRange", antenna.DishRange);
+                    antenna_dict.Add("OmniRange", antenna.CurrentOmniRange);
+                    antenna_dict.Add("DishRange", antenna.CurrentDishRange);
                     antenna_dict.Add("Target Guid", antenna.DishTarget);
                     foreach (DictionaryEntry kvp in antenna_dict) {
                         physical_antennas.AppendFormat("    {0}: {1}", kvp.Key.ToString(), kvp.Value.ToString()).AppendLine();
@@ -84,8 +84,8 @@ namespace RemoteTech {
                 antenna_dict.Add("Name", antenna.Name);
                 antenna_dict.Add("Proto?", antenna is ProtoAntenna);
                 antenna_dict.Add("Powered", "N/A");
-                antenna_dict.Add("OmniRange", antenna.OmniRange);
-                antenna_dict.Add("DishRange", antenna.DishRange);
+                antenna_dict.Add("OmniRange", antenna.CurrentOmniRange);
+                antenna_dict.Add("DishRange", antenna.CurrentDishRange);
                 antenna_dict.Add("Target Guid", antenna.DishTarget);
                 foreach (DictionaryEntry kvp in antenna_dict) {
                     dump.AppendFormat("{0}: {1}", kvp.Key.ToString(), kvp.Value.ToString()).AppendLine();

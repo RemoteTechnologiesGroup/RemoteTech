@@ -44,7 +44,7 @@ namespace RemoteTech {
         public float Omni {
             get {
                 return RTCore.Instance.Antennas[Guid].Any()
-                       ? RTCore.Instance.Antennas[Guid].Max(a => a.OmniRange)
+                       ? RTCore.Instance.Antennas[Guid].Max(a => a.CurrentOmniRange)
                        : 0.0f;
             }
         }
@@ -53,7 +53,7 @@ namespace RemoteTech {
             get {
                 foreach (IAntenna a in RTCore.Instance.Antennas[this]) {
                     if (a.CanTarget) {
-                        yield return new Dish(a.DishTarget, a.DishFactor, a.DishRange);
+                        yield return new Dish(a.DishTarget, a.DishFactor, a.CurrentDishRange);
                     }
                 }
             }

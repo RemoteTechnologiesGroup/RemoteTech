@@ -5,18 +5,11 @@ using UnityEngine;
 
 namespace RemoteTech {
     public class ModuleRTAntenna : PartModule, IAntenna {
-        public bool CanTarget {
-            get {
-                return Mode1DishRange != -1.0f;
-            }
-        }
+        public String Name { get { return part.partInfo.title; } }
+        public bool Powered { get { return IsRTPowered; } }
+        public bool Activated { get { return IsRTActive; } }
 
-        public String Name {
-            get {
-                return part.partInfo.title;
-            }
-        }
-
+                public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
         public Guid DishTarget {
             get { return RTAntennaTargetGuid; }
             set {
@@ -30,45 +23,13 @@ namespace RemoteTech {
                 }
             }
         }
+        public double DishFactor { get { return RTDishFactor; } }
 
-        public float DishRange {
-            get {
-                if (IsRTBroken) {
-                    return 0.0f;
-                }
-                return IsRTActive && IsRTPowered ? Mode1DishRange : Mode0DishRange;
-            }
-        }
+        public float CurrentDishRange { get { return IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1DishRange : Mode0DishRange; } }
+        public float CurrentOmniRange { get { return IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange; } }
+        public float CurrentConsumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost : 0.0f; } }
 
-        public double DishFactor {
-            get {
-                return RTDishFactor;
-            }
-        }
-
-        public float OmniRange {
-            get {
-                if (IsRTBroken) {
-                    return 0.0f;
-                }
-                return IsRTActive && IsRTPowered ? Mode1OmniRange : Mode0OmniRange;
-            }
-        }
-
-        public float Consumption {
-            get {
-                if (IsRTBroken) {
-                    return 0.0f;
-                }
-                return IsRTActive ? EnergyCost : 0.0f;
-            }
-        }
-
-        public Vessel Vessel {
-            get {
-                return vessel;
-            }
-        }
+        public ISatellite Owner { get { return RTCore.Instance.Satellites[vessel]; } }
 
         [KSPField]
         public bool
@@ -79,8 +40,7 @@ namespace RemoteTech {
             ShowEditor_Class = true,
             ShowEditor_OmniRange = true,
             ShowEditor_DishRange = true,
-            ShowEditor_EnergyReq = true,
-            ShowEditor_AllEnergyReq = false;
+            ShowEditor_EnergyReq = true;
 
         [KSPField(guiName = "Dish range")]
         public String GUI_DishRange;
@@ -139,35 +99,20 @@ namespace RemoteTech {
         public override string GetInfo() {
             var info = new StringBuilder();
 
-            if (ShowEditor_Class && Mode0OmniRange + Mode1OmniRange + Mode0DishRange + Mode1DishRange > 0)
-                info.AppendLine("Class: " + RTUtil.FormatClass(Math.Max(Math.Max(Mode0DishRange, Mode1DishRange), Math.Max(Mode0OmniRange, Mode1OmniRange))));
+            if (ShowEditor_Class) {
+                info.AppendFormat("Class: {0}", RTUtil.FormatClass(Math.Max(Math.Max(Mode0DishRange, Mode1DishRange), Math.Max(Mode0OmniRange, Mode1OmniRange)))).AppendLine();
+            }
             if (ShowEditor_OmniRange && Mode1OmniRange > 0) {
-                info.Append("Omni range: ");
-                info.Append(RTUtil.FormatSI(Mode0OmniRange, "m"));
-                info.Append(" / ");
-                info.AppendLine(RTUtil.FormatSI(Mode1OmniRange, "m"));
+                info.AppendFormat("Omni range: {0} / {1}", RTUtil.FormatSI(Mode0OmniRange, "m"), RTUtil.FormatSI(Mode1OmniRange, "m")).AppendLine();
             }
             if (ShowEditor_DishRange && Mode1DishRange > 0) {
-                info.Append("Dish range: ");
-                info.Append(RTUtil.FormatSI(Mode0DishRange, "m"));
-                info.Append(" / ");
-                info.AppendLine(RTUtil.FormatSI(Mode1DishRange, "m"));
+                info.AppendFormat("Dish range: {0} / {1}", RTUtil.FormatSI(Mode0DishRange, "m"), RTUtil.FormatSI(Mode1DishRange, "m")).AppendLine();
             }
             if (ShowEditor_EnergyReq && EnergyCost > 0) {
-                info.Append("Energy req.: ");
-                info.Append(RTUtil.FormatConsumption(EnergyCost));
-            }
-            if (ShowEditor_AllEnergyReq) {
-                float AllEnergyReq = 0;
-                foreach (ModuleRTAntenna m in part.Modules.OfType<ModuleRTAntenna>())
-                    AllEnergyReq += m.EnergyCost;
-                if (AllEnergyReq > 0) {
-                    info.Append("Energy req.: ");
-                    info.Append(RTUtil.FormatConsumption(AllEnergyReq));
-                }
+                info.AppendFormat("Energy req.: {0}", RTUtil.FormatConsumption(EnergyCost)).AppendLine();
             }
 
-            return info.ToString().TrimEnd('\n');
+            return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
         }
 
         public virtual void SetState(bool state) {
@@ -222,11 +167,11 @@ namespace RemoteTech {
             EventClose();
         }
 
-        [KSPEvent(name = "OverrideTarget", active = false, guiActiveUnfocused = true,
+        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true,
             unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Jack-in!")]
         [IgnoreSignalDelayAttribute]
         public void OverrideTarget() {
-            RTCore.Instance.Gui.OpenAntennaConfig(this, Vessel);
+            RTCore.Instance.Gui.OpenAntennaConfig(this, vessel);
         }
 
         public override void OnLoad(ConfigNode node) {
@@ -271,9 +216,9 @@ namespace RemoteTech {
         }
 
         private void UpdateContext() {
-            GUI_OmniRange = RTUtil.FormatSI(OmniRange, "m");
-            GUI_DishRange = RTUtil.FormatSI(DishRange, "m");
-            GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
+            GUI_OmniRange = RTUtil.FormatSI(CurrentOmniRange, "m");
+            GUI_DishRange = RTUtil.FormatSI(CurrentDishRange, "m");
+            GUI_EnergyReq = RTUtil.FormatConsumption(CurrentConsumption);
             Events["EventTarget"].guiName = RTUtil.TargetName(DishTarget);
         }
 
@@ -291,7 +236,7 @@ namespace RemoteTech {
                 return State.Off;
             }
             ModuleResource request = new ModuleResource();
-            float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
+            float resourceRequest = CurrentConsumption * TimeWarp.fixedDeltaTime;
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
             if (resourceAmount < resourceRequest * 0.9) {
                 IsRTPowered = false;
@@ -316,8 +261,8 @@ namespace RemoteTech {
                     GUI_Status = "Malfunction";
                     break;
             }
-            RTDishRange = DishRange;
-            RTOmniRange = OmniRange;
+            RTDishRange = CurrentDishRange;
+            RTOmniRange = CurrentOmniRange;
             UpdateContext();
         }
 

@@ -3,14 +3,12 @@ using System.Linq;
 
 namespace RemoteTech {
     internal class ProtoAntenna : IAntenna {
-        public bool CanTarget { get { return DishRange != -1; } }
+        public String Name { get; private set; }
+        public bool Powered { get { return true; } }
+        public bool Activated { get { return true; } }
 
-        public string Name { get; private set; }
-        public float DishRange { get; private set; }
-        public double DishFactor { get; private set; }
-        public float OmniRange { get; private set; }
-        public Vessel Vessel { get; private set; }
-
+        public bool CanTarget { get { return CurrentDishRange != -1; } }
+        private Guid mTarget;
         public Guid DishTarget {
             get { return mTarget; }
             set {
@@ -24,34 +22,40 @@ namespace RemoteTech {
                 }
             }
         }
+        public double DishFactor { get; private set; }
+
+        public float CurrentDishRange { get; private set; }
+        public float CurrentOmniRange { get; private set; }
+        public float CurrentConsumption { get { return 0.0f; } }
+
+        public ISatellite Owner { get { return RTCore.Instance.Satellites[mVessel]; } }
 
         private readonly ProtoPartSnapshot mProtoPart;
         private readonly ProtoPartModuleSnapshot mProtoModule;
-        private Guid mTarget;
+        private readonly Vessel mVessel;
 
         public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms) {
             ConfigNode n = new ConfigNode();
             ppms.Save(n);
             Name = p.partInfo.title;
+            mVessel = v;
+            mProtoPart = p;
+            mProtoModule = ppms;
             try {
                 mTarget = new Guid(n.GetValue("RTAntennaTarget"));
-                DishRange = Single.Parse(n.GetValue("RTDishRange"));
+                CurrentDishRange = Single.Parse(n.GetValue("RTDishRange"));
                 DishFactor = Double.Parse(n.GetValue("RTDishFactor"));
-                OmniRange = Single.Parse(n.GetValue("RTOmniRange"));
+                CurrentOmniRange = Single.Parse(n.GetValue("RTOmniRange"));
             }
             catch (ArgumentException) {
                 mTarget = Guid.Empty;
-                DishRange = 0.0f;
+                CurrentDishRange = 0.0f;
                 DishFactor = 1.0f;
-                OmniRange = 0.0f;
+                CurrentOmniRange = 0.0f;
                 RTUtil.Log("ProtoAntenna parsing error. Default values assumed.");
             }
-
-            mProtoPart = p;
-            mProtoModule = ppms;
-            Vessel = v;
-            RTUtil.Log("ProtoAntenna: DishRange: {0}, OmniRange: {1}, Name: {2}, DishTarget: {3})", 
-                DishRange, OmniRange, Vessel.vesselName, DishTarget);
+            RTUtil.Log("ProtoAntenna: DishRange: {0}, OmniRange: {1}, Name: {2}, DishTarget: {3}", 
+                CurrentDishRange, CurrentOmniRange, v.vesselName, DishTarget);
         }
     }
 }

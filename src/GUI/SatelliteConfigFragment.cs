@@ -25,8 +25,8 @@ namespace RemoteTech {
                         GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                         for (int i = 0; i < mFocusAntennas.Count; i++) {
                             GUI.contentColor = 
-                                (mFocusAntennas[i].DishRange > 0) ? Color.green : Color.red;
-                            String text = mFocusAntennas[i].Name + '\n' +
+                                (mFocusAntennas[i].CurrentDishRange > 0) ? Color.green : Color.red;
+                            String text = mFocusAntennas[i].Name + Environment.NewLine +
                                 "Target: " + RTUtil.TargetName(mFocusAntennas[i].DishTarget);
                             RTUtil.StateButton(text, mSelection, i, s => {
                                 mSelection = (s > 0) ? s : 0;

@@ -37,7 +37,12 @@ namespace RemoteTech {
                     GUILayout.ExpandHeight(true));
                 {
                     foreach (DelayedCommand dc in mFlightComputer) {
-                        GUILayout.Label(Format(dc), GUI.skin.textField);
+                        GUILayout.BeginHorizontal(GUI.skin.box);
+                        {
+                            GUILayout.Label(Format(dc));
+                            RTUtil.Button("x", () => { mFlightComputer.Enqueue(DelayedCommand.Cancel(dc)); }, GUILayout.Width(21));
+                        }
+                        GUILayout.EndHorizontal();
                     }
                 }
                 GUILayout.EndScrollView();
@@ -46,6 +51,7 @@ namespace RemoteTech {
                 {
                     GUILayout.Label("Artificial delay: ");
                     GUI.SetNextControlName("xd");
+                    GUILayout.Label(mFlightComputer.ExtraDelay.ToString("F2"));
                     RTUtil.TextField(ref mExtraDelay, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
@@ -58,50 +64,52 @@ namespace RemoteTech {
             if (dc.AttitudeCommand != null) {
                 switch (dc.AttitudeCommand.Mode) {
                     case FlightMode.Off:
-                        s.Append("Mode: Off");
+                        s.AppendLine("Mode: Off");
                         break;
                     case FlightMode.KillRot:
-                        s.Append("Mode: Kill rotation");
+                        s.AppendLine("Mode: Kill rotation");
                         break;
                     case FlightMode.AttitudeHold:
                         s.Append("Mode: Hold, ");
                         switch (dc.AttitudeCommand.Attitude) {
                             case FlightAttitude.Prograde:
-                                s.Append("Prograde");
+                                s.AppendLine("Prograde");
                                 break;
                             case FlightAttitude.Retrograde:
-                                s.Append("Retrograde");
+                                s.AppendLine("Retrograde");
                                 break;
                             case FlightAttitude.NormalPlus:
-                                s.Append("Normal +");
+                                s.AppendLine("Normal +");
                                 break;
                             case FlightAttitude.NormalMinus:
-                                s.Append("Normal -");
+                                s.AppendLine("Normal -");
                                 break;
                             case FlightAttitude.RadialPlus:
-                                s.Append("Radial +");
+                                s.AppendLine("Radial +");
                                 break;
                             case FlightAttitude.RadialMinus:
-                                s.Append("Radial -");
+                                s.AppendLine("Radial -");
                                 break;
                             case FlightAttitude.Surface:
                                 s.Append(dc.AttitudeCommand.Orientation.eulerAngles.x.ToString("F1"));
                                 s.Append(", ");
                                 s.Append(dc.AttitudeCommand.Orientation.eulerAngles.y.ToString("F1"));
                                 s.Append(", ");
-                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.z.ToString("F1"));
+                                s.AppendLine(dc.AttitudeCommand.Orientation.eulerAngles.z.ToString("F1"));
                                 break;
                         }
                         break;
                     case FlightMode.AltitudeHold:
                         s.Append("Mode: Hold, ");
-                        s.Append(RTUtil.FormatSI(dc.AttitudeCommand.Altitude, "m"));
+                        s.AppendLine(RTUtil.FormatSI(dc.AttitudeCommand.Altitude, "m"));
                         break;
                 }
-            } else if (dc.ActionGroupCommand != null) {
+            }
+            if (dc.ActionGroupCommand != null) {
                 s.Append("Toggle ");
-                s.Append(dc.ActionGroupCommand.ActionGroup.ToString());
-            } else if (dc.BurnCommand != null) {
+                s.AppendLine(dc.ActionGroupCommand.ActionGroup.ToString());
+            }
+            if (dc.BurnCommand != null) {
                 s.Append("Burn ");
                 s.Append(dc.BurnCommand.Throttle.ToString("P2"));
                 if (dc.BurnCommand.Duration != Single.NaN) {
@@ -114,13 +122,20 @@ namespace RemoteTech {
                     s.Append(dc.BurnCommand.DeltaV.ToString("F2"));
                     s.Append("m/s");
                 }
-            } else if (dc.DriveCommand != null) {
+                s.AppendLine();
+            }
+            if (dc.DriveCommand != null) {
                 dc.DriveCommand.GetDescription(s);
-            } else if (dc.Event != null) {
-                s.Append(dc.Event.BaseEvent.listParent.part.partInfo.title);
+                s.AppendLine();
+            }
+            if (dc.EventCommand != null) {
+                s.Append(dc.EventCommand.BaseEvent.listParent.part.partInfo.title);
                 s.Append(": ");
-                s.Append(dc.Event.BaseEvent.GUIName);
-            } 
+                s.AppendLine(dc.EventCommand.BaseEvent.GUIName);
+            }
+            if (dc.CancelCommand != null) {
+                s.AppendLine("Cancelling a command");
+            }
 
             double delay = Math.Max(dc.TimeStamp - RTUtil.GetGameTime(), 0);
             if (delay > 0 || dc.ExtraDelay > 0) {
@@ -133,8 +148,9 @@ namespace RemoteTech {
                     s.Append(dc.ExtraDelay.ToString("F2"));
                     s.Append("s)");
                 }
+                s.AppendLine();
             }
-            return s.ToString();
+            return s.ToString().TrimEnd(Environment.NewLine.ToCharArray());
         }
     }
 }

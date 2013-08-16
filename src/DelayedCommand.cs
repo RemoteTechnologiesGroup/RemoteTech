@@ -37,10 +37,18 @@ namespace RemoteTech {
         public BurnCommand BurnCommand { get; set; }
         public DriveCommand DriveCommand { get; set; }
         public ActionGroupCommand ActionGroupCommand { get; set; }
-        public EventCommand Event { get; set; }
+        public EventCommand EventCommand { get; set; }
+        public DelayedCommand CancelCommand { get; set; }
 
         public int CompareTo(DelayedCommand dc) {
             return TimeStamp.CompareTo(dc.TimeStamp);
+        }
+
+        public static DelayedCommand Cancel(DelayedCommand dc) {
+            return new DelayedCommand() {
+                CancelCommand = dc,
+                TimeStamp = RTUtil.GetGameTime()
+            };
         }
     }
 
@@ -328,7 +336,7 @@ namespace RemoteTech {
 
         public static DelayedCommand Event(BaseEvent ev) {
             return new DelayedCommand() {
-                Event = new EventCommand() {
+                EventCommand = new EventCommand() {
                     BaseEvent = ev,
                 },
                 TimeStamp = RTUtil.GetGameTime(),
