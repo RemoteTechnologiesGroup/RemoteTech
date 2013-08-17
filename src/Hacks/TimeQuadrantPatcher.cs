@@ -15,7 +15,7 @@ namespace RemoteTech {
             public Vector3 CollapsedPosition { get; set; }
         }
 
-        private static readonly GUIStyle mFlightButton;
+        private static readonly GUIStyle mFlightButtonGreen, mFlightButtonRed, mFlightButtonYellow;
 
         private String DisplayText {
             get {
@@ -27,18 +27,41 @@ namespace RemoteTech {
                 } else if (vs.Connection.Exists) {
                     return "D+" + vs.Connection.Delay.ToString("F6") + "s";
                 }
-                return "Not Connected";
+                return "No Connection";
+            }
+        }
+
+        private GUIStyle ButtonStyle {
+            get {
+                VesselSatellite vs = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
+                if (vs == null) {
+                    return mFlightButtonRed;
+                } else if (vs.LocalControl) {
+                    return mFlightButtonYellow;
+                } else if (vs.Connection.Exists) {
+                    return mFlightButtonGreen;
+                }
+                return mFlightButtonRed;
             }
         }
 
         private Backup mBackup;
         private GUIStyle mTextStyle;
-        
+
         static TimeQuadrantPatcher() {
-            mFlightButton = GUITextureButtonFactory.CreateFromFilename("texFlightNormal.png",
-                                                                       "texFlightNormal.png",
-                                                                       "texFlightActive.png",
-                                                                       "texFlightNormal.png");
+            mFlightButtonGreen = GUITextureButtonFactory.CreateFromFilename("texFlightGreen.png",
+                                                                       "texFlightGreenOver.png",
+                                                                       "texFlightGreenDown.png",
+                                                                       "texFlightGreenOver.png");
+            mFlightButtonYellow = GUITextureButtonFactory.CreateFromFilename("texFlightYellow.png",
+                                                                       "texFlightYellowOver.png",
+                                                                       "texFlightYellowDown.png",
+                                                                       "texFlightYellowOver.png");
+            mFlightButtonRed = GUITextureButtonFactory.CreateFromFilename("texFlightRed.png",
+                                                                       "texFlightRedOver.png",
+                                                                       "texFlightRedDown.png",
+                                                                       "texFlightRedOver.png");
+
             RTUtil.Log("TimeQuadrantPatcher has loaded textures.");
         }
 
@@ -51,7 +74,7 @@ namespace RemoteTech {
                 TimeQuadrant = timeQuadrant,
                 Texture = tab.renderer.material.mainTexture,
                 Scale = tab.transform.localScale,
-                Center = ((BoxCollider) tab.collider).center,
+                Center = ((BoxCollider)tab.collider).center,
                 ExpandedPosition = tab.expandedPos,
                 CollapsedPosition = tab.collapsedPos,
             };
@@ -74,7 +97,7 @@ namespace RemoteTech {
             // Apply new scale, positions
             tab.transform.localScale = new Vector3(tab.transform.localScale.x,
                                                    tab.transform.localScale.y,
-                                                   tab.transform.localScale.z * 
+                                                   tab.transform.localScale.z *
                                                    1.3970588235294117647058823529412f);
             tab.collapsedPos += new Vector3(0, -0.013f, 0);
             tab.expandedPos += new Vector3(0, -0.013f, 0);
@@ -87,11 +110,11 @@ namespace RemoteTech {
                 child.parent = tab.transform;
             }
 
-            ((BoxCollider) tab.collider).center += new Vector3(0, 0, -0.37f);
+            ((BoxCollider)tab.collider).center += new Vector3(0, 0, -0.37f);
 
-            ScreenSafeGUIText text = 
+            ScreenSafeGUIText text =
                 tab.transform.FindChild("MET timer").GetComponent<ScreenSafeGUIText>();
-            mTextStyle = text.textStyle;
+            mTextStyle = new GUIStyle(text.textStyle);
             mTextStyle.fontSize = (int)(text.textSize * ScreenSafeUI.PixelRatio);
 
             RenderingManager.AddToPostDrawQueue(0, Draw);
@@ -136,15 +159,20 @@ namespace RemoteTech {
         }
 
         public void Draw() {
-            if(mBackup != null) {
+            if (mBackup != null) {
                 GUI.depth = 0;
                 Vector2 screenCoord = ScreenSafeUI.referenceCam.WorldToScreenPoint(mBackup.TimeQuadrant.timeQuadrantTab.transform.position);
-                screenCoord += new Vector2(0, -10f);
-                Rect screenPos = new Rect(5.0f, Screen.height - screenCoord.y, 50, 20);
+                Rect screenPos = new Rect(5.0f, Screen.height - screenCoord.y + 11f, 19, 18);
                 GUI.Label(screenPos, DisplayText, mTextStyle);
-                screenPos.x += 100f;
-                if (GUI.Button(screenPos, "", mFlightButton)) {
-                    RTCore.Instance.Gui.OpenFlightComputer();
+                screenPos.x += 84f;
+                screenPos.y += 1f;
+                if (GUI.Button(screenPos, "", ButtonStyle)) {
+                    if (Event.current.button == 1) {
+                        VesselSatellite vs = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
+                        if (vs != null)
+                            vs.LocalControl = !vs.LocalControl;
+                    } else
+                        RTCore.Instance.Gui.OpenFlightComputer();
                 }
             }
         }

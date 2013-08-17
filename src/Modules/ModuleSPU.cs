@@ -50,6 +50,12 @@ namespace RemoteTech {
         [KSPField(guiName = "State", guiActive = true)]
         public String Status;
 
+        [KSPEvent(guiName = "Control From Here", guiActive = true)]
+        [IgnoreSignalDelayAttribute]
+        public void MakeReference() {
+            vessel.SetReferenceTransform(part);
+        }
+
         [KSPEvent(name = "ToggleDebugDelay", active = true, guiActive = true, guiName = "Toggle debug delay")]
         [IgnoreSignalDelayAttribute]
         public void ToggleDebugDelay() {

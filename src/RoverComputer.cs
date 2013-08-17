@@ -19,20 +19,21 @@ namespace RemoteTech {
 
         private Quaternion mRoverRot;
 
-        private ModuleWheel.AlignmentAxis axis;
+        private ModuleWheel.AlignmentAxis mAxis;
 
         public RoverComputer(Vessel v) {
             mVessel = v;
 
             mThrottlePID = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, -1, 1);
             mWheelPID = new Legacy.PidController(10, 1e-5F, 1e-5F, 50, -1, 1);
+
         }
 
         private float RoverHDG {
             get {
                 Vector3 dir = mVessel.srf_velocity.normalized;
 
-                switch (axis) {
+                switch (mAxis) {
                     case ModuleWheel.AlignmentAxis.Forward:
                         dir = mVessel.ReferenceTransform.forward;
                         break;
@@ -73,7 +74,7 @@ namespace RemoteTech {
         private float RoverSpeed {
             get {
 
-                switch (axis) {
+                switch (mAxis) {
                     case ModuleWheel.AlignmentAxis.None:
                         return (float)mVessel.srf_velocity.magnitude;
                     case ModuleWheel.AlignmentAxis.Forward:
@@ -88,16 +89,53 @@ namespace RemoteTech {
             }
         }
 
-        public void InitMode(DriveCommand dc) {
-
-            axis = ModuleWheel.AlignmentAxis.None;
+        private void UpdateAxis() {
+            mAxis = ModuleWheel.AlignmentAxis.None;
             foreach (Part p in mVessel.parts) {
                 if (p.Modules.Contains("ModuleWheel")) {
-                    axis = (p.Modules["ModuleWheel"] as ModuleWheel).alignmentAxis;
-                    if (axis != ModuleWheel.AlignmentAxis.None)
+                    float a = 0, b = 0, c = 0;
+
+                    ModuleWheel.ControlAxis controlAxis = (p.Modules["ModuleWheel"] as ModuleWheel).controlAxis;
+                    switch (controlAxis) {
+                        case ModuleWheel.ControlAxis.Forward:
+                            a = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.forward, p.transform.forward));
+                            b = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.right, p.transform.forward));
+                            c = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.up, p.transform.forward));
+                            break;
+                        case ModuleWheel.ControlAxis.Right:
+                            a = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.forward, p.transform.right));
+                            b = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.right, p.transform.right));
+                            c = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.up, p.transform.right));
+                            break;
+                        case ModuleWheel.ControlAxis.Up:
+                            a = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.forward, p.transform.up));
+                            b = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.right, p.transform.up));
+                            c = Math.Abs(Vector3.Dot(mVessel.ReferenceTransform.up, p.transform.up));
+                            break;
+                    }
+
+                    if (a > c) {
+                        if (a > b)
+                            mAxis = ModuleWheel.AlignmentAxis.Forward;
+                        else
+                            mAxis = ModuleWheel.AlignmentAxis.Right;
+                    } else {
+                        if (c > b)
+                            mAxis = ModuleWheel.AlignmentAxis.Up;
+                        else
+                            mAxis = ModuleWheel.AlignmentAxis.Right;
+                    }
+
+                    if (mAxis != ModuleWheel.AlignmentAxis.None)
                         break;
                 }
             }
+        }
+
+        public void InitMode(DriveCommand dc) {
+
+            UpdateAxis();
+
             mRoverAlt = (float)mVessel.altitude;
             mRoverLat = (float)mVessel.latitude;
             mRoverLon = (float)mVessel.longitude;

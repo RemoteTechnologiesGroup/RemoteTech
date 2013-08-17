@@ -71,9 +71,13 @@ namespace RemoteTech {
             }
         }
 
+        private bool mLocalControl = true;
         public bool LocalControl {
             get {
-                return Vessel.GetVesselCrew().Count > 0;
+                return mLocalControl && Vessel.GetVesselCrew().Count > 0;
+            }
+            set {
+                mLocalControl = value;
             }
         }
 
