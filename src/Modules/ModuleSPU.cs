@@ -160,6 +160,10 @@ namespace RemoteTech {
             return State.Operational;
         }
 
+        public void Update() {
+            FlightComputer.OnUpdate();
+        }
+
         public void FixedUpdate() {
             if (FlightComputer != null) {
                 FlightComputer.OnFixedUpdate();

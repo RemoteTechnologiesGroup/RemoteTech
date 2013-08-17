@@ -91,6 +91,11 @@ namespace RemoteTech {
             }
         }
 
+        public void OnUpdate() {
+            if (mSignalProcessor.Powered && mSignalProcessor.Master)
+                PopCommand();
+        }
+
         public void OnFixedUpdate() {
             // Ensure the onflybywire is still on the correct vessel, in the correct order
             if (mSignalProcessor.Vessel != null) {
@@ -99,11 +104,8 @@ namespace RemoteTech {
                 mAttachedVessel.OnFlyByWire = OnFlyByWirePre + mAttachedVessel.OnFlyByWire;
             }
 
-            if (mSignalProcessor.Powered && mSignalProcessor.Master) {
-                PopCommand();
-                if (Bifrost != null) {
+            if (mSignalProcessor.Powered && mSignalProcessor.Master && Bifrost != null) {
                     Bifrost.OnFixedUpdate();
-                }
             }
         }
 
