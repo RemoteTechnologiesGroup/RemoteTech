@@ -17,11 +17,46 @@ namespace RemoteTech {
 
         private static readonly GUIStyle mFlightButtonGreen, mFlightButtonRed, mFlightButtonYellow;
 
+        private bool mTicketTape = false;
+        private float mTime = 0f;
+        private int mTextStart = 0, mTextLength = 13;
+        private string mCurDisp = "", mNextDisp = "";
+
         private String DisplayText {
             get {
                 VesselSatellite vs = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
                 if (vs == null) {
                     return "N/A";
+                } else if (mTicketTape && vs.Connection.Exists) {
+                    if (vs.Connection.ToString().Length <= mTextLength)
+                        return vs.Connection.ToString();
+
+                    StringBuilder s = new StringBuilder();
+
+                    if (mTextStart + mTextLength > mCurDisp.Length && mNextDisp == "") {
+                        mNextDisp = vs.Connection.ToString() + "\u25A0";
+                    }
+
+                    if (mTextStart + 1 > mCurDisp.Length) {
+                        mCurDisp = mNextDisp;
+                        mNextDisp = "";
+                        mTextStart = 0;
+                    }
+
+                    int curLength = Mathf.Clamp(mTextStart + mTextLength, 0, mCurDisp.Length) - mTextStart;
+                    int NextLength = Mathf.Clamp(mTextLength - curLength, 0, mNextDisp.Length);
+
+                    if (curLength > 0 && mCurDisp.Length >= mTextStart + curLength)
+                        s.Append(mCurDisp.Substring(mTextStart, curLength));
+                    if (NextLength > 0 && mNextDisp.Length >= NextLength)
+                        s.Append(mNextDisp.Substring(0, NextLength));
+
+                    if (mTime < Time.time) {
+                        mTextStart++;
+                        mTime = Time.time + 0.25f;
+                    }
+
+                    return s.ToString();
                 } else if (vs.LocalControl) {
                     return "Local Control";
                 } else if (vs.Connection.Exists) {
@@ -162,8 +197,16 @@ namespace RemoteTech {
             if (mBackup != null) {
                 GUI.depth = 0;
                 Vector2 screenCoord = ScreenSafeUI.referenceCam.WorldToScreenPoint(mBackup.TimeQuadrant.timeQuadrantTab.transform.position);
-                Rect screenPos = new Rect(5.0f, Screen.height - screenCoord.y + 11f, 19, 18);
-                GUI.Label(screenPos, DisplayText, mTextStyle);
+                Rect screenPos = new Rect(5.0f, Screen.height - screenCoord.y + 11f, 81, 18);
+
+                if (GUI.Button(screenPos, DisplayText, mTextStyle)) {
+                    mTicketTape = !mTicketTape;
+                    if (mTicketTape) {
+                        mTime = Time.time + 0.25f;
+                    }
+                }
+
+                screenPos.width = 19f;
                 screenPos.x += 84f;
                 screenPos.y += 1f;
                 if (GUI.Button(screenPos, "", ButtonStyle)) {

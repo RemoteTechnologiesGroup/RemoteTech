@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace RemoteTech {
@@ -19,6 +20,19 @@ namespace RemoteTech {
 
         public int CompareTo(Path<T> other) {
             return Delay.CompareTo(other.Delay);
+        }
+
+
+        public override string ToString() {
+            StringBuilder s = new StringBuilder();
+
+            foreach (ISatellite sat in Nodes) {
+                if (s.Length != 0)
+                    s.Insert(0, "\u02C3");
+                s.Insert(0, sat.Name);
+            }
+
+            return s.ToString();
         }
     }
 

@@ -160,7 +160,8 @@ namespace RemoteTech {
             return State.Operational;
         }
 
-        public void Update() {
+
+        public override void OnUpdate() {
             FlightComputer.OnUpdate();
         }
 
