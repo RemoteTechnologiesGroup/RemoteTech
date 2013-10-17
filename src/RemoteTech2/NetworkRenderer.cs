@@ -194,7 +194,7 @@ namespace RemoteTech
                 VectorLine line = mLines[i];
                 Vector.DestroyLine(ref line);
             }
-            Destroy(this);
+            DestroyImmediate(this);
         }
 
         public void OnDestroy()

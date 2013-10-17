@@ -239,7 +239,7 @@ namespace RemoteTech
         public static void LoadImage(out Texture2D texture, String fileName)
         {
             fileName = fileName.Split('.')[0];
-            String path = Assembly.GetExecutingAssembly().CodeBase + "../Textures/" + fileName;
+            String path = "RemoteTech2/Textures/" + fileName;
             RTUtil.Log("LoadImage({0})", path);
             texture = GameDatabase.Instance.GetTexture(path, false);
             if (texture == null)

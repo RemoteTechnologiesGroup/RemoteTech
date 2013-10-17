@@ -186,12 +186,13 @@ namespace RemoteTech
 
         public void OnPhysicsUpdate()
         {
+            if (RTCore.Instance.Satellites.Count == 0) return;
             int takeCount = (RTCore.Instance.Satellites.Count / REFRESH_TICKS) + ((mTick++ % (RTCore.Instance.Satellites.Count % REFRESH_TICKS) == 0) ? 1 : 0);
             IEnumerable<ISatellite> commandStations = RTCore.Instance.Satellites.FindCommandStations();
             foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
             {
                 UpdateGraph(s);
-                RTUtil.Log("{0} { CS: {1}, E: {{2}} }", s.ToString(), commandStations.Contains(s), Graph[s.Guid].ToDebugString());
+                RTUtil.Log("{0} [ CS: {1}, E: {2} ]", s.ToString(), commandStations.Contains(s), Graph[s.Guid].ToDebugString());
                 if (s.SignalProcessor.VesselLoaded)
                 {
                     FindPath(s, commandStations);

@@ -25,7 +25,7 @@ namespace RemoteTech.Modules
             ProgressFxModuleIndices = new int[] { };
 
         private IAntenna mParent;
-        private List<ScienceData> mQueue;
+        private List<ScienceData> mQueue = new List<ScienceData>();
 
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
