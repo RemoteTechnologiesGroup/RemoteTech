@@ -27,11 +27,11 @@ namespace RemoteTech
             }
         }
 
-        public Path<ISatellite> this[ISatellite sat]
+        public List<Path<ISatellite>> this[ISatellite sat]
         {
             get
             {
-                return mConnectionCache.ContainsKey(sat) ? mConnectionCache[sat] : Path.Empty<ISatellite>(sat);
+                return mConnectionCache.ContainsKey(sat) ? mConnectionCache[sat] : null;
             }
             set
             {
@@ -53,7 +53,7 @@ namespace RemoteTech
 
         private int mTick;
         private int mTickIndex;
-        private Dictionary<ISatellite, Path<ISatellite>> mConnectionCache = new Dictionary<ISatellite, Path<ISatellite>>();
+        private Dictionary<ISatellite, List<Path<ISatellite>>> mConnectionCache = new Dictionary<ISatellite, List<Path<ISatellite>>>();
 
         public NetworkManager()
         {
@@ -92,7 +92,7 @@ namespace RemoteTech
             {
                 paths.Add(Pathfinder.Solve(start, root, s => Graph[s.Guid].Where(x => x.Powered), Distance, Distance));
             }
-            this[start] = paths.Min();
+            this[start] = paths.Where(p => p.Exists).ToList();
         }
 
         private void UpdateGraph(ISatellite a)

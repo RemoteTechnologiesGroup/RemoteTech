@@ -134,9 +134,7 @@ namespace RemoteTech
         public static String TargetName(Guid guid)
         {
             ISatellite sat;
-            if (RTCore.Instance != null &&
-                    RTCore.Instance.Network != null &&
-                    RTCore.Instance.Satellites != null)
+            if (RTCore.Instance != null && RTCore.Instance.Network != null && RTCore.Instance.Satellites != null)
             {
                 if (guid == System.Guid.Empty)
                 {
@@ -146,16 +144,12 @@ namespace RemoteTech
                 {
                     return RTCore.Instance.Network.Planets[guid].name;
                 }
-                if ((sat = RTCore.Instance.Satellites[guid]) != null)
-                {
-                    return sat.Name;
-                }
-                if (guid.Equals((sat = RTCore.Instance.Network.MissionControl).Guid))
+                if ((sat = RTCore.Instance.Network[guid]) != null)
                 {
                     return sat.Name;
                 }
             }
-            return "[Unknown Target]";
+            return "Unknown Target";
         }
 
         public static Guid Guid(this CelestialBody cb)

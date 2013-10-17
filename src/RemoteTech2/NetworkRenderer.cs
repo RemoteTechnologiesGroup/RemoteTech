@@ -23,14 +23,10 @@ namespace RemoteTech
         private static Texture2D mTexMark;
         private HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();
         private List<VectorLine> mLines = new List<VectorLine>();
-        private RTCore mCore;
 
         private bool ShowOmni { get { return (Filter & (MapFilter.Any | MapFilter.Omni)) == (MapFilter.Any | MapFilter.Omni); } }
-
         private bool ShowDish { get { return (Filter & (MapFilter.Any | MapFilter.Dish)) == (MapFilter.Any | MapFilter.Dish); } }
-
         private bool ShowPath { get { return (Filter & MapFilter.OnlyPath) == MapFilter.OnlyPath; } }
-
         private bool ShowAll { get { return (Filter & MapFilter.Any) == MapFilter.Any; } }
 
         static NetworkRenderer()
@@ -90,7 +86,7 @@ namespace RemoteTech
         {
             if (Event.current.type == EventType.Repaint && MapView.MapIsEnabled)
             {
-                foreach (ISatellite s in mCore.Satellites.FindCommandStations().Concat(new[] { mCore.Network.MissionControl }))
+                foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(new[] { RTCore.Instance.Network.MissionControl }))
                 {
                     Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(ScaledSpace.LocalToScaledSpace(s.Position));
                     Rect screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
@@ -203,8 +199,8 @@ namespace RemoteTech
 
         public void OnDestroy()
         {
-            mCore.Network.OnEdgeRefresh -= OnEdgeRefresh;
-            mCore.Satellites.OnUnregister -= OnSatelliteUnregister;
+            RTCore.Instance.Network.OnEdgeRefresh -= OnEdgeRefresh;
+            RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
         }
     }
 }

@@ -7,8 +7,8 @@ namespace RemoteTech
     {
         public String Name { get; private set; }
         public Guid Guid { get { return mVessel.id; } }
-        public bool Powered { get { return true; } }
-        public bool Activated { get { return true; } }
+        public bool Powered { get; private set; }
+        public bool Activated { get; private set; }
 
         public bool CanTarget { get { return mDishRange != -1; } }
 
@@ -54,6 +54,8 @@ namespace RemoteTech
                 mDishRange = Single.Parse(n.GetValue("RTDishRange"));
                 mDishRadians = Double.Parse(n.GetValue("RTDishRadians"));
                 CurrentOmni = Single.Parse(n.GetValue("RTOmniRange"));
+                Powered = Boolean.Parse(n.GetValue("IsRTPowered"));
+                Activated = Boolean.Parse(n.GetValue("IsRTActive"));
             }
             catch (ArgumentException)
             {

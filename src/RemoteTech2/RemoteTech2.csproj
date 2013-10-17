@@ -55,6 +55,8 @@
     <Compile Include="IAntenna.cs" />
     <Compile Include="ISatellite.cs" />
     <Compile Include="ISignalProcessor.cs" />
+    <Compile Include="Modules\ModuleRTAntenna.cs" />
+    <Compile Include="Modules\ModuleRTDataTransmitter.cs" />
     <Compile Include="NetworkManager.cs" />
     <Compile Include="NetworkRenderer.cs" />
     <Compile Include="Pathfinder.cs" />
@@ -64,10 +66,11 @@
     <Compile Include="RTCore.cs" />
     <Compile Include="RTUtil.cs" />
     <Compile Include="SatelliteManager.cs" />
-    <Compile Include="SimpleTypes\AntennaManager.cs" />
+    <Compile Include="AntennaManager.cs" />
     <Compile Include="SimpleTypes\BidirectionalEdge.cs" />
     <Compile Include="SimpleTypes\BinaryHeap.cs" />
     <Compile Include="SimpleTypes\Dish.cs" />
+    <Compile Include="SimpleTypes\IgnoreSignalDelayAttribute.cs" />
     <Compile Include="SimpleTypes\Path.cs" />
     <Compile Include="SimpleTypes\PriorityQueue.cs" />
     <Compile Include="VesselSatellite.cs" />

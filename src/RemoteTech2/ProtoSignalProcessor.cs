@@ -25,5 +25,10 @@ namespace RemoteTech
             RTUtil.Log("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})",
                 Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
         }
+
+        public override String ToString()
+        {
+            return Name;
+        }
     }
 }

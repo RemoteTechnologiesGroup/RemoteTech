@@ -15,7 +15,7 @@ namespace RemoteTech
             Range = distance;
         }
 
-        public String ToString()
+        public override String ToString()
         {
             return String.Format("Dish(Range: {0}, Radians: {1}, Target: {2}", 
                 Range.ToString("F2"), 
