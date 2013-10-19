@@ -1,28 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RemoteTech
 {
-    public class NetworkLink<T> : IEquatable<NetworkLink<T>>
+    public class NetworkLink<T>
     {
         public readonly T Target;
-        public readonly IAntenna Interface;
+        public readonly List<IAntenna> Interfaces;
         public readonly LinkType Port;
 
-        public NetworkLink(T sat, IAntenna ant, LinkType port)
+        public NetworkLink(T sat, List<IAntenna> ant, LinkType port)
         {
             Target = sat;
-            Interface = ant;
+            Interfaces = ant;
             Port = port;
-        }
-
-        public bool Equals(NetworkLink<T> other)
-        {
-            return Target.Equals(other.Target) && Interface.Equals(other.Interface);
         }
 
         public override string ToString()
         {
-            return String.Format("NetworkLink(T: {0}, I: {1}, P: {2})", Target, Interface, Port);
+            return String.Format("NetworkLink(T: {0}, I: {1}, P: {2})", Target, Interfaces, Port);
         }
     }
 }

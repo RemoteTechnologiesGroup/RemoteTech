@@ -72,11 +72,8 @@ namespace RemoteTech
             var msg_status = new ScreenMessage(String.Empty, 4.0f, ScreenMessageStyle.UPPER_LEFT);
             ScreenMessages.PostScreenMessage(msg);
 
-            bool old_state = mParent.Activated;
-            mParent.Activated = true;
-            while (mParent.Animating) yield return null;
-
             mBusy = true;
+
             while (mQueue.Any())
             {
                 RnDCommsStream commStream = null;
@@ -129,7 +126,6 @@ namespace RemoteTech
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
             ScreenMessages.PostScreenMessage(msg, true);
             yield return new WaitForSeconds(3.0f);
-            mParent.Activated = old_state;
             //yield return SetFXModules_Coroutine(modules_deploy, 0.0f);
             GUI_Status = "Idle";
             yield break;

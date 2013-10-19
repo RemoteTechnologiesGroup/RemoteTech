@@ -178,7 +178,7 @@ namespace RemoteTech
 
         private void OnLinkAdd(ISatellite a, NetworkLink<ISatellite> link)
         {
-            RTUtil.Log("Link: {0}", mEdges);
+            // RTUtil.Log("Link: {0}", mEdges);
             mEdges.Add(new BidirectionalEdge<ISatellite>(a, link.Target, link.Port));
         }
 

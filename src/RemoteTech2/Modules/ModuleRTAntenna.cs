@@ -136,10 +136,9 @@ namespace RemoteTech
             UpdateContext();
             if(IsRTActive != prev_state) StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
             var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = satellite != null ? RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interface == (IAntenna)this && 
+            bool route_home = satellite != null ? RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && 
                                                                                               r.Goal == RTCore.Instance.Network.MissionControl) : false;
-            RTUtil.Log("route_home: {0} on {1}", route_home, this);
-            if (mTransmitter == null && route_home && IsRTActive)
+            if (mTransmitter == null && route_home)
             {
                 AddTransmitter();
             }
@@ -447,6 +446,11 @@ namespace RemoteTech
         public int CompareTo(IAntenna antenna)
         {
             return Consumption.CompareTo(antenna.Consumption);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("ModuleRTAntenna({0}, {1})", Name, GetInstanceID());
         }
     }
 }

@@ -143,9 +143,9 @@ namespace RemoteTech
 
             if (omni_a.Concat(dish_a).Any() && omni_b.Concat(dish_b).Any())
             {
-                var optimal = omni_a.Concat(dish_a).Min();
-                var type = dish_a.Contains(optimal) ? LinkType.Dish : LinkType.Omni;
-                return new NetworkLink<ISatellite>(sat_b, optimal, type);
+                var interfaces = omni_a.Concat(dish_a).ToList();
+                var type = interfaces.Any(a => dish_a.Contains(a)) ? LinkType.Dish : LinkType.Omni;
+                return new NetworkLink<ISatellite>(sat_b, interfaces, type);
             }
             return null;
         }
@@ -173,7 +173,7 @@ namespace RemoteTech
             foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
             {
                 UpdateGraph(s);
-                RTUtil.Log("{0} [ CS: {1}, E: {2} ]", s.ToString(), commandStations.Contains(s), Graph[s.Guid].ToDebugString());
+                //RTUtil.Log("{0} [ CS: {1}, E: {2} ]", s.ToString(), commandStations.Contains(s), Graph[s.Guid].ToDebugString());
                 if (s.SignalProcessor.VesselLoaded)
                 {
                     FindPath(s, commandStations);
