@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -10,7 +12,8 @@ namespace RemoteTech
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return vessel.id; } }
         public bool Powered { get { return IsRTPowered; } }
-        public bool Activated { get { return IsRTActive; } }
+        public bool Activated { get { return IsRTActive; } set { SetState(value); } }
+        public bool Animating { get { return mDeployFxModules.Any(fx => fx.GetScalar > 0.1f && fx.GetScalar < 0.9f); } }
 
         public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
         public Guid Target
@@ -19,7 +22,7 @@ namespace RemoteTech
             set
             {
                 RTAntennaTarget = value;
-                UpdateContext();
+                Events["EventTarget"].guiName = RTUtil.TargetName(Target);
                 foreach (UIPartActionWindow w in GameObject.FindObjectsOfType(typeof(UIPartActionWindow)).Where(w => ((UIPartActionWindow) w).part == part))
                 {
                     w.displayDirty = true;
@@ -27,8 +30,10 @@ namespace RemoteTech
             }
         }
 
-        public Dish CurrentDish { get { return new Dish(Target, RTDishRadians, IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1DishRange : Mode0DishRange); } }
-        public float CurrentOmni { get { return IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange; } }
+        public float Dish { get { return IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1DishRange : Mode0DishRange; } }
+        public double Radians { get { return RTDishRadians; } }
+        public float Omni { get { return IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange; } }
+        public float Consumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost : 0.0f; } }
 
         [KSPField]
         public bool
@@ -84,7 +89,11 @@ namespace RemoteTech
         [KSPField] // Persistence handled by Save()
         public Guid RTAntennaTarget = Guid.Empty;
 
-        private float CurrentConsumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost : 0.0f; } }
+        public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
+        private List<IScalarModule> mDeployFxModules;
+        private List<IScalarModule> mProgressFxModules;
+        public ConfigNode mTransmitterConfig;
+        private IScienceDataTransmitter mTransmitter;
 
         private enum State
         {
@@ -118,12 +127,26 @@ namespace RemoteTech
 
         public virtual void SetState(bool state)
         {
+            bool prev_state = IsRTActive;
             IsRTActive = state && !IsRTBroken;
             Events["EventOpen"].guiActive = !IsRTActive && !IsRTBroken;
             Events["EventOpen"].active = Events["EventOpen"].guiActive;
             Events["EventClose"].guiActive = IsRTActive && !IsRTBroken;
             Events["EventClose"].active = Events["EventClose"].guiActive;
             UpdateContext();
+            if(IsRTActive != prev_state) StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
+            var satellite = RTCore.Instance.Network[Guid];
+            bool route_home = satellite != null ? RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interface == (IAntenna)this && 
+                                                                                              r.Goal == RTCore.Instance.Network.MissionControl) : false;
+            RTUtil.Log("route_home: {0} on {1}", route_home, this);
+            if (mTransmitter == null && route_home && IsRTActive)
+            {
+                AddTransmitter();
+            }
+            else if (!route_home && mTransmitter != null)
+            {
+                RemoveTransmitter();
+            }
         }
 
         [KSPEvent(name = "EventToggle", guiActive = false)]
@@ -185,6 +208,11 @@ namespace RemoteTech
             //RTCore.Instance.Gui.OpenAntennaConfig(this, vessel);
         }
 
+        public void OnConnectionRefresh()
+        {
+            SetState(IsRTActive);
+        }
+
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
@@ -202,6 +230,20 @@ namespace RemoteTech
             if (node.HasValue("DishAngle"))
             {
                 RTDishRadians = Math.Cos(DishAngle / 2 * Math.PI / 180);
+            }
+            if (node.HasValue("DeployFxModules"))
+            {
+                mDeployFxModuleIndices = KSPUtil.ParseArray<Int32>(node.GetValue("DeployFxModules"), new ParserMethod<Int32>(Int32.Parse));
+            }
+            if (node.HasValue("ProgressFxModules"))
+            {
+                mProgressFxModuleIndices = KSPUtil.ParseArray<Int32>(node.GetValue("ProgressFxModules"), new ParserMethod<Int32>(Int32.Parse));
+            }
+            if (node.HasNode("TRANSMITTER"))
+            {
+                RTUtil.Log("Found Transmitter");
+                mTransmitterConfig = node.GetNode("TRANSMITTER");
+                mTransmitterConfig.AddValue("name", "ModuleRTDataTransmitter");
             }
         }
 
@@ -244,16 +286,44 @@ namespace RemoteTech
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 mRegisteredId = vessel.id;
                 RTCore.Instance.Antennas.Register(vessel.id, this);
+                LoadAnimations();
                 SetState(IsRTActive);
             }
         }
 
-        private void UpdateContext()
+        private void LoadAnimations()
         {
-            GUI_OmniRange = RTUtil.FormatSI(CurrentOmni, "m");
-            GUI_DishRange = RTUtil.FormatSI(CurrentDish.Range, "m");
-            GUI_EnergyReq = RTUtil.FormatConsumption(CurrentConsumption);
-            Events["EventTarget"].guiName = RTUtil.TargetName(Target);
+            mDeployFxModules = FindFxModules(this.mDeployFxModuleIndices, true);
+            mProgressFxModules = FindFxModules(this.mProgressFxModuleIndices, false);
+            mDeployFxModules.ForEach(fx => { fx.SetUIRead(false); fx.SetUIWrite(false); });
+            mProgressFxModules.ForEach(fx => { fx.SetUIRead(false); fx.SetUIWrite(false); });
+        }
+
+        private void AddTransmitter()
+        {
+            RTUtil.Log("AddTransmitter: null = {0}", mTransmitterConfig == null);
+            if (mTransmitterConfig == null) return;
+            var transmitters = part.FindModulesImplementing<IScienceDataTransmitter>();
+            if (transmitters.Count > 0)
+            {
+                mTransmitter = transmitters.First();
+            }
+            else
+            {
+                var copy = new ConfigNode();
+                mTransmitterConfig.CopyTo(copy);
+                part.AddModule(copy);
+                AddTransmitter();
+                RTUtil.Log("AddTransmitter Success");
+            }
+        }
+
+        private void RemoveTransmitter()
+        {
+            RTUtil.Log("RemoveTransmitter");
+            if (mTransmitter == null) return;
+            part.RemoveModule((PartModule) mTransmitter);
+            mTransmitter = null;
         }
 
         private State UpdateControlState()
@@ -265,7 +335,7 @@ namespace RemoteTech
             if (!IsRTActive) return State.Off;
 
             ModuleResource request = new ModuleResource();
-            float resourceRequest = CurrentConsumption * TimeWarp.fixedDeltaTime;
+            float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
             if (resourceAmount < resourceRequest * 0.9) return State.NoResources;
             
@@ -293,9 +363,56 @@ namespace RemoteTech
                     IsRTPowered = false;
                     break;
             }
-            RTDishRange = CurrentDish.Range;
-            RTOmniRange = CurrentOmni;
+            RTDishRange = Dish;
+            RTOmniRange = Omni;
             UpdateContext();
+        }
+
+        private void UpdateContext()
+        {
+            GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
+            GUI_DishRange = RTUtil.FormatSI(Dish, "m");
+            GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
+        }
+
+        private List<IScalarModule> FindFxModules(int[] indices, bool showUI)
+        {
+            if (indices == null) return null;
+            var modules = new List<IScalarModule>();
+            foreach (int i in indices)
+            {
+                var item = base.part.Modules[i] as IScalarModule;
+                if (item != null)
+                {
+                    item.SetUIWrite(showUI);
+                    item.SetUIRead(showUI);
+                    modules.Add(item);
+                }
+                else
+                {
+                    RTUtil.Log("[TransmitterModule]: Part Module {0} doesn't implement IScalarModule", part.Modules[i].name);
+                }
+            }
+            return modules;
+        }
+
+        private IEnumerator SetFXModules_Coroutine(List<IScalarModule> modules, float tgtValue)
+        {
+            if (modules == null) yield break;
+            bool done = false;
+            while (!done)
+            {
+                done = true;
+                foreach (var module in modules)
+                {
+                    if (Mathf.Abs(module.GetScalar - tgtValue) >= 0.01f)
+                    {
+                        module.SetScalar(tgtValue);
+                        done = false;
+                    }
+                }
+                yield return true;
+            }
         }
 
         private void OnDestroy()
@@ -325,6 +442,11 @@ namespace RemoteTech
                 mRegisteredId = vessel.id;
                 RTCore.Instance.Antennas.Register(vessel.id, this);
             }
+        }
+
+        public int CompareTo(IAntenna antenna)
+        {
+            return Consumption.CompareTo(antenna.Consumption);
         }
     }
 }

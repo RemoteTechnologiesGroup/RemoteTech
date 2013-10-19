@@ -78,7 +78,7 @@ namespace RemoteTech
 
             // Check if ModuleCommand is powered
 
-            if (Satellite == null || RTCore.Instance.Network[Satellite] == null)
+            if (Satellite == null || RTCore.Instance.Network[Satellite].Count == 0)
             {
                 return State.NoConnection;
             }

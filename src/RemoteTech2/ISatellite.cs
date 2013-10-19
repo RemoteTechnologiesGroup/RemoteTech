@@ -15,7 +15,8 @@ namespace RemoteTech
         bool Powered { get; }
         bool IsCommandStation { get; }
 
-        float OmniRange { get; }
-        IEnumerable<Dish> Dishes { get; }
+        IEnumerable<IAntenna> Antennas { get; }
+
+        void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes);
     }
 }

@@ -2,17 +2,19 @@
 
 namespace RemoteTech
 {
-    public interface IAntenna
+    public interface IAntenna : IComparable<IAntenna>
     {
         String Name { get; }
         Guid Guid { get; }
-        bool Activated { get; }
+        bool Activated { get; set; }
         bool Powered { get; }
-
         bool CanTarget { get; }
-
         Guid Target { get; set; }
-        Dish CurrentDish { get; }
-        float CurrentOmni { get; }
+        float Dish { get; }
+        double Radians { get; }
+        float Omni { get; }
+        float Consumption { get; }
+
+        void OnConnectionRefresh();
     }
 }

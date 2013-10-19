@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace RemoteTech.Modules
+namespace RemoteTech
 {
     public class ModuleRTDataTransmitter : PartModule, IScienceDataTransmitter
     {
@@ -17,31 +17,24 @@ namespace RemoteTech.Modules
 
         [KSPField]
         public String
-            RequiredResource = "ElectricCharge",
-            GUI_Status = "";
+            RequiredResource = "ElectricCharge";
+        [KSPField(guiName = "Status2", guiActive = true)]
+        public String GUI_Status = "";
 
-        public int[]
-            DeployFxModuleIndices = new int[] { },
-            ProgressFxModuleIndices = new int[] { };
-
-        private IAntenna mParent;
+        private ModuleRTAntenna mParent;
+        private bool mBusy;
         private List<ScienceData> mQueue = new List<ScienceData>();
 
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
         {
-            if (node.HasValue("DeployFxModules"))
-            {
-                DeployFxModuleIndices = KSPUtil.ParseArray<Int32>(node.GetValue("DeployFxModules"), new ParserMethod<Int32>(Int32.Parse));
-            }
-            if (node.HasValue("ProgressFxModules"))
-            {
-                ProgressFxModuleIndices = KSPUtil.ParseArray<Int32>(node.GetValue("ProgressFxModules"), new ParserMethod<Int32>(Int32.Parse));
-            }
             foreach (ConfigNode data in node.GetNodes("CommsData"))
             {
                 mQueue.Add(new ScienceData(data));
             }
+
+            var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
+            mParent = antennas.Count > 0 ? antennas[0] : null;
         }
 
         // Compatible with ModuleDataTransmitter
@@ -49,13 +42,7 @@ namespace RemoteTech.Modules
         {
             mQueue.ForEach(d => d.Save(node.AddNode("CommsData")));
         }
-        
-        public override void OnStart(StartState state)
-        {
-            var antennas = part.FindModulesImplementing<IAntenna>();
-            mParent = antennas.Count > 0 ? antennas[0] : null;
-        }
-
+       
         bool IScienceDataTransmitter.CanTransmit()
         {
             if (mParent == null) return false;
@@ -68,21 +55,28 @@ namespace RemoteTech.Modules
 
         float IScienceDataTransmitter.DataRate { get { return PacketSize / PacketInterval; } }
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
-        bool IScienceDataTransmitter.IsBusy() { return mQueue.Count > 0; }
-        void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue) { throw new NotImplementedException(); }
+        bool IScienceDataTransmitter.IsBusy() { return mBusy || !mParent.Activated; }
 
-        private IEnumerable Transmit()
+        void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
         {
-            var modules_deploy = FindFxModules(this.DeployFxModuleIndices, true);
-            var modules_progress = FindFxModules(this.ProgressFxModuleIndices, false);
+            if (!mBusy)
+            {
+                mQueue.AddRange(dataQueue);
+                StartCoroutine(Transmit());
+            }
+        }
+
+        private IEnumerator Transmit()
+        {
             var msg = new ScreenMessage(String.Format("[{0}]: Starting Transmission...", part.partInfo.title), 4f, ScreenMessageStyle.UPPER_LEFT);
             var msg_status = new ScreenMessage(String.Empty, 4.0f, ScreenMessageStyle.UPPER_LEFT);
             ScreenMessages.PostScreenMessage(msg);
 
-            modules_deploy.ForEach(fx => { fx.SetUIRead(true); fx.SetUIWrite(false); });
-            StartCoroutine(SetFXModules_Coroutine(modules_deploy, 1.0f));
-            yield return true;
-            modules_deploy.ForEach(fx => { fx.SetUIRead(false); fx.SetUIWrite(false); });
+            bool old_state = mParent.Activated;
+            mParent.Activated = true;
+            while (mParent.Animating) yield return null;
+
+            mBusy = true;
             while (mQueue.Any())
             {
                 RnDCommsStream commStream = null;
@@ -96,7 +90,7 @@ namespace RemoteTech.Modules
                     commStream = new RnDCommsStream(subject, science_data.dataAmount, PacketInterval, 
                         science_data.transmitValue, ResearchAndDevelopment.Instance);
                 }
-                StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
+                //StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
                 float power = 0;
                 while (packets > 0)
                 {
@@ -108,7 +102,7 @@ namespace RemoteTech.Modules
                         data_amount -= PacketSize;
                         packets--;
                         float progress = (science_data.dataAmount - data_amount) / science_data.dataAmount;
-                        StartCoroutine(SetFXModules_Coroutine(modules_progress, progress));
+                        //StartCoroutine(SetFXModules_Coroutine(modules_progress, progress));
                         msg_status.message = String.Format("[{0}]: Uploading Data... {1}", part.partInfo.title, progress.ToString("P0"));
                         RTUtil.Log("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
                             science_data.title, (PacketSize / PacketInterval).ToString("0.00"), packets, mQueue.Count);
@@ -130,56 +124,15 @@ namespace RemoteTech.Modules
                 }
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
+            mBusy = false;
             GUI_Status = "Done!";
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
             ScreenMessages.PostScreenMessage(msg, true);
             yield return new WaitForSeconds(3.0f);
-            modules_deploy.ForEach(fx => { fx.SetUIRead(false); fx.SetUIWrite(false); });
-            StartCoroutine(SetFXModules_Coroutine(modules_deploy, 0.0f));
-            yield return true;
-            modules_deploy.ForEach(fx => { fx.SetUIRead(true); fx.SetUIWrite(true); });
+            mParent.Activated = old_state;
+            //yield return SetFXModules_Coroutine(modules_deploy, 0.0f);
             GUI_Status = "Idle";
             yield break;
-        }
-
-        private List<IScalarModule> FindFxModules(int[] indices, bool showUI)
-        {
-            if (indices == null) return null;
-            var modules = new List<IScalarModule>();
-            foreach (int i in indices)
-            {
-                var item = base.part.Modules[i] as IScalarModule;
-                if (item != null)
-                {
-                    item.SetUIWrite(showUI);
-                    item.SetUIRead(showUI);
-                    modules.Add(item);
-                }
-                else
-                {
-                    RTUtil.Log("[TransmitterModule]: Part Module {0} doesn't implement IScalarModule", part.Modules[i].name);
-                }
-            }
-            return modules;
-        }
-
-        private IEnumerator SetFXModules_Coroutine(List<IScalarModule> modules, float tgtValue)
-        {
-            if (modules == null) yield break;
-            bool done = false;
-            while (!done)
-            {
-                done = true;
-                foreach (var module in modules)
-                {
-                    if (Mathf.Abs(module.GetScalar - tgtValue) >= 0.01f)
-                    {
-                        module.SetScalar(tgtValue);
-                        done = false;
-                    }
-                }
-                yield return true;
-            }
         }
     }
 }

@@ -44,7 +44,8 @@ namespace RemoteTech
 
             renderer = MapView.MapCamera.gameObject.AddComponent<NetworkRenderer>();
             renderer.Filter = MapFilter.Any;
-            RTCore.Instance.Network.OnEdgeRefresh += renderer.OnEdgeRefresh;
+            RTCore.Instance.Network.OnLinkAdd += renderer.OnLinkAdd;
+            RTCore.Instance.Network.OnLinkRemove += renderer.OnLinkRemove;
             RTCore.Instance.Satellites.OnUnregister += renderer.OnSatelliteUnregister;
             return renderer;
         }
@@ -74,6 +75,7 @@ namespace RemoteTech
                 UpdateLineCache();
                 foreach (VectorLine vl in mLines)
                 {
+                    RTUtil.Log("DrawLine");
                     if (MapView.Draw3DLines)
                         Vector.DrawLine3D(vl);
                     else
@@ -121,8 +123,7 @@ namespace RemoteTech
                     ScaledSpace.LocalToScaledSpace(it.Current.A.Position),
                     ScaledSpace.LocalToScaledSpace(it.Current.B.Position)
                 };
-                AssignVectorLine(i, newPoints, it.Current);
-                Vector.Active(mLines[i], CheckVisibility(it.Current));
+                Vector.Active(mLines[AssignVectorLine(i, newPoints, it.Current)], CheckVisibility(it.Current));
             }
         }
 
@@ -175,16 +176,15 @@ namespace RemoteTech
             mEdges.RemoveWhere(e => e.A == s || e.B == s);
         }
 
-        private void OnEdgeRefresh(BidirectionalEdge<ISatellite> edge)
+        private void OnLinkAdd(ISatellite a, NetworkLink<ISatellite> link)
         {
-            if (edge.Type == LinkType.None)
-            {
-                mEdges.Remove(edge);
-            }
-            else
-            {
-                mEdges.Add(edge);
-            }
+            RTUtil.Log("Link: {0}", mEdges);
+            mEdges.Add(new BidirectionalEdge<ISatellite>(a, link.Target, link.Port));
+        }
+
+        private void OnLinkRemove(ISatellite a, NetworkLink<ISatellite> link)
+        {
+            mEdges.Remove(new BidirectionalEdge<ISatellite>(a, link.Target, link.Port));
         }
 
         public void Detach()
@@ -199,7 +199,8 @@ namespace RemoteTech
 
         public void OnDestroy()
         {
-            RTCore.Instance.Network.OnEdgeRefresh -= OnEdgeRefresh;
+            RTCore.Instance.Network.OnLinkAdd -= OnLinkAdd;
+            RTCore.Instance.Network.OnLinkRemove -= OnLinkRemove;
             RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
         }
     }

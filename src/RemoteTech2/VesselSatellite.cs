@@ -18,20 +18,20 @@ namespace RemoteTech
         public bool Powered { get { return SignalProcessors.Any(s => s.Powered); } }
         public bool IsCommandStation { get { return SignalProcessors.Any(s => s.IsCommandStation); } }
 
-        public float OmniRange
+        public IEnumerable<IAntenna> Antennas
         {
             get
             {
-                return RTCore.Instance.Antennas[this].Max(a => (float?) a.CurrentOmni) ?? 0.0f;
+                return RTCore.Instance.Antennas[this];
             }
         }
 
-        public IEnumerable<Dish> Dishes
+        public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes)
         {
-            get
+            foreach (IAntenna a in Antennas)
             {
-                return RTCore.Instance.Antennas[this].Select(a => a.CurrentDish).Where(d => d != null);
-            }
+                a.OnConnectionRefresh();
+            } 
         }
 
         public VesselSatellite(List<ISignalProcessor> parts)

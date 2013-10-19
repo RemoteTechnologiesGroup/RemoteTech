@@ -6,11 +6,12 @@ namespace RemoteTech
     internal class ProtoAntenna : IAntenna
     {
         public String Name { get; private set; }
-        public Guid Guid { get { return mVessel.id; } }
+        public Guid Guid { get; private set; }
         public bool Powered { get; private set; }
-        public bool Activated { get; private set; }
+        public bool Activated { get; set; }
+        public float Consumption { get; private set; }
 
-        public bool CanTarget { get { return mDishRange != -1; } }
+        public bool CanTarget { get { return Dish != -1; } }
 
         public Guid Target
         {
@@ -18,54 +19,79 @@ namespace RemoteTech
             set
             {
                 mDishTarget = value;
-                ConfigNode n = new ConfigNode();
-                n.SetValue("RTAntennaTarget", value.ToString());
-                mProtoModule.Save(n);
-                int i = mProtoPart.modules.FindIndex(x => x == mProtoModule);
-                if (i != -1)
+                if (mProtoModule != null)
                 {
-                    mProtoPart.modules[i] = new ProtoPartModuleSnapshot(n);
+                    ConfigNode n = new ConfigNode();
+                    n.SetValue("RTAntennaTarget", value.ToString());
+                    mProtoModule.Save(n);
+                    int i = mProtoPart.modules.FindIndex(x => x == mProtoModule);
+                    if (i != -1)
+                    {
+                        mProtoPart.modules[i] = new ProtoPartModuleSnapshot(n);
+                    }
                 }
+
             }
         }
 
-        public Dish CurrentDish { get { return new Dish(mDishTarget, mDishRadians, mDishRange); } }
-        public float CurrentOmni { get; private set; }
+        public float Dish { get; private set; }
+        public double Radians { get; private set; }
+        public float Omni { get; private set; }
 
         private readonly ProtoPartSnapshot mProtoPart;
         private readonly ProtoPartModuleSnapshot mProtoModule;
-        private readonly Vessel mVessel;
 
         private Guid mDishTarget;
-        private readonly float mDishRange;
-        private readonly double mDishRadians;
 
         public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms)
         {
             ConfigNode n = new ConfigNode();
             ppms.Save(n);
             Name = p.partInfo.title;
-            mVessel = v;
+            Consumption = 0;
+            Guid = v.id;
             mProtoPart = p;
             mProtoModule = ppms;
             try
             {
                 mDishTarget = new Guid(n.GetValue("RTAntennaTarget"));
-                mDishRange = Single.Parse(n.GetValue("RTDishRange"));
-                mDishRadians = Double.Parse(n.GetValue("RTDishRadians"));
-                CurrentOmni = Single.Parse(n.GetValue("RTOmniRange"));
+                Dish = Single.Parse(n.GetValue("RTDishRange"));
+                Radians = Double.Parse(n.GetValue("RTDishRadians"));
+                Omni = Single.Parse(n.GetValue("RTOmniRange"));
                 Powered = Boolean.Parse(n.GetValue("IsRTPowered"));
                 Activated = Boolean.Parse(n.GetValue("IsRTActive"));
             }
             catch (ArgumentException)
             {
                 mDishTarget = Guid.Empty;
-                mDishRange = 0.0f;
-                mDishRadians = 1.0f;
-                CurrentOmni = 0.0f;
+                Dish = 0.0f;
+                Radians = 1.0f;
+                Omni = 0.0f;
                 RTUtil.Log("ProtoAntenna(Name: {0}) parsing error. Default values substituted.", v.vesselName);
             }
-            RTUtil.Log("ProtoAntenna(Name: {0}, Dish: {1}, OmniRange: {2})", v.vesselName, CurrentDish.ToString(), v.vesselName, CurrentOmni.ToString("F2"));
+            RTUtil.Log("ProtoAntenna(Name: {0}, Dish: {1}, Omni: {2}, Target: {3}, Radians: {4})", v.vesselName, Dish, Omni, Target, Radians);
+        }
+
+        public ProtoAntenna(String name, Guid guid, float omni)
+        {
+            Name = name;
+            Guid = guid;
+            Omni = omni;
+            Dish = 0;
+            Target = Guid.Empty;
+            Radians = 1.0f;
+            Activated = true;
+            Powered = true;
+        }
+
+        public void OnConnectionRefresh()
+        {
+            ;
+        }
+
+        public int CompareTo(IAntenna antenna)
+        {
+            return Consumption.CompareTo(antenna.Consumption);
         }
     }
 }

@@ -3,69 +3,69 @@ using System.Collections.Generic;
 
 namespace RemoteTech
 {
-    public static class Pathfinder
+    public static class NetworkPathfinder
     {
         // All sorting related data is immutable.
 
-        public static Path<T> Solve<T>(T start, T goal, 
-                                       Func<T, IEnumerable<T>> neighborsFunction,
-                                       Func<T, T, float> costFunction,
+        public static NetworkRoute<T> Solve<T>(T start, T goal, 
+                                       Func<T, IEnumerable<NetworkLink<T>>> neighborsFunction,
+                                       Func<T, NetworkLink<T>, float> costFunction,
                                        Func<T, T, float> heuristicFunction) where T : class
         {
-            var nodeMap = new Dictionary<T, Node<T>>();
-            var priorityQueue = new PriorityQueue<Node<T>>();
+            var nodeMap = new Dictionary<T, Node<NetworkLink<T>>>();
+            var priorityQueue = new PriorityQueue<Node<NetworkLink<T>>>();
 
-            var nStart = new Node<T>(start, 0, heuristicFunction.Invoke(start, goal), null, false);
+            var nStart = new Node<NetworkLink<T>>(new NetworkLink<T>(start, null, LinkType.None), 0, heuristicFunction.Invoke(start, goal), null, false);
             nodeMap[start] = nStart;
             priorityQueue.Enqueue(nStart);
             float cost = 0;
 
             while (priorityQueue.Count > 0)
             {
-                Node<T> current = priorityQueue.Dequeue();
+                var current = priorityQueue.Dequeue();
                 if (current.Closed) continue;
                 current.Closed = true;
-                if (current.Item.Equals(goal))
+                if (current.Item.Target.Equals(goal))
                 {
                     // Return path and cost
-                    var reversePath = new List<T>();
-                    for (Node<T> node = current; node != null; node = node.From)
+                    var reversePath = new List<NetworkLink<T>>();
+                    for (var node = current; node.From != null; node = node.From)
                     {
                         reversePath.Add(node.Item);
                         cost += node.Cost;
                     }
                     reversePath.Reverse();
-                    return new Path<T>(reversePath, cost);
+                    return new NetworkRoute<T>(start, reversePath, cost);
                 }
 
-                foreach (T item in neighborsFunction.Invoke(current.Item))
+                foreach (var link in neighborsFunction.Invoke(current.Item.Target))
                 {
-                    float new_cost = current.Cost + costFunction.Invoke(current.Item, item);
+                    float new_cost = current.Cost + costFunction.Invoke(current.Item.Target, link);
                     // If the item has a node, it will either be in the closedSet, or the openSet
-                    if (nodeMap.ContainsKey(item))
+                    if (nodeMap.ContainsKey(link.Target))
                     {
-                        Node<T> n = nodeMap[item];
+                        Node<NetworkLink<T>> n = nodeMap[link.Target];
                         if (new_cost <= n.Cost)
                         {
                             // Cost via current is better than the old one, discard old node, queue new one.
-                            var new_node = new Node<T>(n.Item, new_cost, n.Heuristic, current, false);
+                            var new_node = new Node<NetworkLink<T>>(n.Item, new_cost, n.Heuristic, current, false);
                             n.Closed = true;
-                            nodeMap[item] = new_node;
+                            nodeMap[link.Target] = new_node;
                             priorityQueue.Enqueue(new_node);
                         }
                     }
                     else
                     {
                         // It is not in the openSet, create a node and add it
-                        var new_node = new Node<T>(item, new_cost,
-                                                   heuristicFunction.Invoke(item, goal), current,
+                        var new_node = new Node<NetworkLink<T>>(link, new_cost,
+                                                   heuristicFunction.Invoke(link.Target, goal), current,
                                                    false);
                         priorityQueue.Enqueue(new_node);
-                        nodeMap[item] = new_node;
+                        nodeMap[link.Target] = new_node;
                     }
                 }
             }
-            return Path.Empty<T>(start);
+            return NetworkRoute.Empty<T>(start);
         }
 
         private class Node<T> : IComparable<Node<T>>
