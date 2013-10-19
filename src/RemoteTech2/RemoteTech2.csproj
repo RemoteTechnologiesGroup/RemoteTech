@@ -76,6 +76,8 @@
     <Compile Include="SimpleTypes\NetworkRoute.cs" />
     <Compile Include="SimpleTypes\PriorityQueue.cs" />
     <Compile Include="SimpleTypes\NetworkLink.cs" />
+    <Compile Include="UI\AntennaFragment.cs" />
+    <Compile Include="UI\IFragment.cs" />
     <Compile Include="VesselSatellite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

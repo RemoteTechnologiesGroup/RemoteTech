@@ -151,6 +151,7 @@ namespace RemoteTech
         [KSPEvent(name = "EventToggle", guiActive = false)]
         public void EventToggle()
         {
+            if (Animating) return;
             if (IsRTActive)
             {
                 EventClose();
@@ -171,12 +172,14 @@ namespace RemoteTech
         [KSPEvent(name = "EventOpen", guiActive = false)]
         public void EventOpen()
         {
+            if (Animating) return;
             SetState(true);
         }
 
         [KSPEvent(name = "EventClose", guiActive = false)]
         public void EventClose()
         {
+            if (Animating) return;
             SetState(false);
         }
 
@@ -397,14 +400,13 @@ namespace RemoteTech
 
         private IEnumerator SetFXModules_Coroutine(List<IScalarModule> modules, float tgtValue)
         {
-            if (modules == null) yield break;
             bool done = false;
             while (!done)
             {
                 done = true;
                 foreach (var module in modules)
                 {
-                    if (Mathf.Abs(module.GetScalar - tgtValue) >= 0.01f)
+                    if (Mathf.Abs(module.GetScalar - tgtValue) > 0.01f)
                     {
                         module.SetScalar(tgtValue);
                         done = false;
