@@ -17,6 +17,8 @@ namespace RemoteTech
         public event Action OnPhysicsUpdate = delegate { };
         public event Action OnGuiUpdate = delegate { };
 
+        private MapViewConfigFragment mConfig;
+
         public void Start()
         {
             if (Instance != null)
@@ -32,6 +34,8 @@ namespace RemoteTech
             Network = new NetworkManager();
             Renderer = NetworkRenderer.AttachToMapView();
 
+            mConfig = new MapViewConfigFragment();
+
             RTUtil.Log("RTCore loaded successfully.");
 
             foreach (var vessel in FlightGlobals.Vessels)
@@ -39,6 +43,7 @@ namespace RemoteTech
                 Satellites.RegisterProto(vessel);
                 Antennas.RegisterProtos(vessel);
             }
+
         }
 
         public void Update()
@@ -61,10 +66,16 @@ namespace RemoteTech
         public void OnGUI()
         {
             OnGuiUpdate.Invoke();
+
+            if (MapView.MapIsEnabled)
+            {
+                mConfig.Draw();
+            }
         }
 
         private void OnDestroy()
         {
+            mConfig.Dispose();
             Renderer.Detach();
             Network.Dispose();
             Satellites.Dispose();

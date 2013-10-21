@@ -75,7 +75,6 @@ namespace RemoteTech
                 UpdateLineCache();
                 foreach (VectorLine vl in mLines)
                 {
-                    RTUtil.Log("DrawLine");
                     if (MapView.Draw3DLines)
                         Vector.DrawLine3D(vl);
                     else

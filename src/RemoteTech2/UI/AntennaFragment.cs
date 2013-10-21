@@ -24,7 +24,8 @@ namespace RemoteTech
             }
         }
 
-        private readonly IAntenna mAntenna;
+        public IAntenna Antenna { get { return mAntenna; } set { mAntenna = value; Refresh(); } }
+        private IAntenna mAntenna;
         private Vector2 mScrollPosition = Vector2.zero;
         private Entry mRootEntry = new Entry();
         private Entry mSelection;
@@ -32,7 +33,7 @@ namespace RemoteTech
 
         public AntennaFragment(IAntenna antenna, Action quit)
         {
-            mAntenna = antenna;
+            Antenna = antenna;
             mOnQuit = quit;
             RTCore.Instance.Satellites.OnRegister += Refresh;
             RTCore.Instance.Satellites.OnUnregister += Refresh;
@@ -49,7 +50,7 @@ namespace RemoteTech
 
         public void Draw()
         {
-            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(300));
             {
                 mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
                 {
@@ -73,16 +74,14 @@ namespace RemoteTech
                             if (current.SubEntries.Count > 0)
                             {
                                 RTUtil.Button(current.Expanded ? "<" : ">",
-                                    () =>
-                                    {
+                                    () => {
                                         current.Expanded = !current.Expanded;
                                     }, GUILayout.Width(18));
                             }
                             RTUtil.StateButton(current.Text, mSelection == current ? 1 : 0, 1,
-                                (s) =>
-                                {
+                                (s) => {
                                     mSelection = current;
-                                    mAntenna.Target = mSelection.Guid;
+                                    Antenna.Target = mSelection.Guid;
                                 });
 
                         }
@@ -105,7 +104,7 @@ namespace RemoteTech
             GUILayout.EndVertical();
         }
 
-        public void Refresh(IAntenna sat) { if (sat == mAntenna) mOnQuit.Invoke(); }
+        public void Refresh(IAntenna sat) { if (sat == Antenna) { Antenna = null; mOnQuit.Invoke(); } }
         public void Refresh(ISatellite sat) { Refresh(); }
         public void Refresh()
         {
@@ -117,8 +116,11 @@ namespace RemoteTech
                 Text = "No Target",
                 Guid = Guid.Empty,
                 Color = Color.white,
+                Depth = 0,
             };
             mRootEntry.SubEntries.Add(mSelection);
+
+            if (Antenna == null) return;
 
             // Add the planets
             foreach (var cb in RTCore.Instance.Network.Planets)
@@ -149,7 +151,7 @@ namespace RemoteTech
                     mRootEntry.SubEntries.Add(current);
                 }
 
-                if (cb.Key == mAntenna.Target)
+                if (cb.Key == Antenna.Target)
                 {
                     mSelection = current;
                 }
@@ -176,7 +178,7 @@ namespace RemoteTech
                 };
                 mEntries[s.Body].SubEntries.Add(current);
 
-                if (s.Guid == mAntenna.Target)
+                if (s.Guid == Antenna.Target)
                 {
                     mSelection = current;
                 }
