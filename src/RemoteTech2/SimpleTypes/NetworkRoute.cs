@@ -22,7 +22,7 @@ namespace RemoteTech
             if (links == null) links = new List<NetworkLink<T>>();
             Start = start;
             Links = links;
-            Delay = cost / SIGNAL_SPEED;
+            Delay = 0;// cost / SIGNAL_SPEED;
         }
 
         public int CompareTo(NetworkRoute<T> other)

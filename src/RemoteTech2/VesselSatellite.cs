@@ -18,6 +18,7 @@ namespace RemoteTech
         public bool Powered { get { return SignalProcessors.Any(s => s.Powered); } }
         public bool IsCommandStation { get { return SignalProcessors.Any(s => s.IsCommandStation); } }
 
+
         public IEnumerable<IAntenna> Antennas
         {
             get
@@ -25,6 +26,12 @@ namespace RemoteTech
                 return RTCore.Instance.Antennas[this];
             }
         }
+
+        public FlightComputer FlightComputer { get { return SignalProcessor.FlightComputer; } }
+
+        // Helpers
+        public List<NetworkRoute<ISatellite>> Connections { get { return RTCore.Instance.Network[this]; } }
+        public bool LocalControl { get { return FlightComputer.LocalControl; } }
 
         public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes)
         {

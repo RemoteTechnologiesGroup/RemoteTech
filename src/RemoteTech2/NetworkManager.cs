@@ -99,6 +99,7 @@ namespace RemoteTech
                 paths.Add(NetworkPathfinder.Solve(start, root, s => Graph[s.Guid].Where(l => l.Target.Powered), Distance, Distance));
             }
             this[start] = paths.Where(p => p.Exists).ToList();
+            this[start].Sort((a,b) => a.Delay.CompareTo(b.Delay));
             start.OnConnectionRefresh(this[start]);
         }
 
@@ -173,7 +174,7 @@ namespace RemoteTech
             foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
             {
                 UpdateGraph(s);
-                //RTUtil.Log("{0} [ CS: {1}, E: {2} ]", s.ToString(), commandStations.Contains(s), Graph[s.Guid].ToDebugString());
+                RTUtil.Log("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
                 if (s.SignalProcessor.VesselLoaded)
                 {
                     FindPath(s, commandStations);
@@ -229,7 +230,7 @@ namespace RemoteTech
         public MissionControlSatellite()
         {
             var antennas = new List<IAntenna>();
-            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, 150000));
+            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, 5000000));
             Antennas = antennas;
         }
 

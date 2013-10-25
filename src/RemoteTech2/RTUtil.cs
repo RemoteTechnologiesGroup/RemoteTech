@@ -61,6 +61,19 @@ namespace RemoteTech
             }
         }
 
+        public static String Truncate(this String targ, int len)
+        {
+            const String suffix = "...";
+            if (targ.Length > len)
+            {
+                return targ.Substring(0, len - suffix.Length) + suffix;
+            }
+            else
+            {
+                return targ;
+            }
+        }
+
         public static String FormatDuration(double duration)
         {
             TimeSpan time = TimeSpan.FromSeconds(duration);

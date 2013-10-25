@@ -18,7 +18,7 @@ namespace RemoteTech
         [KSPField]
         public String
             RequiredResource = "ElectricCharge";
-        [KSPField(guiName = "Status2", guiActive = true)]
+        [KSPField(guiName = "Comms", guiActive = true)]
         public String GUI_Status = "";
 
         private ModuleRTAntenna mParent;
@@ -35,6 +35,7 @@ namespace RemoteTech
 
             var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
             mParent = antennas.Count > 0 ? antennas[0] : null;
+            GUI_Status = "Idle";
         }
 
         // Compatible with ModuleDataTransmitter
@@ -45,17 +46,12 @@ namespace RemoteTech
        
         bool IScienceDataTransmitter.CanTransmit()
         {
-            if (mParent == null) return false;
-            var satellite = RTCore.Instance.Network[vessel.id];
-            if (satellite == null) return false;
-            var connections = RTCore.Instance.Network[satellite];
-            if (connections == null || !connections.Any(p => p.Goal == RTCore.Instance.Network.MissionControl)) return false;
             return true;
         }
 
         float IScienceDataTransmitter.DataRate { get { return PacketSize / PacketInterval; } }
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
-        bool IScienceDataTransmitter.IsBusy() { return mBusy || !mParent.Activated; }
+        bool IScienceDataTransmitter.IsBusy() { return mBusy; }
 
         void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
         {
@@ -122,11 +118,8 @@ namespace RemoteTech
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
             mBusy = false;
-            GUI_Status = "Done!";
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
             ScreenMessages.PostScreenMessage(msg, true);
-            yield return new WaitForSeconds(3.0f);
-            //yield return SetFXModules_Coroutine(modules_deploy, 0.0f);
             GUI_Status = "Idle";
             yield break;
         }

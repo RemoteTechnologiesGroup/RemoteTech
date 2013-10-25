@@ -50,58 +50,56 @@ namespace RemoteTech
 
         public void Draw()
         {
-            GUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(300));
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(250));
             {
-                mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
+                Color pushColor = GUI.backgroundColor;
+                TextAnchor pushAlign = GUI.skin.button.alignment;
+                GUI.skin.button.alignment = TextAnchor.MiddleLeft;
+                // Depth-first tree traversal.
+                Stack<Entry> dfs = new Stack<Entry>();
+                foreach (Entry child in mRootEntry.SubEntries)
                 {
-                    Color pushColor = GUI.backgroundColor;
-                    TextAnchor pushAlign = GUI.skin.button.alignment;
-                    GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                    // Depth-first tree traversal.
-                    Stack<Entry> dfs = new Stack<Entry>();
-                    foreach (Entry child in mRootEntry.SubEntries)
-                    {
-                        dfs.Push(child);
-                    }
-                    while (dfs.Count > 0)
-                    {
-                        Entry current = dfs.Pop();
-                        GUI.backgroundColor = current.Color;
-
-                        GUILayout.BeginHorizontal();
-                        {
-                            GUILayout.Space(current.Depth * (GUI.skin.button.margin.left + 18));
-                            if (current.SubEntries.Count > 0)
-                            {
-                                RTUtil.Button(current.Expanded ? "<" : ">",
-                                    () => {
-                                        current.Expanded = !current.Expanded;
-                                    }, GUILayout.Width(18));
-                            }
-                            RTUtil.StateButton(current.Text, mSelection == current ? 1 : 0, 1,
-                                (s) => {
-                                    mSelection = current;
-                                    Antenna.Target = mSelection.Guid;
-                                });
-
-                        }
-                        GUILayout.EndHorizontal();
-
-                        if (current.Expanded)
-                        {
-                            foreach (Entry child in current.SubEntries)
-                            {
-                                dfs.Push(child);
-                            }
-                        }
-                    }
-
-                    GUI.skin.button.alignment = pushAlign;
-                    GUI.backgroundColor = pushColor;
+                    dfs.Push(child);
                 }
-                GUILayout.EndScrollView();
+                while (dfs.Count > 0)
+                {
+                    Entry current = dfs.Pop();
+                    GUI.backgroundColor = current.Color;
+
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Space(current.Depth * (GUI.skin.button.margin.left + 24));
+                        if (current.SubEntries.Count > 0)
+                        {
+                            RTUtil.Button(current.Expanded ? " <" : " >",
+                                () =>
+                                {
+                                    current.Expanded = !current.Expanded;
+                                }, GUILayout.Width(24));
+                        }
+                        RTUtil.StateButton(current.Text, mSelection == current ? 1 : 0, 1,
+                            (s) =>
+                            {
+                                mSelection = current;
+                                Antenna.Target = mSelection.Guid;
+                            });
+
+                    }
+                    GUILayout.EndHorizontal();
+
+                    if (current.Expanded)
+                    {
+                        foreach (Entry child in current.SubEntries)
+                        {
+                            dfs.Push(child);
+                        }
+                    }
+                }
+
+                GUI.skin.button.alignment = pushAlign;
+                GUI.backgroundColor = pushColor;
             }
-            GUILayout.EndVertical();
+            GUILayout.EndScrollView();
         }
 
         public void Refresh(IAntenna sat) { if (sat == Antenna) { Antenna = null; mOnQuit.Invoke(); } }
@@ -133,8 +131,7 @@ namespace RemoteTech
                 Entry current = mEntries[cb.Value];
                 current.Text = cb.Value.bodyName;
                 current.Guid = cb.Key;
-                current.Color = cb.Value.GetOrbitDriver() != null
-                    ? cb.Value.GetOrbitDriver().Renderer.orbitColor : Color.yellow;
+                current.Color = cb.Value.GetOrbitDriver() != null ? cb.Value.GetOrbitDriver().orbitColor : Color.yellow;
                 current.Color.a = 1.0f;
 
                 if (cb.Value.referenceBody != cb.Value)

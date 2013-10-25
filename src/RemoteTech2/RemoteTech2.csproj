@@ -17,7 +17,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Steam\SteamApps\common\Kerbal Space Program\GameData\RemoteTech2\Plugins\</OutputPath>
+    <OutputPath>C:\Users\Sander\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -53,6 +53,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FlightComputer\DelayedCommand.cs" />
+    <Compile Include="FlightComputer\FlightComputer.cs" />
+    <Compile Include="FlightComputer\UIPartActionMenuPatcher.cs" />
     <Compile Include="IAntenna.cs" />
     <Compile Include="ISatellite.cs" />
     <Compile Include="ISignalProcessor.cs" />
@@ -73,7 +76,6 @@
     <Compile Include="SimpleTypes\BinaryHeap.cs" />
     <Compile Include="SimpleTypes\Dish.cs" />
     <Compile Include="SimpleTypes\GUITextureButtonFactory.cs" />
-    <Compile Include="SimpleTypes\IgnoreSignalDelayAttribute.cs" />
     <Compile Include="SimpleTypes\NetworkRoute.cs" />
     <Compile Include="SimpleTypes\PriorityQueue.cs" />
     <Compile Include="SimpleTypes\NetworkLink.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="UI\MapViewFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
     <Compile Include="UI\SatelliteWindow.cs" />
+    <Compile Include="UI\TimeQuadrantPatcher.cs" />
     <Compile Include="VesselSatellite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -136,8 +136,7 @@ namespace RemoteTech
             UpdateContext();
             if(IsRTActive != prev_state) StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
             var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = satellite != null ? RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && 
-                                                                                              r.Goal == RTCore.Instance.Network.MissionControl) : false;
+            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal == RTCore.Instance.Network.MissionControl);
             if (mTransmitter == null && route_home)
             {
                 AddTransmitter();

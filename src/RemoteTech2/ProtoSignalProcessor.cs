@@ -14,6 +14,8 @@ namespace RemoteTech
         public bool Powered { get; private set; }
         public bool IsCommandStation { get; private set; }
         public Guid Guid { get { return mVessel.id; } }
+        public Vessel Vessel { get { return mVessel; } }
+        public FlightComputer FlightComputer { get { return null; } }
 
         private readonly Vessel mVessel;
 

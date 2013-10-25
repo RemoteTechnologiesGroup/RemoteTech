@@ -25,8 +25,14 @@ namespace RemoteTech
             GameEvents.onVesselDestroy.Add(OnVesselDestroy);
             GameEvents.onVesselGoOnRails.Add(OnVesselOnRails);
 
-            OnRegister += vs => RTUtil.Log("SatelliteManager: OnRegister({0})", vs.Name);
-            OnUnregister += vs => RTUtil.Log("SatelliteManager: OnUnregister({0})", vs.Name);
+            OnRegister += vs =>
+            {
+                RTUtil.Log("SatelliteManager: OnRegister({0})", vs.Name);
+            };
+            OnUnregister += vs => 
+            {
+                RTUtil.Log("SatelliteManager: OnUnregister({0})", vs.Name);
+            };
         }
 
         /// <summary>

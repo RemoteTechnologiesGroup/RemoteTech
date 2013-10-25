@@ -1,0 +1,212 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace RemoteTech
+{
+    public class FlightComputer : IEnumerable<DelayedCommand>, IDisposable
+    {
+        public bool InputAllowed
+        {
+            get
+            {
+                var satellite = RTCore.Instance.Network[mParent.Guid];
+                var connection = RTCore.Instance.Network[satellite];
+                return LocalControl || (mParent.Powered && connection.Any());
+            }
+        }
+
+        public double Delay
+        {
+            get
+            {
+                if (LocalControl) return 0.0;
+                var satellite = RTCore.Instance.Network[mParent.Guid];
+                var connection = RTCore.Instance.Network[satellite];
+                if (!connection.Any()) return Double.PositiveInfinity;
+                return connection.Min().Delay;
+            }
+        }
+
+        public double ExtraDelay { get; set; }
+
+        private int mLastFrame;
+        private bool mLastLocalControl;
+        public bool LocalControl
+        {
+            get
+            {
+                if (mLastFrame != Time.frameCount)
+                {
+                    mLastFrame = Time.frameCount;
+                    return mLastLocalControl = mParent.Vessel.parts.Any(p => p.isControlSource && !p.FindModulesImplementing<ISignalProcessor>().Any());
+                }
+                else
+                {
+                    return mLastLocalControl;
+                }
+            }
+        }
+
+        private ISignalProcessor mParent;
+        private Vessel mVessel;
+
+        private DelayedCommand mCurrentCommand;
+        private FlightCtrlState mPreviousFcs = new FlightCtrlState();
+        private readonly List<DelayedCommand> mCommandBuffer = new List<DelayedCommand>();
+        private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer = new PriorityQueue<DelayedFlightCtrlState>();
+
+        public FlightComputer(ISignalProcessor s)
+        {
+            mParent = s;
+            mVessel = s.Vessel;
+            mPreviousFcs.CopyFrom(mVessel.ctrlState);
+        }
+
+        public void Dispose()
+        {
+            if (mVessel != null)
+            {
+                mVessel.OnFlyByWire -= OnFlyByWirePre;
+            }
+        }
+
+        public void Enqueue(DelayedCommand fc)
+        {
+            fc.TimeStamp += Delay;
+            if (fc.CancelCommand == null)
+            {
+                fc.ExtraDelay += ExtraDelay;
+            }
+
+            int pos = mCommandBuffer.BinarySearch(fc);
+            if (pos < 0)
+            {
+                mCommandBuffer.Insert(~pos, fc);
+            }
+        }
+
+        public void OnUpdate()
+        {
+            var satellite = RTCore.Instance.Satellites[mParent.Guid];
+            if (satellite == null || satellite.SignalProcessor != mParent) return;
+            if (mParent.Powered == false) return;
+
+            PopCommand();
+        }
+
+        public void OnFixedUpdate()
+        {
+            mVessel.OnFlyByWire -= OnFlyByWirePre;
+            mVessel = mParent.Vessel;
+            mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire;
+        }
+
+        private void Enqueue(FlightCtrlState fs)
+        {
+            DelayedFlightCtrlState dfs = new DelayedFlightCtrlState(fs);
+            dfs.TimeStamp += Delay;
+            mFlightCtrlBuffer.Enqueue(dfs);
+        }
+
+        private void PopFlightCtrlState(FlightCtrlState fcs)
+        {
+            FlightCtrlState delayed = mPreviousFcs;
+            while (mFlightCtrlBuffer.Count > 0 &&
+                   mFlightCtrlBuffer.Peek().TimeStamp < RTUtil.GameTime)
+            {
+                delayed = mFlightCtrlBuffer.Dequeue().State;
+            }
+
+            if (!InputAllowed)
+            {
+                delayed.Neutralize();
+            }
+
+            fcs.CopyFrom(delayed);
+        }
+
+        private void PopCommand()
+        {
+            if (mCommandBuffer.Count > 0)
+            {
+                for (int i = 0; i < mCommandBuffer.Count && mCommandBuffer[i].TimeStamp < RTUtil.GameTime; i++)
+                {
+                    DelayedCommand dc = mCommandBuffer[i];
+                    if (dc.ExtraDelay > 0)
+                    {
+                        dc.ExtraDelay -= TimeWarp.deltaTime;
+                    }
+                    else
+                    {
+                        if (dc.ActionGroupCommand != null)
+                        {
+                            KSPActionGroup ag = dc.ActionGroupCommand.ActionGroup;
+                            mVessel.ActionGroups.ToggleGroup(ag);
+                            if (ag == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock)
+                            {
+                                Staging.ActivateNextStage();
+                                ResourceDisplay.Instance.Refresh();
+                            }
+                            if (ag == KSPActionGroup.RCS)
+                            {
+                                FlightInputHandler.fetch.rcslock = !FlightInputHandler.RCSLock;
+                            }
+                        }
+
+                        if (dc.EventCommand != null)
+                        {
+                            dc.EventCommand.BaseEvent.Invoke();
+                        }
+
+                        if (dc.CancelCommand != null)
+                        {
+                            mCommandBuffer.Remove(dc.CancelCommand);
+                            if (mCurrentCommand == dc.CancelCommand)
+                            {
+                                mCurrentCommand = null;
+                            }
+                            mCommandBuffer.Remove(dc);
+                        }
+                        else
+                        {
+                            mCommandBuffer.RemoveAt(i);
+                        }
+
+                    }
+                }
+            }
+        }
+
+        private void OnFlyByWirePre(FlightCtrlState fcs)
+        {
+            var satellite = RTCore.Instance.Satellites[mParent.Guid];
+            if (satellite == null || satellite.SignalProcessor != mParent) return;
+
+            if (mVessel == FlightGlobals.ActiveVessel && InputAllowed)
+            {
+                Enqueue(fcs);
+            }
+
+            PopFlightCtrlState(fcs);
+            mPreviousFcs.CopyFrom(fcs);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator<DelayedCommand> GetEnumerator()
+        {
+            yield return mCurrentCommand;
+            foreach (DelayedCommand dc in mCommandBuffer)
+            {
+                yield return dc;
+            }
+        }
+    }
+}

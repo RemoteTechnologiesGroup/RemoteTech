@@ -140,6 +140,10 @@ namespace RemoteTech
             {
                 mConfig.Satellite = RTCore.Instance.Satellites[mo.vessel];
             }
+            else if (FlightGlobals.ActiveVessel != null)
+            {
+                mConfig.Satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel.id];
+            }
             else
             {
                 mConfig.Satellite = null;

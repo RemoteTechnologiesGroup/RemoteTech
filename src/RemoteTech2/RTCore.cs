@@ -18,6 +18,7 @@ namespace RemoteTech
         public event Action OnGuiUpdate = delegate { };
 
         private MapViewConfigFragment mConfig;
+        private TimeQuadrantPatcher mTimePatcher;
 
         public void Start()
         {
@@ -35,6 +36,11 @@ namespace RemoteTech
             Renderer = NetworkRenderer.AttachToMapView();
 
             mConfig = new MapViewConfigFragment();
+            mTimePatcher = new TimeQuadrantPatcher();
+
+            if (TimeWarp.fetch != null) {
+                mTimePatcher.Patch(TimeWarp.fetch);
+            }
 
             RTUtil.Log("RTCore loaded successfully.");
 
@@ -48,9 +54,17 @@ namespace RemoteTech
 
         public void Update()
         {
-            if (FlightGlobals.ActiveVessel != null && Satellites[FlightGlobals.ActiveVessel] != null)
+            var vs = Satellites[FlightGlobals.ActiveVessel];
+            if (vs != null)
             {
                 GetLocks();
+                if (vs.SignalProcessor.FlightComputer != null && vs.SignalProcessor.FlightComputer.InputAllowed)
+                {
+                    foreach (KSPActionGroup g in GetActivatedGroup())
+                    {
+                        vs.SignalProcessor.FlightComputer.Enqueue(ActionGroupCommand.Group(g));
+                    }
+                }
             }
             else
             {
@@ -75,6 +89,7 @@ namespace RemoteTech
 
         private void OnDestroy()
         {
+            mTimePatcher.Undo();
             mConfig.Dispose();
             Renderer.Detach();
             Network.Dispose();

@@ -18,7 +18,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("NetworkLink(T: {0}, I: {1}, P: {2})", Target, Interfaces, Port);
+            return String.Format("NetworkLink(T: {0}, I: {1}, P: {2})", Target, Interfaces.ToDebugString(), Port);
         }
     }
 }

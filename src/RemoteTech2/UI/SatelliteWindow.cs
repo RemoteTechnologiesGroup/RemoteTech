@@ -12,7 +12,16 @@ namespace RemoteTech
         public ISatellite Satellite { get { return mSatelliteFragment.Satellite; } set { mSatelliteFragment.Satellite = value; } }
         public SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
 
-        public SatelliteWindow() : base(Guid, null, new Rect(0, 0, 600, 600), WindowAlign.BottomRight) { }
+        public SatelliteWindow()
+            : base(Guid, null, new Rect(0, 0, 600, 600), WindowAlign.BottomRight)
+        {
+            RTCore.Instance.Satellites.OnUnregister += Refresh;
+        }
+
+        public void Refresh(ISatellite sat)
+        {
+            if (sat == Satellite) Hide();
+        }
 
         public override void Show()
         {
@@ -22,13 +31,17 @@ namespace RemoteTech
 
         public override void Window(int uid)
         {
+            GameSettings.AXIS_MOUSEWHEEL.switchState = UIModeBindingLinRotState.None;
+            GUI.skin = HighLogic.Skin;
             mSatelliteFragment.Draw();
             base.Window(uid);
+            GameSettings.AXIS_MOUSEWHEEL.switchState = UIModeBindingLinRotState.Any;
         }
 
         public void Dispose() 
         {
             mSatelliteFragment.Dispose();
+            RTCore.Instance.Satellites.OnUnregister -= Refresh;
         }
 
     }

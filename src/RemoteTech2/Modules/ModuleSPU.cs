@@ -1,6 +1,8 @@
 ﻿using System;
-using UnityEngine;
+using System.Linq;
 using System.Text;
+using UnityEngine;
+
 namespace RemoteTech
 {
     public class ModuleSPU : PartModule, ISignalProcessor
@@ -12,8 +14,10 @@ namespace RemoteTech
         public Vector3 Position { get { return vessel.GetWorldPos3D(); } }
         public CelestialBody Body { get { return vessel.mainBody; } }
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(vessel); } }
-        public bool Powered { get { return mRegisteredId != Guid.Empty && IsRTPowered; } }
+        public bool Powered { get { return IsRTPowered; } }
         public bool IsCommandStation { get { return IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= 6; } }
+        public FlightComputer FlightComputer { get; private set; }
+        public Vessel Vessel { get { return vessel; } }
 
         private ISatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
 
@@ -53,6 +57,7 @@ namespace RemoteTech
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 mRegisteredId = RTCore.Instance.Satellites.Register(vessel, this);
+                FlightComputer = new FlightComputer(this);
             }
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
         }
@@ -66,27 +71,37 @@ namespace RemoteTech
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
                 mRegisteredId = Guid.Empty;
             }
+            if (FlightComputer != null) FlightComputer.Dispose();
         }
 
         private State UpdateControlState()
         {
-            IsRTPowered = part.isControlSource = true;
+            IsRTPowered = part.isControlSource;
             if (!RTCore.Instance)
             {
                 return State.Operational;
             }
 
-            // Check if ModuleCommand is powered
+            if (!IsRTPowered)
+            {
+                return State.ParentDefect;
+            }
 
-            if (Satellite == null || RTCore.Instance.Network[Satellite].Count == 0)
+            if (Satellite == null || !RTCore.Instance.Network[Satellite].Any())
             {
                 return State.NoConnection;
             }
             return State.Operational;
         }
 
+        public void Update()
+        {
+            if (FlightComputer != null) FlightComputer.OnUpdate();
+        }
+
         public void FixedUpdate()
         {
+            if (FlightComputer != null) FlightComputer.OnFixedUpdate();
             HookPartMenus();
             switch (UpdateControlState())
             {
@@ -110,16 +125,13 @@ namespace RemoteTech
             if ((mRegisteredId != vessel.id))
             {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
-                if (vessel != null)
-                {
-                    mRegisteredId = RTCore.Instance.Satellites.Register(vessel, this);
-                }
+                mRegisteredId = RTCore.Instance.Satellites.Register(vessel, this);
             }
         }
 
         public void HookPartMenus()
         {
-/*          UIPartActionMenuPatcher.Wrap(vessel, (e) =>
+            UIPartActionMenuPatcher.Wrap(vessel, (e) =>
             {
                 Vessel v = e.listParent.part.vessel;
                 if (v != null && v.loaded)
@@ -127,14 +139,15 @@ namespace RemoteTech
                     var vs = RTCore.Instance.Satellites[v];
                     if (vs != null)
                     {
-                        vs.Master.FlightComputer.Enqueue(EventCommand.Event(e));
+                        if (vs.SignalProcessor.FlightComputer == null) return;
+                        vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
                     }
                 }
                 else
                 {
                     e.Invoke();
                 }
-            });*/
+            });
         }
     }
 }

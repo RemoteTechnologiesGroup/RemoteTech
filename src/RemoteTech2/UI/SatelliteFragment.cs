@@ -25,16 +25,24 @@ namespace RemoteTech
             mAntennaFragment.Dispose();
         }
 
-        void IFragment.Draw()
+        public void Draw()
         {
             bool draw_antenna = mAntennaFragment.Antenna != null;
-            GUILayout.BeginHorizontal(GUILayout.Width(draw_antenna ? 600 : 300), GUILayout.Height(300));
+            GUILayout.BeginHorizontal(GUILayout.Height(350));
             {
                 if (draw_antenna)
                 {
-                    mAntennaFragment.Draw();
+                    GUILayout.BeginVertical();
+                    {
+                        mAntennaFragment.Draw();
+                    }
+                    GUILayout.EndVertical();
                 }
-                Draw();
+                GUILayout.BeginVertical();
+                {
+                    DrawSelf();
+                }
+                GUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
         }
@@ -44,41 +52,41 @@ namespace RemoteTech
             if (sat == Satellite) Satellite = null;
         }
 
-        public void Draw()
+        private void DrawSelf()
         {
             if (Satellite == null) return;
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Box(Satellite.Name);
-                RTUtil.Button("Name", () => { }, GUILayout.ExpandWidth(false));
+                GUILayout.TextField(Satellite.Name.Truncate(25), GUILayout.ExpandWidth(true));
+                RTUtil.Button("Name", () =>
+                {
+                    var vessel = FlightGlobals.Vessels.First(v => v.id == Satellite.Guid);
+                    if (vessel) vessel.RenameVessel();
+                }, GUILayout.ExpandWidth(false), GUILayout.Height(24));
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginVertical(GUI.skin.box, GUILayout.Height(300));
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             {
-                mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
+                Color pushColor = GUI.contentColor;
+                TextAnchor pushAlign = GUI.skin.button.alignment;
+                GUI.skin.button.alignment = TextAnchor.MiddleLeft;
+                int i = 0;
+                foreach (var a in Satellite.Antennas.Where(a => a.CanTarget))
                 {
-                    Color pushColor = GUI.contentColor;
-                    TextAnchor pushAlign = GUI.skin.button.alignment;
-                    GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                    int i = 0;
-                    foreach (var a in Satellite.Antennas.Where(a => a.CanTarget))
+                    i++;
+                    GUI.contentColor = (a.Powered) ? XKCDColors.ElectricLime : XKCDColors.Scarlet;
+                    String text = a.Name.Truncate(25) + Environment.NewLine + "Target: " + RTUtil.TargetName(a.Target).Truncate(18);
+                    RTUtil.StateButton(text, mSelection, i, s =>
                     {
-                        i++;
-                        GUI.contentColor = (a.Powered) ? Color.green : Color.red;
-                        String text = a.Name + Environment.NewLine + "Target: " + RTUtil.TargetName(a.Target);
-                        RTUtil.StateButton(text, mSelection, i, s =>
-                        {
-                            mSelection = (s > 0) ? s : 0;
-                            mAntennaFragment.Antenna = (s > 0) ? a : null;
-                        });
-                    }
-                    GUI.skin.button.alignment = pushAlign;
-                    GUI.contentColor = pushColor;
+                        mSelection = (s > 0) ? s : 0;
+                        mAntennaFragment.Antenna = (s > 0) ? a : null;
+                    });
                 }
-                GUILayout.EndScrollView();
+                GUI.skin.button.alignment = pushAlign;
+                GUI.contentColor = pushColor;
             }
-            GUILayout.EndVertical();
+            GUILayout.EndScrollView();
         }
     }
 }
