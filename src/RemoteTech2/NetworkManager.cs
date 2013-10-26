@@ -142,6 +142,24 @@ namespace RemoteTech
             var dish_a = sat_a.Antennas.Where(a => a.Target == sat_b.Guid && a.Dish > distance);
             var dish_b = sat_a.Antennas.Where(a => a.Target == sat_a.Guid && a.Dish > distance);
 
+            var planets = RTCore.Instance.Network.Planets;
+            dish_a.Concat(sat_a.Antennas.Where(a => 
+            {
+                if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
+                Vector3 dir_cb = (planets[a.Target].position - sat_a.Position);
+                Vector3 dir_b = (sat_b.Position - sat_a.Position);
+                if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
+                return false;
+            }));
+            dish_b.Concat(sat_b.Antennas.Where(b =>
+            {
+                if (!planets.ContainsKey(b.Target) || sat_a.Body != planets[b.Target]) return false;
+                Vector3 dir_cb = (planets[b.Target].position - sat_b.Position);
+                Vector3 dir_b = (sat_a.Position - sat_b.Position);
+                if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
+                return false;
+            }));
+
             if (omni_a.Concat(dish_a).Any() && omni_b.Concat(dish_b).Any())
             {
                 var interfaces = omni_a.Concat(dish_a).ToList();
@@ -246,5 +264,6 @@ namespace RemoteTech
         }
 
         public bool IsCommandStation { get { return true; } }
+        public bool HasLocalControl { get { return false; } }
     }
 }

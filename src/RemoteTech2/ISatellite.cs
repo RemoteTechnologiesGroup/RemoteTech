@@ -14,6 +14,7 @@ namespace RemoteTech
 
         bool Powered { get; }
         bool IsCommandStation { get; }
+        bool HasLocalControl { get; }
 
         IEnumerable<IAntenna> Antennas { get; }
 

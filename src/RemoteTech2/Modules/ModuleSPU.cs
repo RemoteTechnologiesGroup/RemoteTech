@@ -47,7 +47,7 @@ namespace RemoteTech
         public override String GetInfo()
         {
             if (!ShowEditor_Type) return String.Empty;
-            return IsRTCommandStation ? "Remote Command" : "Remote Control";
+            return IsRTCommandStation ? "Remote Command capable (6+ crew)" : "Remote Control capable";
         }
 
         public override void OnStart(StartState state)
@@ -131,16 +131,23 @@ namespace RemoteTech
 
         public void HookPartMenus()
         {
-            UIPartActionMenuPatcher.Wrap(vessel, (e) =>
+            UIPartActionMenuPatcher.Wrap(vessel, (e, ignore_delay) =>
             {
                 Vessel v = e.listParent.part.vessel;
                 if (v != null && v.loaded)
                 {
                     var vs = RTCore.Instance.Satellites[v];
-                    if (vs != null)
+                    if (vs != null && vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
                     {
-                        if (vs.SignalProcessor.FlightComputer == null) return;
-                        vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
+                        if (ignore_delay)
+                        {
+                            e.Invoke();
+                        }
+                        else
+                        {
+                            vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
+                        }
+                        
                     }
                 }
                 else

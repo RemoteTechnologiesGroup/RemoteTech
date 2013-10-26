@@ -50,7 +50,7 @@ namespace RemoteTech
 
         public void Draw()
         {
-            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(250));
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(350));
             {
                 Color pushColor = GUI.backgroundColor;
                 TextAnchor pushAlign = GUI.skin.button.alignment;

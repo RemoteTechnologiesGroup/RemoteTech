@@ -69,7 +69,8 @@ namespace RemoteTech
             Mode0OmniRange = 0.0f,
             Mode1OmniRange = 0.0f,
             EnergyCost = 0.0f,
-            DishAngle = 0.0f;
+            DishAngle = 0.0f,
+            MaxQ = -1;
 
         [KSPField(isPersistant = true)]
         public bool
@@ -165,7 +166,7 @@ namespace RemoteTech
         [IgnoreSignalDelayAttribute]
         public void EventTarget()
         {
-            //RTCore.Instance.Gui.OpenAntennaConfig(this, vessel);
+            (new AntennaWindow(this)).Show();
         }
 
         [KSPEvent(name = "EventOpen", guiActive = false)]
@@ -200,13 +201,11 @@ namespace RemoteTech
             EventClose();
         }
 
-        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true,
-            unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Jack-in!")]
-
+        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 10, externalToEVAOnly = true, guiName = "[EVA] Set Target")]
         [IgnoreSignalDelayAttribute]
         public void OverrideTarget()
         {
-            //RTCore.Instance.Gui.OpenAntennaConfig(this, vessel);
+            (new AntennaWindow(this)).Show();
         }
 
         public void OnConnectionRefresh()
@@ -366,6 +365,7 @@ namespace RemoteTech
             }
             RTDishRange = Dish;
             RTOmniRange = Omni;
+            HandleDynamicPressure();
             UpdateContext();
         }
 
@@ -374,6 +374,18 @@ namespace RemoteTech
             GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
             GUI_DishRange = RTUtil.FormatSI(Dish, "m");
             GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
+        }
+
+        private void HandleDynamicPressure()
+        {
+            if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && mDeployFxModules.Any(a => a.GetScalar > 0.9f))
+            {
+                if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > MaxQ)
+                {
+                    MaxQ = -1.0f;
+                    part.decouple(0.0f);
+                }
+            }
         }
 
         private List<IScalarModule> FindFxModules(int[] indices, bool showUI)

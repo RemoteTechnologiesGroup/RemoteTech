@@ -7,7 +7,7 @@ namespace RemoteTech
 {
     public static class UIPartActionMenuPatcher
     {
-        public static void Wrap(Vessel parent, Action<BaseEvent> pass)
+        public static void Wrap(Vessel parent, Action<BaseEvent, bool> pass)
         {
             var controller = UIPartActionController.Instance;
             if (!controller) return;
@@ -30,9 +30,10 @@ namespace RemoteTech
                             .First(fi => fi.FieldType == typeof(BaseEventDelegate));
 
                         var partEvent = (BaseEventDelegate) partEventFieldInfo.GetValue(button.partEvent);
-                        if (partEvent.Method.GetCustomAttributes(typeof(IgnoreSignalDelayAttribute), true).Length == 0)
+                        if (partEvent.Method.GetCustomAttributes(typeof(IgnoreControlAttribute), true).Length == 0)
                         {
-                            button.partEvent = Wrapper.Wrap(button.partEvent, pass);
+                            bool ignore_delay = partEvent.Method.GetCustomAttributes(typeof(IgnoreSignalDelayAttribute), true).Length > 0;
+                            button.partEvent = Wrapper.Wrap(button.partEvent, pass, ignore_delay);
                         }
                     }
                 }
@@ -41,20 +42,22 @@ namespace RemoteTech
 
         private class Wrapper
         {
-            private Action<BaseEvent> mPassthrough;
+            private Action<BaseEvent, bool> mPassthrough;
             private BaseEvent mEvent;
+            private bool mIgnoreDelay;
 
-            private Wrapper(BaseEvent original, Action<BaseEvent> passthrough)
+            private Wrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
             {
                 mPassthrough = passthrough;
                 mEvent = original;
+                mIgnoreDelay = ignore_delay;
             }
 
-            public static BaseEvent Wrap(BaseEvent original, Action<BaseEvent> passthrough)
+            public static BaseEvent Wrap(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
             {
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);
-                Wrapper wrapper = new Wrapper(original, passthrough);
+                Wrapper wrapper = new Wrapper(original, passthrough, ignore_delay);
                 BaseEvent new_event = new BaseEvent(original.listParent, original.name,
                                                                          wrapper.Invoke);
                 new_event.OnLoad(cn);
@@ -65,9 +68,10 @@ namespace RemoteTech
             [IgnoreSignalDelayAttribute]
             public void Invoke()
             {
-                mPassthrough.Invoke(mEvent);
+                mPassthrough.Invoke(mEvent, mIgnoreDelay);
             }
         }
     }
+    public class IgnoreControlAttribute : System.Attribute { }
     public class IgnoreSignalDelayAttribute : System.Attribute { }
 }

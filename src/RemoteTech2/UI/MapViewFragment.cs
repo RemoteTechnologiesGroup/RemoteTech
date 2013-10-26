@@ -23,7 +23,7 @@ namespace RemoteTech
         private static readonly GUIStyle mStyleButtonRed;
         private static readonly GUIStyle mStyleButtonYellow;
 
-        private SatelliteWindow mConfig = new SatelliteWindow();
+        private SatelliteWindow mConfig = new SatelliteWindow(null);
 
         static MapViewConfigFragment()
         {
@@ -90,8 +90,8 @@ namespace RemoteTech
                     return mStyleButtonGray;
                 if (RTCore.Instance.Network[mConfig.Satellite] != null)
                     return mStyleButtonGreen;
-                //if (mSatellite.LocalControl)
-                //    return mStyleButtonYellow;
+                if (mConfig.Satellite.HasLocalControl)
+                    return mStyleButtonYellow;
                 return mStyleButtonRed;
             }
         }
@@ -104,7 +104,6 @@ namespace RemoteTech
 
         public void Dispose()
         {
-            mConfig.Dispose();
             GameEvents.onPlanetariumTargetChanged.Remove(ChangeTarget);
             MapView.OnExitMapView -= OnExitMapView;
         }

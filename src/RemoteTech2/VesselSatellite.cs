@@ -17,6 +17,7 @@ namespace RemoteTech
         public List<ISignalProcessor> SignalProcessors { get; set; }
         public bool Powered { get { return SignalProcessors.Any(s => s.Powered); } }
         public bool IsCommandStation { get { return SignalProcessors.Any(s => s.IsCommandStation); } }
+        public bool HasLocalControl { get { return FlightComputer != null && FlightComputer.LocalControl; } }
 
 
         public IEnumerable<IAntenna> Antennas

@@ -81,6 +81,7 @@
     <Compile Include="SimpleTypes\NetworkLink.cs" />
     <Compile Include="UI\AbstractWindow.cs" />
     <Compile Include="UI\AntennaFragment.cs" />
+    <Compile Include="UI\AntennaWindow.cs" />
     <Compile Include="UI\EZGUIPointerDisablePatcher.cs" />
     <Compile Include="UI\IFragment.cs" />
     <Compile Include="UI\MapViewFragment.cs" />
