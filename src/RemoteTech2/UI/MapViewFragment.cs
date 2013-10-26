@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech
@@ -61,7 +62,7 @@ namespace RemoteTech
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & MapFilter.Any) == MapFilter.Any)
                     return mTextures[Texture.Any];
-                if ((mask & MapFilter.OnlyPath) == MapFilter.OnlyPath)
+                if ((mask & MapFilter.Path) == MapFilter.Path)
                     return mTextures[Texture.Path];
                 return mTextures[Texture.Empty];
             }
@@ -88,7 +89,7 @@ namespace RemoteTech
             {
                 if (mConfig.Satellite == null)
                     return mStyleButtonGray;
-                if (RTCore.Instance.Network[mConfig.Satellite] != null)
+                if (RTCore.Instance.Network[mConfig.Satellite].Any())
                     return mStyleButtonGreen;
                 if (mConfig.Satellite.HasLocalControl)
                     return mStyleButtonYellow;
@@ -153,9 +154,9 @@ namespace RemoteTech
         private void OnClickCompath()
         {
             MapFilter mask = RTCore.Instance.Renderer.Filter;
-            if ((mask & MapFilter.OnlyPath) == MapFilter.OnlyPath)
+            if ((mask & MapFilter.Path) == MapFilter.Path)
             {
-                RTCore.Instance.Renderer.Filter &= ~MapFilter.OnlyPath;
+                RTCore.Instance.Renderer.Filter &= ~MapFilter.Path;
                 RTCore.Instance.Renderer.Filter |= MapFilter.Any;
                 return;
             }
@@ -168,10 +169,10 @@ namespace RemoteTech
             if ((mask & MapFilter.None) == MapFilter.None)
             {
                 RTCore.Instance.Renderer.Filter &= ~MapFilter.None;
-                RTCore.Instance.Renderer.Filter |= MapFilter.OnlyPath;
+                RTCore.Instance.Renderer.Filter |= MapFilter.Path;
                 return;
             }
-            RTCore.Instance.Renderer.Filter |= MapFilter.OnlyPath;
+            RTCore.Instance.Renderer.Filter |= MapFilter.Path;
         }
 
         private void OnClickType()

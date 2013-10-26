@@ -27,7 +27,6 @@ namespace RemoteTech
 
         public override void Show()
         {
-            if (mSatelliteFragment.Satellite == null) return;
             RTCore.Instance.Satellites.OnUnregister += Refresh;
             mSatelliteFragment = mSatelliteFragment ?? new SatelliteFragment(mSetSatellite);
             base.Show();
@@ -45,7 +44,7 @@ namespace RemoteTech
 
         public override void Window(int uid)
         {
-            if (!RTCore.Instance.Network[mSatelliteFragment.Satellite].Any()) Hide();
+            if (!RTCore.Instance.Network[mSetSatellite].Any()) Hide();
             GUI.skin = HighLogic.Skin;
             mSatelliteFragment.Draw();
             base.Window(uid);

@@ -25,6 +25,19 @@ namespace RemoteTech
             Delay = 0;// cost / SIGNAL_SPEED;
         }
 
+        public bool Contains(BidirectionalEdge<T> edge)
+        {
+            if (Links.Count == 0) return false;
+            if ((Start.Equals(edge.A) && Links[0].Target.Equals(edge.B)) || 
+                (Start.Equals(edge.B) && Links[0].Target.Equals(edge.A))) return true;
+            for (int i = 0; i < Links.Count - 1; i++)
+            {
+                if (Links[i].Target.Equals(edge.A) && Links[i+1].Target.Equals(edge.B)) return true;
+                if (Links[i].Target.Equals(edge.B) && Links[i+1].Target.Equals(edge.A)) return true;
+            }
+            return false;
+        }
+
         public int CompareTo(NetworkRoute<T> other)
         {
             return Delay.CompareTo(other.Delay);

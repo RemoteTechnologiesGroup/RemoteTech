@@ -91,8 +91,8 @@ namespace RemoteTech
         public Guid RTAntennaTarget = Guid.Empty;
 
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
-        private List<IScalarModule> mDeployFxModules;
-        private List<IScalarModule> mProgressFxModules;
+        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
+        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
 
@@ -378,6 +378,7 @@ namespace RemoteTech
 
         private void HandleDynamicPressure()
         {
+            if (vessel == null) return;
             if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && mDeployFxModules.Any(a => a.GetScalar > 0.9f))
             {
                 if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > MaxQ)
@@ -390,8 +391,8 @@ namespace RemoteTech
 
         private List<IScalarModule> FindFxModules(int[] indices, bool showUI)
         {
-            if (indices == null) return null;
             var modules = new List<IScalarModule>();
+            if (indices == null) return modules;
             foreach (int i in indices)
             {
                 var item = base.part.Modules[i] as IScalarModule;

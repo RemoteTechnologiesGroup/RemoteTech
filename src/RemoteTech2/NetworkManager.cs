@@ -138,9 +138,9 @@ namespace RemoteTech
             float distance = Distance(sat_a, sat_b);
 
             var omni_a = sat_a.Antennas.Where(a => a.Omni > distance);
-            var omni_b = sat_b.Antennas.Where(a => a.Omni > distance);
+            var omni_b = sat_b.Antennas.Where(b => b.Omni > distance);
             var dish_a = sat_a.Antennas.Where(a => a.Target == sat_b.Guid && a.Dish > distance);
-            var dish_b = sat_a.Antennas.Where(a => a.Target == sat_a.Guid && a.Dish > distance);
+            var dish_b = sat_b.Antennas.Where(b => b.Target == sat_a.Guid && b.Dish > distance);
 
             var planets = RTCore.Instance.Network.Planets;
             dish_a.Concat(sat_a.Antennas.Where(a => 
@@ -193,7 +193,7 @@ namespace RemoteTech
             {
                 UpdateGraph(s);
                 RTUtil.Log("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
-                if (s.SignalProcessor.VesselLoaded)
+                if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION)
                 {
                     FindPath(s, commandStations);
                 }

@@ -11,8 +11,8 @@ namespace RemoteTech
         public event Action<VesselSatellite> OnUnregister = delegate { };
 
         public int Count { get { return mSatelliteCache.Count; } }
-        public VesselSatellite this[Guid g] { get { return this.For(g); } }
-        public VesselSatellite this[Vessel v] { get { return this.For(v.id); } }
+        public VesselSatellite this[Guid g] { get { return For(g); } }
+        public VesselSatellite this[Vessel v] { get { if (v == null) return null; return For(v.id); } }
 
         private readonly Dictionary<Guid, List<ISignalProcessor>> mLoadedSpuCache =
             new Dictionary<Guid, List<ISignalProcessor>>();
