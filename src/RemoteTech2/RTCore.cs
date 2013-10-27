@@ -61,9 +61,16 @@ namespace RemoteTech
                 GetLocks();
                 if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
                 {
-                    foreach (KSPActionGroup g in GetActivatedGroup())
+                    foreach (KSPActionGroup ag in GetActivatedGroup())
                     {
-                        vs.FlightComputer.Enqueue(ActionGroupCommand.Group(g));
+                        vs.FlightComputer.Enqueue(ActionGroupCommand.Group(ag));
+                    }
+                }
+                else if (vs.HasLocalControl)
+                {
+                    foreach (KSPActionGroup ag in GetActivatedGroup())
+                    {
+                        FlightGlobals.ActiveVessel.ActionGroups.ToggleGroup(ag);
                     }
                 }
             }

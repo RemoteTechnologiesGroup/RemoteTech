@@ -44,7 +44,7 @@ namespace RemoteTech
 
         public override void Window(int uid)
         {
-            if (!RTCore.Instance.Network[mSetSatellite].Any()) Hide();
+            if (!RTCore.Instance.Network[mSetSatellite].Any() && !mSetSatellite.HasLocalControl) { Hide(); return; }
             GUI.skin = HighLogic.Skin;
             mSatelliteFragment.Draw();
             base.Window(uid);

@@ -12,8 +12,8 @@ namespace RemoteTech
         Omni = 1,
         Dish = 2,
         OmniDish = MapFilter.Omni | MapFilter.Dish,
-        Any = 12,
-        Path = 4
+        Any = 4,
+        Path = 8
     }
 
     public class NetworkRenderer : MonoBehaviour, IConfigNode
@@ -26,7 +26,7 @@ namespace RemoteTech
 
         private bool ShowOmni { get { return (Filter & (MapFilter.Any | MapFilter.Omni)) == (MapFilter.Any | MapFilter.Omni); } }
         private bool ShowDish { get { return (Filter & (MapFilter.Any | MapFilter.Dish)) == (MapFilter.Any | MapFilter.Dish); } }
-        private bool ShowPath { get { return (Filter & MapFilter.Path) == MapFilter.Path; } }
+        private bool ShowPath { get { return (Filter & MapFilter.Path) == MapFilter.Path || ShowAll; } }
         private bool ShowAll { get { return (Filter & MapFilter.Any) == MapFilter.Any; } }
 
         static NetworkRenderer()
@@ -152,7 +152,7 @@ namespace RemoteTech
             if (satellite != null && ShowPath)
             {
                 var connections = RTCore.Instance.Network[satellite];
-                if (connections.Any() && connections[0].Contains(edge) && (ShowPath || ShowAll))
+                if (connections.Any() && connections[0].Contains(edge))
                     return true;
             }
             if (edge.Type == LinkType.Omni && !ShowOmni)
@@ -168,10 +168,10 @@ namespace RemoteTech
         {
             var vessel = PlanetariumCamera.fetch.target.vessel;
             var satellite = RTCore.Instance.Satellites[vessel];
-            if (satellite != null)
+            if (satellite != null && ShowPath)
             {
                 var connections = RTCore.Instance.Network[satellite];
-                if (connections.Any() && connections[0].Contains(edge) && (ShowPath || ShowAll))
+                if (connections.Any() && connections[0].Contains(edge))
                     return XKCDColors.ElectricLime;
             }
             if (edge.Type == LinkType.Omni)
