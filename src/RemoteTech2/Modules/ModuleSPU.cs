@@ -148,7 +148,11 @@ namespace RemoteTech
                         {
                             vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
                         }
-                        
+
+                    }
+                    else if (vs != null && vs.HasLocalControl)
+                    {
+                        e.Invoke();
                     }
                 }
                 else

@@ -71,6 +71,15 @@ namespace RemoteTech
                     foreach (KSPActionGroup ag in GetActivatedGroup())
                     {
                         FlightGlobals.ActiveVessel.ActionGroups.ToggleGroup(ag);
+                        if (ag == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock)
+                        {
+                            Staging.ActivateNextStage();
+                            ResourceDisplay.Instance.Refresh();
+                        }
+                        if (ag == KSPActionGroup.RCS)
+                        {
+                            FlightInputHandler.fetch.rcslock = !FlightInputHandler.RCSLock;
+                        }
                     }
                 }
             }
