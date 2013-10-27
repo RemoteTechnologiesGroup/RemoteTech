@@ -84,18 +84,15 @@ namespace RemoteTech
         public virtual void SetState(bool state)
         {
             IsRTActive = state;
-            if (mTransmitterConfig != null && mTransmitterConfig.HasValue("name"))
+            var satellite = RTCore.Instance.Network[Guid];
+            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal == RTCore.Instance.Network.MissionControl);
+            if (mTransmitter == null && route_home)
             {
-                var satellite = RTCore.Instance.Network[Guid];
-                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal == RTCore.Instance.Network.MissionControl);
-                if (mTransmitter == null && route_home)
-                {
-                    AddTransmitter();
-                }
-                else if (!route_home && mTransmitter != null)
-                {
-                    RemoveTransmitter();
-                }
+                AddTransmitter();
+            }
+            else if (!route_home && mTransmitter != null)
+            {
+                RemoveTransmitter();
             }
         }
 
@@ -133,6 +130,7 @@ namespace RemoteTech
 
         private void AddTransmitter()
         {
+            if (mTransmitterConfig == null || !mTransmitterConfig.HasValue("name")) return;
             var transmitters = part.FindModulesImplementing<IScienceDataTransmitter>();
             if (transmitters.Count > 0)
             {

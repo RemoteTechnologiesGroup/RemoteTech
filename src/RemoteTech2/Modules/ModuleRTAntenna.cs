@@ -301,8 +301,7 @@ namespace RemoteTech
 
         private void AddTransmitter()
         {
-            RTUtil.Log("AddTransmitter: null = {0}", mTransmitterConfig == null);
-            if (mTransmitterConfig == null) return;
+            if (mTransmitterConfig == null || !mTransmitterConfig.HasValue("name")) return;
             var transmitters = part.FindModulesImplementing<IScienceDataTransmitter>();
             if (transmitters.Count > 0)
             {
