@@ -54,7 +54,7 @@ namespace RemoteTech
         public void Update()
         {
             if (FlightGlobals.ActiveVessel == null) return;
-            if (FlightGlobals.ActiveVessel.HoldPhysics) return;
+            if (FlightGlobals.ActiveVessel.packed) return;
             var vs = Satellites[FlightGlobals.ActiveVessel];
             if (vs != null)
             {
