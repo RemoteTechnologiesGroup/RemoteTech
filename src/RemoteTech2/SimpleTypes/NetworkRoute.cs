@@ -22,7 +22,7 @@ namespace RemoteTech
             if (links == null) links = new List<NetworkLink<T>>();
             Start = start;
             Links = links;
-            Delay = 3;// cost / SIGNAL_SPEED;
+            Delay = 0;// cost / SIGNAL_SPEED;
         }
 
         public bool Contains(BidirectionalEdge<T> edge)
