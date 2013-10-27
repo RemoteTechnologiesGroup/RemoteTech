@@ -38,9 +38,8 @@ namespace RemoteTech
             mConfig = new MapViewConfigFragment();
             mTimePatcher = new TimeQuadrantPatcher();
 
-            if (TimeWarp.fetch != null) {
-                mTimePatcher.Patch(TimeWarp.fetch);
-            }
+            mTimePatcher.Patch();
+            FlightUIPatcher.Patch();
 
             RTUtil.Log("RTCore loaded successfully.");
 
@@ -54,15 +53,17 @@ namespace RemoteTech
 
         public void Update()
         {
+            if (FlightGlobals.ActiveVessel == null) return;
+            if (FlightGlobals.ActiveVessel.HoldPhysics) return;
             var vs = Satellites[FlightGlobals.ActiveVessel];
             if (vs != null)
             {
                 GetLocks();
-                if (vs.SignalProcessor.FlightComputer != null && vs.SignalProcessor.FlightComputer.InputAllowed)
+                if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
                 {
                     foreach (KSPActionGroup g in GetActivatedGroup())
                     {
-                        vs.SignalProcessor.FlightComputer.Enqueue(ActionGroupCommand.Group(g));
+                        vs.FlightComputer.Enqueue(ActionGroupCommand.Group(g));
                     }
                 }
             }

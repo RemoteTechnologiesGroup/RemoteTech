@@ -167,6 +167,7 @@ namespace RemoteTech
             // Add the satellites.
             foreach (ISatellite s in RTCore.Instance.Network)
             {
+                if (s.Guid == Antenna.Guid) continue;
                 Entry current = new Entry()
                 {
                     Text = s.Name,

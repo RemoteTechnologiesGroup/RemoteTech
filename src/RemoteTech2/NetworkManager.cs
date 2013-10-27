@@ -32,6 +32,7 @@ namespace RemoteTech
         {
             get
             {
+                if (sat == null) return new List<NetworkRoute<ISatellite>>();
                 return mConnectionCache.ContainsKey(sat) ? mConnectionCache[sat] : new List<NetworkRoute<ISatellite>>();
             }
             set

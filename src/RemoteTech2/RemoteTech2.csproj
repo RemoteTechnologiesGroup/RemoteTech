@@ -59,6 +59,8 @@
     <Compile Include="IAntenna.cs" />
     <Compile Include="ISatellite.cs" />
     <Compile Include="ISignalProcessor.cs" />
+    <Compile Include="Modules\ModuleRTAntennaPassive.cs" />
+    <Compile Include="Modules\ModuleSPUPassive.cs" />
     <Compile Include="Modules\ModuleRTAntenna.cs" />
     <Compile Include="Modules\ModuleRTDataTransmitter.cs" />
     <Compile Include="Modules\ModuleSPU.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="UI\AntennaFragment.cs" />
     <Compile Include="UI\AntennaWindow.cs" />
     <Compile Include="UI\EZGUIPointerDisablePatcher.cs" />
+    <Compile Include="UI\FlightUIPatcher.cs" />
     <Compile Include="UI\IFragment.cs" />
     <Compile Include="UI\MapViewFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />

@@ -15,6 +15,7 @@ namespace RemoteTech
         bool Visible { get; }
         bool Powered { get; }
         bool IsCommandStation { get; }
+        bool IsRoot { get; }
 
         // Reserved for Flight Computer
         FlightComputer FlightComputer { get; }

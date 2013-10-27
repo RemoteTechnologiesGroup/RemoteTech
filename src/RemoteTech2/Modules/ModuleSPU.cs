@@ -18,6 +18,7 @@ namespace RemoteTech
         public bool IsCommandStation { get { return IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= 6; } }
         public FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel { get { return vessel; } }
+        public bool IsRoot { get { return Vessel.GetReferenceTransformPart() == part; } }
 
         private ISatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
 

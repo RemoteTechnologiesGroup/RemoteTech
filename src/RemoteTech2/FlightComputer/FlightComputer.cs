@@ -15,7 +15,7 @@ namespace RemoteTech
             {
                 var satellite = RTCore.Instance.Network[mParent.Guid];
                 var connection = RTCore.Instance.Network[satellite];
-                return LocalControl || (mParent.Powered && connection.Any());
+                return (satellite != null &&satellite.HasLocalControl) || (mParent.Powered && connection.Any());
             }
         }
 
@@ -23,8 +23,8 @@ namespace RemoteTech
         {
             get
             {
-                if (LocalControl) return 0.0;
                 var satellite = RTCore.Instance.Network[mParent.Guid];
+                if (satellite != null && satellite.HasLocalControl) return 0.0;
                 var connection = RTCore.Instance.Network[satellite];
                 if (!connection.Any()) return Double.PositiveInfinity;
                 return connection.Min().Delay;
@@ -32,24 +32,6 @@ namespace RemoteTech
         }
 
         public double ExtraDelay { get; set; }
-
-        private int mLastFrame;
-        private bool mLastLocalControl;
-        public bool LocalControl
-        {
-            get
-            {
-                if (mLastFrame != Time.frameCount)
-                {
-                    mLastFrame = Time.frameCount;
-                    return mLastLocalControl = mParent.Vessel.parts.Any(p => p.isControlSource && !p.FindModulesImplementing<ISignalProcessor>().Any());
-                }
-                else
-                {
-                    return mLastLocalControl;
-                }
-            }
-        }
 
         private ISignalProcessor mParent;
         private Vessel mVessel;
@@ -76,6 +58,8 @@ namespace RemoteTech
 
         public void Enqueue(DelayedCommand fc)
         {
+            if (!InputAllowed) return;
+            if (mVessel.packed) return;
             fc.TimeStamp += Delay;
             if (fc.CancelCommand == null)
             {
@@ -91,11 +75,7 @@ namespace RemoteTech
 
         public void OnUpdate()
         {
-            var satellite = RTCore.Instance.Satellites[mParent.Guid];
-            if (satellite == null || satellite.SignalProcessor != mParent) return;
-            if (mParent.Powered == false) return;
 
-            PopCommand();
         }
 
         public void OnFixedUpdate()
@@ -103,6 +83,12 @@ namespace RemoteTech
             mVessel.OnFlyByWire -= OnFlyByWirePre;
             mVessel = mParent.Vessel;
             mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire;
+
+            var satellite = RTCore.Instance.Satellites[mParent.Guid];
+            if (satellite == null || satellite.SignalProcessor != mParent) return;
+            if (mParent.Powered == false) return;
+            if (mVessel.packed) return;
+            PopCommand();
         }
 
         private void Enqueue(FlightCtrlState fs)
@@ -115,8 +101,7 @@ namespace RemoteTech
         private void PopFlightCtrlState(FlightCtrlState fcs)
         {
             FlightCtrlState delayed = mPreviousFcs;
-            while (mFlightCtrlBuffer.Count > 0 &&
-                   mFlightCtrlBuffer.Peek().TimeStamp < RTUtil.GameTime)
+            while (mFlightCtrlBuffer.Count > 0 && mFlightCtrlBuffer.Peek().TimeStamp < RTUtil.GameTime)
             {
                 delayed = mFlightCtrlBuffer.Dequeue().State;
             }
@@ -131,6 +116,7 @@ namespace RemoteTech
 
         private void PopCommand()
         {
+            if (!mParent.Powered) return;
             if (mCommandBuffer.Count > 0)
             {
                 for (int i = 0; i < mCommandBuffer.Count && mCommandBuffer[i].TimeStamp < RTUtil.GameTime; i++)

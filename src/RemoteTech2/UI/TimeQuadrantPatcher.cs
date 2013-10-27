@@ -27,9 +27,9 @@ namespace RemoteTech
                 var vs = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
                 if (vs == null)
                 {
-                    return "N/A";
+                    return "Local Control";
                 }
-                else if (vs.LocalControl)
+                else if (vs.HasLocalControl)
                 {
                     return "Local Control";
                 }
@@ -46,11 +46,7 @@ namespace RemoteTech
             get
             {
                 var vs = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
-                if (vs == null)
-                {
-                    return mFlightButtonRed;
-                }
-                else if (vs.LocalControl)
+                if (vs == null || vs.HasLocalControl)
                 {
                     return mFlightButtonYellow;
                 }
@@ -82,13 +78,15 @@ namespace RemoteTech
 
         }
 
-        public void Patch(TimeWarp timeQuadrant)
+        public void Patch()
         {
+            var timeQuadrant = TimeWarp.fetch;
+            if (timeQuadrant == null) return;
             if (mBackup != null)
             {
                 throw new InvalidOperationException("Patcher is already in use.");
             }
-            ScreenSafeUISlideTab tab = timeQuadrant.timeQuadrantTab;
+            var tab = timeQuadrant.timeQuadrantTab;
             mBackup = new Backup()
             {
                 TimeQuadrant = timeQuadrant,
@@ -135,7 +133,7 @@ namespace RemoteTech
 
             ((BoxCollider)tab.collider).center += new Vector3(0, 0, -0.37f);
 
-            ScreenSafeGUIText text = tab.transform.FindChild("MET timer").GetComponent<ScreenSafeGUIText>();
+            var text = tab.transform.FindChild("MET timer").GetComponent<ScreenSafeGUIText>();
             mTextStyle = new GUIStyle(text.textStyle);
             mTextStyle.fontSize = (int)(text.textSize * ScreenSafeUI.PixelRatio);
 
@@ -151,7 +149,7 @@ namespace RemoteTech
                 if (mBackup == null)
                     return;
 
-                ScreenSafeUISlideTab tab = mBackup.TimeQuadrant.timeQuadrantTab;
+                var tab = mBackup.TimeQuadrant.timeQuadrantTab;
 
                 if (tab.collider != null)
                 {

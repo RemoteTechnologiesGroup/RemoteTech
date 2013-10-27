@@ -12,12 +12,28 @@ namespace RemoteTech
         public Guid Guid { get { return SignalProcessor.Guid; } }
         public Vector3 Position { get { return SignalProcessor.Position; } }
         public CelestialBody Body { get { return SignalProcessor.Body; } }
-
-        public ISignalProcessor SignalProcessor { get { return SignalProcessors[0]; } }
         public List<ISignalProcessor> SignalProcessors { get; set; }
+        public ISignalProcessor SignalProcessor { get { return SignalProcessors.FirstOrDefault(s => s.IsRoot) ?? SignalProcessors[0]; } }
+
         public bool Powered { get { return SignalProcessors.Any(s => s.Powered); } }
         public bool IsCommandStation { get { return SignalProcessors.Any(s => s.IsCommandStation); } }
-        public bool HasLocalControl { get { return FlightComputer != null && FlightComputer.LocalControl; } }
+        private int mLastFrame;
+        private bool mLastLocalControl;
+        public bool HasLocalControl
+        {
+            get
+            {
+                if (mLastFrame != Time.frameCount)
+                {
+                    mLastFrame = Time.frameCount;
+                    return mLastLocalControl = SignalProcessor.Vessel.parts.Any(p => p.isControlSource && !p.FindModulesImplementing<ISignalProcessor>().Any());
+                }
+                else
+                {
+                    return mLastLocalControl;
+                }
+            }
+        }
 
 
         public IEnumerable<IAntenna> Antennas
@@ -28,11 +44,22 @@ namespace RemoteTech
             }
         }
 
-        public FlightComputer FlightComputer { get { return SignalProcessor.FlightComputer; } }
+        public FlightComputer FlightComputer { 
+            get 
+            {
+                if (SignalProcessor.FlightComputer != null)
+                {
+                    return SignalProcessor.FlightComputer;
+                }
+                else
+                {
+                    return null;
+                }
+            } 
+        }
 
         // Helpers
         public List<NetworkRoute<ISatellite>> Connections { get { return RTCore.Instance.Network[this]; } }
-        public bool LocalControl { get { return FlightComputer.LocalControl; } }
 
         public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes)
         {
