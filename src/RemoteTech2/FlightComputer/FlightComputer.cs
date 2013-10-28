@@ -81,12 +81,13 @@ namespace RemoteTech
         public void OnFixedUpdate()
         {
             mVessel.OnFlyByWire -= OnFlyByWirePre;
+            mVessel.OnFlyByWire -= OnFlyByWirePost;
             mVessel = mParent.Vessel;
-            mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire;
+            mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire + OnFlyByWirePost;
 
             var satellite = RTCore.Instance.Satellites[mParent.Guid];
             if (satellite == null || satellite.SignalProcessor != mParent) return;
-            if (mParent.Powered == false) return;
+            if (!mParent.Powered) return;
             if (mVessel.packed) return;
             PopCommand();
         }
@@ -106,17 +107,11 @@ namespace RemoteTech
                 delayed = mFlightCtrlBuffer.Dequeue().State;
             }
 
-            if (!InputAllowed)
-            {
-                delayed.Neutralize();
-            }
-
             fcs.CopyFrom(delayed);
         }
 
         private void PopCommand()
         {
-            if (!mParent.Powered) return;
             if (mCommandBuffer.Count > 0)
             {
                 for (int i = 0; i < mCommandBuffer.Count && mCommandBuffer[i].TimeStamp < RTUtil.GameTime; i++)
@@ -178,7 +173,17 @@ namespace RemoteTech
             }
 
             PopFlightCtrlState(fcs);
-            mPreviousFcs.CopyFrom(fcs);
+        }
+
+        private void OnFlyByWirePost(FlightCtrlState fcs)
+        {
+            var satellite = RTCore.Instance.Satellites[mParent.Guid];
+            if (satellite == null || satellite.SignalProcessor != mParent) return;
+
+            if (!InputAllowed)
+            {
+                fcs.Neutralize();
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

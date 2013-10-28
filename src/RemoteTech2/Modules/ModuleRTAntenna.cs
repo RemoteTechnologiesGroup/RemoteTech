@@ -10,7 +10,7 @@ namespace RemoteTech
     public class ModuleRTAntenna : PartModule, IAntenna
     {
         public String Name { get { return part.partInfo.title; } }
-        public Guid Guid { get { return vessel.id; } }
+        public Guid Guid { get { return mRegisteredId; } }
         public bool Powered { get { return IsRTPowered; } }
         public bool Activated { get { return IsRTActive; } set { SetState(value); } }
         public bool Animating { get { return mDeployFxModules.Any(fx => fx.GetScalar > 0.1f && fx.GetScalar < 0.9f); } }

@@ -43,6 +43,10 @@ namespace RemoteTech
             GUILayout.BeginVertical(GUILayout.Width(300), GUILayout.Height(500));
             {
                 mAntennaFragment.Draw();
+                if (GUILayout.Button("Close", HighLogic.Skin.button))
+                {
+                    Hide();
+                }
             }
             GUILayout.EndVertical();
             base.Window(uid);

@@ -10,7 +10,7 @@ namespace RemoteTech
         public String Name { get { return String.Format("ModuleSPUPassive({0})", VesselName); } }
         public String VesselName { get { return vessel.vesselName; } set { vessel.vesselName = value; } }
         public bool VesselLoaded { get { return vessel.loaded; } }
-        public Guid Guid { get { return vessel.id; } }
+        public Guid Guid { get { return mRegisteredId; } }
         public Vector3 Position { get { return vessel.GetWorldPos3D(); } }
         public CelestialBody Body { get { return vessel.mainBody; } }
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(vessel); } }
@@ -30,7 +30,8 @@ namespace RemoteTech
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
-                mRegisteredId = RTCore.Instance.Satellites.Register(vessel, this);
+                mRegisteredId = vessel.id; 
+                RTCore.Instance.Satellites.Register(vessel, this);
             }
         }
 
@@ -55,7 +56,8 @@ namespace RemoteTech
             if ((mRegisteredId != vessel.id))
             {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
-                mRegisteredId = RTCore.Instance.Satellites.Register(vessel, this);
+                mRegisteredId = vessel.id; 
+                RTCore.Instance.Satellites.Register(vessel, this);
             }
         }
     }

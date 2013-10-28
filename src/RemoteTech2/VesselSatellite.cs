@@ -13,12 +13,11 @@ namespace RemoteTech
         public Vector3 Position { get { return SignalProcessor.Position; } }
         public CelestialBody Body { get { return SignalProcessor.Body; } }
         public List<ISignalProcessor> SignalProcessors { get; set; }
-        public ISignalProcessor SignalProcessor { get { return SignalProcessors.FirstOrDefault(s => s.IsRoot) ?? SignalProcessors[0]; } }
+        public ISignalProcessor SignalProcessor { get { return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors[0]; } }
 
         public bool Powered { get { return SignalProcessors.Any(s => s.Powered); } }
         public bool IsCommandStation { get { return SignalProcessors.Any(s => s.IsCommandStation); } }
-        private int mLastFrame;
-        private bool mLastLocalControl;
+
         public bool HasLocalControl
         {
             get
@@ -69,6 +68,8 @@ namespace RemoteTech
             } 
         }
 
+        private int mLastFrame;
+        private bool mLastLocalControl;
         public VesselSatellite(List<ISignalProcessor> parts)
         {
             if (parts == null) throw new ArgumentNullException();

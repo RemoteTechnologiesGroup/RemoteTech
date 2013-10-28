@@ -51,7 +51,7 @@ namespace RemoteTech
             }
             mWindows[mGuid] = this;
             Enabled = true;
-            RenderingManager.AddToPostDrawQueue(5, Draw);
+            RenderingManager.AddToPostDrawQueue(0, Draw);
             EZGUIPointerDisablePatcher.Register(RequestPosition);
         }
 
@@ -59,7 +59,7 @@ namespace RemoteTech
         {
             mWindows.Remove(mGuid);
             Enabled = false;
-            RenderingManager.RemoveFromPostDrawQueue(5, Draw);
+            RenderingManager.RemoveFromPostDrawQueue(0, Draw);
             EZGUIPointerDisablePatcher.Unregister(RequestPosition);
         }
 
@@ -82,14 +82,7 @@ namespace RemoteTech
                 Position.width = 0;
                 Position.height = 0;
             }
-            if (Title == null)
-            {
-                Position = GUILayout.Window(mGuid.GetHashCode(), Position, Window, Title, Frame);
-            }
-            else
-            {
-                Position = GUILayout.Window(mGuid.GetHashCode(), Position, Window, Title, HighLogic.Skin.window);
-            }
+            Position = GUILayout.Window(mGuid.GetHashCode(), Position, Window, Title, Title == null ? Frame : HighLogic.Skin.window);
             if (Event.current.type == EventType.Repaint)
             {
                 switch (Alignment)
@@ -110,13 +103,6 @@ namespace RemoteTech
                         Position.x = Screen.width - Position.width;
                         Position.y = 0;
                         break;
-                }
-            }
-            if (Title != null)
-            {
-                if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
-                {
-                    Hide();
                 }
             }
         }
