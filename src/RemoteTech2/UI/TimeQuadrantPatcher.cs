@@ -188,7 +188,6 @@ namespace RemoteTech
         {
             if (mBackup != null)
             {
-                GUI.depth = 0;
                 Vector2 screenCoord = ScreenSafeUI.referenceCam.WorldToScreenPoint(mBackup.TimeQuadrant.timeQuadrantTab.transform.position);
                 Rect screenPos = new Rect(5.0f, Screen.height - screenCoord.y + 11f, 81, 18);
 

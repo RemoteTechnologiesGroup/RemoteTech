@@ -51,7 +51,7 @@ namespace RemoteTech
             }
             mWindows[mGuid] = this;
             Enabled = true;
-            RenderingManager.AddToPostDrawQueue(0, Draw);
+            RenderingManager.AddToPostDrawQueue(5, Draw);
             EZGUIPointerDisablePatcher.Register(RequestPosition);
         }
 
@@ -59,7 +59,7 @@ namespace RemoteTech
         {
             mWindows.Remove(mGuid);
             Enabled = false;
-            RenderingManager.RemoveFromPostDrawQueue(0, Draw);
+            RenderingManager.RemoveFromPostDrawQueue(5, Draw);
             EZGUIPointerDisablePatcher.Unregister(RequestPosition);
         }
 

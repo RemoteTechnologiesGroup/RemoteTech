@@ -373,6 +373,7 @@ namespace RemoteTech
             GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
             GUI_DishRange = RTUtil.FormatSI(Dish, "m");
             GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
+            Events["EventTarget"].guiName = RTUtil.TargetName(Target);
         }
 
         private void HandleDynamicPressure()
