@@ -130,10 +130,10 @@ namespace RemoteTech
         {
             bool prev_state = IsRTActive;
             IsRTActive = state && !IsRTBroken;
-            Events["EventOpen"].guiActive = !IsRTActive && !IsRTBroken;
-            Events["EventOpen"].active = Events["EventOpen"].guiActive;
-            Events["EventClose"].guiActive = IsRTActive && !IsRTBroken;
-            Events["EventClose"].active = Events["EventClose"].guiActive;
+            Events["EventOpen"].guiActive = Events["OverrideOpen"].guiActiveUnfocused = !IsRTActive && !IsRTBroken;
+            Events["EventOpen"].active = Events["OverrideOpen"].guiActiveUnfocused = Events["EventOpen"].guiActive;
+            Events["EventClose"].guiActive = Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
+            Events["EventClose"].active = Events["OverrideClose"].guiActiveUnfocused = Events["EventClose"].guiActive;
             UpdateContext();
             if(IsRTActive != prev_state) StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
             var satellite = RTCore.Instance.Network[Guid];
@@ -201,11 +201,25 @@ namespace RemoteTech
             EventClose();
         }
 
-        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 10, externalToEVAOnly = true, guiName = "[EVA] Set Target")]
+        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Set Target")]
         [IgnoreSignalDelayAttribute]
         public void OverrideTarget()
         {
             (new AntennaWindow(this)).Show();
+        }
+
+        [KSPEvent(name = "OverrideOpen", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Open")]
+        [IgnoreSignalDelayAttribute]
+        public void OverrideOpen()
+        {
+            EventOpen();
+        }
+
+        [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Close")]
+        [IgnoreSignalDelayAttribute]
+        public void OverrideClose()
+        {
+            EventClose();
         }
 
         public void OnConnectionRefresh()

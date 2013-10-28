@@ -102,6 +102,7 @@ namespace RemoteTech
         private void PopFlightCtrlState(FlightCtrlState fcs)
         {
             FlightCtrlState delayed = mPreviousFcs;
+            mPreviousFcs.Neutralize();
             while (mFlightCtrlBuffer.Count > 0 && mFlightCtrlBuffer.Peek().TimeStamp < RTUtil.GameTime)
             {
                 delayed = mFlightCtrlBuffer.Dequeue().State;
@@ -167,12 +168,16 @@ namespace RemoteTech
             var satellite = RTCore.Instance.Satellites[mParent.Guid];
             if (satellite == null || satellite.SignalProcessor != mParent) return;
 
-            if (mVessel == FlightGlobals.ActiveVessel && InputAllowed)
+            if (mVessel == FlightGlobals.ActiveVessel && InputAllowed && !satellite.HasLocalControl)
             {
                 Enqueue(fcs);
             }
 
-            PopFlightCtrlState(fcs);
+            if (!satellite.HasLocalControl)
+            {
+                PopFlightCtrlState(fcs);
+            }
+            
         }
 
         private void OnFlyByWirePost(FlightCtrlState fcs)
@@ -184,6 +189,8 @@ namespace RemoteTech
             {
                 fcs.Neutralize();
             }
+
+            mPreviousFcs.CopyFrom(fcs);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
