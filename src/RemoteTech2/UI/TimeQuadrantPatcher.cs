@@ -72,10 +72,15 @@ namespace RemoteTech
                                                                        "texFlightYellowDown.png",
                                                                        "texFlightYellowOver.png");
             mFlightButtonRed = GUITextureButtonFactory.CreateFromFilename("texFlightRed.png",
-                                                                       "texFlightRedOver.png",
-                                                                       "texFlightRedDown.png",
-                                                                       "texFlightRedOver.png");
-
+                                                                       "texFlightRed.png",
+                                                                       "texFlightRed.png",
+                                                                       "texFlightRed.png");
+            mFlightButtonGreen.fixedHeight = mFlightButtonGreen.fixedWidth = 0;
+            mFlightButtonYellow.fixedHeight = mFlightButtonYellow.fixedWidth = 0;
+            mFlightButtonRed.fixedHeight = mFlightButtonRed.fixedWidth = 0;
+            mFlightButtonGreen.stretchHeight = mFlightButtonGreen.stretchWidth = true;
+            mFlightButtonYellow.stretchHeight = mFlightButtonYellow.stretchWidth = true;
+            mFlightButtonRed.stretchHeight = mFlightButtonRed.stretchWidth = true;
         }
 
         public void Patch()
@@ -110,14 +115,18 @@ namespace RemoteTech
             }
 
             // Set the new texture
+            float old_height = tab.renderer.material.mainTexture.height;
             Texture2D newTexture;
             RTUtil.LoadImage(out newTexture, "texTimeQuadrant.png");
+            newTexture.filterMode = FilterMode.Trilinear;
+            newTexture.wrapMode = TextureWrapMode.Clamp;
             tab.renderer.material.mainTexture = newTexture;
 
             // Apply new scale, positions
+            float scale = Screen.height / (float)GameSettings.UI_SIZE;
             tab.transform.localScale = new Vector3(tab.transform.localScale.x,
                                                    tab.transform.localScale.y,
-                                                   tab.transform.localScale.z * 1.4f);
+                                                   tab.transform.localScale.z * (tab.renderer.material.mainTexture.height / old_height));
             tab.collapsedPos += new Vector3(0, -0.013f, 0);
             tab.expandedPos += new Vector3(0, -0.013f, 0);
             foreach (Transform child in children)
@@ -188,14 +197,15 @@ namespace RemoteTech
         {
             if (mBackup != null)
             {
+                float scale = ScreenSafeUI.VerticalRatio * 900.0f / Screen.height;
                 Vector2 screenCoord = ScreenSafeUI.referenceCam.WorldToScreenPoint(mBackup.TimeQuadrant.timeQuadrantTab.transform.position);
-                Rect screenPos = new Rect(5.0f, Screen.height - screenCoord.y + 11f, 81, 18);
+                Rect screenPos = new Rect(5.0f / scale, Screen.height - screenCoord.y + 14.0f / scale, 50.0f / scale, 20.0f / scale);
 
                 GUI.Label(screenPos, DisplayText, mTextStyle);
 
-                screenPos.width = 19f;
-                screenPos.x += 84f;
-                screenPos.y += 1f;
+                screenPos.width = 21.0f / scale;
+                screenPos.x += 101 / scale;
+
                 if (GUI.Button(screenPos, "", ButtonStyle))
                 {
                     ScreenMessages.PostScreenMessage(new ScreenMessage("[FlightComputer]: Not yet implemented!", 4.0f, ScreenMessageStyle.UPPER_LEFT));
