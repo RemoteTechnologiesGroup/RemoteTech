@@ -65,7 +65,7 @@ namespace RemoteTech
                 return new_event;
             }
 
-            [IgnoreSignalDelayAttribute]
+            [IgnoreControlAttribute]
             public void Invoke()
             {
                 mPassthrough.Invoke(mEvent, mIgnoreDelay);

@@ -202,6 +202,7 @@ namespace RemoteTech
         }
 
         [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Set Target")]
+        [IgnoreControlAttribute]
         [IgnoreSignalDelayAttribute]
         public void OverrideTarget()
         {
@@ -209,6 +210,7 @@ namespace RemoteTech
         }
 
         [KSPEvent(name = "OverrideOpen", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Open")]
+        [IgnoreControlAttribute]
         [IgnoreSignalDelayAttribute]
         public void OverrideOpen()
         {
@@ -216,6 +218,7 @@ namespace RemoteTech
         }
 
         [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Close")]
+        [IgnoreControlAttribute]
         [IgnoreSignalDelayAttribute]
         public void OverrideClose()
         {
