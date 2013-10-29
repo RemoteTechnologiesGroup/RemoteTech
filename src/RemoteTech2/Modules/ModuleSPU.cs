@@ -137,29 +137,24 @@ namespace RemoteTech
             UIPartActionMenuPatcher.Wrap(vessel, (e, ignore_delay) =>
             {
                 Vessel v = e.listParent.part.vessel;
-                if (v != null && v.loaded)
+                if (v == null || FlightGlobals.ActiveVessel.isEVA) e.Invoke();
+                var vs = RTCore.Instance.Satellites[v];
+                if (vs == null) e.Invoke();
+                if (vs.HasLocalControl)
                 {
-                    var vs = RTCore.Instance.Satellites[v];
-                    if (vs != null && vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
-                    {
-                        if (ignore_delay)
-                        {
-                            e.Invoke();
-                        }
-                        else
-                        {
-                            vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
-                        }
-
-                    }
-                    else if (vs != null && vs.HasLocalControl)
+                    e.Invoke();
+                }
+                else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
+                {
+                    if (ignore_delay)
                     {
                         e.Invoke();
                     }
-                }
-                else
-                {
-                    e.Invoke();
+                    else
+                    {
+                        vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
+                    }
+
                 }
             });
         }
