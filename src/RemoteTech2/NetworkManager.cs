@@ -249,7 +249,7 @@ namespace RemoteTech
         public MissionControlSatellite()
         {
             var antennas = new List<IAntenna>();
-            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, 5000000));
+            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, 75000000));
             Antennas = antennas;
         }
 
