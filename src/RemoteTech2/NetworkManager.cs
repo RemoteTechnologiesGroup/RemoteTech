@@ -144,27 +144,30 @@ namespace RemoteTech
             var dish_b = sat_b.Antennas.Where(b => b.Target == sat_a.Guid && b.Dish > distance);
 
             var planets = RTCore.Instance.Network.Planets;
-            dish_a.Concat(sat_a.Antennas.Where(a => 
+            var planet_a = sat_a.Antennas.Where(a => 
             {
                 if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
                 Vector3 dir_cb = (planets[a.Target].position - sat_a.Position);
                 Vector3 dir_b = (sat_b.Position - sat_a.Position);
                 if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
                 return false;
-            }));
-            dish_b.Concat(sat_b.Antennas.Where(b =>
+            });
+            var planet_b = sat_b.Antennas.Where(b =>
             {
                 if (!planets.ContainsKey(b.Target) || sat_a.Body != planets[b.Target]) return false;
                 Vector3 dir_cb = (planets[b.Target].position - sat_b.Position);
                 Vector3 dir_b = (sat_a.Position - sat_b.Position);
                 if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
                 return false;
-            }));
+            });
 
-            if (omni_a.Concat(dish_a).Any() && omni_b.Concat(dish_b).Any())
+            var conn_a = omni_a.Concat(dish_a).Concat(planet_a).FirstOrDefault();
+            var conn_b = omni_b.Concat(dish_b).Concat(planet_b).FirstOrDefault();
+            if (conn_a != null && conn_b != null)
             {
-                var interfaces = omni_a.Concat(dish_a).ToList();
-                var type = interfaces.Any(a => dish_a.Contains(a)) ? LinkType.Dish : LinkType.Omni;
+                var interfaces = omni_a.Concat(dish_a).Concat(planet_a).ToList();
+                var type = LinkType.Omni;
+                if (dish_a.Concat(planet_a).Contains(conn_a) || dish_b.Concat(planet_b).Contains(conn_b)) type = LinkType.Dish;
                 return new NetworkLink<ISatellite>(sat_b, interfaces, type);
             }
             return null;

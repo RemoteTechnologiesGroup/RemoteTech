@@ -43,7 +43,8 @@ namespace RemoteTech
             ShowGUI_Status = true,
             ShowEditor_OmniRange = true,
             ShowEditor_DishRange = true,
-            ShowEditor_EnergyReq = true;
+            ShowEditor_EnergyReq = true,
+            ShowEditor_DishAngle = true;
 
         [KSPField(guiName = "Dish range")]
         public String GUI_DishRange;
@@ -121,6 +122,11 @@ namespace RemoteTech
             if (ShowEditor_EnergyReq && EnergyCost > 0)
             {
                 info.AppendFormat("Energy req.: {0}", RTUtil.FormatConsumption(EnergyCost)).AppendLine();
+            }
+
+            if (ShowEditor_DishAngle && CanTarget)
+            {
+                info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F2"));
             }
 
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());

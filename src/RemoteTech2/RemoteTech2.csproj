@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="C:\Program Files\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"/>
+  <Import Project="C:\Program Files\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -85,10 +85,12 @@
     <Compile Include="UI\AbstractWindow.cs" />
     <Compile Include="UI\AntennaFragment.cs" />
     <Compile Include="UI\AntennaWindow.cs" />
+    <Compile Include="UI\NetworkCone.cs" />
     <Compile Include="UI\EZGUIPointerDisablePatcher.cs" />
     <Compile Include="UI\FlightUIPatcher.cs" />
     <Compile Include="UI\IFragment.cs" />
     <Compile Include="UI\MapViewFragment.cs" />
+    <Compile Include="UI\NetworkLine.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
     <Compile Include="UI\SatelliteWindow.cs" />
     <Compile Include="UI\TimeQuadrantPatcher.cs" />
@@ -98,12 +100,12 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-	<PropertyGroup>
-		<PathToZip>../../GameData</PathToZip>
-		<PluginLocation>../../GameData/$(AssemblyName)/Plugins/</PluginLocation>
-		<ZipDate>$([System.DateTime]::Now.ToString(`yyyy.MM.dd.HH.mm`))</ZipDate>
+    <PropertyGroup>
+      <PathToZip>../../GameData</PathToZip>
+      <PluginLocation>../../GameData/$(AssemblyName)/Plugins/</PluginLocation>
+      <ZipDate>$([System.DateTime]::Now.ToString(`yyyy.MM.dd.HH.mm`))</ZipDate>
     </PropertyGroup>
-	<Copy DestinationFolder="$(PluginLocation)" OverwriteReadOnlyFiles="True" SkipUnchangedFiles="False" SourceFiles="$(OutputPath)$(AssemblyName).dll" />
-	<MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(PathToZip)" ZipFileName="../../dist/RemoteTech2_$(ZipDate).zip"/>
+    <Copy DestinationFolder="$(PluginLocation)" OverwriteReadOnlyFiles="True" SkipUnchangedFiles="False" SourceFiles="$(OutputPath)$(AssemblyName).dll" />
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(PathToZip)" ZipFileName="../../dist/RemoteTech2_$(ZipDate).zip" />
   </Target>
 </Project>

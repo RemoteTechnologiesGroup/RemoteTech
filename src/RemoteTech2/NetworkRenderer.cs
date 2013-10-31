@@ -12,8 +12,9 @@ namespace RemoteTech
         Omni = 1,
         Dish = 2,
         OmniDish = MapFilter.Omni | MapFilter.Dish,
-        Any = 4,
-        Path = 8
+        Planet = 4,
+        Any = 8,
+        Path = 16
     }
 
     public class NetworkRenderer : MonoBehaviour, IConfigNode
@@ -22,12 +23,13 @@ namespace RemoteTech
 
         private static Texture2D mTexMark;
         private HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();
-        private List<VectorLine> mLines = new List<VectorLine>();
+        private List<NetworkLine> mLines = new List<NetworkLine>();
+        private List<NetworkCone> mCones = new List<NetworkCone>();
 
-        private bool ShowOmni { get { return (Filter & (MapFilter.Any | MapFilter.Omni)) == (MapFilter.Any | MapFilter.Omni); } }
-        private bool ShowDish { get { return (Filter & (MapFilter.Any | MapFilter.Dish)) == (MapFilter.Any | MapFilter.Dish); } }
-        private bool ShowPath { get { return (Filter & MapFilter.Path) == MapFilter.Path || ShowAll; } }
-        private bool ShowAll { get { return (Filter & MapFilter.Any) == MapFilter.Any; } }
+        public bool ShowOmni { get { return (Filter & (MapFilter.Any | MapFilter.Omni)) == (MapFilter.Any | MapFilter.Omni); } }
+        public bool ShowDish { get { return (Filter & (MapFilter.Any | MapFilter.Dish)) == (MapFilter.Any | MapFilter.Dish); } }
+        public bool ShowPath { get { return (Filter & MapFilter.Path) == MapFilter.Path || ShowAll; } }
+        public bool ShowAll { get { return (Filter & MapFilter.Any) == MapFilter.Any; } }
 
         static NetworkRenderer()
         {
@@ -72,14 +74,8 @@ namespace RemoteTech
         {
             if (MapView.MapIsEnabled)
             {
-                UpdateLineCache();
-                foreach (VectorLine vl in mLines)
-                {
-                    if (MapView.Draw3DLines)
-                        Vector.DrawLine3D(vl);
-                    else
-                        Vector.DrawLine(vl);
-                }
+                UpdateNetworkEdges();
+                UpdateNetworkCones();
             }
         }
 
@@ -89,15 +85,42 @@ namespace RemoteTech
             {
                 foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(new[] { RTCore.Instance.Network.MissionControl }))
                 {
-                    Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(ScaledSpace.LocalToScaledSpace(s.Position));
+                    var world_pos = ScaledSpace.LocalToScaledSpace(s.Position);
+                    if (MapView.MapCamera.transform.InverseTransformPoint(world_pos).z < 0f) continue;
+                    Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(world_pos);
                     Rect screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
-
                     Graphics.DrawTexture(screenRect, mTexMark, 0, 0, 0, 0);
                 }
             }
         }
 
-        private void UpdateLineCache()
+        private void UpdateNetworkCones()
+        {
+            var antennas = RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Network.Planets.ContainsKey(a.Target)).ToList();
+            int oldLength = mCones.Count;
+            int newLength = antennas.Count;
+
+            // Free any unused lines
+            for (int i = newLength; i < oldLength; i++)
+            {
+                mCones[i].Destroy();
+            }
+            mCones.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
+            mCones.AddRange(Enumerable.Repeat<NetworkCone>(null, Math.Max(newLength - oldLength, 0)));
+
+            for (int i = 0; i < newLength; i++)
+            {
+                mCones[i] = mCones[i] ?? NetworkCone.Instantiate();
+                mCones[i].Material = MapView.fetch.orbitLinesMaterial;
+                mCones[i].LineWidth = 2.0f;
+                mCones[i].Antenna = antennas[i];
+                mCones[i].Planet = RTCore.Instance.Network.Planets[antennas[i].Target];
+                mCones[i].Color = Color.gray;
+                mCones[i].Active = true;
+            }
+        }
+
+        private void UpdateNetworkEdges()
         {
             int oldLength = mLines.Count;
             int newLength = mEdges.Count;
@@ -105,43 +128,22 @@ namespace RemoteTech
             // Free any unused lines
             for (int i = newLength; i < oldLength; i++)
             {
-                VectorLine line = mLines[i];
-                Vector.DestroyLine(ref line);
+                mLines[i].Destroy();
             }
-            if (newLength < oldLength)
-            {
-                mLines.RemoveRange(newLength, oldLength - newLength);
-            }
+            mLines.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
+            mLines.AddRange(Enumerable.Repeat<NetworkLine>(null, Math.Max(newLength - oldLength, 0)));
 
             // Iterate over all satellites, updating or creating new lines.
-            HashSet<BidirectionalEdge<ISatellite>>.Enumerator it = mEdges.GetEnumerator();
+            var it = mEdges.GetEnumerator();
             for (int i = 0; i < newLength; i++)
             {
                 it.MoveNext();
-                var newPoints = new Vector3[] {
-                    ScaledSpace.LocalToScaledSpace(it.Current.A.Position),
-                    ScaledSpace.LocalToScaledSpace(it.Current.B.Position)
-                };
-                Vector.Active(mLines[AssignVectorLine(i, newPoints, it.Current)], CheckVisibility(it.Current));
-            }
-        }
-
-        private int AssignVectorLine(int i, Vector3[] newPoints, BidirectionalEdge<ISatellite> edge)
-        {
-            if (mLines.Count <= i)
-            {
-                mLines.Add(new VectorLine("Path", newPoints, CheckColor(edge),
-                                          MapView.fetch.orbitLinesMaterial, 5.0f,
-                                          LineType.Discrete));
-                mLines[mLines.Count - 1].layer = 31;
-                mLines[mLines.Count - 1].mesh.MarkDynamic();
-                return mLines.Count - 1;
-            }
-            else
-            {
-                mLines[i].Resize(newPoints);
-                Vector.SetColor(mLines[i], CheckColor(edge));
-                return i;
+                mLines[i] = mLines[i] ?? NetworkLine.Instantiate();
+                mLines[i].Material = MapView.fetch.orbitLinesMaterial;
+                mLines[i].LineWidth = 5.0f;
+                mLines[i].Edge = it.Current;
+                mLines[i].Color = CheckColor(it.Current);
+                mLines[i].Active = CheckVisibility(it.Current);
             }
         }
 
@@ -202,8 +204,7 @@ namespace RemoteTech
         {
             for (int i = 0; i < mLines.Count; i++)
             {
-                VectorLine line = mLines[i];
-                Vector.DestroyLine(ref line);
+                mLines[i].Destroy();
             }
             DestroyImmediate(this);
         }
