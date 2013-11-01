@@ -15,6 +15,7 @@ namespace RemoteTech
             public const int Omni = 4;
             public const int OmniDish = 5;
             public const int Empty = 6;
+            public const int Planet = 7;
         }
 
         private static readonly Texture2D[] mTextures;
@@ -28,7 +29,7 @@ namespace RemoteTech
 
         static MapViewConfigFragment()
         {
-            mTextures = new Texture2D[7];
+            mTextures = new Texture2D[8];
             RTUtil.LoadImage(out mTextures[0], "texBackground.png");
             RTUtil.LoadImage(out mTextures[1], "texPath.png");
             RTUtil.LoadImage(out mTextures[2], "texAll.png");
@@ -36,6 +37,7 @@ namespace RemoteTech
             RTUtil.LoadImage(out mTextures[4], "texOmni.png");
             RTUtil.LoadImage(out mTextures[5], "texOmniDish.png");
             RTUtil.LoadImage(out mTextures[6], "texEmpty.png");
+            RTUtil.LoadImage(out mTextures[7], "texPlanet.png");
 
             mStyleButton = GUITextureButtonFactory.CreateFromFilename("texButton.png");
             mStyleButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray.png");
@@ -60,10 +62,19 @@ namespace RemoteTech
             get
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
-                if ((mask & MapFilter.Any) == MapFilter.Any)
-                    return mTextures[Texture.Any];
                 if ((mask & MapFilter.Path) == MapFilter.Path)
                     return mTextures[Texture.Path];
+                return mTextures[Texture.Empty];
+            }
+        }
+
+        private Texture2D TexturePlanetButton
+        {
+            get
+            {
+                MapFilter mask = RTCore.Instance.Renderer.Filter;
+                if ((mask & MapFilter.Planet) == MapFilter.Planet)
+                    return mTextures[Texture.Planet];
                 return mTextures[Texture.Empty];
             }
         }
@@ -73,7 +84,7 @@ namespace RemoteTech
             get
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
-                if ((mask & MapFilter.OmniDish) == MapFilter.OmniDish)
+                if ((mask & (MapFilter.Omni | MapFilter.Dish)) == (MapFilter.Omni | MapFilter.Dish))
                     return mTextures[Texture.OmniDish];
                 if ((mask & MapFilter.Omni) == MapFilter.Omni)
                     return mTextures[Texture.Omni];
@@ -124,6 +135,8 @@ namespace RemoteTech
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button(TextureComButton, mStyleButton))
                         OnClickCompath();
+                    if (GUILayout.Button(TexturePlanetButton, mStyleButton))
+                        OnClickPlanet();
                     if (GUILayout.Button(TextureTypeButton, mStyleButton))
                         OnClickType();
                     if (GUILayout.Button("", StyleStatusButton))
@@ -157,19 +170,6 @@ namespace RemoteTech
             if ((mask & MapFilter.Path) == MapFilter.Path)
             {
                 RTCore.Instance.Renderer.Filter &= ~MapFilter.Path;
-                RTCore.Instance.Renderer.Filter |= MapFilter.Any;
-                return;
-            }
-            if ((mask & MapFilter.Any) == MapFilter.Any)
-            {
-                RTCore.Instance.Renderer.Filter &= ~MapFilter.Any;
-                RTCore.Instance.Renderer.Filter |= MapFilter.None;
-                return;
-            }
-            if ((mask & MapFilter.None) == MapFilter.None)
-            {
-                RTCore.Instance.Renderer.Filter &= ~MapFilter.None;
-                RTCore.Instance.Renderer.Filter |= MapFilter.Path;
                 return;
             }
             RTCore.Instance.Renderer.Filter |= MapFilter.Path;
@@ -178,10 +178,9 @@ namespace RemoteTech
         private void OnClickType()
         {
             MapFilter mask = RTCore.Instance.Renderer.Filter;
-            if ((mask & MapFilter.OmniDish) == MapFilter.OmniDish)
+            if ((mask & (MapFilter.Omni | MapFilter.Dish)) == (MapFilter.Omni | MapFilter.Dish))
             {
-                RTCore.Instance.Renderer.Filter &= ~MapFilter.OmniDish;
-                RTCore.Instance.Renderer.Filter |= MapFilter.Omni;
+                RTCore.Instance.Renderer.Filter &= ~((MapFilter.Omni | MapFilter.Dish));
                 return;
             }
             if ((mask & MapFilter.Omni) == MapFilter.Omni)
@@ -192,11 +191,21 @@ namespace RemoteTech
             }
             if ((mask & MapFilter.Dish) == MapFilter.Dish)
             {
-                RTCore.Instance.Renderer.Filter &= ~MapFilter.Dish;
-                RTCore.Instance.Renderer.Filter |= MapFilter.OmniDish;
+                RTCore.Instance.Renderer.Filter |= (MapFilter.Omni | MapFilter.Dish);
                 return;
             }
-            RTCore.Instance.Renderer.Filter |= MapFilter.OmniDish;
+            RTCore.Instance.Renderer.Filter |= MapFilter.Omni;
+        }
+
+        private void OnClickPlanet()
+        {
+            MapFilter mask = RTCore.Instance.Renderer.Filter;
+            if ((mask & MapFilter.Planet) == MapFilter.Planet)
+            {
+                RTCore.Instance.Renderer.Filter &= ~MapFilter.Planet;
+                return;
+            }
+            RTCore.Instance.Renderer.Filter |= MapFilter.Planet;
         }
 
         private void OnClickStatus()

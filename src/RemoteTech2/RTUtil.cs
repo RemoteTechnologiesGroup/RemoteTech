@@ -279,27 +279,36 @@ namespace RemoteTech
             }
         }
 
-        public static TSource MinElement<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> selector, IComparer<TKey> comparer)
+        // Thanks Fractal_UK!
+        public static bool IsTechUnlocked(string techid)
         {
-            using (IEnumerator<TSource> sourceIterator = source.GetEnumerator())
+            if (techid.Equals("None")) return true;
+            try
             {
-                if (!sourceIterator.MoveNext())
+                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) return true;
+                string persistentfile = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/persistent.sfs";
+                ConfigNode config = ConfigNode.Load(persistentfile);
+                ConfigNode gameconf = config.GetNode("GAME");
+                ConfigNode[] scenarios = gameconf.GetNodes("SCENARIO");
+                foreach (ConfigNode scenario in scenarios)
                 {
-                    throw new InvalidOperationException("Sequence was empty");
-                }
-                TSource min = sourceIterator.Current;
-                TKey minKey = selector(min);
-                while (sourceIterator.MoveNext())
-                {
-                    TSource candidate = sourceIterator.Current;
-                    TKey candidateProjected = selector(candidate);
-                    if (comparer.Compare(candidateProjected, minKey) < 0)
+                    if (scenario.GetValue("name") == "ResearchAndDevelopment")
                     {
-                        min = candidate;
-                        minKey = candidateProjected;
+                        ConfigNode[] techs = scenario.GetNodes("Tech");
+                        foreach (ConfigNode technode in techs)
+                        {
+                            if (technode.GetValue("id") == techid)
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
-                return min;
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

@@ -75,7 +75,11 @@ namespace RemoteTech
 
         public void OnUpdate()
         {
-
+            var satellite = RTCore.Instance.Satellites[mParent.Guid];
+            if (satellite == null || satellite.SignalProcessor != mParent) return;
+            if (!mParent.Powered) return;
+            if (mVessel.packed) return;
+            PopCommand();
         }
 
         public void OnFixedUpdate()
@@ -84,12 +88,6 @@ namespace RemoteTech
             mVessel.OnFlyByWire -= OnFlyByWirePost;
             mVessel = mParent.Vessel;
             mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire + OnFlyByWirePost;
-
-            var satellite = RTCore.Instance.Satellites[mParent.Guid];
-            if (satellite == null || satellite.SignalProcessor != mParent) return;
-            if (!mParent.Powered) return;
-            if (mVessel.packed) return;
-            PopCommand();
         }
 
         private void Enqueue(FlightCtrlState fs)

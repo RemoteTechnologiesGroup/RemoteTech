@@ -38,7 +38,7 @@ namespace RemoteTech
                     }
                     GUILayout.EndVertical();
                 }
-                GUILayout.BeginVertical(GUILayout.Width(250));
+                GUILayout.BeginVertical();
                 {
                     DrawSelf();
                 }
@@ -66,7 +66,7 @@ namespace RemoteTech
             }
             GUILayout.EndHorizontal();
 
-            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition,  GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.ExpandHeight(true), GUILayout.Width(250));
             {
                 Color pushColor = GUI.contentColor;
                 TextAnchor pushAlign = GUI.skin.button.alignment;

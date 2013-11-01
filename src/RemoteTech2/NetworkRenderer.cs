@@ -11,13 +11,11 @@ namespace RemoteTech
         None = 0,
         Omni = 1,
         Dish = 2,
-        OmniDish = MapFilter.Omni | MapFilter.Dish,
         Planet = 4,
-        Any = 8,
-        Path = 16
+        Path = 8
     }
 
-    public class NetworkRenderer : MonoBehaviour, IConfigNode
+    public class NetworkRenderer : MonoBehaviour
     {
         public MapFilter Filter { get; set; }
 
@@ -26,10 +24,10 @@ namespace RemoteTech
         private List<NetworkLine> mLines = new List<NetworkLine>();
         private List<NetworkCone> mCones = new List<NetworkCone>();
 
-        public bool ShowOmni { get { return (Filter & (MapFilter.Any | MapFilter.Omni)) == (MapFilter.Any | MapFilter.Omni); } }
-        public bool ShowDish { get { return (Filter & (MapFilter.Any | MapFilter.Dish)) == (MapFilter.Any | MapFilter.Dish); } }
-        public bool ShowPath { get { return (Filter & MapFilter.Path) == MapFilter.Path || ShowAll; } }
-        public bool ShowAll { get { return (Filter & MapFilter.Any) == MapFilter.Any; } }
+        public bool ShowOmni { get { return (Filter & MapFilter.Omni) == MapFilter.Omni; } }
+        public bool ShowDish { get { return (Filter & MapFilter.Dish) == MapFilter.Dish; } }
+        public bool ShowPath { get { return (Filter & MapFilter.Path) == MapFilter.Path; } }
+        public bool ShowPlanet { get { return (Filter & MapFilter.Planet) == MapFilter.Planet; } }
 
         static NetworkRenderer()
         {
@@ -45,29 +43,11 @@ namespace RemoteTech
             }
 
             renderer = MapView.MapCamera.gameObject.AddComponent<NetworkRenderer>();
-            renderer.Filter = MapFilter.Any | MapFilter.OmniDish;
+            renderer.Filter = MapFilter.Path | MapFilter.Omni | MapFilter.Dish;
             RTCore.Instance.Network.OnLinkAdd += renderer.OnLinkAdd;
             RTCore.Instance.Network.OnLinkRemove += renderer.OnLinkRemove;
             RTCore.Instance.Satellites.OnUnregister += renderer.OnSatelliteUnregister;
             return renderer;
-        }
-
-        public void Load(ConfigNode node)
-        {
-            try
-            {
-                if (!node.HasValue("MapFilter")) throw new ArgumentException("MapFilter non-exist");
-                Filter = (MapFilter)Enum.Parse(typeof(MapFilter), node.GetValue("MapFilter"));
-            }
-            catch (ArgumentException)
-            {
-                Filter = MapFilter.Any | MapFilter.OmniDish;
-            }
-        }
-
-        public void Save(ConfigNode node)
-        {
-            node.AddValue("MapFilter", Filter.ToString());
         }
 
         public void OnPreRender()
@@ -116,7 +96,7 @@ namespace RemoteTech
                 mCones[i].Antenna = antennas[i];
                 mCones[i].Planet = RTCore.Instance.Network.Planets[antennas[i].Target];
                 mCones[i].Color = Color.gray;
-                mCones[i].Active = true;
+                mCones[i].Active = ShowPlanet;
             }
         }
 
@@ -206,6 +186,12 @@ namespace RemoteTech
             {
                 mLines[i].Destroy();
             }
+            mLines.Clear();
+            for (int i = 0; i < mCones.Count; i++)
+            {
+                mCones[i].Destroy();
+            }
+            mCones.Clear();
             DestroyImmediate(this);
         }
 

@@ -11,8 +11,8 @@ namespace RemoteTech
     {
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return vessel.id; } }
-        public bool Powered { get { return part.isControllable; } }
-        public bool Activated { get { return true; } set { return; } }
+        public bool Powered { get { return part.isControllable && Activated; } }
+        public bool Activated { get { return Unlocked; } set { return; } }
         public bool Animating { get { return false; } }
 
         public bool CanTarget { get { return false; } }
@@ -20,8 +20,10 @@ namespace RemoteTech
 
         public float Dish { get { return 0.0f; } }
         public double Radians { get { return 1.0f; } }
-        public float Omni { get { return OmniRange; } }
+        public float Omni { get { return Activated ? OmniRange : 0.0f; } }
         public float Consumption { get { return 0.0f; } }
+
+        private bool Unlocked { get { return ResearchAndDevelopment.GetTechnologyState(TechRequired) == RDTech.State.Available || TechRequired.Equals("None"); } }
 
         [KSPField]
         public bool
@@ -30,6 +32,10 @@ namespace RemoteTech
 
         [KSPField(guiName = "Omni range")]
         public String GUI_OmniRange;
+
+        [KSPField]
+        public String
+            TechRequired = "None";
 
         [KSPField]
         public float
@@ -59,26 +65,20 @@ namespace RemoteTech
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
 
-        private enum State
-        {
-            Off,
-            Operational,
-            NoResources,
-            Malfunction,
-        }
-
         private Guid mRegisteredId;
 
         public override string GetInfo()
         {
             var info = new StringBuilder();
-
-            if (ShowEditor_OmniRange && OmniRange > 0)
+            if (ShowEditor_OmniRange && Unlocked)
             {
-                info.AppendFormat("Integrated Omni: {0} / {1}", RTUtil.FormatSI(OmniRange, "m"), RTUtil.FormatSI(OmniRange, "m")).AppendLine();
+                if(!TechRequired.Equals("None")) {
+                    info.Append("<Technology Perk>").AppendLine();
+                }
+                info.AppendFormat("Integrated Omni: {1} always-on", RTUtil.FormatSI(OmniRange, "m"), RTUtil.FormatSI(OmniRange, "m"));
             }
 
-            return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
+            return info.ToString();
         }
 
         public virtual void SetState(bool state)
@@ -114,8 +114,6 @@ namespace RemoteTech
 
         public override void OnStart(StartState state)
         {
-            Fields["GUI_OmniRange"].guiActive = ShowGUI_OmniRange;
-
             if (RTCore.Instance != null)
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
@@ -126,6 +124,11 @@ namespace RemoteTech
                 RTOmniRange = OmniRange;
                 GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
             }
+        }
+
+        private void FixedUpdate()
+        {
+            Fields["GUI_OmniRange"].guiActive = Activated && ShowGUI_OmniRange;
         }
 
         private void AddTransmitter()
@@ -212,6 +215,31 @@ namespace RemoteTech
         public override string ToString()
         {
             return String.Format("ModuleRTAntennaPassive({0}, {1})", Name, GetInstanceID());
+        }
+    }
+
+    [KSPAddon(KSPAddon.Startup.EditorAny, false)]
+    public class ModuleRTAntennaPassive_ReloadPartInfo : MonoBehaviour
+    {
+        public void Start()
+        {
+            StartCoroutine(RefreshPartInfo());
+        }
+
+        private IEnumerator RefreshPartInfo()
+        {
+            yield return null;
+            foreach (var ap in PartLoader.LoadedPartsList.Where(ap => ap.partPrefab.Modules != null && ap.partPrefab.Modules.Contains("ModuleRTAntennaPassive")))
+            {
+                var new_info = new StringBuilder();
+                foreach (PartModule pm in ap.partPrefab.Modules)
+                {
+                    var info = pm.GetInfo();
+                    new_info.Append(info);
+                    if (info != String.Empty) new_info.AppendLine();
+                }
+                ap.moduleInfo = new_info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
+            }
         }
     }
 }
