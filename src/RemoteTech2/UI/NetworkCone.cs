@@ -134,7 +134,7 @@ namespace RemoteTech
 
         public void Destroy()
         {
-            if (gameObject != null) GameObject.Destroy(gameObject);
+            DestroyImmediate(this);
         }
     }
 }
