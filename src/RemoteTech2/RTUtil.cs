@@ -1,5 +1,6 @@
 ﻿using System;
 using KSP.IO;
+using System.Diagnostics;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using Object = System.Object;
+using Debug = UnityEngine.Debug;
 
 namespace RemoteTech
 {
@@ -114,16 +116,19 @@ namespace RemoteTech
             return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
         }
 
+        [Conditional("DEBUG")]
         public static void Log(String message)
         {
             Debug.Log("RemoteTech: " + message);
         }
 
+        [Conditional("DEBUG")]
         public static void Log(String message, params Object[] param)
         {
             Debug.Log(String.Format("RemoteTech: " + message, param));
         }
 
+        [Conditional("DEBUG")]
         public static void Log(String message, params UnityEngine.Object[] param)
         {
             Debug.Log(String.Format("RemoteTech: " + message, param));
