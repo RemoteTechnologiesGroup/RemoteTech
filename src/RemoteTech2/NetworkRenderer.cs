@@ -50,7 +50,7 @@ namespace RemoteTech
             return renderer;
         }
 
-        public void OnPreRender()
+        public void OnPreCull()
         {
             if (MapView.MapIsEnabled)
             {
@@ -83,7 +83,7 @@ namespace RemoteTech
             // Free any unused lines
             for (int i = newLength; i < oldLength; i++)
             {
-                mCones[i].Destroy();
+                GameObject.Destroy(mCones[i]);
             }
             mCones.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
             mCones.AddRange(Enumerable.Repeat<NetworkCone>(null, Math.Max(newLength - oldLength, 0)));
@@ -108,7 +108,7 @@ namespace RemoteTech
             // Free any unused lines
             for (int i = newLength; i < oldLength; i++)
             {
-                mLines[i].Destroy();
+                GameObject.Destroy(mLines[i]);
             }
             mLines.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
             mLines.AddRange(Enumerable.Repeat<NetworkLine>(null, Math.Max(newLength - oldLength, 0)));
@@ -171,7 +171,6 @@ namespace RemoteTech
 
         private void OnLinkAdd(ISatellite a, NetworkLink<ISatellite> link)
         {
-            // RTUtil.Log("Link: {0}", mEdges);
             mEdges.Add(new BidirectionalEdge<ISatellite>(a, link.Target, link.Port));
         }
 
@@ -184,12 +183,12 @@ namespace RemoteTech
         {
             for (int i = 0; i < mLines.Count; i++)
             {
-                mLines[i].Destroy();
+                GameObject.Destroy(mLines[i]);
             }
             mLines.Clear();
             for (int i = 0; i < mCones.Count; i++)
             {
-                mCones[i].Destroy();
+                GameObject.Destroy(mCones[i]);
             }
             mCones.Clear();
             DestroyImmediate(this);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RemoteTech
 {
-    public class NetworkLink<T>
+    public class NetworkLink<T> : IEquatable<NetworkLink<T>>
     {
         public readonly T Target;
         public readonly List<IAntenna> Interfaces;
@@ -14,6 +14,13 @@ namespace RemoteTech
             Target = sat;
             Interfaces = ant;
             Port = port;
+        }
+
+        public bool Equals(NetworkLink<T> o)
+        {
+            if (o == null) return false;
+            if (!Target.Equals(o.Target)) return false;
+            return true;
         }
 
         public override string ToString()

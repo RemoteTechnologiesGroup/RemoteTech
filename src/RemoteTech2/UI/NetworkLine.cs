@@ -104,9 +104,11 @@ namespace RemoteTech
             Active = false;
         }
 
-        public void Destroy()
+        public void OnDestroy()
         {
-            DestroyImmediate(this);
+            Active = false;
+            Destroy(mMeshFilter);
+            Destroy(mRenderer);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace RemoteTech
                 }
                 else if (vs.Connections.Any())
                 {
-                    return "D+" + vs.Connections[0].Delay.ToString("F6") + "s";
+                    return "D+ " + vs.Connections[0].Delay.ToString("F6") + "s";
                 }
                 return "No Connection";
             }
