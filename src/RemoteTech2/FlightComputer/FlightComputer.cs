@@ -187,12 +187,6 @@ namespace RemoteTech
             }
 
             mPreviousFcs.CopyFrom(fcs);
-
-            // MechJeb twitchy throttle fix.
-            if (mVessel == FlightGlobals.ActiveVessel)
-            {
-                FlightInputHandler.state.mainThrottle = fcs.mainThrottle;
-            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
