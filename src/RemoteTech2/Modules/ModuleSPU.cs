@@ -18,9 +18,9 @@ namespace RemoteTech
         public bool IsCommandStation { get { return IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= 6; } }
         public FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel { get { return vessel; } }
-        public bool IsRoot { get { return Vessel.GetReferenceTransformPart() == part; } }
+        public bool IsMaster { get { return Satellite != null && Satellite.SignalProcessor == (ISignalProcessor) this; } }
 
-        private ISatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
+        private VesselSatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
 
         [KSPField(isPersistant = true)]
         public bool 
@@ -154,7 +154,10 @@ namespace RemoteTech
                     {
                         vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
                     }
-
+                }
+                else
+                {
+                    ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
                 }
             });
         }

@@ -18,7 +18,7 @@ namespace RemoteTech
         public bool IsCommandStation { get { return false; } }
         public FlightComputer FlightComputer { get { return null; } }
         public Vessel Vessel { get { return vessel; } }
-        public bool IsRoot { get { return Vessel.GetReferenceTransformPart() == part; } }
+        public bool IsMaster { get { return false; } }
 
         private ISatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
 

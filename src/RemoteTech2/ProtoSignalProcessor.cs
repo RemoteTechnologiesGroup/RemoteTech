@@ -16,7 +16,7 @@ namespace RemoteTech
         public Guid Guid { get { return mVessel.id; } }
         public Vessel Vessel { get { return mVessel; } }
         public FlightComputer FlightComputer { get { return null; } }
-        public bool IsRoot { get { return true; } }
+        public bool IsMaster { get { return true; } }
 
         private readonly Vessel mVessel;
 

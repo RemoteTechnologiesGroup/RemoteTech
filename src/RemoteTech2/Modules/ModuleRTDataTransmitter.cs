@@ -55,9 +55,9 @@ namespace RemoteTech
 
         void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
         {
+            mQueue.AddRange(dataQueue);
             if (!mBusy)
             {
-                mQueue.AddRange(dataQueue);
                 StartCoroutine(Transmit());
             }
         }
