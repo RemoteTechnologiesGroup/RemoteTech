@@ -129,11 +129,6 @@ namespace RemoteTech
                 info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F2")).AppendLine();
             }
 
-            if (IsRTActive)
-            {
-                info.Append("Activated by default");
-            }
-
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
         }
 

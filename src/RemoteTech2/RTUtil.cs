@@ -100,7 +100,7 @@ namespace RemoteTech
 
         public static String FormatConsumption(double consumption)
         {
-            return consumption.ToString("F2") + "charge/s";
+            return consumption.ToString("F2") + " charge/s";
         }
 
         public static String FormatSI(double value, String unit)
