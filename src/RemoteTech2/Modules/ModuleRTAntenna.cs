@@ -129,6 +129,16 @@ namespace RemoteTech
                 info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F2")).AppendLine();
             }
 
+            if (IsRTActive)
+            {
+                info.AppendLine("Activated by default");
+            }
+
+            if (MaxQ > 0)
+            {
+                info.AppendLine("Snaps under high dynamic pressure");
+            }
+
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
         }
 
