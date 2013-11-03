@@ -76,7 +76,8 @@ namespace RemoteTech
 
         private void UpdateNetworkCones()
         {
-            var antennas = RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Network.Planets.ContainsKey(a.Target)).ToList();
+            var antennas = RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
+                                                                                        && RTCore.Instance.Network.Planets.ContainsKey(a.Target)).ToList();
             int oldLength = mCones.Count;
             int newLength = antennas.Count;
 

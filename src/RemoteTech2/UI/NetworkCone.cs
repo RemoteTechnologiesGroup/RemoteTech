@@ -68,7 +68,7 @@ namespace RemoteTech
         {
             var camera = MapView.MapCamera.camera;
 
-            var antenna_pos = ScaledSpace.LocalToScaledSpace(RTCore.Instance.Network[Antenna.Guid].Position);
+            var antenna_pos = ScaledSpace.LocalToScaledSpace(RTCore.Instance.Network[a.Guid].Position);
             var planet_pos = ScaledSpace.LocalToScaledSpace(cb.position);
 
             var up = cb.transform.up;
