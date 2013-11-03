@@ -90,9 +90,10 @@ namespace RemoteTech
                     power += part.RequestResource("ElectricCharge", PacketResourceCost - power);
                     if (power >= PacketResourceCost * 0.95)
                     {
+                        float frame = Math.Min(PacketSize, data_amount);
                         power -= PacketResourceCost;
                         GUI_Status = "Uploading Data...";
-                        data_amount -= PacketSize;
+                        data_amount -= frame;
                         packets--;
                         float progress = (science_data.dataAmount - data_amount) / science_data.dataAmount;
                         //StartCoroutine(SetFXModules_Coroutine(modules_progress, progress));
@@ -102,7 +103,7 @@ namespace RemoteTech
                         ScreenMessages.PostScreenMessage(msg_status, true);
                         if (commStream != null)
                         {
-                            commStream.StreamData(Mathf.Min(PacketSize, data_amount));
+                            commStream.StreamData(frame);
                         }
                     }
                     else
