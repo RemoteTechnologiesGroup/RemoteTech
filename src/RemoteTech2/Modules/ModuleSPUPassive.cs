@@ -24,6 +24,12 @@ namespace RemoteTech
 
         private Guid mRegisteredId;
 
+        [KSPField(isPersistant = true)]
+        public bool
+            IsRTPowered = false,
+            IsRTSignalProcessor = true,
+            IsRTCommandStation = false;
+
         public override void OnStart(StartState state)
         {
             if (state != StartState.Editor)
@@ -33,6 +39,11 @@ namespace RemoteTech
                 mRegisteredId = vessel.id; 
                 RTCore.Instance.Satellites.Register(vessel, this);
             }
+        }
+
+        private void FixedUpdate()
+        {
+            IsRTPowered = Powered;
         }
 
         public void OnDestroy()
