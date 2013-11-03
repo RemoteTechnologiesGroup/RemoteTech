@@ -117,6 +117,13 @@ namespace RemoteTech
                 Depth = 0,
             };
             mRootEntry.SubEntries.Add(mSelection);
+            mRootEntry.SubEntries.Add(new Entry()
+            {
+                Text = "Active Vessel",
+                Guid = RTCore.Instance.Network.ActiveVesselGuid,
+                Color = Color.white,
+                Depth = 0,
+            });
 
             if (Antenna == null) return;
 

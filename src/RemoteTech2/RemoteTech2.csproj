@@ -72,6 +72,7 @@
     <Compile Include="ProtoAntenna.cs" />
     <Compile Include="ProtoSignalProcessor.cs" />
     <Compile Include="RTCore.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="RTUtil.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />

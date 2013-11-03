@@ -162,6 +162,10 @@ namespace RemoteTech
                 {
                     return RTCore.Instance.Network.Planets[guid].name;
                 }
+                if (guid == RTCore.Instance.Network.ActiveVesselGuid)
+                {
+                    return "Active Vessel";
+                }
                 if ((sat = RTCore.Instance.Network[guid]) != null)
                 {
                     return sat.Name;

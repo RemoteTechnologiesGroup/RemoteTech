@@ -18,12 +18,16 @@ namespace RemoteTech
         public MissionControlSatellite MissionControl { get; private set; }
         public Dictionary<Guid, List<NetworkLink<ISatellite>>> Graph { get; private set; }
 
+        public Guid ActiveVesselGuid = new Guid("35b89a0d664c43c6bec8d0840afc97b2");
+
         public ISatellite this[Guid guid]
         {
             get
             {
                 if (guid == MissionControl.Guid)
                     return MissionControl;
+                if (guid == ActiveVesselGuid)
+                    return RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
                 return RTCore.Instance.Satellites[guid];
             }
         }
@@ -140,8 +144,14 @@ namespace RemoteTech
 
             var omni_a = sat_a.Antennas.Where(a => a.Omni > distance);
             var omni_b = sat_b.Antennas.Where(b => b.Omni > distance);
-            var dish_a = sat_a.Antennas.Where(a => a.Target == sat_b.Guid && a.Dish > distance);
-            var dish_b = sat_b.Antennas.Where(b => b.Target == sat_a.Guid && b.Dish > distance);
+            var dish_a = sat_a.Antennas.Where(a => (a.Target == sat_b.Guid || (a.Target == RTCore.Instance.Network.ActiveVesselGuid &&
+                                                                               FlightGlobals.ActiveVessel != null &&
+                                                                               sat_b.Guid == FlightGlobals.ActiveVessel.id) &&
+                                                    a.Dish > distance));
+            var dish_b = sat_b.Antennas.Where(b => (b.Target == sat_a.Guid || (b.Target == RTCore.Instance.Network.ActiveVesselGuid && 
+                                                                               FlightGlobals.ActiveVessel != null && 
+                                                                               sat_a.Guid == FlightGlobals.ActiveVessel.id) &&
+                                                    b.Dish > distance));
 
             var planets = RTCore.Instance.Network.Planets;
             var planet_a = sat_a.Antennas.Where(a => 
