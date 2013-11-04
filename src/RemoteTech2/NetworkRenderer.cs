@@ -17,7 +17,17 @@ namespace RemoteTech
 
     public class NetworkRenderer : MonoBehaviour
     {
-        public MapFilter Filter { get; set; }
+        public MapFilter Filter { 
+            get 
+            {
+                return RTCore.Instance.Settings.MapFilter;
+            } 
+            set 
+            { 
+                RTCore.Instance.Settings.MapFilter = value; 
+                RTCore.Instance.Settings.Save(); 
+            } 
+        }
 
         private static Texture2D mTexMark;
         private HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();

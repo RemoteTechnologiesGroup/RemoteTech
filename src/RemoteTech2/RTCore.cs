@@ -8,6 +8,7 @@ namespace RemoteTech
     {
         public static RTCore Instance { get; protected set; }
 
+        public Settings Settings { get; protected set; }
         public SatelliteManager Satellites { get; protected set; }
         public AntennaManager Antennas { get; protected set; }
         public NetworkManager Network { get; protected set; }
@@ -30,6 +31,7 @@ namespace RemoteTech
 
             Instance = this;
 
+            Settings = Settings.Load();
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();
             Network = new NetworkManager();
@@ -58,17 +60,17 @@ namespace RemoteTech
             var vs = Satellites[FlightGlobals.ActiveVessel];
             if (vs != null)
             {
-                GetLocks();
-                if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
+                if (vs.HasLocalControl)
                 {
+                    ReleaseLocks();
+                }
+                else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
+                {
+                    GetLocks();
                     foreach (KSPActionGroup ag in GetActivatedGroup())
                     {
                         vs.FlightComputer.Enqueue(ActionGroupCommand.Group(ag));
                     }
-                }
-                else if (vs.HasLocalControl)
-                {
-                    ReleaseLocks();
                 }
             }
             else
@@ -94,6 +96,7 @@ namespace RemoteTech
 
         private void OnDestroy()
         {
+            Settings.Save();
             mTimePatcher.Undo();
             mConfig.Dispose();
             Renderer.Detach();

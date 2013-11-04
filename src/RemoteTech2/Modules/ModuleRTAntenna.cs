@@ -30,10 +30,13 @@ namespace RemoteTech
             }
         }
 
-        public float Dish { get { return IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1DishRange : Mode0DishRange; } }
+        public float Dish { get { return IsRTBroken ? 0.0f : ((IsRTActive && IsRTPowered) ? Mode1DishRange : Mode0DishRange) * RangeMultiplier; } }
         public double Radians { get { return RTDishRadians; } }
-        public float Omni { get { return IsRTBroken ? 0.0f : (IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange; } }
-        public float Consumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost : 0.0f; } }
+        public float Omni { get { return IsRTBroken ? 0.0f : ((IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange) * RangeMultiplier; } }
+        public float Consumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost * ConsumptionMultiplier : 0.0f; } }
+
+        private float RangeMultiplier { get { return RTCore.Instance.Settings.RangeMultiplier; } }
+        private float ConsumptionMultiplier { get { return RTCore.Instance.Settings.ConsumptionMultiplier; } }
 
         [KSPField]
         public bool
@@ -113,15 +116,15 @@ namespace RemoteTech
 
             if (ShowEditor_OmniRange && Mode1OmniRange > 0)
             {
-                info.AppendFormat("Omni range: {0} / {1}", RTUtil.FormatSI(Mode0OmniRange, "m"), RTUtil.FormatSI(Mode1OmniRange, "m")).AppendLine();
+                info.AppendFormat("Omni range: {0} / {1}", RTUtil.FormatSI(Mode0OmniRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1OmniRange * RangeMultiplier, "m")).AppendLine();
             }
             if (ShowEditor_DishRange && Mode1DishRange > 0)
             {
-                info.AppendFormat("Dish range: {0} / {1}", RTUtil.FormatSI(Mode0DishRange, "m"), RTUtil.FormatSI(Mode1DishRange, "m")).AppendLine();
+                info.AppendFormat("Dish range: {0} / {1}", RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
             }
             if (ShowEditor_EnergyReq && EnergyCost > 0)
             {
-                info.AppendFormat("Energy req.: {0}", RTUtil.FormatConsumption(EnergyCost)).AppendLine();
+                info.AppendFormat("Energy req.: {0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
             }
 
             if (ShowEditor_DishAngle && CanTarget)

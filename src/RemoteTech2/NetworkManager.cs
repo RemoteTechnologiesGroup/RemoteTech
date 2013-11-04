@@ -18,7 +18,7 @@ namespace RemoteTech
         public MissionControlSatellite MissionControl { get; private set; }
         public Dictionary<Guid, List<NetworkLink<ISatellite>>> Graph { get; private set; }
 
-        public Guid ActiveVesselGuid = new Guid("35b89a0d664c43c6bec8d0840afc97b2");
+        public Guid ActiveVesselGuid = new Guid(RTCore.Instance.Settings.ActiveVesselGuid);
 
         public ISatellite this[Guid guid]
         {
@@ -251,9 +251,11 @@ namespace RemoteTech
         public bool Powered { get { return true; } }
         public bool Visible { get { return true; } }
         public String Name { get { return "Mission Control"; } set { return; } }
-        public Guid Guid { get { return new Guid("5105f5a9d62841c6ad4b21154e8fc488"); } }
-        public Vector3 Position { get { return FlightGlobals.Bodies[1].GetWorldSurfacePosition(-0.1313315, -74.59484, 75.0151197366649); } }
-        public CelestialBody Body { get { return FlightGlobals.Bodies[1]; } }
+        public Guid Guid { get { return new Guid(RTCore.Instance.Settings.MissionControlGuid); } }
+        public Vector3 Position { get { return FlightGlobals.Bodies[RTCore.Instance.Settings.MissionControlBody].GetWorldSurfacePosition(RTCore.Instance.Settings.MissionControlPosition.x, 
+                                                                                                                                         RTCore.Instance.Settings.MissionControlPosition.y,
+                                                                                                                                         RTCore.Instance.Settings.MissionControlPosition.z); } }
+        public CelestialBody Body { get { return FlightGlobals.Bodies[RTCore.Instance.Settings.MissionControlBody]; } }
         public IEnumerable<IAntenna> Antennas { get; private set; }
 
         public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> route)
@@ -264,7 +266,7 @@ namespace RemoteTech
         public MissionControlSatellite()
         {
             var antennas = new List<IAntenna>();
-            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, 75000000));
+            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, RTCore.Instance.Settings.MissionControlRange));
             Antennas = antennas;
         }
 
