@@ -92,8 +92,11 @@ namespace RemoteTech
                             case ReferenceFrame.Surface:
                                 s.Append("SRF ");
                                 break;
-                            case ReferenceFrame.Target:
+                            case ReferenceFrame.TargetVelocity:
                                 s.Append("TGT ");
+                                break;
+                            case ReferenceFrame.TargetParallel:
+                                s.Append("PAR ");
                                 break;
                         }
                         switch (dc.AttitudeCommand.Attitude)
@@ -119,10 +122,10 @@ namespace RemoteTech
                             case FlightAttitude.Surface:
                                 s.Append(dc.AttitudeCommand.Orientation.eulerAngles.x.ToString("F1"));
                                 s.Append("°, ");
-                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.y.ToString("F1"));
+                                s.Append(RTUtil.Format180To360(180 - dc.AttitudeCommand.Orientation.eulerAngles.y).ToString("F1"));
                                 s.Append("°, ");
-                                s.AppendLine(dc.AttitudeCommand.Orientation.eulerAngles.z.ToString("F1"));
-                                s.Append("°");
+                                s.Append(RTUtil.Format360To180(180 - dc.AttitudeCommand.Orientation.eulerAngles.z).ToString("F1"));
+                                s.AppendLine("°");
                                 break;
                         }
                         break;

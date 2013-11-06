@@ -210,7 +210,7 @@ namespace RemoteTech
             foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
             {
                 UpdateGraph(s);
-                RTUtil.Log("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
+                RTLog.Debug("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
                 if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION)
                 {
                     FindPath(s, commandStations);
@@ -222,7 +222,7 @@ namespace RemoteTech
 
         private void OnSatelliteUnregister(ISatellite s)
         {
-            RTUtil.Log("NetworkManager: SatelliteUnregister({0}, {1})", s, s.Guid);
+            RTLog.Notify("NetworkManager: SatelliteUnregister({0})", s);
             Graph.Remove(s.Guid);
             foreach (var list in Graph.Values)
             {
@@ -233,7 +233,7 @@ namespace RemoteTech
 
         private void OnSatelliteRegister(ISatellite s)
         {
-            RTUtil.Log("NetworkManager: SatelliteRegister({0}, {1})", s, s.Guid);
+            RTLog.Notify("NetworkManager: SatelliteRegister({0})", s);
             Graph[s.Guid] = new List<NetworkLink<ISatellite>>();
         }
 

@@ -24,8 +24,8 @@ namespace RemoteTech
         {
             GameEvents.onVesselGoOnRails.Add(OnVesselGoOnRails);
 
-            OnRegister += a => RTUtil.Log("AntennaManager: OnRegister({0})", a.Name);
-            OnUnregister += a => RTUtil.Log("AntennaManager: OnUnregister({0})", a.Name);
+            OnRegister += a => RTLog.Notify("AntennaManager: OnRegister({0})", a.Name);
+            OnUnregister += a => RTLog.Notify("AntennaManager: OnUnregister({0})", a.Name);
         }
 
         public void Dispose()
@@ -35,7 +35,7 @@ namespace RemoteTech
 
         public void Register(Guid key, IAntenna antenna)
         {
-            RTUtil.Log("AntennaManager: Register({0}, {1})", key, antenna.Name);
+            RTLog.Notify("AntennaManager: Register({0})", antenna);
 
             if (!mLoadedAntennaCache.ContainsKey(key))
             {
@@ -57,7 +57,7 @@ namespace RemoteTech
 
         public void Unregister(Guid key, IAntenna antenna)
         {
-            RTUtil.Log("AntennaManager: Unregister({0}, {1})", key, antenna.Name);
+            RTLog.Notify("AntennaManager: Unregister({0})", antenna);
 
             if (!mLoadedAntennaCache.ContainsKey(key)) return;
 
@@ -76,7 +76,7 @@ namespace RemoteTech
         public void RegisterProtos(Vessel v)
         {
             Guid key = v.id;
-            RTUtil.Log("AntennaManager: RegisterProtos({0}, {1})", key, v.vesselName);
+            RTLog.Notify("AntennaManager: RegisterProtos({0}, {1})", v.vesselName, key);
 
             if (mLoadedAntennaCache.ContainsKey(key)) return;
 
@@ -97,7 +97,7 @@ namespace RemoteTech
 
         public void UnregisterProtos(Guid key)
         {
-            RTUtil.Log("AntennaManager: UnregisterProtos({0})", key);
+            RTLog.Notify("AntennaManager: UnregisterProtos({0})", key);
 
             if (!mProtoAntennaCache.ContainsKey(key)) return;
 

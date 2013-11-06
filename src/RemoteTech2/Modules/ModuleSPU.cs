@@ -66,6 +66,7 @@ namespace RemoteTech
 
         public void OnDestroy()
         {
+            RTLog.Notify("ModuleSPU: OnDestroy");
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null)
@@ -160,6 +161,11 @@ namespace RemoteTech
                     ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
                 }
             });
+        }
+
+        public override string ToString()
+        {
+            return String.Format("ModuleSPU({0}, {1})", Name, mRegisteredId);
         }
     }
 }

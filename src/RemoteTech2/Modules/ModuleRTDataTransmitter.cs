@@ -98,7 +98,7 @@ namespace RemoteTech
                         float progress = (science_data.dataAmount - data_amount) / science_data.dataAmount;
                         //StartCoroutine(SetFXModules_Coroutine(modules_progress, progress));
                         msg_status.message = String.Format("[{0}]: Uploading Data... {1}", part.partInfo.title, progress.ToString("P0"));
-                        RTUtil.Log("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
+                        RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
                             science_data.title, (PacketSize / PacketInterval).ToString("0.00"), packets, mQueue.Count);
                         ScreenMessages.PostScreenMessage(msg_status, true);
                         if (commStream != null)
@@ -108,8 +108,7 @@ namespace RemoteTech
                     }
                     else
                     {
-                        msg.message =
-                            String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
+                        msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
                         ScreenMessages.PostScreenMessage(msg, true);
                         GUI_Status = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
 

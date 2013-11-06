@@ -107,7 +107,7 @@ namespace RemoteTech
             base.OnLoad(node);
             if (node.HasNode("TRANSMITTER"))
             {
-                RTUtil.Log("Found Transmitter");
+                RTLog.Notify("ModuleRTAntennaPassive: Found TRANSMITTER block.");
                 mTransmitterConfig = node.GetNode("TRANSMITTER");
                 mTransmitterConfig.AddValue("name", "ModuleRTDataTransmitter");
             }
@@ -140,6 +140,7 @@ namespace RemoteTech
             var transmitters = part.FindModulesImplementing<IScienceDataTransmitter>();
             if (transmitters.Count > 0)
             {
+                RTLog.Notify("ModuleRTAntennaPassive: Find TRANSMITTER success.");
                 mTransmitter = transmitters.First();
             }
             else
@@ -148,13 +149,13 @@ namespace RemoteTech
                 mTransmitterConfig.CopyTo(copy);
                 part.AddModule(copy);
                 AddTransmitter();
-                RTUtil.Log("AddTransmitter Success");
+                RTLog.Notify("ModuleRTAntennaPassive: Add TRANSMITTER success.");
             }
         }
 
         private void RemoveTransmitter()
         {
-            RTUtil.Log("RemoveTransmitter");
+            RTLog.Notify("ModuleRTAntennaPassive: Remove TRANSMITTER success.");
             if (mTransmitter == null) return;
             part.RemoveModule((PartModule) mTransmitter);
             mTransmitter = null;
@@ -175,7 +176,7 @@ namespace RemoteTech
                 }
                 else
                 {
-                    RTUtil.Log("[TransmitterModule]: Part Module {0} doesn't implement IScalarModule", part.Modules[i].name);
+                    RTLog.Notify("ModuleRTAntennaPassive: Part Module {0} doesn't implement IScalarModule", part.Modules[i].name);
                 }
             }
             return modules;
@@ -183,6 +184,7 @@ namespace RemoteTech
 
         private void OnDestroy()
         {
+            RTLog.Notify("ModuleRTAntennaPassive: OnDestroy");
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null && mRegisteredId != Guid.Empty)
@@ -217,7 +219,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("ModuleRTAntennaPassive({0}, {1})", Name, GetInstanceID());
+            return String.Format("ModuleRTAntennaPassive({0}, {1})", Name, mRegisteredId);
         }
     }
 

@@ -78,7 +78,7 @@ namespace RemoteTech
 
         public override String ToString()
         {
-            return String.Format("VesselSatellite({0})", Name);
+            return String.Format("VesselSatellite({0}, {1})", Name, Guid);
         }
 
         public override int GetHashCode()

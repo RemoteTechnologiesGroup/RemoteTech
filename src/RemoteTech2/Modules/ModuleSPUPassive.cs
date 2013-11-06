@@ -51,6 +51,7 @@ namespace RemoteTech
 
         public void OnDestroy()
         {
+            RTLog.Notify("ModuleSPUPassive: OnDestroy");
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null)
@@ -73,6 +74,11 @@ namespace RemoteTech
                 mRegisteredId = vessel.id; 
                 RTCore.Instance.Satellites.Register(vessel, this);
             }
+        }
+
+        public override string ToString()
+        {
+            return String.Format("ModuleSPUPassive({0}, {1})", Name, mRegisteredId);
         }
     }
 }

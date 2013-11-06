@@ -28,10 +28,45 @@ namespace RemoteTech
     {
         Orbit,
         Surface,
-        Target,
+        TargetVelocity,
+        TargetParallel,
         North,
         Maneuver,
         World,
+    }
+
+    public class TargetCommand
+    {
+        public ITargetable Target { get; set; }
+
+        public static DelayedCommand WithTarget(ITargetable target)
+        {
+            return new DelayedCommand()
+            {
+                TargetCommand = new TargetCommand()
+                {
+                    Target = target,
+                },
+                TimeStamp = RTUtil.GameTime,
+            };
+        }
+    }
+
+    public class ManeuverCommand
+    {
+        public ManeuverNode Node { get; set; }
+
+        public static DelayedCommand WithNode(ManeuverNode node)
+        {
+            return new DelayedCommand()
+            {
+                ManeuverCommand = new ManeuverCommand()
+                {
+                    Node = node,
+                },
+                TimeStamp = RTUtil.GameTime,
+            };
+        }
     }
 
     public class DelayedCommand : IComparable<DelayedCommand>
@@ -42,6 +77,8 @@ namespace RemoteTech
         public BurnCommand BurnCommand { get; set; }
         public ActionGroupCommand ActionGroupCommand { get; set; }
         public EventCommand EventCommand { get; set; }
+        public TargetCommand TargetCommand { get; set; }
+        public ManeuverCommand ManeuverCommand { get; set; }
         public DelayedCommand CancelCommand { get; set; }
 
         public int CompareTo(DelayedCommand dc)
@@ -222,8 +259,8 @@ namespace RemoteTech
         public static DelayedCommand WithSurface(double pitch, double yaw, double roll)
         {
             Quaternion rotation = Quaternion.Euler(new Vector3d(Double.IsNaN(pitch) ? 0 : pitch,
-                                                                Double.IsNaN(yaw) ? 0 : yaw,
-                                                                Double.IsNaN(roll) ? 0 : roll));
+                                                                Double.IsNaN(yaw) ? 0 : -yaw,
+                                                                Double.IsNaN(roll) ? 0 : 180 - roll));
             return new DelayedCommand()
             {
                 AttitudeCommand = new AttitudeCommand()

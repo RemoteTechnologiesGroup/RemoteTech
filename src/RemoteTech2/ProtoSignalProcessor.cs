@@ -25,8 +25,7 @@ namespace RemoteTech
             mVessel = v;
             Powered = ppms.GetBool("IsRTPowered");
             IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= 6;
-            RTUtil.Log("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})",
-                Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
+            RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})", Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
         }
 
         public override String ToString()

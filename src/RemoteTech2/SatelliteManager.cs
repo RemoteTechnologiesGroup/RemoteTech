@@ -27,11 +27,11 @@ namespace RemoteTech
 
             OnRegister += vs =>
             {
-                RTUtil.Log("SatelliteManager: OnRegister({0})", vs.Name);
+                RTLog.Notify("SatelliteManager: OnRegister({0})", vs);
             };
             OnUnregister += vs => 
             {
-                RTUtil.Log("SatelliteManager: OnUnregister({0})", vs.Name);
+                RTLog.Notify("SatelliteManager: OnUnregister({0})", vs);
             };
         }
 
@@ -44,7 +44,7 @@ namespace RemoteTech
         public Guid Register(Vessel vessel, ISignalProcessor spu)
         {
             Guid key = vessel.protoVessel.vesselID;
-            RTUtil.Log("SatelliteManager: Register({0}, {1})", key, spu.VesselName);
+            RTLog.Notify("SatelliteManager: Register({0})", spu);
 
             if (!mLoadedSpuCache.ContainsKey(key))
             {
@@ -74,7 +74,7 @@ namespace RemoteTech
         /// <param name="spu">The signal processor.</param>
         public void Unregister(Guid key, ISignalProcessor spu)
         {
-            RTUtil.Log("SatelliteManager: Unregister({0})", key);
+            RTLog.Notify("SatelliteManager: Unregister({0})", spu);
             // Return if nothing to unregister.
             if (!mLoadedSpuCache.ContainsKey(key)) return;
             // Find instance of the signal processor.
@@ -107,7 +107,7 @@ namespace RemoteTech
         public void RegisterProto(Vessel vessel)
         {
             Guid key = vessel.protoVessel.vesselID;
-            RTUtil.Log("SatelliteManager: RegisterProto({0})", vessel.vesselName);
+            RTLog.Notify("SatelliteManager: RegisterProto({0}, {1})", vessel.vesselName, key);
             // Return if there are still signal processors loaded.
             if (mLoadedSpuCache.ContainsKey(vessel.id))
                 return;
@@ -128,7 +128,7 @@ namespace RemoteTech
         /// <param name="vessel">The vessel.</param>
         public void UnregisterProto(Guid key)
         {
-            RTUtil.Log("SatelliteManager: UnregisterProto({0})", key);
+            RTLog.Notify("SatelliteManager: UnregisterProto({0})", key);
             // Return if there are still signal processors loaded.
             if (mLoadedSpuCache.ContainsKey(key))
             {
@@ -162,12 +162,12 @@ namespace RemoteTech
 
         private void OnVesselCreate(Vessel v)
         {
-            RTUtil.Log("SatelliteManager: OnVesselCreate({0}, {1})", v.id, v.vesselName);
+            RTLog.Notify("SatelliteManager: OnVesselCreate({0}, {1})", v.id, v.vesselName);
         }
 
         private void OnVesselDestroy(Vessel v)
         {
-            RTUtil.Log("SatelliteManager: OnVesselDestroy({0}, {1})", v.id, v.vesselName);
+            RTLog.Notify("SatelliteManager: OnVesselDestroy({0}, {1})", v.id, v.vesselName);
             UnregisterProto(v.id);
         }
 
@@ -204,12 +204,12 @@ namespace RemoteTech
 
         public static ISignalProcessor GetSignalProcessor(this Vessel v)
         {
-            RTUtil.Log("RTUtil: SignalProcessorCheck({0})", v.vesselName);
+            RTLog.Notify("GetSignalProcessor({0}): Check", v.vesselName);
             if (v.loaded)
             {
                 foreach (PartModule pm in v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Where(pm => pm.IsSignalProcessor()))
                 {
-                    RTUtil.Log("RTUtil: GetSignalProcessor({0})", v.vesselName);
+                    RTLog.Notify("GetSignalProcessor({0}): Found", v.vesselName);
                     return pm as ISignalProcessor;
                 }
 
@@ -218,7 +218,7 @@ namespace RemoteTech
             {
                 foreach (ProtoPartModuleSnapshot ppms in v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Where(ppms => ppms.IsSignalProcessor()))
                 {
-                    RTUtil.Log("RTUtil: GetSignalProcessor({0})", v.vesselName);
+                    RTLog.Notify("GetSignalProcessor({0}): Found", v.vesselName);
                     return new ProtoSignalProcessor(ppms, v);
                 }
             }
@@ -237,7 +237,7 @@ namespace RemoteTech
 
         public static bool HasCommandStation(this Vessel v)
         {
-            RTUtil.Log("RTUtil: HasCommandStation {0}", v.vesselName);
+            RTLog.Notify("HasCommandStation({0})", v.vesselName);
             if (v.loaded)
             {
                 return v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Any(pm => pm.IsCommandStation());

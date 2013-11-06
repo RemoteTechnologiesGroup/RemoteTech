@@ -43,7 +43,6 @@ namespace RemoteTech
 
         private double mLastSpeed;
         private Quaternion mKillRot;
-
         private FlightComputerWindow mWindow;
         public FlightComputerWindow Window { get { if (mWindow != null) mWindow.Hide(); return mWindow = new FlightComputerWindow(this); } }
 
@@ -56,9 +55,11 @@ namespace RemoteTech
 
         public void Dispose()
         {
+            RTLog.Notify("FlightComputer: Dispose");
             if (mVessel != null)
             {
                 mVessel.OnFlyByWire -= OnFlyByWirePre;
+                mVessel.OnFlyByWire -= OnFlyByWirePost;
             }
             if (mWindow != null)
             {
@@ -94,10 +95,34 @@ namespace RemoteTech
 
         public void OnFixedUpdate()
         {
+            // Send updates for Target / Maneuver
+            if (FlightGlobals.fetch.VesselTarget != null && (mCurrentCommand.TargetCommand == null || mCurrentCommand.TargetCommand.Target != FlightGlobals.fetch.VesselTarget))
+            {
+                if (!mCommandBuffer.Any(dc => dc.TargetCommand != null && dc.TargetCommand.Target == FlightGlobals.fetch.VesselTarget))
+                {
+                    Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
+                }
+            }
+            if (mVessel.patchedConicSolver != null)
+            {
+                if (mVessel.patchedConicSolver.maneuverNodes.Count > 0 && (mCurrentCommand.ManeuverCommand == null || mCurrentCommand.ManeuverCommand.Node != mVessel.patchedConicSolver.maneuverNodes[0]))
+                {
+                    if (!mCommandBuffer.Any(dc => dc.TargetCommand != null && dc.ManeuverCommand.Node == mVessel.patchedConicSolver.maneuverNodes[0]))
+                    {
+                        Enqueue(ManeuverCommand.WithNode(mVessel.patchedConicSolver.maneuverNodes[0]));
+                    }
+                }
+            }
+
+
             if (mVessel != mParent.Vessel)
             {
                 mVessel.VesselSAS.LockHeading(mVessel.transform.rotation, false);
+                mCurrentCommand.ManeuverCommand = null;
+                mCommandBuffer.RemoveAll(dc => dc.ManeuverCommand != null);
             }
+
+            // Re-attach periodically
             mVessel.OnFlyByWire -= OnFlyByWirePre;
             mVessel.OnFlyByWire -= OnFlyByWirePost;
             mVessel = mParent.Vessel;
@@ -170,6 +195,16 @@ namespace RemoteTech
                         if (dc.EventCommand != null)
                         {
                             dc.EventCommand.BaseEvent.Invoke();
+                        }
+
+                        if (dc.TargetCommand != null)
+                        {
+                            mCurrentCommand.TargetCommand = dc.TargetCommand;
+                        }
+
+                        if (dc.ManeuverCommand != null)
+                        {
+                            mCurrentCommand.ManeuverCommand = dc.ManeuverCommand;
                         }
 
                         if (dc.CancelCommand != null)
@@ -261,20 +296,48 @@ namespace RemoteTech
                     forward = v.GetSrfVelocity();
                     up = (v.mainBody.position - v.CoM);
                     break;
-                case ReferenceFrame.Target: // TODO
-                    forward = v.GetObtVelocity();
-                    up = (v.mainBody.position - v.CoM);
-                    break;
                 case ReferenceFrame.North:
                     up = (v.mainBody.position - v.CoM);
-                    forward = Vector3.Exclude(
-                        up,
+                    forward = Vector3.Exclude(up,
                         v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM
                      );
                     break;
-                case ReferenceFrame.Maneuver: // TODO
-                    forward = v.GetObtVelocity();
-                    up = (v.mainBody.position - v.CoM);
+                case ReferenceFrame.Maneuver:
+                    up = mVessel.transform.up;
+                    if (mCurrentCommand.ManeuverCommand != null)
+                    {
+                        forward = mCurrentCommand.ManeuverCommand.Node.GetBurnVector(mVessel.orbit);
+                        up = mVessel.transform.up;
+                    }
+                    else
+                    {
+                        forward = v.GetObtVelocity();
+                        up = (v.mainBody.position - v.CoM);
+                    }
+                    break;
+                case ReferenceFrame.TargetVelocity:
+                    if (mCurrentCommand.TargetCommand != null)
+                    {
+                        forward = v.GetObtVelocity() - mCurrentCommand.TargetCommand.Target.GetObtVelocity();
+                        up = (v.mainBody.position - v.CoM);
+                    }
+                    else
+                    {
+                        up = (v.mainBody.position - v.CoM);
+                        forward = v.GetObtVelocity();
+                    }
+                    break;
+                case ReferenceFrame.TargetParallel:
+                    if (mCurrentCommand.TargetCommand != null)
+                    {
+                        forward = mCurrentCommand.TargetCommand.Target.GetTransform().position - v.CoM;
+                        up = (v.mainBody.position - v.CoM);
+                    }
+                    else
+                    {
+                        up = (v.mainBody.position - v.CoM);
+                        forward = v.GetObtVelocity();
+                    }
                     break;
             }
             Vector3.OrthoNormalize(ref forward, ref up);

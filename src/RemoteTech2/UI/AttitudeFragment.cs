@@ -113,7 +113,7 @@ namespace RemoteTech
                     mRoll = Roll.ToString();
                     if (mFlightComputer.InputAllowed)
                     {
-                        mMode = 3;
+                        mMode = 7;
                         Confirm();
                     }
                 }
@@ -128,7 +128,7 @@ namespace RemoteTech
                 {
                     RTUtil.StateButton("KILL", mMode, 1, OnModeClick, GUILayout.Width(width3));
                     RTUtil.StateButton("NODE", mMode, 2, OnModeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("SURF", mMode, 3, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton("PAR", mMode, 3, OnModeClick, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
@@ -138,6 +138,8 @@ namespace RemoteTech
                     RTUtil.StateButton("TGT", mMode, 6, OnModeClick, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
+
+                RTUtil.StateButton("CUSTOM", mMode, 7, OnModeClick, GUILayout.ExpandWidth(true));
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
@@ -246,9 +248,10 @@ namespace RemoteTech
                     mAttitude = 0;
                     newCommand = AttitudeCommand.ManeuverNode();
                     break;
-                case 3: // Pitch, heading, roll
-                    mAttitude = 0;
-                    newCommand = AttitudeCommand.WithSurface(Pitch, Heading, Roll);
+                case 3: // Target Parallel
+                    mAttitude = (mAttitude == 0) ? 1 : mAttitude;
+                    newCommand =
+                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.TargetParallel);
                     break;
                 case 4: // Orbital reference
                     mAttitude = (mAttitude == 0) ? 1 : mAttitude;
@@ -260,10 +263,14 @@ namespace RemoteTech
                     newCommand =
                         AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Surface);
                     break;
-                case 6: // Target reference
+                case 6: // Target Velocity
                     mAttitude = (mAttitude == 0) ? 1 : mAttitude;
                     newCommand =
-                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Target);
+                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.TargetVelocity);
+                    break;
+                case 7: // Custom Surface Heading
+                    mAttitude = 0;
+                    newCommand = AttitudeCommand.WithSurface(Pitch, Heading, Roll);
                     break;
             }
             mFlightComputer.Enqueue(newCommand);

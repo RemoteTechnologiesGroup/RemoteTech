@@ -37,7 +37,6 @@ namespace RemoteTech
             MatchCollection matches = mDurationRegex.Matches(duration);
             foreach (Match match in matches)
             {
-                RTUtil.Log("match");
                 if (match.Groups["seconds"].Success)
                 {
                     time += TimeSpan.FromSeconds(Double.Parse(match.Groups["seconds"].Value));
@@ -71,6 +70,30 @@ namespace RemoteTech
             else
             {
                 return targ;
+            }
+        }
+
+        public static float Format360To180(float degrees)
+        {
+            if (degrees > 360)
+            {
+                return degrees - 360;
+            }
+            else
+            {
+                return degrees;
+            }
+        }
+
+        public static float Format180To360(float degrees)
+        {
+            if (degrees < 0)
+            {
+                return degrees + 360;
+            }
+            else
+            {
+                return degrees;
             }
         }
 
@@ -112,24 +135,6 @@ namespace RemoteTech
         public static T Clamp<T>(T value, T min, T max) where T : IComparable<T>
         {
             return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
-        }
-
-        [Conditional("DEBUG")]
-        public static void Log(String message)
-        {
-            Debug.Log("RemoteTech: " + message);
-        }
-
-        [Conditional("DEBUG")]
-        public static void Log(String message, params Object[] param)
-        {
-            Debug.Log(String.Format("RemoteTech: " + message, param));
-        }
-
-        [Conditional("DEBUG")]
-        public static void Log(String message, params UnityEngine.Object[] param)
-        {
-            Debug.Log(String.Format("RemoteTech: " + message, param));
         }
 
         public static string ToDebugString<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
@@ -180,7 +185,6 @@ namespace RemoteTech
             {
                 s.Append(((short)name[i % name.Length]).ToString("x"));
             }
-            RTUtil.Log("RTUtil.Guid({0}) = {1}", cb.bodyName, s.ToString());
             return new Guid(s.ToString());
         }
 
@@ -260,7 +264,7 @@ namespace RemoteTech
         {
             fileName = fileName.Split('.')[0];
             String path = "RemoteTech2/Textures/" + fileName;
-            RTUtil.Log("LoadImage({0})", path);
+            RTLog.Notify("LoadImage({0})", path);
             texture = GameDatabase.Instance.GetTexture(path, false);
             if (texture == null)
             {

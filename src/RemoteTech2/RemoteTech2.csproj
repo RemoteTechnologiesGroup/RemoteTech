@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RTLog.cs" />
     <Compile Include="FlightComputer\DelayedCommand.cs" />
     <Compile Include="FlightComputer\FlightComputer.cs" />
     <Compile Include="FlightComputer\UIPartActionMenuPatcher.cs" />
