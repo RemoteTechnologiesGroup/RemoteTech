@@ -11,18 +11,19 @@ namespace RemoteTech
     {
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return vessel.id; } }
-        public bool Powered { get { return part.isControllable && Activated; } }
+        public bool Powered { get { return Activated; } }
         public bool Activated { get { return Unlocked; } set { return; } }
         public bool Animating { get { return false; } }
 
         public bool CanTarget { get { return false; } }
         public Guid Target { get { return Guid.Empty; } set { return; } }
 
-        public float Dish { get { return 0.0f; } }
+        public float Dish { get { return -1.0f; } }
         public double Radians { get { return 1.0f; } }
-        public float Omni { get { return Activated ? OmniRange : 0.0f; } }
+        public float Omni { get { return Activated ? OmniRange * RangeMultiplier : 0.0f; } }
         public float Consumption { get { return 0.0f; } }
 
+        private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
         private bool Unlocked { get { return ResearchAndDevelopment.GetTechnologyState(TechRequired) == RDTech.State.Available || TechRequired.Equals("None"); } }
 
         [KSPField]
@@ -54,7 +55,7 @@ namespace RemoteTech
         [KSPField(isPersistant = true)]
         public float
             RTOmniRange = 0.0f,
-            RTDishRange = 0.0f;
+            RTDishRange = -1.0f;
 
         [KSPField] // Persistence handled by Save()
         public Guid RTAntennaTarget = Guid.Empty;
@@ -121,13 +122,15 @@ namespace RemoteTech
                 mRegisteredId = vessel.id;
                 RTCore.Instance.Antennas.Register(vessel.id, this);
                 SetState(true);
-                RTOmniRange = OmniRange;
                 GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
             }
         }
 
         private void FixedUpdate()
         {
+            RTOmniRange = Omni;
+            RTDishRange = Dish;
+            IsRTPowered = Powered;
             Fields["GUI_OmniRange"].guiActive = Activated && ShowGUI_OmniRange;
         }
 

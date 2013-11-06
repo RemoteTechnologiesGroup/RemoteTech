@@ -8,7 +8,6 @@ namespace RemoteTech
     {
         public static RTCore Instance { get; protected set; }
 
-        public Settings Settings { get; protected set; }
         public SatelliteManager Satellites { get; protected set; }
         public AntennaManager Antennas { get; protected set; }
         public NetworkManager Network { get; protected set; }
@@ -31,7 +30,6 @@ namespace RemoteTech
 
             Instance = this;
 
-            Settings = Settings.Load();
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();
             Network = new NetworkManager();
@@ -86,17 +84,24 @@ namespace RemoteTech
 
         public void OnGUI()
         {
+            GUI.depth = 0;
             OnGuiUpdate.Invoke();
 
             if (MapView.MapIsEnabled)
             {
                 mConfig.Draw();
             }
+
+            Action windows = delegate { };
+            foreach (var window in AbstractWindow.Windows.Values)
+            {
+                windows += window.Draw;
+            }
+            windows.Invoke();
         }
 
         private void OnDestroy()
         {
-            Settings.Save();
             mTimePatcher.Undo();
             mConfig.Dispose();
             Renderer.Detach();

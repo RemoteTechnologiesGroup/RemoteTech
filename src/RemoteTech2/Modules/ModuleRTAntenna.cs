@@ -35,8 +35,8 @@ namespace RemoteTech
         public float Omni { get { return IsRTBroken ? 0.0f : ((IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange) * RangeMultiplier; } }
         public float Consumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost * ConsumptionMultiplier : 0.0f; } }
 
-        private float RangeMultiplier { get { return RTCore.Instance.Settings.RangeMultiplier; } }
-        private float ConsumptionMultiplier { get { return RTCore.Instance.Settings.ConsumptionMultiplier; } }
+        private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
+        private float ConsumptionMultiplier { get { return RTSettings.Instance.ConsumptionMultiplier; } }
 
         [KSPField]
         public bool

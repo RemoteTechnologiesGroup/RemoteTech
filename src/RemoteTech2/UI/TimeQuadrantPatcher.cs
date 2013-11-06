@@ -208,7 +208,10 @@ namespace RemoteTech
 
                 if (GUI.Button(screenPos, "", ButtonStyle))
                 {
-                    ScreenMessages.PostScreenMessage(new ScreenMessage("[FlightComputer]: Not yet implemented!", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                    var satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
+                    if (satellite == null || satellite.SignalProcessor.FlightComputer == null) return;
+                    satellite.SignalProcessor.FlightComputer.Window.Show();
+                    //ScreenMessages.PostScreenMessage(new ScreenMessage("[FlightComputer]: Not yet implemented!", 4.0f, ScreenMessageStyle.UPPER_LEFT));
                 }
             }
         }

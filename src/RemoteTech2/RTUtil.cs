@@ -26,41 +26,39 @@ namespace RemoteTech
                                 "Medium-Interplanetary (MI)",
                                 "Long-Interplanetary (LI)"};
 
-        private static readonly Regex mDurationRegex =
-            new Regex(@"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)?" +
-                      @"(?:(?<minutes>\d*\.?\d+)\s*m[a-z]*[,\s]*)?" +
-                      @"(?:(?<hours>\d*\.?\d+)\s*h[a-z]*[,\s]*)?");
+        private static readonly Regex mDurationRegex = new Regex(
+            String.Format("{0}?{1}?{2}?", @"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)",
+                                          @"(?:(?<minutes>\d*\.?\d+)\s*m[a-z]*[,\s]*)",
+                                          @"(?:(?<hours>\d*\.?\d+)\s*h[a-z]*[,\s]*)"));
 
         public static bool TryParseDuration(String duration, out TimeSpan time)
         {
             time = new TimeSpan();
             MatchCollection matches = mDurationRegex.Matches(duration);
-            if (matches.Count > 0)
+            foreach (Match match in matches)
             {
-                foreach (Match match in matches)
+                RTUtil.Log("match");
+                if (match.Groups["seconds"].Success)
                 {
-                    if (match.Groups["seconds"].Success)
-                    {
-                        time += TimeSpan.FromSeconds(Double.Parse(match.Groups["seconds"].Value));
-                    }
-                    if (match.Groups["minutes"].Success)
-                    {
-                        time += TimeSpan.FromMinutes(Double.Parse(match.Groups["minutes"].Value));
-                    }
-                    if (match.Groups["hours"].Success)
-                    {
-                        time += TimeSpan.FromHours(Double.Parse(match.Groups["hours"].Value));
-                    }
+                    time += TimeSpan.FromSeconds(Double.Parse(match.Groups["seconds"].Value));
                 }
-                return true;
+                if (match.Groups["minutes"].Success)
+                {
+                    time += TimeSpan.FromMinutes(Double.Parse(match.Groups["minutes"].Value));
+                }
+                if (match.Groups["hours"].Success)
+                {
+                    time += TimeSpan.FromHours(Double.Parse(match.Groups["hours"].Value));
+                }
             }
-            else
+            if (time.TotalSeconds == 0)
             {
                 double parsedDouble;
                 bool result = Double.TryParse(duration, out parsedDouble);
                 time = TimeSpan.FromSeconds(result ? parsedDouble : 0);
                 return result;
             }
+            return true;
         }
 
         public static String Truncate(this String targ, int len)

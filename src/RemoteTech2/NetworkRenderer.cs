@@ -20,12 +20,12 @@ namespace RemoteTech
         public MapFilter Filter { 
             get 
             {
-                return RTCore.Instance.Settings.MapFilter;
+                return RTSettings.Instance.MapFilter;
             } 
             set 
-            { 
-                RTCore.Instance.Settings.MapFilter = value; 
-                RTCore.Instance.Settings.Save(); 
+            {
+                RTSettings.Instance.MapFilter = value;
+                RTSettings.Instance.Save(); 
             } 
         }
 
@@ -53,7 +53,6 @@ namespace RemoteTech
             }
 
             renderer = MapView.MapCamera.gameObject.AddComponent<NetworkRenderer>();
-            renderer.Filter = MapFilter.Path | MapFilter.Omni | MapFilter.Dish;
             RTCore.Instance.Network.OnLinkAdd += renderer.OnLinkAdd;
             RTCore.Instance.Network.OnLinkRemove += renderer.OnLinkRemove;
             RTCore.Instance.Satellites.OnUnregister += renderer.OnSatelliteUnregister;

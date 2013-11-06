@@ -7,6 +7,18 @@ using UnityEngine;
 
 namespace RemoteTech
 {
+    public class RTSettings
+    {
+        private static Settings mInstance;
+        public static Settings Instance
+        {
+            get
+            {
+                return mInstance = mInstance ?? Settings.Load();
+            }
+        }
+    }
+
     public class Settings
     {
         [Persistent] public float MissionControlRange = 75000000.0f;
@@ -18,6 +30,7 @@ namespace RemoteTech
         [Persistent] public float RangeMultiplier = 1.0f;
         [Persistent] public float SpeedOfLight = 3e8f;
         [Persistent] public MapFilter MapFilter = MapFilter.Path | MapFilter.Omni | MapFilter.Dish;
+        [Persistent] public bool EnableSignalDelay = false;
 
         private static String File { get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech2/RemoteTech_Settings.cfg"; } }
 
@@ -30,8 +43,10 @@ namespace RemoteTech
         public static Settings Load()
         {
             ConfigNode load = ConfigNode.Load(File);
-            if (load == null) return new Settings();
-            return ConfigNode.CreateObjectFromConfig<Settings>(load);
+            Settings settings = new Settings();
+            if (load == null) return settings;
+            ConfigNode.LoadObjectFromConfig(settings, load);
+            return settings;
         }
     }
 }

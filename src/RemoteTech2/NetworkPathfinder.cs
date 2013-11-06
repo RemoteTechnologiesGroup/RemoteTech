@@ -9,8 +9,8 @@ namespace RemoteTech
 
         public static NetworkRoute<T> Solve<T>(T start, T goal, 
                                        Func<T, IEnumerable<NetworkLink<T>>> neighborsFunction,
-                                       Func<T, NetworkLink<T>, float> costFunction,
-                                       Func<T, T, float> heuristicFunction) where T : class
+                                       Func<T, NetworkLink<T>, double> costFunction,
+                                       Func<T, T, double> heuristicFunction) where T : class
         {
             var nodeMap = new Dictionary<T, Node<NetworkLink<T>>>();
             var priorityQueue = new PriorityQueue<Node<NetworkLink<T>>>();
@@ -18,7 +18,7 @@ namespace RemoteTech
             var nStart = new Node<NetworkLink<T>>(new NetworkLink<T>(start, null, LinkType.None), 0, heuristicFunction.Invoke(start, goal), null, false);
             nodeMap[start] = nStart;
             priorityQueue.Enqueue(nStart);
-            float cost = 0;
+            double cost = 0;
 
             while (priorityQueue.Count > 0)
             {
@@ -40,7 +40,7 @@ namespace RemoteTech
 
                 foreach (var link in neighborsFunction.Invoke(current.Item.Target))
                 {
-                    float new_cost = current.Cost + costFunction.Invoke(current.Item.Target, link);
+                    double new_cost = current.Cost + costFunction.Invoke(current.Item.Target, link);
                     // If the item has a node, it will either be in the closedSet, or the openSet
                     if (nodeMap.ContainsKey(link.Target))
                     {
@@ -78,11 +78,11 @@ namespace RemoteTech
                 return (Cost + Heuristic).CompareTo(node.Cost + node.Heuristic);
             }
 
-            public readonly float Cost;
-            public readonly float Heuristic;
+            public readonly double Cost;
+            public readonly double Heuristic;
             public readonly T Item;
 
-            public Node(T item, float cost, float heuristic, Node<T> from, bool closed)
+            public Node(T item, double cost, double heuristic, Node<T> from, bool closed)
             {
                 Item = item;
                 Cost = cost;

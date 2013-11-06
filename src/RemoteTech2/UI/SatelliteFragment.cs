@@ -38,6 +38,15 @@ namespace RemoteTech
                     }
                     GUILayout.EndVertical();
                 }
+                else
+                {
+                    GUILayout.BeginVertical();
+                    {
+                        GUILayout.BeginScrollView(Vector2.zero, GUIStyle.none, GUILayout.ExpandHeight(true));
+                        GUILayout.EndScrollView();
+                    }
+                    GUILayout.EndVertical();
+                }
                 GUILayout.BeginVertical();
                 {
                     DrawSelf();

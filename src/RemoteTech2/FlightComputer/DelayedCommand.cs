@@ -40,7 +40,6 @@ namespace RemoteTech
         public double ExtraDelay { get; set; }
         public AttitudeCommand AttitudeCommand { get; set; }
         public BurnCommand BurnCommand { get; set; }
-        public DriveCommand DriveCommand { get; set; }
         public ActionGroupCommand ActionGroupCommand { get; set; }
         public EventCommand EventCommand { get; set; }
         public DelayedCommand CancelCommand { get; set; }
@@ -58,143 +57,6 @@ namespace RemoteTech
                 TimeStamp = RTUtil.GameTime,
             };
         }
-    }
-
-    public class DriveCommand
-    {
-        public enum DriveMode
-        {
-            Off,
-            Turn,
-            Distance,
-            DistanceHeading,
-            Coord
-        }
-
-        public float steering { get; set; }
-        public float target { get; set; }
-        public float target2 { get; set; }
-        public float speed { get; set; }
-        public DriveMode mode { get; set; }
-
-        public static DelayedCommand Off()
-        {
-            return new DelayedCommand()
-            {
-                DriveCommand = new DriveCommand()
-                {
-                    mode = DriveMode.Off,
-                },
-                TimeStamp = RTUtil.GameTime,
-            };
-        }
-
-        public static DelayedCommand Turn(float steering, float degrees, float speed)
-        {
-            return new DelayedCommand()
-            {
-                DriveCommand = new DriveCommand()
-                {
-                    mode = DriveMode.Turn,
-                    steering = steering,
-                    target = degrees,
-                    speed = speed,
-
-                },
-                TimeStamp = RTUtil.GameTime,
-            };
-        }
-
-        public static DelayedCommand Distance(float distance, float steerClamp, float speed)
-        {
-            return new DelayedCommand()
-            {
-                DriveCommand = new DriveCommand()
-                {
-                    mode = DriveMode.Distance,
-                    steering = steerClamp,
-                    target = distance,
-                    speed = speed,
-                },
-                TimeStamp = RTUtil.GameTime,
-            };
-        }
-
-        public static DelayedCommand DistanceHeading(float distance, float heading, float steerClamp, float speed)
-        {
-            return new DelayedCommand()
-            {
-                DriveCommand = new DriveCommand()
-                {
-                    mode = DriveMode.DistanceHeading,
-                    steering = steerClamp,
-                    target = distance,
-                    target2 = heading,
-                    speed = speed,
-                },
-                TimeStamp = RTUtil.GameTime,
-            };
-        }
-
-        public static DelayedCommand Coord(float steerClamp, float latitude, float longitude, float speed)
-        {
-            return new DelayedCommand()
-            {
-                DriveCommand = new DriveCommand()
-                {
-                    mode = DriveMode.Coord,
-                    steering = steerClamp,
-                    target = latitude,
-                    target2 = longitude,
-                    speed = speed,
-                },
-                TimeStamp = RTUtil.GameTime,
-            };
-        }
-
-        public void GetDescription(StringBuilder s)
-        {
-            switch (mode)
-            {
-                case DriveMode.Coord:
-                    s.Append("Drive to: ");
-                    s.Append(new Vector2(target, target2).ToString("0.000"));
-                    s.Append(" @ ");
-                    s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
-                    break;
-                case DriveMode.Distance:
-                    s.Append("Drive: ");
-                    s.Append(RTUtil.FormatSI(target, "m"));
-                    if (speed > 0)
-                        s.Append(" forwards @");
-                    else
-                        s.Append(" backwards @");
-                    s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
-                    break;
-                case DriveMode.Turn:
-                    s.Append("Turn: ");
-                    s.Append(target.ToString("0.0"));
-                    if (steering < 0)
-                        s.Append("° right @");
-                    else
-                        s.Append("° left @");
-                    s.Append(Math.Abs(steering).ToString("P"));
-                    s.Append(" steering");
-                    break;
-                case DriveMode.DistanceHeading:
-                    s.Append("Drive: ");
-                    s.Append(RTUtil.FormatSI(target, "m"));
-                    s.Append(", Hdg: ");
-                    s.Append(target2.ToString("0"));
-                    s.Append("° @ ");
-                    s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
-                    break;
-                case DriveMode.Off:
-                    s.Append("Turn rover computer off");
-                    break;
-            }
-        }
-
     }
 
     public class BurnCommand
@@ -360,8 +222,8 @@ namespace RemoteTech
         public static DelayedCommand WithSurface(double pitch, double yaw, double roll)
         {
             Quaternion rotation = Quaternion.Euler(new Vector3d(Double.IsNaN(pitch) ? 0 : pitch,
-                                                                Double.IsNaN(yaw) ? 0 : -yaw,
-                                                                Double.IsNaN(roll) ? 0 : 180 - roll));
+                                                                Double.IsNaN(yaw) ? 0 : yaw,
+                                                                Double.IsNaN(roll) ? 0 : roll));
             return new DelayedCommand()
             {
                 AttitudeCommand = new AttitudeCommand()

@@ -9,7 +9,7 @@ namespace RemoteTech
         bool Visible { get; }
         String Name { get; set; }
         Guid Guid { get; }
-        Vector3 Position { get; }
+        Vector3d Position { get; }
         CelestialBody Body { get; }
 
         bool Powered { get; }

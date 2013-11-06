@@ -24,7 +24,7 @@ namespace RemoteTech
         public static GUIStyle Frame = new GUIStyle(HighLogic.Skin.window);
         
         private readonly Guid mGuid;
-        private static Dictionary<Guid, AbstractWindow> mWindows = new Dictionary<Guid, AbstractWindow>();
+        public static Dictionary<Guid, AbstractWindow> Windows = new Dictionary<Guid, AbstractWindow>();
 
         static AbstractWindow()
         {
@@ -45,22 +45,25 @@ namespace RemoteTech
         {
             if (Enabled)
                 return;
-            if (mWindows.ContainsKey(mGuid))
+            if (Windows.ContainsKey(mGuid))
             {
-                mWindows[mGuid].Hide();
+                Windows[mGuid].Hide();
             }
-            mWindows[mGuid] = this;
+            Windows[mGuid] = this;
             Enabled = true;
-            RenderingManager.AddToPostDrawQueue(0, Draw);
             EZGUIPointerDisablePatcher.Register(RequestPosition);
         }
 
         public virtual void Hide()
         {
-            mWindows.Remove(mGuid);
+            Windows.Remove(mGuid);
             Enabled = false;
-            RenderingManager.RemoveFromPostDrawQueue(0, Draw);
             EZGUIPointerDisablePatcher.Unregister(RequestPosition);
+        }
+
+        private void WindowPre(int uid)
+        {
+            Window(uid);
         }
 
         public virtual void Window(int uid)
@@ -69,20 +72,16 @@ namespace RemoteTech
             {
                 GUI.DragWindow(new Rect(0, 0, 100000, 20));
             }
-            if (Event.current.isMouse && Position.ContainsMouse())
-            {
-                Event.current.Use();
-            }
         }
 
-        protected virtual void Draw()
+        public virtual void Draw()
         {
             if (Event.current.type == EventType.Layout)
             {
                 Position.width = 0;
                 Position.height = 0;
             }
-            Position = GUILayout.Window(mGuid.GetHashCode(), Position, Window, Title, Title == null ? Frame : HighLogic.Skin.window);
+            Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
             if (Event.current.type == EventType.Repaint)
             {
                 switch (Alignment)
@@ -103,6 +102,13 @@ namespace RemoteTech
                         Position.x = Screen.width - Position.width;
                         Position.y = 0;
                         break;
+                }
+            }
+            if (Title != null)
+            {
+                if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
+                {
+                    Hide();
                 }
             }
         }

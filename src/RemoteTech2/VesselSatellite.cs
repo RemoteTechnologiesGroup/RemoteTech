@@ -10,7 +10,7 @@ namespace RemoteTech
         public bool Visible { get { return SignalProcessor.Visible; } }
         public String Name { get { return SignalProcessor.VesselName; } set { SignalProcessor.VesselName = value; } }
         public Guid Guid { get { return SignalProcessor.Guid; } }
-        public Vector3 Position { get { return SignalProcessor.Position; } }
+        public Vector3d Position { get { return SignalProcessor.Position; } }
         public CelestialBody Body { get { return SignalProcessor.Body; } }
         public List<ISignalProcessor> SignalProcessors { get; set; }
         public ISignalProcessor SignalProcessor { get { return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors[0]; } }

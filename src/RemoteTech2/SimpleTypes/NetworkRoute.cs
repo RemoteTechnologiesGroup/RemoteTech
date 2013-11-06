@@ -13,16 +13,16 @@ namespace RemoteTech
         public T Start { get; private set; }
         public bool Exists { get { return Links.Count > 0; } }
 
-        public float Delay { get; private set; }
+        public double Delay { get; private set; }
         public List<NetworkLink<T>> Links { get; private set; }
 
-        public NetworkRoute(T start, List<NetworkLink<T>> links, float cost)
+        public NetworkRoute(T start, List<NetworkLink<T>> links, double cost)
         {
             if (start == null) throw new ArgumentNullException("start");
             if (links == null) links = new List<NetworkLink<T>>();
             Start = start;
             Links = links;
-            Delay = 0;// cost / SIGNAL_SPEED;
+            Delay = RTSettings.Instance.EnableSignalDelay ? cost / RTSettings.Instance.SpeedOfLight : 0.0;
         }
 
         public bool Contains(BidirectionalEdge<T> edge)

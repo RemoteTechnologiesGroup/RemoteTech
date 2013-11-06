@@ -18,7 +18,7 @@ namespace RemoteTech
         public MissionControlSatellite MissionControl { get; private set; }
         public Dictionary<Guid, List<NetworkLink<ISatellite>>> Graph { get; private set; }
 
-        public Guid ActiveVesselGuid = new Guid(RTCore.Instance.Settings.ActiveVesselGuid);
+        public Guid ActiveVesselGuid = new Guid(RTSettings.Instance.ActiveVesselGuid);
 
         public ISatellite this[Guid guid]
         {
@@ -86,14 +86,14 @@ namespace RemoteTech
             RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
         }
 
-        public static float Distance(ISatellite a, NetworkLink<ISatellite> b)
+        public static double Distance(ISatellite a, NetworkLink<ISatellite> b)
         {
-            return Vector3.Distance(a.Position, b.Target.Position);
+            return Vector3d.Distance(a.Position, b.Target.Position);
         }
 
-        public static float Distance(ISatellite a, ISatellite b)
+        public static double Distance(ISatellite a, ISatellite b)
         {
-            return Vector3.Distance(a.Position, b.Position);
+            return Vector3d.Distance(a.Position, b.Position);
         }
 
         public void FindPath(ISatellite start, IEnumerable<ISatellite> commandStations)
@@ -140,18 +140,20 @@ namespace RemoteTech
             bool los = LineOfSight(sat_a, sat_b) || CheatOptions.InfiniteEVAFuel;
             if (sat_a == sat_b || !los) return null;
 
-            float distance = Distance(sat_a, sat_b);
+            double distance = Distance(sat_a, sat_b);
+
+            var active_vessel = FlightGlobals.ActiveVessel;
+            if (active_vessel == null && HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+            {
+                active_vessel = MapView.MapCamera.target.vessel;
+            }
 
             var omni_a = sat_a.Antennas.Where(a => a.Omni > distance);
             var omni_b = sat_b.Antennas.Where(b => b.Omni > distance);
-            var dish_a = sat_a.Antennas.Where(a => (a.Target == sat_b.Guid || (a.Target == RTCore.Instance.Network.ActiveVesselGuid &&
-                                                                               FlightGlobals.ActiveVessel != null &&
-                                                                               sat_b.Guid == FlightGlobals.ActiveVessel.id) &&
-                                                    a.Dish > distance));
-            var dish_b = sat_b.Antennas.Where(b => (b.Target == sat_a.Guid || (b.Target == RTCore.Instance.Network.ActiveVesselGuid && 
-                                                                               FlightGlobals.ActiveVessel != null && 
-                                                                               sat_a.Guid == FlightGlobals.ActiveVessel.id) &&
-                                                    b.Dish > distance));
+            var dish_a = sat_a.Antennas.Where(a => a.Dish > distance && (a.Target == sat_b.Guid || (a.Target == ActiveVesselGuid && active_vessel != null &&
+                                                                                                    sat_b.Guid == active_vessel.id)));
+            var dish_b = sat_b.Antennas.Where(b => b.Dish > distance && (b.Target == sat_a.Guid || (b.Target == ActiveVesselGuid && active_vessel != null &&
+                                                                                                    sat_a.Guid == active_vessel.id)));
 
             var planets = RTCore.Instance.Network.Planets;
             var planet_a = sat_a.Antennas.Where(a => 
@@ -251,11 +253,11 @@ namespace RemoteTech
         public bool Powered { get { return true; } }
         public bool Visible { get { return true; } }
         public String Name { get { return "Mission Control"; } set { return; } }
-        public Guid Guid { get { return new Guid(RTCore.Instance.Settings.MissionControlGuid); } }
-        public Vector3 Position { get { return FlightGlobals.Bodies[RTCore.Instance.Settings.MissionControlBody].GetWorldSurfacePosition(RTCore.Instance.Settings.MissionControlPosition.x, 
-                                                                                                                                         RTCore.Instance.Settings.MissionControlPosition.y,
-                                                                                                                                         RTCore.Instance.Settings.MissionControlPosition.z); } }
-        public CelestialBody Body { get { return FlightGlobals.Bodies[RTCore.Instance.Settings.MissionControlBody]; } }
+        public Guid Guid { get { return new Guid(RTSettings.Instance.MissionControlGuid); } }
+        public Vector3d Position { get { return FlightGlobals.Bodies[RTSettings.Instance.MissionControlBody].GetWorldSurfacePosition(RTSettings.Instance.MissionControlPosition.x, 
+                                                                                                                                         RTSettings.Instance.MissionControlPosition.y,
+                                                                                                                                         RTSettings.Instance.MissionControlPosition.z); } }
+        public CelestialBody Body { get { return FlightGlobals.Bodies[RTSettings.Instance.MissionControlBody]; } }
         public IEnumerable<IAntenna> Antennas { get; private set; }
 
         public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> route)
@@ -266,7 +268,7 @@ namespace RemoteTech
         public MissionControlSatellite()
         {
             var antennas = new List<IAntenna>();
-            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, RTCore.Instance.Settings.MissionControlRange));
+            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, RTSettings.Instance.MissionControlRange));
             Antennas = antennas;
         }
 

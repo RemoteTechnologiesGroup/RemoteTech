@@ -43,7 +43,10 @@ namespace RemoteTech
 
         private void FixedUpdate()
         {
-            IsRTPowered = Powered;
+            if (Vessel != null)
+            {
+                IsRTPowered = Powered;
+            }
         }
 
         public void OnDestroy()

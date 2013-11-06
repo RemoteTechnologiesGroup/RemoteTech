@@ -22,8 +22,8 @@ namespace RemoteTech
                 if (mProtoModule != null)
                 {
                     ConfigNode n = new ConfigNode();
-                    n.SetValue("RTAntennaTarget", value.ToString());
                     mProtoModule.Save(n);
+                    n.SetValue("RTAntennaTarget", value.ToString());
                     int i = mProtoPart.modules.FindIndex(x => x == mProtoModule);
                     if (i != -1)
                     {
@@ -55,20 +55,20 @@ namespace RemoteTech
             try
             {
                 mDishTarget = new Guid(n.GetValue("RTAntennaTarget"));
-                Dish = Single.Parse(n.GetValue("RTDishRange"));
-                Radians = Double.Parse(n.GetValue("RTDishRadians"));
-                Omni = Single.Parse(n.GetValue("RTOmniRange"));
-                Powered = Boolean.Parse(n.GetValue("IsRTPowered"));
-                Activated = Boolean.Parse(n.GetValue("IsRTActive"));
             }
             catch (ArgumentException)
             {
                 mDishTarget = Guid.Empty;
-                Dish = 0.0f;
-                Radians = 1.0f;
-                Omni = 0.0f;
-                RTUtil.Log("ProtoAntenna(Name: {0}) parsing error. Default values substituted.", v.vesselName);
             }
+            double temp_double;
+            float temp_float;
+            bool temp_bool;
+            Dish = Single.TryParse(n.GetValue("RTDishRange"), out temp_float) ? temp_float : 0.0f;
+            Radians = Double.TryParse(n.GetValue("RTDishRadians"), out temp_double) ? temp_double : 0.0;
+            Omni = Single.TryParse(n.GetValue("RTOmniRange"), out temp_float) ? temp_float : 0.0f;
+            Powered = Boolean.TryParse(n.GetValue("IsRTPowered"), out temp_bool) ? temp_bool : false;
+            Activated = Boolean.TryParse(n.GetValue("IsRTActive"), out temp_bool) ? temp_bool : false;
+
             RTUtil.Log("ProtoAntenna(Name: {0}, Dish: {1}, Omni: {2}, Target: {3}, Radians: {4})", v.vesselName, Dish, Omni, Target, Radians);
         }
 
