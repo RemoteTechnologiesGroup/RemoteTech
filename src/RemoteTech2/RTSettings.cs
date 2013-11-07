@@ -31,6 +31,8 @@ namespace RemoteTech
         [Persistent] public float SpeedOfLight = 3e8f;
         [Persistent] public MapFilter MapFilter = MapFilter.Path | MapFilter.Omni | MapFilter.Dish;
         [Persistent] public bool EnableSignalDelay = false;
+        [Persistent] public bool useNKRange = false; // NK
+        [Persistent] public bool multipleAntennaSupport = false; // NK
 
         private static String File { get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech2/RemoteTech_Settings.cfg"; } }
 
