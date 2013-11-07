@@ -211,7 +211,7 @@ namespace RemoteTech
             }
             return null;
             }
-            else // NK range model
+            else if(RTSettings.Instance.RangeModelType == RangeModel.Additive) // NK range model
             {
                 // first get all valid antennae
                 var omni_a = sat_a.Antennas.Where(a => a.Omni > 0);
@@ -312,8 +312,8 @@ namespace RemoteTech
                         type = LinkType.Dish;
                     return new NetworkLink<ISatellite>(sat_b, interfaces, type);
                 }
-                return null;
             }
+            return null;
         }
 
         private static bool LineOfSight(ISatellite a, ISatellite b)
