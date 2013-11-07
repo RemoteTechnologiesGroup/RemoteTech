@@ -69,7 +69,7 @@ namespace RemoteTech
             Powered = Boolean.TryParse(n.GetValue("IsRTPowered"), out temp_bool) ? temp_bool : false;
             Activated = Boolean.TryParse(n.GetValue("IsRTActive"), out temp_bool) ? temp_bool : false;
 
-            RTLog.Notify("ProtoAntenna(Name: {0}, Dish: {1}, Omni: {2}, Target: {3}, Radians: {4})", v.vesselName, Dish, Omni, Target, Radians);
+            RTLog.Notify(ToString());
         }
 
         public ProtoAntenna(String name, Guid guid, float omni)
@@ -92,6 +92,11 @@ namespace RemoteTech
         public int CompareTo(IAntenna antenna)
         {
             return Consumption.CompareTo(antenna.Consumption);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("ProtoAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, Radians: {5})", Name, Guid, Dish, Omni, Target, Radians);
         }
     }
 }

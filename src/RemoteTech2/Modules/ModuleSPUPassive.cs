@@ -78,7 +78,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("ModuleSPUPassive({0}, {1})", Name, mRegisteredId);
+            return String.Format("ModuleSPUPassive({0}, {1})", Vessel != null ? Vessel.vesselName : "null", mRegisteredId);
         }
     }
 }

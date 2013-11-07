@@ -120,7 +120,7 @@ namespace RemoteTech
             mRootEntry.SubEntries.Add(new Entry()
             {
                 Text = "Active Vessel",
-                Guid = RTCore.Instance.Network.ActiveVesselGuid,
+                Guid = NetworkManager.ActiveVesselGuid,
                 Color = Color.white,
                 Depth = 0,
             });

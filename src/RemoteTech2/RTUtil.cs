@@ -137,21 +137,6 @@ namespace RemoteTech
             return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
         }
 
-        public static string ToDebugString<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
-        {
-            return "{" +
-                   string.Join(",",
-                               dictionary.Select(kv => kv.Key.ToString() + "=" + kv.Value.ToString())
-                                         .ToArray()) + "}";
-        }
-
-        public static string ToDebugString<T>(this List<T> list)
-        {
-            return "{" + string.Join(",", list.Select(x => x.ToString()).ToArray()) + "}";
-        }
-
-        
-
         public static String TargetName(Guid guid)
         {
             ISatellite sat;
@@ -165,7 +150,7 @@ namespace RemoteTech
                 {
                     return RTCore.Instance.Network.Planets[guid].name;
                 }
-                if (guid == RTCore.Instance.Network.ActiveVesselGuid)
+                if (guid == NetworkManager.ActiveVesselGuid)
                 {
                     return "Active Vessel";
                 }

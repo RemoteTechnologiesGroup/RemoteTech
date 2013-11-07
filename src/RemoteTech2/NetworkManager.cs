@@ -18,7 +18,7 @@ namespace RemoteTech
         public MissionControlSatellite MissionControl { get; private set; }
         public Dictionary<Guid, List<NetworkLink<ISatellite>>> Graph { get; private set; }
 
-        public Guid ActiveVesselGuid = new Guid(RTSettings.Instance.ActiveVesselGuid);
+        public static Guid ActiveVesselGuid = new Guid(RTSettings.Instance.ActiveVesselGuid);
 
         public ISatellite this[Guid guid]
         {
@@ -101,11 +101,17 @@ namespace RemoteTech
             var paths = new List<NetworkRoute<ISatellite>>();
             foreach (ISatellite root in commandStations.Concat(new[] { MissionControl }).Where(r => r != start))
             {
-                paths.Add(NetworkPathfinder.Solve(start, root, s => Graph[s.Guid].Where(l => l.Target.Powered), Distance, Distance));
+                paths.Add(NetworkPathfinder.Solve(start, root, FindNeighbors, Distance, Distance));
             }
             this[start] = paths.Where(p => p.Exists).ToList();
             this[start].Sort((a,b) => a.Delay.CompareTo(b.Delay));
             start.OnConnectionRefresh(this[start]);
+        }
+
+        private IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
+        {
+            if (!s.Powered) return Enumerable.Empty<NetworkLink<ISatellite>>();
+            return Graph[s.Guid].Where(l => l.Target.Powered);
         }
 
         private void UpdateGraph(ISatellite a)
@@ -135,7 +141,7 @@ namespace RemoteTech
             }
         }
 
-        private NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
+        public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
         {
             bool los = LineOfSight(sat_a, sat_b) || CheatOptions.InfiniteEVAFuel;
             if (sat_a == sat_b || !los) return null;

@@ -502,7 +502,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("ModuleRTAntenna({0}, {1})", Name, mRegisteredId);
+            return String.Format("ModuleRTAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, Radians: {5})", Name, mRegisteredId, Dish, Omni, Target, Radians);
         }
     }
 }
