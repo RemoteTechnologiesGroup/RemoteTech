@@ -170,7 +170,7 @@ namespace RemoteTech
                 active_vessel = MapView.MapCamera.target.vessel;
             }
 
-            if (!RTSettings.Instance.useNKRange) // NK
+            if (RTSettings.Instance.RangeModelType == RangeModel.Standard) // NK
             {
 
             var omni_a = sat_a.Antennas.Where(a => a.Omni > distance);
