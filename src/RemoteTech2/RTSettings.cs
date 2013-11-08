@@ -48,6 +48,7 @@ namespace RemoteTech
             Settings settings = new Settings();
             if (load == null) return settings;
             ConfigNode.LoadObjectFromConfig(settings, load);
+            settings.Save();
             return settings;
         }
     }
