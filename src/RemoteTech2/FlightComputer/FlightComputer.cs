@@ -89,7 +89,6 @@ namespace RemoteTech
         {
             if (!mParent.IsMaster) return;
             if (!mParent.Powered) return;
-            if (mVessel.packed) return;
             PopCommand();
         }
 
@@ -163,6 +162,7 @@ namespace RemoteTech
                     {
                         if (dc.ActionGroupCommand != null)
                         {
+                            if (mVessel.packed) return;
                             KSPActionGroup ag = dc.ActionGroupCommand.ActionGroup;
                             mVessel.ActionGroups.ToggleGroup(ag);
                             if (ag == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock)
@@ -235,7 +235,7 @@ namespace RemoteTech
                     case FlightMode.Off:
                         break;
                     case FlightMode.KillRot:
-                        HoldOrientation(fs, mKillRot);
+                        HoldOrientation(fs, mKillRot * Quaternion.AngleAxis(90, Vector3.left));
                         break;
                     case FlightMode.AttitudeHold:
                         HoldAttitude(fs);
@@ -276,8 +276,9 @@ namespace RemoteTech
 
         private void HoldOrientation(FlightCtrlState fs, Quaternion target)
         {
-            mVessel.VesselSAS.LockHeading(target * Quaternion.AngleAxis(90, Vector3.right), true);
-            FlightGlobals.ActiveVessel.ActionGroups.SetGroup(KSPActionGroup.SAS, true);
+            //mVessel.VesselSAS.LockHeading(target * Quaternion.AngleAxis(90, Vector3.right), true);
+            kOS.SteeringHelper.SteerShipToward(target, fs, mVessel);
+            //FlightGlobals.ActiveVessel.ActionGroups.SetGroup(KSPActionGroup.SAS, true);
         }
 
         private void HoldAttitude(FlightCtrlState fs)
@@ -307,7 +308,7 @@ namespace RemoteTech
                     if (mCurrentCommand.ManeuverCommand != null)
                     {
                         forward = mCurrentCommand.ManeuverCommand.Node.GetBurnVector(mVessel.orbit);
-                        up = mVessel.transform.up;
+                        up = (v.mainBody.position - v.CoM);
                     }
                     else
                     {
@@ -316,7 +317,7 @@ namespace RemoteTech
                     }
                     break;
                 case ReferenceFrame.TargetVelocity:
-                    if (mCurrentCommand.TargetCommand != null)
+                    if (mCurrentCommand.TargetCommand != null && mCurrentCommand.TargetCommand.Target is Vessel)
                     {
                         forward = v.GetObtVelocity() - mCurrentCommand.TargetCommand.Target.GetObtVelocity();
                         up = (v.mainBody.position - v.CoM);

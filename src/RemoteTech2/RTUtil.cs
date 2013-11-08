@@ -73,6 +73,11 @@ namespace RemoteTech
             }
         }
 
+        public static Vector3 Format360To180(Vector3 v)
+        {
+            return new Vector3(Format360To180(v.x), Format360To180(v.y), Format360To180(v.z));
+        }
+
         public static float Format360To180(float degrees)
         {
             if (degrees > 360)
