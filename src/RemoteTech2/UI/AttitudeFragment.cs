@@ -61,6 +61,20 @@ namespace RemoteTech
             set { mDuration = RTUtil.FormatDuration(value); }
         }
 
+        private double DeltaV
+        {
+            get
+            {
+                double deltav;
+                String input = mDuration.TrimEnd("m/s".ToCharArray());
+                if (!mDuration.EndsWith("m/s") || !Double.TryParse(input, out deltav))
+                {
+                    deltav = Double.NaN;
+                }
+                return deltav;
+            }
+        }
+
         private FlightAttitude Attitude
         {
             get
@@ -278,7 +292,14 @@ namespace RemoteTech
 
         private void OnBurnClick()
         {
-            mFlightComputer.Enqueue(BurnCommand.WithDuration(mThrottle, Duration));
+            if (!Double.IsNaN(DeltaV))
+            {
+                mFlightComputer.Enqueue(BurnCommand.WithDeltaV(mThrottle, DeltaV));
+            }
+            else
+            {
+                mFlightComputer.Enqueue(BurnCommand.WithDuration(mThrottle, Duration));
+            }
         }
     }
 }

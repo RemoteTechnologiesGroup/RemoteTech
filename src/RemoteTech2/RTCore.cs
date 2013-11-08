@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -114,60 +115,80 @@ namespace RemoteTech
 
         private void ReleaseLocks()
         {
-            InputLockManager.RemoveControlLock("LockStaging");
-            InputLockManager.RemoveControlLock("LockSAS");
-            InputLockManager.RemoveControlLock("LockRCS");
-            InputLockManager.RemoveControlLock("LockActions");
+            InputLockManager.RemoveControlLock("RTLockStaging");
+            InputLockManager.RemoveControlLock("RTLockSAS");
+            InputLockManager.RemoveControlLock("RTLockRCS");
+            InputLockManager.RemoveControlLock("RTLockActions");
         }
 
         private void GetLocks()
         {
-            InputLockManager.SetControlLock(ControlTypes.STAGING, "LockStaging");
-            InputLockManager.SetControlLock(ControlTypes.SAS, "LockSAS");
-            InputLockManager.SetControlLock(ControlTypes.RCS, "LockRCS");
-            InputLockManager.SetControlLock(ControlTypes.GROUPS_ALL, "LockActions");
+            InputLockManager.SetControlLock(ControlTypes.STAGING, "RTLockStaging");
+            InputLockManager.SetControlLock(ControlTypes.SAS, "RTLockSAS");
+            InputLockManager.SetControlLock(ControlTypes.RCS, "RTLockRCS");
+            InputLockManager.SetControlLock(ControlTypes.GROUPS_ALL, "RTLockActions");
         }
-
+        
+        // Monstrosity that should fix the kOS control locks without modifications on their end.
         private IEnumerable<KSPActionGroup> GetActivatedGroup()
         {
             if (GameSettings.LAUNCH_STAGES.GetKeyDown())
-                yield return KSPActionGroup.Stage;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.STAGING) == ControlTypes.STAGING && !l.Key.Equals("RTLockStaging"))) 
+                    yield return KSPActionGroup.Stage;
             if (GameSettings.AbortActionGroup.GetKeyDown())
-                yield return KSPActionGroup.Abort;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_ABORT) == ControlTypes.GROUP_ABORT && !l.Key.Equals("RTLockActions"))) 
+                    yield return KSPActionGroup.Abort;
             if (GameSettings.RCS_TOGGLE.GetKeyDown())
-                yield return KSPActionGroup.RCS;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.RCS) == ControlTypes.RCS && !l.Key.Equals("RTLockRCS"))) 
+                    yield return KSPActionGroup.RCS;
             if (GameSettings.SAS_TOGGLE.GetKeyDown())
-                yield return KSPActionGroup.SAS;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.SAS) == ControlTypes.SAS && !l.Key.Equals("RTLockSAS"))) 
+                    yield return KSPActionGroup.SAS;
             if (GameSettings.SAS_HOLD.GetKeyDown())
-                yield return KSPActionGroup.SAS;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.SAS) == ControlTypes.SAS && !l.Key.Equals("RTLockSAS"))) 
+                    yield return KSPActionGroup.SAS;
             if (GameSettings.SAS_HOLD.GetKeyUp())
-                yield return KSPActionGroup.SAS;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.SAS) == ControlTypes.SAS && !l.Key.Equals("RTLockSAS"))) 
+                    yield return KSPActionGroup.SAS;
             if (GameSettings.BRAKES.GetKeyDown())
-                yield return KSPActionGroup.Brakes;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_BRAKES) == ControlTypes.GROUP_BRAKES && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Brakes;
             if (GameSettings.LANDING_GEAR.GetKeyDown())
-                yield return KSPActionGroup.Gear;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_GEARS) == ControlTypes.GROUP_GEARS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Gear;
             if (GameSettings.HEADLIGHT_TOGGLE.GetKeyDown())
-                yield return KSPActionGroup.Light;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_LIGHTS) == ControlTypes.GROUP_LIGHTS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Light;
             if (GameSettings.CustomActionGroup1.GetKeyDown())
-                yield return KSPActionGroup.Custom01;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom01;
             if (GameSettings.CustomActionGroup2.GetKeyDown())
-                yield return KSPActionGroup.Custom02;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom02;
             if (GameSettings.CustomActionGroup3.GetKeyDown())
-                yield return KSPActionGroup.Custom03;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom03;
             if (GameSettings.CustomActionGroup4.GetKeyDown())
-                yield return KSPActionGroup.Custom04;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom04;
             if (GameSettings.CustomActionGroup5.GetKeyDown())
-                yield return KSPActionGroup.Custom05;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom05;
             if (GameSettings.CustomActionGroup6.GetKeyDown())
-                yield return KSPActionGroup.Custom06;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom06;
             if (GameSettings.CustomActionGroup7.GetKeyDown())
-                yield return KSPActionGroup.Custom07;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom07;
             if (GameSettings.CustomActionGroup8.GetKeyDown())
-                yield return KSPActionGroup.Custom08;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom08;
             if (GameSettings.CustomActionGroup9.GetKeyDown())
-                yield return KSPActionGroup.Custom09;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom09;
             if (GameSettings.CustomActionGroup10.GetKeyDown())
-                yield return KSPActionGroup.Custom10;
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom10;
         }
     }
 

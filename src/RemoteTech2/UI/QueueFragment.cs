@@ -39,7 +39,7 @@ namespace RemoteTech
             }
             GUILayout.BeginVertical();
             {
-                mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(300));
+                mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(250));
                 {
                     foreach (DelayedCommand dc in mFlightComputer)
                     {

@@ -73,7 +73,7 @@ namespace RemoteTech
             if (mVessel.packed) return;
 
             fc.TimeStamp += Delay;
-            if (fc.CancelCommand == null)
+            if (fc.CancelCommand == null && fc.TargetCommand == null && fc.ManeuverCommand == null)
             {
                 fc.ExtraDelay += Math.Max(0, TotalDelay - Delay);
             }
