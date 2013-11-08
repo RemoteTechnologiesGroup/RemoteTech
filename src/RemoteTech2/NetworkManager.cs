@@ -141,6 +141,22 @@ namespace RemoteTech
             }
         }
 
+        // NK
+        private static float MaxDistance(float min, float max, float clamp)
+        {
+            if (min > max)
+            {
+                float tmp = max;
+                max = min;
+                min = tmp;
+            }
+            return (float)Math.Min(clamp*min, min + Math.Sqrt((double)min*(double)max));
+        }
+
+        // NK consts
+        public const float OMNICLAMP = 100f;
+        public const float DISHCLAMP = 1000f;
+        // NK end
         public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
         {
             bool los = LineOfSight(sat_a, sat_b) || CheatOptions.InfiniteEVAFuel;
@@ -153,6 +169,9 @@ namespace RemoteTech
             {
                 active_vessel = MapView.MapCamera.target.vessel;
             }
+
+            if (RTSettings.Instance.RangeModelType == RangeModel.Standard) // NK
+            {
 
             var omni_a = sat_a.Antennas.Where(a => a.Omni > distance);
             var omni_b = sat_b.Antennas.Where(b => b.Omni > distance);
@@ -189,6 +208,110 @@ namespace RemoteTech
                 var type = LinkType.Omni;
                 if (dish_a.Concat(planet_a).Contains(conn_a) || dish_b.Concat(planet_b).Contains(conn_b)) type = LinkType.Dish;
                 return new NetworkLink<ISatellite>(sat_b, interfaces, type);
+            }
+            return null;
+            }
+            else if(RTSettings.Instance.RangeModelType == RangeModel.Additive) // NK range model
+            {
+                // first get all valid antennae
+                var omni_a = sat_a.Antennas.Where(a => a.Omni > 0);
+                var omni_b = sat_b.Antennas.Where(b => b.Omni > 0);
+                var dish_a = sat_a.Antennas.Where(a => a.Dish > 0 && (a.Target == sat_b.Guid || (a.Target == ActiveVesselGuid && active_vessel != null &&
+                                                                                                    sat_b.Guid == active_vessel.id)));
+                var dish_b = sat_b.Antennas.Where(b => b.Dish > 0 && (b.Target == sat_a.Guid || (b.Target == ActiveVesselGuid && active_vessel != null &&
+                                                                                                    sat_a.Guid == active_vessel.id)));
+
+
+                var planets = RTCore.Instance.Network.Planets;
+                var planet_a = sat_a.Antennas.Where(a =>
+                {
+                    if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
+                    //if (a.Dish < distance) return false;
+                    Vector3 dir_cb = (planets[a.Target].position - sat_a.Position);
+                    Vector3 dir_b = (sat_b.Position - sat_a.Position);
+                    if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
+                    return false;
+                });
+                var planet_b = sat_b.Antennas.Where(b =>
+                {
+                    if (!planets.ContainsKey(b.Target) || sat_a.Body != planets[b.Target]) return false;
+                    //if (b.Dish < distance) return false;
+                    Vector3 dir_cb = (planets[b.Target].position - sat_b.Position);
+                    Vector3 dir_b = (sat_a.Position - sat_b.Position);
+                    if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
+                    return false;
+                });
+
+                // get all links
+
+                float max_omni_a = 0;
+                float sum_omni_a = 0;
+                float max_omni_b = 0;
+                float sum_omni_b = 0;
+                bool inRange = false;
+                if (RTSettings.Instance.multipleAntennaSupport)
+                {
+                    foreach (IAntenna a in omni_a.ToList())
+                    {
+                        if (a.Omni > max_omni_a)
+                            max_omni_a = a.Omni;
+                        sum_omni_a += a.Omni;
+                    }
+
+                    foreach (IAntenna b in omni_b.ToList())
+                    {
+                        if (b.Omni > max_omni_b)
+                            max_omni_b = b.Omni;
+                        sum_omni_b += b.Omni;
+                    }
+                    max_omni_a += (sum_omni_a - max_omni_a) * 0.25f;
+                    max_omni_b += (sum_omni_b - max_omni_b) * 0.25f;
+
+                    inRange = MaxDistance(max_omni_a, max_omni_b, OMNICLAMP) >= distance;
+                    //MonoBehaviour.print("*RT2* For " + sat_a.Name + "(" + max_omni_a + ") <-> " + sat_b.Name + "(" + max_omni_b + "), inrange = " + inRange);
+                }
+                var omnis = omni_a.Where(a => // omni to omni
+                    {
+                        if (omni_b == null)
+                            return false;
+                        if (inRange)
+                            return true;
+                        foreach (IAntenna b in omni_b.ToList())
+                            if (MaxDistance(a.Omni, b.Omni, OMNICLAMP) >= distance)
+                                return true;
+                        return false;
+                    });
+                var alldishes_b = dish_b.Concat(planet_b);
+                var dishes = omni_a.Where(a => // omni to dish
+                    {
+                        if(dish_b.Concat(planet_b) == null)
+                            return false;
+                        foreach(IAntenna b in alldishes_b.ToList())
+                            if (MaxDistance(RTSettings.Instance.multipleAntennaSupport ? max_omni_a : a.Omni, b.Dish, OMNICLAMP) >= distance)
+                                return true;
+                        return false;
+                    });
+                dishes = dishes.Concat(dish_a.Where(a => // dish to omni or dish
+                    {
+                        if (omni_b == null)
+                            return false;
+                        foreach (IAntenna b in omni_b.ToList())
+                            if (MaxDistance(a.Dish, RTSettings.Instance.multipleAntennaSupport ? max_omni_b : b.Omni, OMNICLAMP) >= distance)
+                                return true;
+                        foreach (IAntenna b in alldishes_b.ToList())
+                            if (MaxDistance(a.Dish, b.Dish, DISHCLAMP) >= distance)
+                                return true;
+                        return false;
+                    }));
+                
+                if (omnis.Concat(dishes).Any())
+                {
+                    var interfaces = omnis.Concat(dishes).ToList();
+                    var type = LinkType.Omni;
+                    if (dishes.Any())
+                        type = LinkType.Dish;
+                    return new NetworkLink<ISatellite>(sat_b, interfaces, type);
+                }
             }
             return null;
         }

@@ -8,6 +8,13 @@ namespace RemoteTech
         Dish,
         Omni,
     }
+    // NK add range model
+    public enum RangeModel
+    {
+        Standard,
+        Additive,
+    }
+
 
     public class BidirectionalEdge<T> : IEquatable<BidirectionalEdge<T>>
     {
