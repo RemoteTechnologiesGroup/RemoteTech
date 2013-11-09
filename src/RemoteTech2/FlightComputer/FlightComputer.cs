@@ -33,6 +33,8 @@ namespace RemoteTech
 
         public double TotalDelay { get; set; }
 
+        public List<Action<FlightCtrlState>> SanctionedPilots { get; private set; }
+
         private ISignalProcessor mParent;
         private Vessel mVessel;
 
@@ -51,6 +53,7 @@ namespace RemoteTech
             mParent = s;
             mVessel = s.Vessel;
             mPreviousFcs.CopyFrom(mVessel.ctrlState);
+            SanctionedPilots = new List<Action<FlightCtrlState>>();
         }
 
         public void Dispose()
@@ -119,6 +122,7 @@ namespace RemoteTech
                 mVessel.VesselSAS.LockHeading(mVessel.transform.rotation, false);
                 mCurrentCommand.ManeuverCommand = null;
                 mCommandBuffer.RemoveAll(dc => dc.ManeuverCommand != null);
+                SanctionedPilots.Clear();
             }
 
             // Re-attach periodically
@@ -160,9 +164,10 @@ namespace RemoteTech
                     }
                     else
                     {
+                        bool do_not_delete = false;
                         if (dc.ActionGroupCommand != null)
                         {
-                            if (mVessel.packed) return;
+                            if (mVessel.packed) { do_not_delete = true; return; }
                             KSPActionGroup ag = dc.ActionGroupCommand.ActionGroup;
                             mVessel.ActionGroups.ToggleGroup(ag);
                             if (ag == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock)
@@ -217,7 +222,7 @@ namespace RemoteTech
                             }
                             mCommandBuffer.Remove(dc);
                         }
-                        else
+                        else if (!do_not_delete)
                         {
                             mCommandBuffer.RemoveAt(i);
                         }
@@ -398,6 +403,11 @@ namespace RemoteTech
             mPreviousFcs.CopyFrom(fcs);
 
             Autopilot(fcs);
+
+            foreach (var pilot in SanctionedPilots)
+            {
+                pilot.Invoke(fcs);
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -103,12 +103,12 @@ namespace RemoteTech
 
         private void OnDestroy()
         {
-            mTimePatcher.Undo();
-            mConfig.Dispose();
-            Renderer.Detach();
-            Network.Dispose();
-            Satellites.Dispose();
-            Antennas.Dispose();
+            if (mTimePatcher != null) mTimePatcher.Undo();
+            if (mConfig != null) mConfig.Dispose();
+            if (Renderer != null) Renderer.Detach();
+            if (Network != null) Network.Dispose();
+            if (Satellites != null) Satellites.Dispose();
+            if (Antennas != null) Antennas.Dispose();
 
             Instance = null;
         }
