@@ -155,12 +155,22 @@ namespace RemoteTech
         {
             if (mCommandBuffer.Count > 0)
             {
+                var time = TimeWarp.deltaTime;
                 for (int i = 0; i < mCommandBuffer.Count && mCommandBuffer[i].TimeStamp <= RTUtil.GameTime; i++)
                 {
                     DelayedCommand dc = mCommandBuffer[i];
                     if (dc.ExtraDelay > 0)
                     {
-                        dc.ExtraDelay -= TimeWarp.deltaTime;
+                        dc.ExtraDelay -= time;
+                        if (RTSettings.Instance.ThrottleTimeWarp)
+                        {
+                            var message = new ScreenMessage("[Flight Computer]: Throttling back time warp...", 4.0f, ScreenMessageStyle.UPPER_LEFT);
+                            while (TimeWarp.deltaTime > dc.ExtraDelay/2 && TimeWarp.CurrentRate > 1.0f)
+                            {
+                                TimeWarp.SetRate(TimeWarp.CurrentRateIndex - 1, true);
+                                ScreenMessages.PostScreenMessage(message, true);
+                            }
+                        }
                     }
                     else
                     {

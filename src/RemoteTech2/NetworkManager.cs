@@ -86,14 +86,14 @@ namespace RemoteTech
             RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
         }
 
-        public static double Distance(ISatellite a, NetworkLink<ISatellite> b)
-        {
-            return Vector3d.Distance(a.Position, b.Target.Position);
-        }
-
         public static double Distance(ISatellite a, ISatellite b)
         {
             return Vector3d.Distance(a.Position, b.Position);
+        }
+
+        public static double Distance(ISatellite a, NetworkLink<ISatellite> b)
+        {
+            return Vector3d.Distance(a.Position, b.Target.Position);
         }
 
         public void FindPath(ISatellite start, IEnumerable<ISatellite> commandStations)
@@ -108,7 +108,7 @@ namespace RemoteTech
             start.OnConnectionRefresh(this[start]);
         }
 
-        private IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
+        public IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
         {
             if (!s.Powered) return Enumerable.Empty<NetworkLink<ISatellite>>();
             return Graph[s.Guid].Where(l => l.Target.Powered);
@@ -186,8 +186,8 @@ namespace RemoteTech
                         {
                             if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
                             if (a.Dish < distance) return false;
-                            Vector3 dir_cb = (planets[a.Target].position - sat_a.Position);
-                            Vector3 dir_b = (sat_b.Position - sat_a.Position);
+                            Vector3d dir_cb = (planets[a.Target].position - sat_a.Position);
+                            Vector3d dir_b = (sat_b.Position - sat_a.Position);
                             if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
                             return false;
                         });
@@ -195,9 +195,9 @@ namespace RemoteTech
                         {
                             if (!planets.ContainsKey(b.Target) || sat_a.Body != planets[b.Target]) return false;
                             if (b.Dish < distance) return false;
-                            Vector3 dir_cb = (planets[b.Target].position - sat_b.Position);
-                            Vector3 dir_b = (sat_a.Position - sat_b.Position);
-                            if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
+                            Vector3d dir_cb = (planets[b.Target].position - sat_b.Position);
+                            Vector3d dir_b = (sat_a.Position - sat_b.Position);
+                            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
                             return false;
                         });
 
@@ -249,7 +249,7 @@ namespace RemoteTech
                         float max_omni_b = 0;
                         float sum_omni_b = 0;
                         bool inRange = false;
-                        if (RTSettings.Instance.MultipleAntennaSupport)
+                        if (RTSettings.Instance.NathanKell_MultipleAntennaSupport)
                         {
                             foreach (IAntenna a in omni_a.ToList())
                             {
@@ -287,7 +287,7 @@ namespace RemoteTech
                                 if (dish_b.Concat(planet_b) == null)
                                     return false;
                                 foreach (IAntenna b in alldishes_b.ToList())
-                                    if (MaxDistance(RTSettings.Instance.MultipleAntennaSupport ? max_omni_a : a.Omni, b.Dish, OMNICLAMP) >= distance)
+                                    if (MaxDistance(RTSettings.Instance.NathanKell_MultipleAntennaSupport ? max_omni_a : a.Omni, b.Dish, OMNICLAMP) >= distance)
                                         return true;
                                 return false;
                             });
@@ -296,7 +296,7 @@ namespace RemoteTech
                                 if (omni_b == null)
                                     return false;
                                 foreach (IAntenna b in omni_b.ToList())
-                                    if (MaxDistance(a.Dish, RTSettings.Instance.MultipleAntennaSupport ? max_omni_b : b.Omni, OMNICLAMP) >= distance)
+                                    if (MaxDistance(a.Dish, RTSettings.Instance.NathanKell_MultipleAntennaSupport ? max_omni_b : b.Omni, OMNICLAMP) >= distance)
                                         return true;
                                 foreach (IAntenna b in alldishes_b.ToList())
                                     if (MaxDistance(a.Dish, b.Dish, DISHCLAMP) >= distance)
