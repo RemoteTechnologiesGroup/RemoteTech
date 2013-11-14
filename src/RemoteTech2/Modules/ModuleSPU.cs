@@ -137,11 +137,9 @@ namespace RemoteTech
         {
             UIPartActionMenuPatcher.Wrap(vessel, (e, ignore_delay) =>
             {
-                Vessel v = FlightGlobals.ActiveVessel;
-                if (v == null || v.isEVA) e.Invoke();
+                var v = FlightGlobals.ActiveVessel;
                 var vs = RTCore.Instance.Satellites[v];
-                if (vs == null) e.Invoke();
-                if (vs.HasLocalControl)
+                if (v == null || v.isEVA || vs == null || vs.HasLocalControl)
                 {
                     e.Invoke();
                 }
