@@ -7,6 +7,13 @@ using UnityEngine;
 
 namespace RemoteTech
 {
+    [Flags]
+    public enum RangeModel
+    {
+        Standard,
+        Additive,
+    }
+
     public class NetworkManager : IEnumerable<ISatellite>, IConfigNode
     {
         public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkAdd = delegate { };
