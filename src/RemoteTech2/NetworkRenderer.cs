@@ -85,8 +85,10 @@ namespace RemoteTech
 
         private void UpdateNetworkCones()
         {
-            var antennas = RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
-                                                                                        && RTCore.Instance.Network.Planets.ContainsKey(a.Target)).ToList();
+            var antennas = RTCore.Instance.Antennas.Where(a => ShowPlanet)
+                                                   .Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
+                                                                                        && RTCore.Instance.Network.Planets.ContainsKey(a.Target))
+                                                   .ToList();
             int oldLength = mCones.Count;
             int newLength = antennas.Count;
 
@@ -112,8 +114,9 @@ namespace RemoteTech
 
         private void UpdateNetworkEdges()
         {
+            var edges = mEdges.Where(e => CheckVisibility(e)).ToList();
             int oldLength = mLines.Count;
-            int newLength = mEdges.Count;
+            int newLength = edges.Count;
 
             // Free any unused lines
             for (int i = newLength; i < oldLength; i++)
@@ -124,7 +127,7 @@ namespace RemoteTech
             mLines.AddRange(Enumerable.Repeat<NetworkLine>(null, Math.Max(newLength - oldLength, 0)));
 
             // Iterate over all satellites, updating or creating new lines.
-            var it = mEdges.GetEnumerator();
+            var it = edges.GetEnumerator();
             for (int i = 0; i < newLength; i++)
             {
                 it.MoveNext();
@@ -133,7 +136,7 @@ namespace RemoteTech
                 mLines[i].LineWidth = 5.0f;
                 mLines[i].Edge = it.Current;
                 mLines[i].Color = CheckColor(it.Current);
-                mLines[i].Active = CheckVisibility(it.Current);
+                mLines[i].Active = true;
             }
         }
 

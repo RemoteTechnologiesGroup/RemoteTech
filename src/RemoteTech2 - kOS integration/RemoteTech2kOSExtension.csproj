@@ -39,6 +39,10 @@
       <HintPath>C:\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="kOS">
+      <HintPath>C:\Users\Sander\Desktop\KSP Dev\GameData\kOS\Plugins\kOS.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -55,11 +59,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KOS\kOS.csproj">
-      <Project>{b972ab0d-d76b-4274-b41e-ed93cbea1ad5}</Project>
-      <Name>kOS</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\RemoteTech2\RemoteTech2.csproj">
       <Project>{42155d82-1f25-4e59-9f65-64abc583f420}</Project>
       <Name>RemoteTech2</Name>
