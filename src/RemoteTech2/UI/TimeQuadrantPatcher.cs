@@ -27,7 +27,7 @@ namespace RemoteTech
                 var vs = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
                 if (vs == null)
                 {
-                    return "Local Control";
+                    return "N/A";
                 }
                 else if (vs.HasLocalControl)
                 {
@@ -35,7 +35,14 @@ namespace RemoteTech
                 }
                 else if (vs.Connections.Any())
                 {
-                    return "D+ " + vs.Connections[0].Delay.ToString("F6") + "s";
+                    if (RTSettings.Instance.EnableSignalDelay)
+                    {
+                        return "D+ " + vs.Connections[0].Delay.ToString("F6") + "s";
+                    }
+                    else
+                    {
+                        return "Connected";
+                    }                    
                 }
                 return "No Connection";
             }
@@ -46,7 +53,11 @@ namespace RemoteTech
             get
             {
                 var vs = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
-                if (vs == null || vs.HasLocalControl)
+                if (vs == null) 
+                {
+                    return mFlightButtonRed;
+                }
+                else if (vs.HasLocalControl)
                 {
                     return mFlightButtonYellow;
                 }
