@@ -186,17 +186,17 @@ namespace RemoteTech
                         {
                             if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
                             if (a.Dish < distance) return false;
-                            Vector3d dir_cb = (planets[a.Target].position - sat_a.Position);
-                            Vector3d dir_b = (sat_b.Position - sat_a.Position);
-                            if (Vector3.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
+                            var dir_cb = (planets[a.Target].position - sat_a.Position);
+                            var dir_b = (sat_b.Position - sat_a.Position);
+                            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
                             return false;
                         });
                         var planet_b = sat_b.Antennas.Where(b =>
                         {
                             if (!planets.ContainsKey(b.Target) || sat_a.Body != planets[b.Target]) return false;
                             if (b.Dish < distance) return false;
-                            Vector3d dir_cb = (planets[b.Target].position - sat_b.Position);
-                            Vector3d dir_b = (sat_a.Position - sat_b.Position);
+                            var dir_cb = (planets[b.Target].position - sat_b.Position);
+                            var dir_b = (sat_a.Position - sat_b.Position);
                             if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
                             return false;
                         });
