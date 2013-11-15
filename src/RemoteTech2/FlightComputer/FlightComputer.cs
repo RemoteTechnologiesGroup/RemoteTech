@@ -43,7 +43,7 @@ namespace RemoteTech
         private readonly List<DelayedCommand> mCommandBuffer = new List<DelayedCommand>();
         private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer = new PriorityQueue<DelayedFlightCtrlState>();
 
-        private double mLastSpeed;
+        private Vector3 mLastVelocity;
         private Quaternion mKillRot;
         private FlightComputerWindow mWindow;
         public FlightComputerWindow Window { get { if (mWindow != null) mWindow.Hide(); return mWindow = new FlightComputerWindow(this); } }
@@ -203,7 +203,7 @@ namespace RemoteTech
 
                         if (dc.BurnCommand != null)
                         {
-                            mLastSpeed = mVessel.obt_velocity.magnitude;
+                            mLastVelocity = mVessel.obt_velocity;
                             mCurrentCommand.BurnCommand = dc.BurnCommand;
                         }
 
@@ -274,8 +274,8 @@ namespace RemoteTech
                 else if (mCurrentCommand.BurnCommand.DeltaV > 0)
                 {
                     fs.mainThrottle = mCurrentCommand.BurnCommand.Throttle;
-                    mCurrentCommand.BurnCommand.DeltaV -= Math.Abs(mLastSpeed - mVessel.obt_velocity.magnitude);
-                    mLastSpeed = mVessel.obt_velocity.magnitude;
+                    mCurrentCommand.BurnCommand.DeltaV -= (mLastVelocity - mVessel.obt_velocity).magnitude;
+                    mLastVelocity = mVessel.obt_velocity;
                 }
                 else
                 {

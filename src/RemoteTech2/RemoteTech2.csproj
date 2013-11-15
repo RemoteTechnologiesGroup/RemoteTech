@@ -109,7 +109,7 @@
   <Target Name="AfterBuild">
     <PropertyGroup>
       <PathToZip>../../GameData</PathToZip>
-      <PluginLocation>../../GameData/$(AssemblyName)/Plugins/</PluginLocation>
+      <PluginLocation>../../GameData/RemoteTech2/Plugins/</PluginLocation>
       <ZipDate>$([System.DateTime]::Now.ToString(`yyyy.MM.dd.HH.mm`))</ZipDate>
     </PropertyGroup>
     <Copy DestinationFolder="$(PluginLocation)" OverwriteReadOnlyFiles="True" SkipUnchangedFiles="False" SourceFiles="$(OutputPath)$(AssemblyName).dll" />
