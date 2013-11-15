@@ -21,8 +21,11 @@ namespace RemoteTech
 
         public void Dispose()
         {
-            RTCore.Instance.Satellites.OnUnregister -= Refresh;
             mAntennaFragment.Dispose();
+            if (RTCore.Instance != null)
+            {
+                RTCore.Instance.Satellites.OnUnregister -= Refresh;
+            }
         }
 
         public void Draw()

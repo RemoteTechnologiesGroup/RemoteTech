@@ -43,9 +43,12 @@ namespace RemoteTech
 
         public void Dispose()
         {
-            RTCore.Instance.Satellites.OnRegister -= Refresh;
-            RTCore.Instance.Satellites.OnUnregister -= Refresh;
-            RTCore.Instance.Antennas.OnUnregister -= Refresh;
+            if (RTCore.Instance != null)
+            {
+                RTCore.Instance.Satellites.OnRegister -= Refresh;
+                RTCore.Instance.Satellites.OnUnregister -= Refresh;
+                RTCore.Instance.Antennas.OnUnregister -= Refresh;
+            }
         }
 
         public void Draw()

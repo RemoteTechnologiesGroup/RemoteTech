@@ -38,7 +38,10 @@ namespace RemoteTech
             {
                 mSatelliteFragment.Dispose(); mSatelliteFragment = null;
             }
-            RTCore.Instance.Satellites.OnUnregister -= Refresh;
+            if (RTCore.Instance != null)
+            {
+                RTCore.Instance.Satellites.OnUnregister -= Refresh;
+            }
             base.Hide();
         }
 
