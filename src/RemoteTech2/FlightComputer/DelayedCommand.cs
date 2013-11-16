@@ -62,7 +62,16 @@ namespace RemoteTech
             {
                 ManeuverCommand = new ManeuverCommand()
                 {
-                    Node = node,
+                    Node = new ManeuverNode()
+                    {
+                        DeltaV = node.DeltaV,
+                        patch = node.patch,
+                        solver = node.solver,
+                        scaledSpaceTarget = node.scaledSpaceTarget,
+                        nextPatch = node.nextPatch,
+                        UT = node.UT,
+                        nodeRotation = node.nodeRotation,
+                    }
                 },
                 TimeStamp = RTUtil.GameTime,
             };

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace RemoteTech
 {
     // PriorityQueue based on a minimum-BinaryHeap.
-    public class PriorityQueue<T> where T : class
+    public class PriorityQueue<T> : IEnumerable<T>
     {
         public int Count { get { return mHeap.Count; } }
 
@@ -32,6 +34,16 @@ namespace RemoteTech
         public T Dequeue()
         {
             return mHeap.Remove();
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return mHeap.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

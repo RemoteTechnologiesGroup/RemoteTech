@@ -349,7 +349,7 @@ namespace RemoteTech
             foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
             {
                 UpdateGraph(s);
-                RTLog.Debug("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
+                //RTLog.Debug("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
                 if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION)
                 {
                     FindPath(s, commandStations);

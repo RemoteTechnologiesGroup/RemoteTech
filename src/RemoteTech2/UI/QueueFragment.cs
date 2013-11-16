@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Collections;
 using UnityEngine;
 
 namespace RemoteTech
@@ -43,13 +44,17 @@ namespace RemoteTech
                 {
                     foreach (DelayedCommand dc in mFlightComputer)
                     {
-                        GUILayout.BeginHorizontal(GUI.skin.box);
+                        var text = Format(dc);
+                        if (!String.IsNullOrEmpty(text))
                         {
-                            GUILayout.Label(Format(dc));
-                            GUILayout.FlexibleSpace();
-                            RTUtil.Button("x", () => { mFlightComputer.Enqueue(DelayedCommand.Cancel(dc)); }, GUILayout.Width(21), GUILayout.Height(21));
+                            GUILayout.BeginHorizontal(GUI.skin.box);
+                            {
+                                GUILayout.Label(text);
+                                GUILayout.FlexibleSpace();
+                                RTUtil.Button("x", () => { RTCore.Instance.StartCoroutine(OnClickCancel(dc)); }, GUILayout.Width(21), GUILayout.Height(21));
+                            }
+                            GUILayout.EndHorizontal();
                         }
-                        GUILayout.EndHorizontal();
                     }
                 }
                 GUILayout.EndScrollView();
@@ -64,6 +69,12 @@ namespace RemoteTech
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
+        }
+
+        public IEnumerator OnClickCancel(DelayedCommand dc)
+        {
+            yield return null;
+            mFlightComputer.Enqueue(DelayedCommand.Cancel(dc));
         }
 
         private String Format(DelayedCommand dc)
@@ -122,7 +133,7 @@ namespace RemoteTech
                             case FlightAttitude.Surface:
                                 s.Append(dc.AttitudeCommand.Orientation.eulerAngles.x.ToString("F1"));
                                 s.Append("°, ");
-                                s.Append(RTUtil.Format180To360(180 - dc.AttitudeCommand.Orientation.eulerAngles.y).ToString("F1"));
+                                s.Append((360 - dc.AttitudeCommand.Orientation.eulerAngles.y).ToString("F1"));
                                 s.Append("°, ");
                                 s.Append(RTUtil.Format360To180(180 - dc.AttitudeCommand.Orientation.eulerAngles.z).ToString("F1"));
                                 s.AppendLine("°");
@@ -168,6 +179,13 @@ namespace RemoteTech
             {
                 s.AppendLine("Cancelling a command");
             }
+            if (dc.TargetCommand != null)
+            {
+                s.Append("Target: ");
+                s.AppendLine(dc.TargetCommand.Target != null ? dc.TargetCommand.Target.GetName() : "None");
+            }
+
+            if (s.ToString().Equals("")) return "";
 
             double delay = Math.Max(dc.TimeStamp - RTUtil.GameTime, 0);
             if (delay > 0 || dc.ExtraDelay > 0)

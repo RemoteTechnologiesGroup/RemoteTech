@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace RemoteTech
 {
     // Sadly there is no way to enforce immutability C#.
     // Do not modify sorting order externally! Increase/Decrease().
-    public class BinaryHeap<T> where T : class
+    public class BinaryHeap<T> : IEnumerable<T>
     {
         public int Count { get { return mData.Count; } }
 
@@ -108,6 +109,16 @@ namespace RemoteTech
         public int IndexOf(T item)
         {
             return mData.IndexOf(item);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return mData.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

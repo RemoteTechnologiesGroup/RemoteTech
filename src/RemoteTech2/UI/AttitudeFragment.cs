@@ -105,7 +105,7 @@ namespace RemoteTech
         private float mThrottle;
 
         private String mPitch = "90";
-        private String mRoll = "0";
+        private String mRoll = "90";
         private String mHeading = "90";
         private String mDuration = "0s";
 

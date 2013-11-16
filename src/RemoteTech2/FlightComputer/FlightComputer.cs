@@ -31,6 +31,9 @@ namespace RemoteTech
             }
         }
 
+        public Vector3d Maneuver { get { return mCurrentCommand.ManeuverCommand != null ? mCurrentCommand.ManeuverCommand.Node.GetBurnVector(mVessel.orbit) : mVessel.obt_velocity.normalized; } }
+        public ITargetable Target { get { return mCurrentCommand.TargetCommand != null ? mCurrentCommand.TargetCommand.Target : mVessel.mainBody; } }
+
         public double TotalDelay { get; set; }
 
         public List<Action<FlightCtrlState>> SanctionedPilots { get; private set; }
@@ -42,6 +45,7 @@ namespace RemoteTech
         private FlightCtrlState mPreviousFcs = new FlightCtrlState();
         private readonly List<DelayedCommand> mCommandBuffer = new List<DelayedCommand>();
         private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlBuffer = new PriorityQueue<DelayedFlightCtrlState>();
+        private readonly PriorityQueue<DelayedCommand> mManeuverBuffer = new PriorityQueue<DelayedCommand>();
 
         private Vector3 mLastVelocity;
         private Quaternion mKillRot;
@@ -98,24 +102,26 @@ namespace RemoteTech
         public void OnFixedUpdate()
         {
             // Send updates for Target / Maneuver
-            if (FlightGlobals.fetch.VesselTarget != null && (mCurrentCommand.TargetCommand == null || mCurrentCommand.TargetCommand.Target != FlightGlobals.fetch.VesselTarget))
+            if ((mCurrentCommand.TargetCommand == null && FlightGlobals.fetch.VesselTarget != null) ||
+                (mCurrentCommand.TargetCommand != null && mCurrentCommand.TargetCommand.Target != FlightGlobals.fetch.VesselTarget))
             {
-                if (!mCommandBuffer.Any(dc => dc.TargetCommand != null && dc.TargetCommand.Target == FlightGlobals.fetch.VesselTarget))
+                if (!mCommandBuffer.Any(dc => dc.TargetCommand.Target == FlightGlobals.fetch.VesselTarget))
                 {
                     Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
                 }
             }
-            if (mVessel.patchedConicSolver != null)
+            if (mVessel.patchedConicSolver != null && mVessel.patchedConicSolver.maneuverNodes != null)
             {
-                if (mVessel.patchedConicSolver.maneuverNodes.Count > 0 && (mCurrentCommand.ManeuverCommand == null || mCurrentCommand.ManeuverCommand.Node != mVessel.patchedConicSolver.maneuverNodes[0]))
+                if (mVessel.patchedConicSolver.maneuverNodes.Count > 0 && (mCurrentCommand.ManeuverCommand == null || mCurrentCommand.ManeuverCommand.Node.DeltaV != mVessel.patchedConicSolver.maneuverNodes[0].DeltaV))
                 {
-                    if (!mCommandBuffer.Any(dc => dc.TargetCommand != null && dc.ManeuverCommand.Node == mVessel.patchedConicSolver.maneuverNodes[0]))
+                    if (!mManeuverBuffer.Any(dc => dc.ManeuverCommand.Node.DeltaV == mVessel.patchedConicSolver.maneuverNodes[0].DeltaV))
                     {
-                        Enqueue(ManeuverCommand.WithNode(mVessel.patchedConicSolver.maneuverNodes[0]));
+                        var command = ManeuverCommand.WithNode(mVessel.patchedConicSolver.maneuverNodes[0]);
+                        command.TimeStamp += Delay;
+                        mManeuverBuffer.Enqueue(command);
                     }
                 }
             }
-
 
             if (mVessel != mParent.Vessel)
             {
@@ -139,10 +145,12 @@ namespace RemoteTech
             mFlightCtrlBuffer.Enqueue(dfs);
         }
 
-        private void PopFlightCtrlState(FlightCtrlState fcs)
+        private void PopFlightCtrlState(FlightCtrlState fcs, ISatellite sat)
         {
             FlightCtrlState delayed = mPreviousFcs;
-            mPreviousFcs.Neutralize();
+            float prev_throttle = delayed.mainThrottle;
+            delayed.Neutralize();
+            delayed.mainThrottle = InputAllowed ? prev_throttle : 0.0f;
             while (mFlightCtrlBuffer.Count > 0 && mFlightCtrlBuffer.Peek().TimeStamp <= RTUtil.GameTime)
             {
                 delayed = mFlightCtrlBuffer.Dequeue().State;
@@ -153,12 +161,20 @@ namespace RemoteTech
 
         private void PopCommand()
         {
+            // Maneuvers
+            while (mManeuverBuffer.Count > 0 && mManeuverBuffer.Peek().TimeStamp <= RTUtil.GameTime)
+            {
+                mCurrentCommand.ManeuverCommand = mManeuverBuffer.Dequeue().ManeuverCommand;
+            }
+
+            // Commands
             if (mCommandBuffer.Count > 0)
             {
                 var time = TimeWarp.deltaTime;
+                var delete = new List<DelayedCommand>();
                 for (int i = 0; i < mCommandBuffer.Count && mCommandBuffer[i].TimeStamp <= RTUtil.GameTime; i++)
                 {
-                    DelayedCommand dc = mCommandBuffer[i];
+                    var dc = mCommandBuffer[i];
                     if (dc.ExtraDelay > 0)
                     {
                         dc.ExtraDelay -= time;
@@ -214,12 +230,7 @@ namespace RemoteTech
 
                         if (dc.TargetCommand != null)
                         {
-                            mCurrentCommand.TargetCommand = dc.TargetCommand;
-                        }
-
-                        if (dc.ManeuverCommand != null)
-                        {
-                            mCurrentCommand.ManeuverCommand = dc.ManeuverCommand;
+                            mCurrentCommand.TargetCommand = dc.TargetCommand.Target != null ? dc.TargetCommand : null;
                         }
 
                         if (dc.CancelCommand != null)
@@ -234,7 +245,7 @@ namespace RemoteTech
                         }
                         else if (!do_not_delete)
                         {
-                            mCommandBuffer.RemoveAt(i);
+                            mCommandBuffer.RemoveAt(i--);
                         }
 
                     }
@@ -292,6 +303,7 @@ namespace RemoteTech
         private void HoldOrientation(FlightCtrlState fs, Quaternion target)
         {
             //mVessel.VesselSAS.LockHeading(target * Quaternion.AngleAxis(90, Vector3.right), true);
+            mVessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
             kOS.SteeringHelper.SteerShipToward(target, fs, mVessel);
             //FlightGlobals.ActiveVessel.ActionGroups.SetGroup(KSPActionGroup.SAS, true);
         }
@@ -396,7 +408,7 @@ namespace RemoteTech
 
             if (!satellite.HasLocalControl)
             {
-                PopFlightCtrlState(fcs);
+                PopFlightCtrlState(fcs, satellite);
             }
 
         }
