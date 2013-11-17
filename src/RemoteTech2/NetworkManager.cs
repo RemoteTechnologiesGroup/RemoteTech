@@ -299,7 +299,7 @@ namespace RemoteTech
                                         return true;
                                 return false;
                             });
-                        dishes = dishes.Concat(dish_a.Where(a => // dish to omni or dish
+                        dishes = dishes.Concat((dish_a.Concat(planet_a)).Where(a => // dish to omni or dish
                             {
                                 if (omni_b == null)
                                     return false;
