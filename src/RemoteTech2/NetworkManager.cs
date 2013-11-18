@@ -343,8 +343,10 @@ namespace RemoteTech
 
         public void OnPhysicsUpdate()
         {
-            if (RTCore.Instance.Satellites.Count == 0) return;
-            int takeCount = (RTCore.Instance.Satellites.Count / REFRESH_TICKS) + (((mTick++ % (REFRESH_TICKS / (RTCore.Instance.Satellites.Count + 1))) == 0) ? 1 : 0);
+            var count = RTCore.Instance.Satellites.Count;
+            if (count == 0) return;
+            int baseline = (count / REFRESH_TICKS);
+            int takeCount = baseline + (((mTick++ % REFRESH_TICKS) < (count - baseline * REFRESH_TICKS)) ? 1 : 0);
             IEnumerable<ISatellite> commandStations = RTCore.Instance.Satellites.FindCommandStations();
             foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
             {

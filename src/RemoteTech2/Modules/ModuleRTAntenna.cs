@@ -181,8 +181,7 @@ namespace RemoteTech
             }
         }
 
-        [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target")]
-        [IgnoreSignalDelayAttribute]
+        [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target", category = "skip_delay")]
         public void EventTarget()
         {
             (new AntennaWindow(this)).Show();
@@ -220,25 +219,19 @@ namespace RemoteTech
             EventClose();
         }
 
-        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Set Target")]
-        [IgnoreControlAttribute]
-        [IgnoreSignalDelayAttribute]
+        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Set Target", category = "skip_delay;skip_control")]
         public void OverrideTarget()
         {
             (new AntennaWindow(this)).Show();
         }
 
-        [KSPEvent(name = "OverrideOpen", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Open")]
-        [IgnoreControlAttribute]
-        [IgnoreSignalDelayAttribute]
+        [KSPEvent(name = "OverrideOpen", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Open", category = "skip_delay;skip_control")]
         public void OverrideOpen()
         {
             EventOpen();
         }
 
-        [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Close")]
-        [IgnoreControlAttribute]
-        [IgnoreSignalDelayAttribute]
+        [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Close", category = "skip_delay;skip_control")]
         public void OverrideClose()
         {
             EventClose();

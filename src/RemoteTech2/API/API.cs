@@ -5,19 +5,18 @@ using System.Text;
 using RemoteTech;
 using UnityEngine;
 
-namespace kOS.RemoteTech2
+namespace RemoteTech
 {
-    [KSPAddon(KSPAddon.Startup.Instantly, false)]
-    public class RemoteTechIntegrator : MonoBehaviour, IRemoteTech
+    public static class API
     {
-        public void Start()
+        public static bool HasFlightComputer(Guid id)
         {
-            if (RTSettings.Instance == null) return;
-            RTHook.Instance = this;
-            RTLog.Notify("kOS integration loaded successfully");
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return false;
+            return satellite.FlightComputer != null;
         }
 
-        public void AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
+        public static void AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
         {
             var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return;
@@ -29,7 +28,7 @@ namespace kOS.RemoteTech2
             }
         }
 
-        public void RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
+        public static void RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
         {
             var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return;
@@ -40,33 +39,33 @@ namespace kOS.RemoteTech2
             }
         }
 
-        public bool HasAnyConnection(Guid id)
+        public static bool HasAnyConnection(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
             return RTCore.Instance.Network[satellite].Any();
         }
 
-        public bool HasConnectionToKSC(Guid id)
+        public static bool HasConnectionToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
             return RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid);
         }
 
-        public double GetShortestSignalDelay(Guid id)
+        public static double GetShortestSignalDelay(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
             if (!RTCore.Instance.Network[satellite].Any()) return Double.PositiveInfinity;
             return RTCore.Instance.Network[satellite].Min().Delay;
         }
 
-        public double GetSignalDelayToKSC(Guid id)
+        public static double GetSignalDelayToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
             if (!RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid)) return Double.PositiveInfinity;
             return RTCore.Instance.Network[satellite].Where(r => r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid).Min().Delay;
         }
 
-        public double GetSignalDelayToSatellite(Guid a, Guid b)
+        public static double GetSignalDelayToSatellite(Guid a, Guid b)
         {
             var sat_a = RTCore.Instance.Satellites[a];
             var sat_b = RTCore.Instance.Satellites[b];

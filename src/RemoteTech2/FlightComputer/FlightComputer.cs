@@ -170,9 +170,8 @@ namespace RemoteTech
             // Commands
             if (mCommandBuffer.Count > 0)
             {
-                var time = TimeWarp.deltaTime;
                 var delete = new List<DelayedCommand>();
-
+                var time = TimeWarp.deltaTime;
                 if (RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 1.0f)
                 {
                     for (int i = 0; i < mCommandBuffer.Count && mCommandBuffer[i].TimeStamp <= RTUtil.GameTime + time * 2; i++)
@@ -192,7 +191,7 @@ namespace RemoteTech
                     var dc = mCommandBuffer[i];
                     if (dc.ExtraDelay > 0)
                     {
-                        dc.ExtraDelay -= time;
+                        dc.ExtraDelay -= TimeWarp.deltaTime;
                     }
                     else
                     {

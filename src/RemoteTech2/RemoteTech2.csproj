@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\API.cs" />
     <Compile Include="DebugUnit.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
     <Compile Include="RTLog.cs" />

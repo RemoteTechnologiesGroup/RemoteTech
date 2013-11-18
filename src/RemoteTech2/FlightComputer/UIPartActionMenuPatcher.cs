@@ -30,9 +30,9 @@ namespace RemoteTech
                             .First(fi => fi.FieldType == typeof(BaseEventDelegate));
 
                         var partEvent = (BaseEventDelegate) partEventFieldInfo.GetValue(button.partEvent);
-                        if (partEvent.Method.GetCustomAttributes(typeof(IgnoreControlAttribute), true).Length == 0)
+                        if (partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_control")))
                         {
-                            bool ignore_delay = partEvent.Method.GetCustomAttributes(typeof(IgnoreSignalDelayAttribute), true).Length > 0;
+                            bool ignore_delay = partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
                             button.partEvent = Wrapper.Wrap(button.partEvent, pass, ignore_delay);
                         }
                     }
@@ -65,13 +65,11 @@ namespace RemoteTech
                 return new_event;
             }
 
-            [IgnoreControlAttribute]
+            [KSPEvent(category="skip_control")]
             public void Invoke()
             {
                 mPassthrough.Invoke(mEvent, mIgnoreDelay);
             }
         }
     }
-    public class IgnoreControlAttribute : System.Attribute { }
-    public class IgnoreSignalDelayAttribute : System.Attribute { }
 }
