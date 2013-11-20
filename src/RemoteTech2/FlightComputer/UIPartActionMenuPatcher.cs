@@ -30,7 +30,7 @@ namespace RemoteTech
                             .First(fi => fi.FieldType == typeof(BaseEventDelegate));
 
                         var partEvent = (BaseEventDelegate) partEventFieldInfo.GetValue(button.partEvent);
-                        if (partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_control")))
+                        if (!partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_control")))
                         {
                             bool ignore_delay = partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
                             button.partEvent = Wrapper.Wrap(button.partEvent, pass, ignore_delay);

@@ -96,6 +96,13 @@ namespace RemoteTech
         {
             if (!mParent.IsMaster) return;
             if (!mParent.Powered) return;
+
+            // Re-attach periodically
+            mVessel.OnFlyByWire -= OnFlyByWirePre;
+            mVessel.OnFlyByWire -= OnFlyByWirePost;
+            mVessel = mParent.Vessel;
+            mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire + OnFlyByWirePost;
+
             PopCommand();
         }
 
@@ -130,12 +137,6 @@ namespace RemoteTech
                 mCommandBuffer.RemoveAll(dc => dc.ManeuverCommand != null);
                 SanctionedPilots.Clear();
             }
-
-            // Re-attach periodically
-            mVessel.OnFlyByWire -= OnFlyByWirePre;
-            mVessel.OnFlyByWire -= OnFlyByWirePost;
-            mVessel = mParent.Vessel;
-            mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire + OnFlyByWirePost;
         }
 
         private void Enqueue(FlightCtrlState fs)
@@ -147,10 +148,7 @@ namespace RemoteTech
 
         private void PopFlightCtrlState(FlightCtrlState fcs, ISatellite sat)
         {
-            FlightCtrlState delayed = mPreviousFcs;
-            float prev_throttle = delayed.mainThrottle;
-            delayed.Neutralize();
-            delayed.mainThrottle = InputAllowed ? prev_throttle : 0.0f;
+            FlightCtrlState delayed = new FlightCtrlState();
             while (mFlightCtrlBuffer.Count > 0 && mFlightCtrlBuffer.Peek().TimeStamp <= RTUtil.GameTime)
             {
                 delayed = mFlightCtrlBuffer.Dequeue().State;
@@ -299,10 +297,6 @@ namespace RemoteTech
                     mCurrentCommand.BurnCommand = null;
                 }
             }
-            else if (!InputAllowed)
-            {
-                fs.mainThrottle = 0.0f;
-            }
         }
 
         private void HoldOrientation(FlightCtrlState fs, Quaternion target)
@@ -403,8 +397,8 @@ namespace RemoteTech
 
         private void OnFlyByWirePre(FlightCtrlState fcs)
         {
-            var satellite = RTCore.Instance.Satellites[mParent.Guid];
             if (!mParent.IsMaster) return;
+            var satellite = RTCore.Instance.Satellites[mParent.Guid];
 
             if (mVessel == FlightGlobals.ActiveVessel && InputAllowed && !satellite.HasLocalControl)
             {
@@ -416,6 +410,7 @@ namespace RemoteTech
                 PopFlightCtrlState(fcs, satellite);
             }
 
+            mPreviousFcs.CopyFrom(fcs);
         }
 
         private void OnFlyByWirePost(FlightCtrlState fcs)
@@ -426,8 +421,6 @@ namespace RemoteTech
             {
                 fcs.Neutralize();
             }
-
-            mPreviousFcs.CopyFrom(fcs);
 
             Autopilot(fcs);
 
