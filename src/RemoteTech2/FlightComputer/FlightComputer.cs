@@ -190,7 +190,7 @@ namespace RemoteTech
             {
                 var delete = new List<DelayedCommand>();
                 var time = TimeWarp.deltaTime;
-                if (RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 1.0f)
+                if (mParent.Powered && RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 1.0f)
                 {
                     for (int i = 0; i < mCommandBuffer.Count && mCommandBuffer[i].TimeStamp <= RTUtil.GameTime + time * 2; i++)
                     {
