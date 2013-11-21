@@ -12,18 +12,19 @@ namespace RemoteTech
     {
         Standard,
         Additive,
+        Root = Additive,
     }
 
-    public class NetworkManager : IEnumerable<ISatellite>, IConfigNode
+    public partial class NetworkManager : IEnumerable<ISatellite>
     {
         public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkAdd = delegate { };
         public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkRemove = delegate { };
 
-        public int Count { get { return RTCore.Instance.Satellites.Count + 1; } }
-
         public Dictionary<Guid, CelestialBody> Planets { get; private set; }
-        public MissionControlSatellite MissionControl { get; private set; }
+        public ISatellite[] GroundStations { get { return RTSettings.Instance.GroundStations; } }
         public Dictionary<Guid, List<NetworkLink<ISatellite>>> Graph { get; private set; }
+
+        public int Count { get { return RTCore.Instance.Satellites.Count + GroundStations.Length; } }
 
         public static Guid ActiveVesselGuid = new Guid(RTSettings.Instance.ActiveVesselGuid);
 
@@ -31,8 +32,6 @@ namespace RemoteTech
         {
             get
             {
-                if (guid == MissionControl.Guid)
-                    return MissionControl;
                 if (guid == ActiveVesselGuid)
                     return RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
                 return RTCore.Instance.Satellites[guid];
@@ -46,20 +45,6 @@ namespace RemoteTech
                 if (sat == null) return new List<NetworkRoute<ISatellite>>();
                 return mConnectionCache.ContainsKey(sat) ? mConnectionCache[sat] : new List<NetworkRoute<ISatellite>>();
             }
-            set
-            {
-                mConnectionCache[sat] = value;
-            }
-        }
-
-        public void Load(ConfigNode node)
-        {
-
-        }
-
-        public void Save(ConfigNode node)
-        {
-
         }
 
         private const int REFRESH_TICKS = 50;
@@ -70,7 +55,6 @@ namespace RemoteTech
 
         public NetworkManager()
         {
-            MissionControl = new MissionControlSatellite();
             Graph = new Dictionary<Guid, List<NetworkLink<ISatellite>>>();
             Planets = new Dictionary<Guid, CelestialBody>();
 
@@ -79,7 +63,10 @@ namespace RemoteTech
                 Planets[cb.Guid()] = cb;
             }
 
-            OnSatelliteRegister(MissionControl);
+            foreach (var sat in GroundStations)
+            {
+                OnSatelliteRegister(sat);
+            }
 
             RTCore.Instance.Satellites.OnRegister += OnSatelliteRegister;
             RTCore.Instance.Satellites.OnUnregister += OnSatelliteUnregister;
@@ -88,30 +75,23 @@ namespace RemoteTech
 
         public void Dispose()
         {
-            RTCore.Instance.OnPhysicsUpdate -= OnPhysicsUpdate;
-            RTCore.Instance.Satellites.OnRegister -= OnSatelliteRegister;
-            RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
-        }
-
-        public static double Distance(ISatellite a, ISatellite b)
-        {
-            return Vector3d.Distance(a.Position, b.Position);
-        }
-
-        public static double Distance(ISatellite a, NetworkLink<ISatellite> b)
-        {
-            return Vector3d.Distance(a.Position, b.Target.Position);
+            if (RTCore.Instance != null)
+            {
+                RTCore.Instance.OnPhysicsUpdate -= OnPhysicsUpdate;
+                RTCore.Instance.Satellites.OnRegister -= OnSatelliteRegister;
+                RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
+            }
         }
 
         public void FindPath(ISatellite start, IEnumerable<ISatellite> commandStations)
         {
             var paths = new List<NetworkRoute<ISatellite>>();
-            foreach (ISatellite root in commandStations.Concat(new[] { MissionControl }).Where(r => r != start))
+            foreach (ISatellite root in commandStations.Concat(GroundStations).Where(r => r != start))
             {
-                paths.Add(NetworkPathfinder.Solve(start, root, FindNeighbors, Distance, Distance));
+                paths.Add(NetworkPathfinder.Solve(start, root, FindNeighbors, RangeModelExtensions.DistanceTo, RangeModelExtensions.DistanceTo));
             }
-            this[start] = paths.Where(p => p.Exists).ToList();
-            this[start].Sort((a,b) => a.Delay.CompareTo(b.Delay));
+            mConnectionCache[start] = paths.Where(p => p.Exists).ToList();
+            mConnectionCache[start].Sort((a, b) => a.Delay.CompareTo(b.Delay));
             start.OnConnectionRefresh(this[start]);
         }
 
@@ -148,198 +128,20 @@ namespace RemoteTech
             }
         }
 
-        // NK
-        private static double MaxDistance(double min, double max, double clamp)
-        {
-            if (min > max)
-            {
-                double tmp = max;
-                max = min;
-                min = tmp;
-            }
-            return Math.Min(clamp*min, min + Math.Sqrt(min*max));
-        }
-
-        // NK consts
-        public const double OMNICLAMP = 100.0;
-        public const double DISHCLAMP = 1000.0;
-        public const double MULTIPLEANTFRACTION = 0.25;
-        // NK end
         public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
         {
-            bool los = LineOfSight(sat_a, sat_b) || CheatOptions.InfiniteEVAFuel;
-            if (sat_a == sat_b || !los) return null;
-
-            double distance = Distance(sat_a, sat_b);
-
-            var active_vessel = FlightGlobals.ActiveVessel;
-            if (active_vessel == null && HighLogic.LoadedScene == GameScenes.TRACKSTATION)
-            {
-                active_vessel = MapView.MapCamera.target.vessel;
-            }
+            if (sat_a == null || sat_b == null || sat_a == sat_b) return null;
+            bool los = sat_a.HasLineOfSightWith(sat_b) || CheatOptions.InfiniteEVAFuel;
+            if (!los) return null;
 
             switch (RTSettings.Instance.RangeModelType)
             {
+                default:
                 case RangeModel.Standard: // Stock range model
-                    {
-                        var omni_a = sat_a.Antennas.Where(a => a.Omni > distance);
-                        var omni_b = sat_b.Antennas.Where(b => b.Omni > distance);
-                        var dish_a = sat_a.Antennas.Where(a => a.Dish > distance && (a.Target == sat_b.Guid || (a.Target == ActiveVesselGuid && active_vessel != null &&
-                                                                                                                sat_b.Guid == active_vessel.id)));
-                        var dish_b = sat_b.Antennas.Where(b => b.Dish > distance && (b.Target == sat_a.Guid || (b.Target == ActiveVesselGuid && active_vessel != null &&
-                                                                                                                sat_a.Guid == active_vessel.id)));
-
-                        var planets = RTCore.Instance.Network.Planets;
-                        var planet_a = sat_a.Antennas.Where(a => 
-                        {
-                            if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
-                            if (a.Dish < distance) return false;
-                            var dir_cb = (planets[a.Target].position - sat_a.Position);
-                            var dir_b = (sat_b.Position - sat_a.Position);
-                            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
-                            return false;
-                        });
-                        var planet_b = sat_b.Antennas.Where(b =>
-                        {
-                            if (!planets.ContainsKey(b.Target) || sat_a.Body != planets[b.Target]) return false;
-                            if (b.Dish < distance) return false;
-                            var dir_cb = (planets[b.Target].position - sat_b.Position);
-                            var dir_b = (sat_a.Position - sat_b.Position);
-                            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
-                            return false;
-                        });
-
-                        var conn_a = omni_a.Concat(dish_a).Concat(planet_a).FirstOrDefault();
-                        var conn_b = omni_b.Concat(dish_b).Concat(planet_b).FirstOrDefault();
-                        if (conn_a != null && conn_b != null)
-                        {
-                            var interfaces = omni_a.Concat(dish_a).Concat(planet_a).ToList();
-                            var type = LinkType.Omni;
-                            if (dish_a.Concat(planet_a).Contains(conn_a) || dish_b.Concat(planet_b).Contains(conn_b)) type = LinkType.Dish;
-                            return new NetworkLink<ISatellite>(sat_b, interfaces, type);
-                        }
-                    }
-                    break;
+                    return RangeModelStandard.GetLink(sat_a, sat_b);
                 case RangeModel.Additive: // NathanKell
-                    { 
-                        var omni_a = sat_a.Antennas.Where(a => a.Omni > 0);
-                        var omni_b = sat_b.Antennas.Where(b => b.Omni > 0);
-                        var dish_a = sat_a.Antennas.Where(a => a.Dish > 0 && (a.Target == sat_b.Guid || (a.Target == ActiveVesselGuid && active_vessel != null &&
-                                                                                                            sat_b.Guid == active_vessel.id)));
-                        var dish_b = sat_b.Antennas.Where(b => b.Dish > 0 && (b.Target == sat_a.Guid || (b.Target == ActiveVesselGuid && active_vessel != null &&
-                                                                                                            sat_a.Guid == active_vessel.id)));
-
-
-                        var planets = RTCore.Instance.Network.Planets;
-                        var planet_a = sat_a.Antennas.Where(a =>
-                        {
-                            if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
-                            if (!(a.Dish > 0)) return false;
-                            var dir_cb = (planets[a.Target].position - sat_a.Position);
-                            var dir_b = (sat_b.Position - sat_a.Position);
-                            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
-                            return false;
-                        });
-                        var planet_b = sat_b.Antennas.Where(b =>
-                        {
-                            if (!planets.ContainsKey(b.Target) || sat_a.Body != planets[b.Target]) return false;
-                            if (!(b.Dish > 0)) return false;
-                            var dir_cb = (planets[b.Target].position - sat_b.Position);
-                            var dir_b = (sat_a.Position - sat_b.Position);
-                            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= b.Radians) return true;
-                            return false;
-                        });
-
-                        // get all links
-
-                        double max_omni_a = 0;
-                        double sum_omni_a = 0;
-                        double max_omni_b = 0;
-                        double sum_omni_b = 0;
-                        bool inRange = false;
-                        if (RTSettings.Instance.NathanKell_MultipleAntennaSupport)
-                        {
-                            foreach (IAntenna a in omni_a)
-                            {
-                                if (a.Omni > max_omni_a)
-                                    max_omni_a = a.Omni;
-                                sum_omni_a += a.Omni;
-                            }
-
-                            foreach (IAntenna b in omni_b)
-                            {
-                                if (b.Omni > max_omni_b)
-                                    max_omni_b = b.Omni;
-                                sum_omni_b += b.Omni;
-                            }
-                            max_omni_a += (sum_omni_a - max_omni_a) * MULTIPLEANTFRACTION;
-                            max_omni_b += (sum_omni_b - max_omni_b) * MULTIPLEANTFRACTION;
-
-                            inRange = MaxDistance(max_omni_a, max_omni_b, OMNICLAMP) >= distance;
-                            //MonoBehaviour.print("*RT2* For " + sat_a.Name + "(" + max_omni_a + ") <-> " + sat_b.Name + "(" + max_omni_b + "), inrange = " + inRange);
-                        }
-                        var omnis = omni_a.Where(a => // omni to omni
-                            {
-                                if (omni_b == null)
-                                    return false;
-                                if (inRange)
-                                    return true;
-                                foreach (IAntenna b in omni_b)
-                                    if (MaxDistance(a.Omni, b.Omni, OMNICLAMP) >= distance)
-                                        return true;
-                                return false;
-                            });
-                        var alldishes_b = dish_b.Concat(planet_b);
-                        var dishes = omni_a.Where(a => // omni to dish
-                            {
-                                if (dish_b.Concat(planet_b) == null)
-                                    return false;
-                                foreach (IAntenna b in alldishes_b)
-                                    if (MaxDistance(RTSettings.Instance.NathanKell_MultipleAntennaSupport ? max_omni_a : a.Omni, b.Dish, OMNICLAMP) >= distance)
-                                        return true;
-                                return false;
-                            });
-                        dishes = dishes.Concat((dish_a.Concat(planet_a)).Where(a => // dish to omni or dish
-                            {
-                                if (omni_b == null)
-                                    return false;
-                                foreach (IAntenna b in omni_b)
-                                    if (MaxDistance(a.Dish, RTSettings.Instance.NathanKell_MultipleAntennaSupport ? max_omni_b : b.Omni, OMNICLAMP) >= distance)
-                                        return true;
-                                foreach (IAntenna b in alldishes_b)
-                                    if (MaxDistance(a.Dish, b.Dish, DISHCLAMP) >= distance)
-                                        return true;
-                                return false;
-                            }));
-
-                        if (omnis.Concat(dishes).Any())
-                        {
-                            var interfaces = omnis.Concat(dishes).ToList();
-                            var type = LinkType.Omni;
-                            if (dishes.Any())
-                                type = LinkType.Dish;
-                            return new NetworkLink<ISatellite>(sat_b, interfaces, type);
-                        }
-                    }
-                    break;
-         
+                    return RangeModelRoot.GetLink(sat_a, sat_b);
             }
-            return null;
-        }
-
-        private static bool LineOfSight(ISatellite a, ISatellite b)
-        {
-            foreach (CelestialBody referenceBody in FlightGlobals.Bodies)
-            {
-                Vector3d bodyFromA = referenceBody.position - a.Position;
-                Vector3d bFromA = b.Position - a.Position;
-                if (Vector3d.Dot(bodyFromA, bFromA) <= 0) continue;
-                Vector3d bFromAnorm = bFromA.normalized;
-                if (Vector3d.Dot(bodyFromA, bFromAnorm) >= bFromA.magnitude) continue;
-                Vector3d lateralOffset = bodyFromA - Vector3d.Dot(bodyFromA, bFromAnorm) * bFromAnorm;
-                if (lateralOffset.magnitude < referenceBody.Radius - 5) return false;
-            }
-            return true;
         }
 
         public void OnPhysicsUpdate()
@@ -381,7 +183,7 @@ namespace RemoteTech
 
         public IEnumerator<ISatellite> GetEnumerator()
         {
-            return RTCore.Instance.Satellites.Cast<ISatellite>().Concat(new[] { MissionControl }).GetEnumerator();
+            return RTCore.Instance.Satellites.Cast<ISatellite>().Concat(GroundStations).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -390,42 +192,46 @@ namespace RemoteTech
         }
     }
 
-    public class MissionControlSatellite : ISatellite
+    public class MissionControlSatellite : ISatellite, IConfigNode
     {
-        public bool Powered { get { return true; } }
-        public bool Visible { get { return true; } }
-        public String Name { get { return "Mission Control"; } set { return; } }
-        public Guid Guid { get { return new Guid(RTSettings.Instance.MissionControlGuid); } }
-        public Vector3d Position { get { return FlightGlobals.Bodies[RTSettings.Instance.MissionControlBody].GetWorldSurfacePosition(RTSettings.Instance.MissionControlPosition.x, 
-                                                                                                                                         RTSettings.Instance.MissionControlPosition.y,
-                                                                                                                                         RTSettings.Instance.MissionControlPosition.z); } }
-        public CelestialBody Body { get { return FlightGlobals.Bodies[RTSettings.Instance.MissionControlBody]; } }
-        public IEnumerable<IAntenna> Antennas { get; private set; }
+        public static Guid Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488");
 
-        public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> route)
+        /* Config Node parameters */
+        [Persistent] private String Name = "Mission Control";
+        [Persistent] private double Latitude = -0.1313315f;
+        [Persistent] private double Longitude = -74.59484f;
+        [Persistent] private double Height = 75.0f;
+        [Persistent] private int Body = 1;
+        [Persistent(collectionIndex = "ANTENNA")]
+        private MissionControlAntenna[] Antennas = new MissionControlAntenna[] { new MissionControlAntenna() };
+
+        bool ISatellite.Powered { get { return true; } }
+        bool ISatellite.Visible { get { return true; } }
+        String ISatellite.Name { get { return Name; } set { Name = value; } }
+        Guid ISatellite.Guid { get { return Guid; } }
+        Vector3d ISatellite.Position { get { return FlightGlobals.Bodies[Body].GetWorldSurfacePosition(Latitude, Longitude, Height); } }
+        bool ISatellite.IsCommandStation { get { return true; } }
+        bool ISatellite.HasLocalControl { get { return false; } }
+        CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
+        IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
+
+        void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
+
+        public void Save(ConfigNode node)
         {
-            ;
+            var save = ConfigNode.CreateConfigFromObject(this);
+            node.CopyTo(node);
         }
 
-        public MissionControlSatellite()
+        public void Load(ConfigNode node)
         {
-            var antennas = new List<IAntenna>();
-            antennas.Add(new ProtoAntenna("Dummy Antenna", Guid, RTSettings.Instance.MissionControlRange));
-            Antennas = antennas;
+            ConfigNode.LoadObjectFromConfig(this, node);
         }
-
 
         public override String ToString()
         {
             return Name;
         }
 
-        public override int GetHashCode()
-        {
-            return Guid.GetHashCode();
-        }
-
-        public bool IsCommandStation { get { return true; } }
-        public bool HasLocalControl { get { return false; } }
     }
 }

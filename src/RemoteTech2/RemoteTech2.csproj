@@ -55,8 +55,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\API.cs" />
-    <Compile Include="DebugUnit.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
+    <Compile Include="Modules\MissionControlAntenna.cs" />
+    <Compile Include="Modules\ProtoSignalProcessor.cs" />
+    <Compile Include="RangeModel\RangeModelStandard.cs" />
+    <Compile Include="RangeModel\RangeModelRoot.cs" />
+    <Compile Include="RangeModel\RangeModelExtensions.cs" />
+    <Compile Include="RTDebugUnit.cs" />
     <Compile Include="RTLog.cs" />
     <Compile Include="FlightComputer\DelayedCommand.cs" />
     <Compile Include="FlightComputer\FlightComputer.cs" />
@@ -73,8 +78,7 @@
     <Compile Include="NetworkRenderer.cs" />
     <Compile Include="NetworkPathfinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProtoAntenna.cs" />
-    <Compile Include="ProtoSignalProcessor.cs" />
+    <Compile Include="Modules\ProtoAntenna.cs" />
     <Compile Include="RTCore.cs" />
     <Compile Include="RTSettings.cs" />
     <Compile Include="RTUtil.cs" />
@@ -104,6 +108,7 @@
     <Compile Include="UI\TimeQuadrantPatcher.cs" />
     <Compile Include="VesselSatellite.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
   </Target>

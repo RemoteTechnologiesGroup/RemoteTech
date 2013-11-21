@@ -7,12 +7,12 @@ using UnityEngine;
 namespace RemoteTech
 {
     [KSPAddon(KSPAddon.Startup.EveryScene, false)]
-    public class DebugUnit : MonoBehaviour
+    public class RTDebugUnit : MonoBehaviour
     {
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F11))
+            if (Input.GetKeyDown(KeyCode.F11) && HighLogic.LoadedSceneIsFlight)
             {
                 Dump();
             }
@@ -84,14 +84,14 @@ namespace RemoteTech
             int i = 0;
             foreach (var sat1 in RTCore.Instance.Network)
             {
-                i++;
                 int j = 0;
                 foreach (var sat2 in RTCore.Instance.Network)
                 {
-                    j++;
                     if (sat1 == sat2) continue;
                     data.Add(String.Format("    {0} -> {1}: {2}", i, j, NetworkManager.GetLink(sat1, sat2)));
+                    j++;
                 }
+                i++;
             }
 
             return data.ToArray();

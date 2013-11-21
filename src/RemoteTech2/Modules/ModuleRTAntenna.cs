@@ -34,6 +34,7 @@ namespace RemoteTech
         public double Radians { get { return RTDishRadians; } }
         public float Omni { get { return IsRTBroken ? 0.0f : ((IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange) * RangeMultiplier; } }
         public float Consumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost * ConsumptionMultiplier : 0.0f; } }
+        public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
         private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
         private float ConsumptionMultiplier { get { return RTSettings.Instance.ConsumptionMultiplier; } }
@@ -156,7 +157,7 @@ namespace RemoteTech
             UpdateContext();
             if(IsRTActive != prev_state) StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
             var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid);
+            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == MissionControlSatellite.Guid);
             if (mTransmitter == null && route_home)
             {
                 AddTransmitter();

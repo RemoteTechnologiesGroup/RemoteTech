@@ -22,6 +22,7 @@ namespace RemoteTech
         public double Radians { get { return 1.0f; } }
         public float Omni { get { return Activated ? OmniRange * RangeMultiplier : 0.0f; } }
         public float Consumption { get { return 0.0f; } }
+        public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
         private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
         private bool Unlocked { get { return ResearchAndDevelopment.GetTechnologyState(TechRequired) == RDTech.State.Available || TechRequired.Equals("None"); } }
@@ -86,7 +87,7 @@ namespace RemoteTech
         {
             IsRTActive = state;
             var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid);
+            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == MissionControlSatellite.Guid);
             if (mTransmitter == null && route_home)
             {
                 AddTransmitter();

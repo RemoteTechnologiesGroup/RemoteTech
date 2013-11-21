@@ -48,7 +48,7 @@ namespace RemoteTech
         public static bool HasConnectionToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
-            return RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid);
+            return RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == MissionControlSatellite.Guid);
         }
 
         public static double GetShortestSignalDelay(Guid id)
@@ -61,8 +61,8 @@ namespace RemoteTech
         public static double GetSignalDelayToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
-            if (!RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid)) return Double.PositiveInfinity;
-            return RTCore.Instance.Network[satellite].Where(r => r.Goal.Guid == RTCore.Instance.Network.MissionControl.Guid).Min().Delay;
+            if (!RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == MissionControlSatellite.Guid)) return Double.PositiveInfinity;
+            return RTCore.Instance.Network[satellite].Where(r => r.Goal.Guid == MissionControlSatellite.Guid).Min().Delay;
         }
 
         public static double GetSignalDelayToSatellite(Guid a, Guid b)
@@ -72,8 +72,8 @@ namespace RemoteTech
             if (sat_a == null || sat_b == null) return Double.PositiveInfinity;
 
             Func<ISatellite, IEnumerable<NetworkLink<ISatellite>>> neighbors = RTCore.Instance.Network.FindNeighbors;
-            Func<ISatellite, NetworkLink<ISatellite>, double> cost = NetworkManager.Distance;
-            Func<ISatellite, ISatellite, double> heuristic = NetworkManager.Distance;
+            Func<ISatellite, NetworkLink<ISatellite>, double> cost = RangeModelExtensions.DistanceTo;
+            Func<ISatellite, ISatellite, double> heuristic = RangeModelExtensions.DistanceTo;
 
             var path = NetworkPathfinder.Solve(sat_a, sat_b, neighbors, cost, heuristic);
             return path.Delay;

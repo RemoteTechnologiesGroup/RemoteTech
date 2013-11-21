@@ -17,6 +17,8 @@ namespace RemoteTech
     {
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
 
+        public const int DaysInAYear = 365;
+
         public static readonly String[]
             DistanceUnits = { "", "k", "M", "G", "T" },
             ClassDescripts = {  "Short-Planetary (SP)",
@@ -27,9 +29,12 @@ namespace RemoteTech
                                 "Long-Interplanetary (LI)"};
 
         private static readonly Regex mDurationRegex = new Regex(
-            String.Format("{0}?{1}?{2}?", @"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)",
-                                          @"(?:(?<minutes>\d*\.?\d+)\s*m[a-z]*[,\s]*)",
-                                          @"(?:(?<hours>\d*\.?\d+)\s*h[a-z]*[,\s]*)"));
+            String.Format("{0}?{1}?{2}?{3}?{4}?", 
+                @"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)",
+                @"(?:(?<minutes>\d*\.?\d+)\s*m[a-z]*[,\s]*)",
+                @"(?:(?<hours>\d*\.?\d+)\s*h[a-z]*[,\s]*)",
+                @"(?:(?<days>\d*\.?\d+)\s*d[a-z]*[,\s]*)",
+                @"(?:(?<years>\d*\.?\d+)\s*y[a-z]*[,\s]*)"));
 
         public static bool TryParseDuration(String duration, out TimeSpan time)
         {
@@ -48,6 +53,14 @@ namespace RemoteTech
                 if (match.Groups["hours"].Success)
                 {
                     time += TimeSpan.FromHours(Double.Parse(match.Groups["hours"].Value));
+                }
+                if (match.Groups["days"].Success)
+                {
+                    time += TimeSpan.FromDays(Double.Parse(match.Groups["days"].Value));
+                }
+                if (match.Groups["years"].Success)
+                {
+                    time += TimeSpan.FromDays(Double.Parse(match.Groups["years"].Value) * DaysInAYear);
                 }
             }
             if (time.TotalSeconds == 0)
@@ -106,9 +119,19 @@ namespace RemoteTech
         {
             TimeSpan time = TimeSpan.FromSeconds(duration);
             StringBuilder s = new StringBuilder();
-            if (time.TotalHours > 1)
+            if (time.TotalDays > DaysInAYear)
             {
-                s.Append(Math.Floor(time.TotalHours));
+                s.Append(Math.Floor(time.TotalDays / DaysInAYear));
+                s.Append("y");
+            }
+            if (time.TotalDays > 1)
+            {
+                s.Append(Math.Floor(time.TotalDays % DaysInAYear));
+                s.Append("d");
+            }
+            if (time.Hours > 1)
+            {
+                s.Append(time.Hours);
                 s.Append("h");
             }
             if (time.Minutes > 1)

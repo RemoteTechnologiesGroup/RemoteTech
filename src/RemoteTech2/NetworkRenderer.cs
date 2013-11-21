@@ -72,7 +72,7 @@ namespace RemoteTech
         {
             if (Event.current.type == EventType.Repaint && MapView.MapIsEnabled)
             {
-                foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(new[] { RTCore.Instance.Network.MissionControl }))
+                foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations))
                 {
                     var world_pos = ScaledSpace.LocalToScaledSpace(s.Position);
                     if (MapView.MapCamera.transform.InverseTransformPoint(world_pos).z < 0f) continue;

@@ -9,6 +9,15 @@ namespace RemoteTech
 {
     public class FlightComputer : IEnumerable<DelayedCommand>, IDisposable
     {
+        public enum State
+        {
+            Normal = 0,
+            Packed = 2,
+            OutOfPower = 4,
+            NoConnection = 8,
+            NotMaster = 16,
+        }
+
         public bool InputAllowed
         {
             get
@@ -28,6 +37,21 @@ namespace RemoteTech
                 var connection = RTCore.Instance.Network[satellite];
                 if (!connection.Any()) return Double.PositiveInfinity;
                 return connection.Min().Delay;
+            }
+        }
+
+        public State Status
+        {
+            get
+            {
+                var satellite = RTCore.Instance.Network[mParent.Guid];
+                var connection = RTCore.Instance.Network[satellite];
+                var status = State.Normal;
+                if (!mParent.Powered) status |= State.OutOfPower;
+                if (!mParent.IsMaster) status |= State.NotMaster;
+                if (!connection.Any()) status |= State.NoConnection;
+                if (mVessel.packed) status |= State.Packed;
+                return status;
             }
         }
 
@@ -95,7 +119,6 @@ namespace RemoteTech
         public void OnUpdate()
         {
             if (!mParent.IsMaster) return;
-            if (!mParent.Powered) return;
 
             // Re-attach periodically
             mVessel.OnFlyByWire -= OnFlyByWirePre;
@@ -189,14 +212,19 @@ namespace RemoteTech
                     var dc = mCommandBuffer[i];
                     if (dc.ExtraDelay > 0)
                     {
-                        dc.ExtraDelay -= TimeWarp.deltaTime;
+                        if (mParent.Powered)
+                        {
+                            dc.ExtraDelay -= TimeWarp.deltaTime;
+                        }
                     }
                     else
                     {
-                        bool do_not_delete = false;
+                        if (mVessel.packed)
+                        {
+                            continue;
+                        }
                         if (dc.ActionGroupCommand != null)
                         {
-                            if (mVessel.packed) { do_not_delete = true; return; }
                             KSPActionGroup ag = dc.ActionGroupCommand.ActionGroup;
                             mVessel.ActionGroups.ToggleGroup(ag);
                             if (ag == KSPActionGroup.Stage && !FlightInputHandler.fetch.stageLock)
@@ -246,7 +274,7 @@ namespace RemoteTech
                             }
                             mCommandBuffer.Remove(dc);
                         }
-                        else if (!do_not_delete)
+                        else
                         {
                             mCommandBuffer.RemoveAt(i--);
                         }

@@ -49,13 +49,11 @@ namespace RemoteTech
                 Satellites.RegisterProto(vessel);
                 Antennas.RegisterProtos(vessel);
             }
-
         }
 
         public void Update()
         {
-            if (FlightGlobals.ActiveVessel == null) return;
-            if (FlightGlobals.ActiveVessel.packed) return;
+            if (FlightGlobals.ActiveVessel == null || FlightGlobals.ActiveVessel.packed) return;
             var vs = Satellites[FlightGlobals.ActiveVessel];
             if (vs != null)
             {
