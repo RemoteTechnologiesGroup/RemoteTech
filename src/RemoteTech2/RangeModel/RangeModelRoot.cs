@@ -9,7 +9,6 @@ namespace RemoteTech
     {
         public const double OmniRangeClamp = 100.0;
         public const double DishRangeClamp = 1000.0;
-        public const double MultipleAntennaFactor = 0.25;
 
         public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
         {

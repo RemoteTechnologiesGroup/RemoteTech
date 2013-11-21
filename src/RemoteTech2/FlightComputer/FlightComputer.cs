@@ -118,14 +118,13 @@ namespace RemoteTech
 
         public void OnUpdate()
         {
-            if (!mParent.IsMaster) return;
-
             // Re-attach periodically
             mVessel.OnFlyByWire -= OnFlyByWirePre;
             mVessel.OnFlyByWire -= OnFlyByWirePost;
             mVessel = mParent.Vessel;
             mVessel.OnFlyByWire = OnFlyByWirePre + mVessel.OnFlyByWire + OnFlyByWirePost;
 
+            if (!mParent.IsMaster) return;
             PopCommand();
         }
 
@@ -140,6 +139,7 @@ namespace RemoteTech
                     Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
                 }
             }
+
             if (mVessel.patchedConicSolver != null && mVessel.patchedConicSolver.maneuverNodes != null)
             {
                 if (mVessel.patchedConicSolver.maneuverNodes.Count > 0 && (mCurrentCommand.ManeuverCommand == null || mCurrentCommand.ManeuverCommand.Node.DeltaV != mVessel.patchedConicSolver.maneuverNodes[0].DeltaV))
@@ -155,9 +155,6 @@ namespace RemoteTech
 
             if (mVessel != mParent.Vessel)
             {
-                mVessel.VesselSAS.LockHeading(mVessel.transform.rotation, false);
-                mCurrentCommand.ManeuverCommand = null;
-                mCommandBuffer.RemoveAll(dc => dc.ManeuverCommand != null);
                 SanctionedPilots.Clear();
             }
         }

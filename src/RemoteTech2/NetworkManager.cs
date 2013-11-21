@@ -192,7 +192,7 @@ namespace RemoteTech
         }
     }
 
-    public class MissionControlSatellite : ISatellite, IConfigNode
+    public class MissionControlSatellite : ISatellite
     {
         public static Guid Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488");
 
@@ -216,17 +216,6 @@ namespace RemoteTech
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
-
-        public void Save(ConfigNode node)
-        {
-            var save = ConfigNode.CreateConfigFromObject(this);
-            node.CopyTo(node);
-        }
-
-        public void Load(ConfigNode node)
-        {
-            ConfigNode.LoadObjectFromConfig(this, node);
-        }
 
         public override String ToString()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RemoteTech
@@ -24,6 +25,43 @@ namespace RemoteTech
                 return Math.Max(delay.TotalSeconds, 0);
             }
             set { mExtraDelay = value.ToString(); }
+        }
+
+        private GUIContent Status
+        {
+            get
+            {
+                var tooltip = new List<String>();
+                var status = new List<String>();
+                if ((mFlightComputer.Status & FlightComputer.State.NoConnection) == FlightComputer.State.NoConnection)
+                {
+                    status.Add("Connection Error");
+                    tooltip.Add("Cannot queue commands");
+                }
+                if ((mFlightComputer.Status & FlightComputer.State.OutOfPower) == FlightComputer.State.OutOfPower)
+                {
+                    status.Add("Out of Power");
+                    tooltip.Add("Commands can be missed");
+                    tooltip.Add("Timers halt");
+                }
+                if ((mFlightComputer.Status & FlightComputer.State.NotMaster) == FlightComputer.State.NotMaster)
+                {
+                    status.Add("Slave");
+                    tooltip.Add("Has no control");
+                }
+                if ((mFlightComputer.Status & FlightComputer.State.Packed) == FlightComputer.State.Packed)
+                {
+                    status.Add("Packed");
+                    tooltip.Add("Frozen");
+                }
+                if (mFlightComputer.Status == FlightComputer.State.Normal)
+                {
+                    status.Add("All systems nominal");
+                    tooltip.Add("None");
+                }
+                return new GUIContent("Status: " + String.Join(", ", status.ToArray()) + ".",
+                    "Effects: " + String.Join("; ", tooltip.ToArray()) + ".");
+            }
         }
 
         public QueueFragment(FlightComputer fc)
@@ -59,9 +97,10 @@ namespace RemoteTech
                 }
                 GUILayout.EndScrollView();
 
+                GUILayout.Label(Status);
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("Set total delay: " + mFlightComputer.TotalDelay.ToString("F2"));
+                    GUILayout.Label(new GUIContent("Delay (+ signal): " + RTUtil.FormatDuration(mFlightComputer.TotalDelay), "Total delay including signal delay."));
                     GUILayout.FlexibleSpace();
                     GUI.SetNextControlName("xd");
                     RTUtil.TextField(ref mExtraDelay, GUILayout.Width(50));
@@ -158,7 +197,7 @@ namespace RemoteTech
                 if (dc.BurnCommand.Duration != Single.NaN)
                 {
                     s.Append(", ");
-                    s.Append(dc.BurnCommand.Duration.ToString("F2"));
+                    s.Append(RTUtil.FormatDuration(dc.BurnCommand.Duration));
                     s.Append("s");
                 }
                 if (dc.BurnCommand.DeltaV != Single.NaN)
@@ -191,13 +230,12 @@ namespace RemoteTech
             if (delay > 0 || dc.ExtraDelay > 0)
             {
                 s.Append("Signal delay: ");
-                s.Append(delay.ToString("F2"));
-                s.Append("s");
+                s.Append(RTUtil.FormatDuration(delay));
                 if (dc.ExtraDelay > 0)
                 {
                     s.Append(" (+");
-                    s.Append(dc.ExtraDelay.ToString("F2"));
-                    s.Append("s)");
+                    s.Append(RTUtil.FormatDuration(dc.ExtraDelay));
+                    s.Append(")");
                 }
                 s.AppendLine();
             }

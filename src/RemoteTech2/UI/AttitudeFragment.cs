@@ -140,41 +140,54 @@ namespace RemoteTech
             {
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.StateButton("KILL", mMode, 1, OnModeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("NODE", mMode, 2, OnModeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("PAR", mMode, 3, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("KILL", "Kill rotation."), 
+                        mMode, 1, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("NODE", "Prograde points in the direction of the first maneuver node."), 
+                        mMode, 2, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("RVEL", "Prograde relative to target velocity."), 
+                        mMode, 6, OnModeClick, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.StateButton("ORB", mMode, 4, OnModeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("SRF", mMode, 5, OnModeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("TGT", mMode, 6, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("ORB", "Prograde relative to orbital velocity."), 
+                        mMode, 4, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("SRF", "Prograde relative to surface velocity."), 
+                        mMode, 5, OnModeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("TGT", "Prograde points directly at target."),
+                        mMode, 3, OnModeClick, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
-                RTUtil.StateButton("CUSTOM", mMode, 7, OnModeClick, GUILayout.ExpandWidth(true));
+                RTUtil.StateButton(new GUIContent("CUSTOM", "Prograde fixed as pitch, heading, roll relative to north pole."),
+                    mMode, 7, OnModeClick, GUILayout.ExpandWidth(true));
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.StateButton("GRD\n+", mAttitude, 1, OnAttitudeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("RAD\n+", mAttitude, 2, OnAttitudeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("NRM\n+", mAttitude, 3, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("GRD\n+", "Orient to Prograde."),
+                        mAttitude, 1, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("RAD\n+", "Orient to Radial."),
+                        mAttitude, 2, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("NRM\n+", "Orient to Normal."),
+                        mAttitude, 3, OnAttitudeClick, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.StateButton("GRD\n-", mAttitude, 4, OnAttitudeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("RAD\n-", mAttitude, 5, OnAttitudeClick, GUILayout.Width(width3));
-                    RTUtil.StateButton("NRM\n-", mAttitude, 6, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("GRD\n-", "Orient to Retrograde."),
+                        mAttitude, 4, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("RAD\n-", "Orient to Anti-radial."),
+                        mAttitude, 5, OnAttitudeClick, GUILayout.Width(width3));
+                    RTUtil.StateButton(new GUIContent("NRM\n-", "Orient to Anti-normal."),
+                        mAttitude, 6, OnAttitudeClick, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("PIT:", GUILayout.Width(width3));
+                    GUILayout.Label(new GUIContent("PIT:", "Sets pitch."), GUILayout.Width(width3));
                     RTUtil.Button("+", () => Pitch++);
                     RTUtil.Button("-", () => Pitch--);
                     GUI.SetNextControlName("phr1");
@@ -184,7 +197,7 @@ namespace RemoteTech
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("HDG:", GUILayout.Width(width3));
+                    GUILayout.Label(new GUIContent("HDG:", "Sets heading."), GUILayout.Width(width3));
                     RTUtil.Button("+", () => Heading++);
                     RTUtil.Button("-", () => Heading--);
                     GUI.SetNextControlName("phr2");
@@ -194,7 +207,7 @@ namespace RemoteTech
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label("RLL:", GUILayout.Width(width3));
+                    GUILayout.Label(new GUIContent("RLL:", "Sets roll."), GUILayout.Width(width3));
                     RTUtil.Button("+", () => Roll++);
                     RTUtil.Button("-", () => Roll--);
                     GUI.SetNextControlName("phr3");
@@ -216,7 +229,7 @@ namespace RemoteTech
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.Button("BRN", OnBurnClick, GUILayout.Width(width3));
+                    RTUtil.Button(new GUIContent("BRN", "Example: 125, 125s, 5m20s, 1d6h20m10s, 123m/s."), OnBurnClick, GUILayout.Width(width3));
                     GUILayout.FlexibleSpace();
                     RTUtil.Button("Q", mOnClickQueue, GUILayout.Width(width3));
                 }

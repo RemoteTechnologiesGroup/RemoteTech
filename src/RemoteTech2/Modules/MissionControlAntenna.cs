@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace RemoteTech
 {
-    public class MissionControlAntenna : IAntenna, IConfigNode
+    public class MissionControlAntenna : IAntenna
     {
         [Persistent] public float Omni = 75000000;
 
@@ -17,18 +17,6 @@ namespace RemoteTech
         Guid IAntenna.Target { get { return Guid.Empty; } set { return; } }
         float IAntenna.Dish { get { return 0.0f; } }
         double IAntenna.Radians { get { return 1.0; } }
-
-
-        public void Save(ConfigNode node)
-        {
-            var save = ConfigNode.CreateConfigFromObject(this);
-            node.CopyTo(node);
-        }
-
-        public void Load(ConfigNode node)
-        {
-            ConfigNode.LoadObjectFromConfig(this, node);
-        }
 
         public void OnConnectionRefresh() { }
 

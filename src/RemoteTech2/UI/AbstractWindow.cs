@@ -20,9 +20,13 @@ namespace RemoteTech
         public Rect Position;
         public String Title { get; set; }
         public WindowAlign Alignment { get; set; }
+        public String Tooltip { get; set; }
         public bool Enabled = false;
         public static GUIStyle Frame = new GUIStyle(HighLogic.Skin.window);
-        
+        public const double TooltipDelay = 0.5;
+
+        private double mLastTime;
+        private double mTooltipTimer;
         private readonly Guid mGuid;
         public static Dictionary<Guid, AbstractWindow> Windows = new Dictionary<Guid, AbstractWindow>();
 
@@ -72,6 +76,7 @@ namespace RemoteTech
             {
                 GUI.DragWindow(new Rect(0, 0, 100000, 20));
             }
+            Tooltip = GUI.tooltip;
         }
 
         public virtual void Draw()
@@ -103,7 +108,28 @@ namespace RemoteTech
                         Position.y = 0;
                         break;
                 }
+                if (Tooltip != "")
+                {
+                    if (mTooltipTimer > TooltipDelay)
+                    {
+                        var pop = GUI.skin.box.alignment;
+                        GUI.skin.box.alignment = TextAnchor.MiddleLeft;
+                        GUI.Box(new Rect(Position.x, Position.y + Position.height + 10, Position.width, 32), Tooltip);
+                        GUI.skin.box.alignment = pop;
+                    }
+                    else
+                    {
+                        mTooltipTimer += Time.time - mLastTime;
+                        mLastTime = Time.time;
+                    }
+                }
+                else
+                {
+                    mTooltipTimer = 0.0;
+                }
+                mLastTime = Time.time;
             }
+
             if (Title != null)
             {
                 if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))

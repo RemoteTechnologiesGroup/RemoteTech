@@ -233,6 +233,14 @@ namespace RemoteTech
             }
         }
 
+        public static void Button(GUIContent text, Action onClick, params GUILayoutOption[] options)
+        {
+            if (GUILayout.Button(text, options))
+            {
+                onClick.Invoke();
+            }
+        }
+
         public static void HorizontalSlider(ref float state, float min, float max, params GUILayoutOption[] options)
         {
             state = GUILayout.HorizontalSlider(state, min, max, options);
@@ -250,6 +258,15 @@ namespace RemoteTech
             {
                 group = group2;
                 onStateChange.Invoke(group2);
+            }
+        }
+
+        public static void StateButton(GUIContent text, int state, int value, Action<int> onStateChange, params GUILayoutOption[] options)
+        {
+            bool result;
+            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options)) != (state == value))
+            {
+                onStateChange.Invoke(result ? value : ~value);
             }
         }
 
