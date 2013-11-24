@@ -192,7 +192,7 @@ namespace RemoteTech
         }
     }
 
-    public class MissionControlSatellite : ISatellite
+    public sealed class MissionControlSatellite : ISatellite
     {
         public static Guid Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488");
 

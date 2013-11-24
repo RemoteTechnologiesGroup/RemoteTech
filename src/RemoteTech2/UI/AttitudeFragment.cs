@@ -229,9 +229,12 @@ namespace RemoteTech
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.Button(new GUIContent("BRN", "Example: 125, 125s, 5m20s, 1d6h20m10s, 123m/s."), OnBurnClick, GUILayout.Width(width3));
-                    GUILayout.FlexibleSpace();
-                    RTUtil.Button("Q", mOnClickQueue, GUILayout.Width(width3));
+                    RTUtil.Button(new GUIContent("BURN", "Example: 125, 125s, 5m20s, 1d6h20m10s, 123m/s."),
+                        OnBurnClick, GUILayout.Width(width3));
+                    RTUtil.Button(new GUIContent("EXEC", "Executes next maneuver node."),
+                        OnExecClick, GUILayout.Width(width3));
+                    RTUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
+                        mOnClickQueue, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
             }
@@ -260,7 +263,7 @@ namespace RemoteTech
 
         private void Confirm()
         {
-            DelayedCommand newCommand;
+            ICommand newCommand;
             switch (mMode)
             {
                 default: // Off
@@ -312,6 +315,20 @@ namespace RemoteTech
             else
             {
                 mFlightComputer.Enqueue(BurnCommand.WithDuration(mThrottle, Duration));
+            }
+        }
+
+        private void OnExecClick()
+        {
+            if (mFlightComputer.Vessel.patchedConicSolver == null || mFlightComputer.Vessel.patchedConicSolver.maneuverNodes.Count == 0) return;
+            var cmd = ManeuverCommand.WithNode(mFlightComputer.Vessel.patchedConicSolver.maneuverNodes[0]);
+            if (cmd.TimeStamp < RTUtil.GameTime + mFlightComputer.Delay)
+            {
+                RTUtil.ScreenMessage("[Flight Computer]: Signal delay is too high to execute this maneuver at the proper time.");
+            }
+            else
+            {
+                mFlightComputer.Enqueue(cmd, true);
             }
         }
     }

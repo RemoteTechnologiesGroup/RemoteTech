@@ -73,6 +73,11 @@ namespace RemoteTech
             return true;
         }
 
+        public static void ScreenMessage(String msg)
+        {
+            ScreenMessages.PostScreenMessage(new ScreenMessage(msg, 4.0f, ScreenMessageStyle.UPPER_LEFT));
+        }
+
         public static String Truncate(this String targ, int len)
         {
             const String suffix = "...";
@@ -139,7 +144,7 @@ namespace RemoteTech
                 s.Append(time.Minutes);
                 s.Append("m");
             }
-            if (time.Seconds > 0 || time.Milliseconds > 0)
+            if (time.Seconds >= 0 || time.Milliseconds >= 0)
             {
                 s.Append((time.Seconds + time.Milliseconds / 1000.0f).ToString("F2"));
                 s.Append("s");

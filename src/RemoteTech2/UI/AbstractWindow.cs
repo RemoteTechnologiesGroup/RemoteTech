@@ -113,8 +113,9 @@ namespace RemoteTech
                     if (mTooltipTimer > TooltipDelay)
                     {
                         var pop = GUI.skin.box.alignment;
+                        var width = GUI.skin.box.CalcSize(new GUIContent(Tooltip)).x;
                         GUI.skin.box.alignment = TextAnchor.MiddleLeft;
-                        GUI.Box(new Rect(Position.x, Position.y + Position.height + 10, Position.width, 32), Tooltip);
+                        GUI.Box(new Rect(Position.x, Position.y + Position.height + 10, width, 28), Tooltip);
                         GUI.skin.box.alignment = pop;
                     }
                     else

@@ -4,6 +4,118 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
+namespace RemoteTech
+{
+    public static class FlightCore
+    {
+        public static void HoldAttitude(FlightCtrlState fs, FlightComputer f, ReferenceFrame frame, FlightAttitude attitude, Quaternion extra)
+        {
+            var v = f.Vessel;
+            var forward = Vector3.zero;
+            var up = Vector3.zero;
+            var rotationReference = Quaternion.identity;
+            switch (frame)
+            {
+                case ReferenceFrame.Orbit:
+                    forward = v.GetObtVelocity();
+                    up = (v.mainBody.position - v.CoM);
+                    break;
+                case ReferenceFrame.Surface:
+                    forward = v.GetSrfVelocity();
+                    up = (v.mainBody.position - v.CoM);
+                    break;
+                case ReferenceFrame.North:
+                    up = (v.mainBody.position - v.CoM);
+                    forward = Vector3.Exclude(up,
+                        v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM
+                     );
+                    break;
+                case ReferenceFrame.Maneuver:
+                    up = v.transform.up;
+                    if (f.DelayedManeuver != null)
+                    {
+                        forward = f.DelayedManeuver.GetBurnVector(v.orbit);
+                        up = (v.mainBody.position - v.CoM);
+                    }
+                    else
+                    {
+                        forward = v.GetObtVelocity();
+                        up = (v.mainBody.position - v.CoM);
+                    }
+                    break;
+                case ReferenceFrame.TargetVelocity:
+                    if (f.DelayedTarget != null && f.DelayedTarget is Vessel)
+                    {
+                        forward = v.GetObtVelocity() - f.DelayedTarget.GetObtVelocity();
+                        up = (v.mainBody.position - v.CoM);
+                    }
+                    else
+                    {
+                        up = (v.mainBody.position - v.CoM);
+                        forward = v.GetObtVelocity();
+                    }
+                    break;
+                case ReferenceFrame.TargetParallel:
+                    if (f.DelayedTarget != null && f.DelayedTarget is Vessel)
+                    {
+                        forward = f.DelayedTarget.GetTransform().position - v.CoM;
+                        up = (v.mainBody.position - v.CoM);
+                    }
+                    else
+                    {
+                        up = (v.mainBody.position - v.CoM);
+                        forward = v.GetObtVelocity();
+                    }
+                    break;
+            }
+            Vector3.OrthoNormalize(ref forward, ref up);
+            rotationReference = Quaternion.LookRotation(forward, up);
+            switch (attitude)
+            {
+                case FlightAttitude.Prograde:
+                    break;
+                case FlightAttitude.Retrograde:
+                    rotationReference = rotationReference * Quaternion.AngleAxis(180, Vector3.up);
+                    break;
+                case FlightAttitude.NormalPlus:
+                    rotationReference = rotationReference * Quaternion.AngleAxis(90, Vector3.up);
+                    break;
+                case FlightAttitude.NormalMinus:
+                    rotationReference = rotationReference * Quaternion.AngleAxis(90, Vector3.down);
+                    break;
+                case FlightAttitude.RadialPlus:
+                    rotationReference = rotationReference * Quaternion.AngleAxis(90, Vector3.right);
+                    break;
+                case FlightAttitude.RadialMinus:
+                    rotationReference = rotationReference * Quaternion.AngleAxis(90, Vector3.left);
+                    break;
+                case FlightAttitude.Surface:
+                    rotationReference = rotationReference * extra;
+                    break;
+            }
+            HoldOrientation(fs, f, rotationReference);
+        }
+
+        public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target)
+        {
+            f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
+            kOS.SteeringHelper.SteerShipToward(target, fs, f.Vessel);
+        }
+
+        public static double GetTotalThrust(Vessel v)
+        {
+            double thrust = 0.0;
+            foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>()))
+            {
+                if (!pm.EngineIgnited) continue;
+                thrust += pm.maxThrust;
+            }
+            return thrust;
+        }
+    }
+
+}
+
 namespace kOS
 {
     public static class SteeringHelper

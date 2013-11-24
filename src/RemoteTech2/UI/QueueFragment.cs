@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -80,16 +81,25 @@ namespace RemoteTech
             {
                 mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(250));
                 {
-                    foreach (DelayedCommand dc in mFlightComputer)
                     {
-                        var text = Format(dc);
-                        if (!String.IsNullOrEmpty(text))
+                        GUILayout.BeginVertical(GUI.skin.box);
+                        {
+                            var s = new StringBuilder();
+                            foreach (var c in mFlightComputer.ActiveCommands)
+                            {
+                                s.Append(c.Description);
+                            }
+                            GUILayout.Label(s.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
+                        }
+                        GUILayout.EndVertical();
+
+                        foreach (var c in mFlightComputer.QueuedCommands)
                         {
                             GUILayout.BeginHorizontal(GUI.skin.box);
                             {
-                                GUILayout.Label(text);
+                                GUILayout.Label(c.Description);
                                 GUILayout.FlexibleSpace();
-                                RTUtil.Button("x", () => { RTCore.Instance.StartCoroutine(OnClickCancel(dc)); }, GUILayout.Width(21), GUILayout.Height(21));
+                                RTUtil.Button("x", () => { RTCore.Instance.StartCoroutine(OnClickCancel(c)); }, GUILayout.Width(21), GUILayout.Height(21));
                             }
                             GUILayout.EndHorizontal();
                         }
@@ -110,136 +120,10 @@ namespace RemoteTech
             GUILayout.EndVertical();
         }
 
-        public IEnumerator OnClickCancel(DelayedCommand dc)
+        public IEnumerator OnClickCancel(ICommand c)
         {
             yield return null;
-            mFlightComputer.Enqueue(DelayedCommand.Cancel(dc));
-        }
-
-        private String Format(DelayedCommand dc)
-        {
-            StringBuilder s = new StringBuilder();
-            if (dc.AttitudeCommand != null)
-            {
-                switch (dc.AttitudeCommand.Mode)
-                {
-                    case FlightMode.Off:
-                        s.AppendLine("Mode: Off");
-                        break;
-                    case FlightMode.KillRot:
-                        s.AppendLine("Mode: Kill rotation");
-                        break;
-                    case FlightMode.AttitudeHold:
-                        s.Append("Mode: Hold ");
-                        switch (dc.AttitudeCommand.Frame)
-                        {
-                            case ReferenceFrame.Maneuver:
-                                s.Append("Maneuver ");
-                                break;
-                            case ReferenceFrame.Orbit:
-                                s.Append("OBT ");
-                                break;
-                            case ReferenceFrame.Surface:
-                                s.Append("SRF ");
-                                break;
-                            case ReferenceFrame.TargetVelocity:
-                                s.Append("TGT ");
-                                break;
-                            case ReferenceFrame.TargetParallel:
-                                s.Append("PAR ");
-                                break;
-                        }
-                        switch (dc.AttitudeCommand.Attitude)
-                        {
-                            case FlightAttitude.Prograde:
-                                s.AppendLine("Prograde");
-                                break;
-                            case FlightAttitude.Retrograde:
-                                s.AppendLine("Retrograde");
-                                break;
-                            case FlightAttitude.NormalPlus:
-                                s.AppendLine("Normal +");
-                                break;
-                            case FlightAttitude.NormalMinus:
-                                s.AppendLine("Normal -");
-                                break;
-                            case FlightAttitude.RadialPlus:
-                                s.AppendLine("Radial +");
-                                break;
-                            case FlightAttitude.RadialMinus:
-                                s.AppendLine("Radial -");
-                                break;
-                            case FlightAttitude.Surface:
-                                s.Append(dc.AttitudeCommand.Orientation.eulerAngles.x.ToString("F1"));
-                                s.Append("°, ");
-                                s.Append((360 - dc.AttitudeCommand.Orientation.eulerAngles.y).ToString("F1"));
-                                s.Append("°, ");
-                                s.Append(RTUtil.Format360To180(180 - dc.AttitudeCommand.Orientation.eulerAngles.z).ToString("F1"));
-                                s.AppendLine("°");
-                                break;
-                        }
-                        break;
-                    case FlightMode.AltitudeHold:
-                        s.Append("Mode: Hold ");
-                        s.AppendLine(RTUtil.FormatSI(dc.AttitudeCommand.Altitude, "m"));
-                        break;
-                }
-            }
-            if (dc.ActionGroupCommand != null)
-            {
-                s.Append("Toggle ");
-                s.AppendLine(dc.ActionGroupCommand.ActionGroup.ToString());
-            }
-            if (dc.BurnCommand != null)
-            {
-                s.Append("Burn ");
-                s.Append(dc.BurnCommand.Throttle.ToString("P2"));
-                if (dc.BurnCommand.Duration != Single.NaN)
-                {
-                    s.Append(", ");
-                    s.Append(RTUtil.FormatDuration(dc.BurnCommand.Duration));
-                    s.Append("s");
-                }
-                if (dc.BurnCommand.DeltaV != Single.NaN)
-                {
-                    s.Append(", ");
-                    s.Append(dc.BurnCommand.DeltaV.ToString("F2"));
-                    s.Append("m/s");
-                }
-                s.AppendLine();
-            }
-            if (dc.EventCommand != null)
-            {
-                s.Append(dc.EventCommand.BaseEvent.listParent.part.partInfo.title);
-                s.Append(": ");
-                s.AppendLine(dc.EventCommand.BaseEvent.GUIName);
-            }
-            if (dc.CancelCommand != null)
-            {
-                s.AppendLine("Cancelling a command");
-            }
-            if (dc.TargetCommand != null)
-            {
-                s.Append("Target: ");
-                s.AppendLine(dc.TargetCommand.Target != null ? dc.TargetCommand.Target.GetName() : "None");
-            }
-
-            if (s.ToString().Equals("")) return "";
-
-            double delay = Math.Max(dc.TimeStamp - RTUtil.GameTime, 0);
-            if (delay > 0 || dc.ExtraDelay > 0)
-            {
-                s.Append("Signal delay: ");
-                s.Append(RTUtil.FormatDuration(delay));
-                if (dc.ExtraDelay > 0)
-                {
-                    s.Append(" (+");
-                    s.Append(RTUtil.FormatDuration(dc.ExtraDelay));
-                    s.Append(")");
-                }
-                s.AppendLine();
-            }
-            return s.ToString().TrimEnd(Environment.NewLine.ToCharArray());
+            mFlightComputer.Enqueue(CancelCommand.WithCommand(c));
         }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RemoteTech
 {
-    public class ModuleRTDataTransmitter : PartModule, IScienceDataTransmitter
+    public sealed class ModuleRTDataTransmitter : PartModule, IScienceDataTransmitter
     {
         [KSPField]
         public float

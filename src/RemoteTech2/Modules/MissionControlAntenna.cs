@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace RemoteTech
 {
-    public class MissionControlAntenna : IAntenna
+    public sealed class MissionControlAntenna : IAntenna
     {
         [Persistent] public float Omni = 75000000;
 

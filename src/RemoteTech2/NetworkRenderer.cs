@@ -133,7 +133,7 @@ namespace RemoteTech
                 it.MoveNext();
                 mLines[i] = mLines[i] ?? NetworkLine.Instantiate();
                 mLines[i].Material = MapView.fetch.orbitLinesMaterial;
-                mLines[i].LineWidth = 5.0f;
+                mLines[i].LineWidth = 3.0f;
                 mLines[i].Edge = it.Current;
                 mLines[i].Color = CheckColor(it.Current);
                 mLines[i].Active = true;
@@ -167,12 +167,12 @@ namespace RemoteTech
             {
                 var connections = RTCore.Instance.Network[satellite];
                 if (connections.Any() && connections[0].Contains(edge))
-                    return XKCDColors.ElectricLime;
+                    return RTSettings.Instance.ActiveConnectionColor;
             }
             if (edge.Type == LinkType.Omni)
-                return XKCDColors.BrownGrey;
+                return RTSettings.Instance.OmniConnectionColor;
             if (edge.Type == LinkType.Dish)
-                return XKCDColors.Amber;
+                return RTSettings.Instance.DishConnectionColor;
 
             return XKCDColors.Grey;
         }

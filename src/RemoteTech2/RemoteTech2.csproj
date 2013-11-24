@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -55,7 +56,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\API.cs" />
+    <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
+    <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
+    <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
+    <Compile Include="FlightComputer\Commands\BurnCommand.cs" />
+    <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
+    <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
+    <Compile Include="FlightComputer\EventCommand.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
+    <Compile Include="FlightComputer\Commands\ICommand.cs" />
+    <Compile Include="FlightComputer\Commands\TargetCommand.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Modules\MissionControlAntenna.cs" />
     <Compile Include="Modules\ProtoSignalProcessor.cs" />
     <Compile Include="RangeModel\RangeModelStandard.cs" />

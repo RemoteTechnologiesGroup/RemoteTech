@@ -66,7 +66,7 @@ namespace RemoteTech
                     GetLocks();
                     foreach (KSPActionGroup ag in GetActivatedGroup())
                     {
-                        vs.FlightComputer.Enqueue(ActionGroupCommand.Group(ag));
+                        vs.FlightComputer.Enqueue(ActionGroupCommand.WithGroup(ag));
                     }
                 }
             }
