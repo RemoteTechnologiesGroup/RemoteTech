@@ -25,7 +25,15 @@ namespace RemoteTech
                 if (mLastFrame != Time.frameCount)
                 {
                     mLastFrame = Time.frameCount;
-                    return mLastLocalControl = SignalProcessor.Vessel.parts.Any(p => p.isControlSource && !p.FindModulesImplementing<ISignalProcessor>().Any());
+                    var vessel = SignalProcessor.Vessel;
+                    if (vessel.loaded)
+                    {
+                        return mLastLocalControl = vessel.parts.Any(p => p.isControlSource && (p.protoModuleCrew.Any() || !p.FindModulesImplementing<ISignalProcessor>().Any()));
+                    }
+                    else
+                    {
+                        return mLastLocalControl = vessel.parts.Any(p => p.isControlSource && (p.protoPartSnapshot.protoModuleCrew.Any() || !p.FindModulesImplementing<ISignalProcessor>().Any()));
+                    }
                 }
                 else
                 {
