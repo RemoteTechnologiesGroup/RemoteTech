@@ -43,7 +43,7 @@ namespace RemoteTech
         /// <returns>Guid key under which the signal processor was registered.</returns>
         public Guid Register(Vessel vessel, ISignalProcessor spu)
         {
-            Guid key = vessel.protoVessel.vesselID;
+            Guid key = vessel.id;
             RTLog.Notify("SatelliteManager: Register({0})", spu);
 
             if (!mLoadedSpuCache.ContainsKey(key))

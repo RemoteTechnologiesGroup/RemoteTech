@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace RemoteTech
 {
+    [KSPModule("Technology Perk")]
     public class ModuleRTAntennaPassive : PartModule, IAntenna
     {
         public String Name { get { return part.partInfo.title; } }
@@ -74,9 +75,6 @@ namespace RemoteTech
             var info = new StringBuilder();
             if (ShowEditor_OmniRange && Unlocked)
             {
-                if(!TechRequired.Equals("None")) {
-                    info.Append("<Technology Perk>").AppendLine();
-                }
                 info.AppendFormat("Integrated Omni: {1} always-on", RTUtil.FormatSI(OmniRange, "m"), RTUtil.FormatSI(OmniRange, "m"));
             }
 

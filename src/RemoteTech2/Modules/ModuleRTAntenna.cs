@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace RemoteTech
 {
+    [KSPModule("RemoteTech Antenna")]
     public class ModuleRTAntenna : PartModule, IAntenna
     {
         public String Name { get { return part.partInfo.title; } }
@@ -150,93 +151,70 @@ namespace RemoteTech
         {
             bool prev_state = IsRTActive;
             IsRTActive = state && !IsRTBroken;
-            Events["EventOpen"].guiActive = Events["OverrideOpen"].guiActiveUnfocused = !IsRTActive && !IsRTBroken;
-            Events["EventOpen"].active = Events["OverrideOpen"].guiActiveUnfocused = Events["EventOpen"].guiActive;
-            Events["EventClose"].guiActive = Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
-            Events["EventClose"].active = Events["OverrideClose"].guiActiveUnfocused = Events["EventClose"].guiActive;
+            Events["EventOpen"].guiActive = Events["EventOpen"].active = 
+            Events["EventEditorOpen"].guiActiveEditor = 
+            Events["OverrideOpen"].guiActiveUnfocused = !IsRTActive && !IsRTBroken;
+
+            Events["EventClose"].guiActive = Events["EventClose"].active = 
+            Events["EventEditorClose"].guiActiveEditor =
+            Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
+
             UpdateContext();
-            if(IsRTActive != prev_state) StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
-            var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == MissionControlSatellite.Guid);
-            if (mTransmitter == null && route_home)
+            if (IsRTActive != prev_state)
             {
-                AddTransmitter();
+                StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
             }
-            else if (!route_home && mTransmitter != null)
+
+            if (RTCore.Instance != null)
             {
-                RemoveTransmitter();
+                var satellite = RTCore.Instance.Network[Guid];
+                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == MissionControlSatellite.Guid);
+                if (mTransmitter == null && route_home)
+                {
+                    AddTransmitter();
+                }
+                else if (!route_home && mTransmitter != null)
+                {
+                    RemoveTransmitter();
+                }
             }
         }
 
         [KSPEvent(name = "EventToggle", guiActive = false)]
-        public void EventToggle()
-        {
-            if (Animating) return;
-            if (IsRTActive)
-            {
-                EventClose();
-            }
-            else
-            {
-                EventOpen();
-            }
-        }
+        public void EventToggle() { if (Animating) return; if (IsRTActive) { EventClose(); } else { EventOpen(); } }
 
         [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target", category = "skip_delay")]
-        public void EventTarget()
-        {
-            (new AntennaWindow(this)).Show();
-        }
+        public void EventTarget() { (new AntennaWindow(this)).Show(); }
+
+        [KSPEvent(name = "EventEditorOpen", guiActive = false, guiName = "Start deployed")]
+        public void EventEditorOpen() { SetState(true); }
+
+        [KSPEvent(name = "EventEditorClose", guiActive = false, guiName = "Start retracted")]
+        public void EventEditorClose() { SetState(false); }
 
         [KSPEvent(name = "EventOpen", guiActive = false)]
-        public void EventOpen()
-        {
-            if (Animating) return;
-            SetState(true);
-        }
+        public void EventOpen() { if (!Animating) { SetState(true); } }
 
         [KSPEvent(name = "EventClose", guiActive = false)]
-        public void EventClose()
-        {
-            if (Animating) return;
-            SetState(false);
-        }
+        public void EventClose() { if (!Animating) { SetState(false); } }
 
         [KSPAction("ActionToggle", KSPActionGroup.None)]
-        public void ActionToggle(KSPActionParam param)
-        {
-            EventToggle();
-        }
+        public void ActionToggle(KSPActionParam param) { EventToggle(); }
 
         [KSPAction("ActionOpen", KSPActionGroup.None)]
-        public void ActionOpen(KSPActionParam param)
-        {
-            EventOpen();
-        }
+        public void ActionOpen(KSPActionParam param) { EventOpen(); }
 
         [KSPAction("ActionClose", KSPActionGroup.None)]
-        public void ActionClose(KSPActionParam param)
-        {
-            EventClose();
-        }
+        public void ActionClose(KSPActionParam param) { EventClose(); }
 
         [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Set Target", category = "skip_delay;skip_control")]
-        public void OverrideTarget()
-        {
-            (new AntennaWindow(this)).Show();
-        }
+        public void OverrideTarget() { (new AntennaWindow(this)).Show(); }
 
         [KSPEvent(name = "OverrideOpen", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Open", category = "skip_delay;skip_control")]
-        public void OverrideOpen()
-        {
-            EventOpen();
-        }
+        public void OverrideOpen() { EventOpen(); }
 
         [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Close", category = "skip_delay;skip_control")]
-        public void OverrideClose()
-        {
-            EventClose();
-        }
+        public void OverrideClose() { EventClose(); }
 
         public void OnConnectionRefresh()
         {
@@ -316,9 +294,10 @@ namespace RemoteTech
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 mRegisteredId = vessel.id;
                 RTCore.Instance.Antennas.Register(vessel.id, this);
-                LoadAnimations();
-                SetState(IsRTActive);
             }
+
+            LoadAnimations();
+            SetState(IsRTActive);
         }
 
         private void LoadAnimations()
