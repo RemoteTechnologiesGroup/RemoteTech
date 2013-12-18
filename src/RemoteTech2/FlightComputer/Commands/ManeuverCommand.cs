@@ -38,7 +38,7 @@ namespace RemoteTech
 
         public override bool Execute(FlightComputer f, FlightCtrlState fcs)
         {
-            if (RemainingDelta > 0.01 * OriginalDelta)
+            if (RemainingDelta > 0)
             {
                 var forward = Node.GetBurnVector(f.Vessel.orbit).normalized;
                 var up = (f.SignalProcessor.Body.position - f.SignalProcessor.Position).normalized;

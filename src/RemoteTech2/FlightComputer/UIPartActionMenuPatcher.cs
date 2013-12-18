@@ -23,17 +23,19 @@ namespace RemoteTech
                 var item = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
                 foreach (var it in item)
                 {
-                    var button = it as UIPartActionModuleButton;
+                    var button = it as UIPartActionEventItem;
                     if (button != null)
                     {
-                        var partEventFieldInfo = button.partEvent.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                        var partEventFieldInfo = button.Evt.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                             .First(fi => fi.FieldType == typeof(BaseEventDelegate));
 
-                        var partEvent = (BaseEventDelegate) partEventFieldInfo.GetValue(button.partEvent);
+                        var partEvent = (BaseEventDelegate)partEventFieldInfo.GetValue(button.Evt);
                         if (!partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_control")))
                         {
                             bool ignore_delay = partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
-                            button.partEvent = Wrapper.Wrap(button.partEvent, pass, ignore_delay);
+                            var eventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                .First(fi => fi.FieldType == typeof(BaseEvent));
+                            eventField.SetValue(button, Wrapper.CreateWrapper(button.Evt, pass, ignore_delay));
                         }
                     }
                 }
@@ -53,7 +55,7 @@ namespace RemoteTech
                 mIgnoreDelay = ignore_delay;
             }
 
-            public static BaseEvent Wrap(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
+            public static BaseEvent CreateWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
             {
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);

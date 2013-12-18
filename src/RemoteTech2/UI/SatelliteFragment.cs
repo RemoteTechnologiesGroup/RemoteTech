@@ -86,7 +86,6 @@ namespace RemoteTech
                 int i = 0;
                 foreach (var a in Satellite.Antennas.Where(a => a.CanTarget))
                 {
-                    i++;
                     GUI.contentColor = (a.Powered) ? XKCDColors.ElectricLime : XKCDColors.Scarlet;
                     String text = a.Name.Truncate(25) + Environment.NewLine + "Target: " + RTUtil.TargetName(a.Target).Truncate(18);
                     RTUtil.StateButton(text, mSelection, i, s =>
@@ -94,6 +93,7 @@ namespace RemoteTech
                         mSelection = (s > 0) ? s : 0;
                         mAntennaFragment.Antenna = (s > 0) ? a : null;
                     });
+                    i++;
                 }
                 GUI.skin.button.alignment = pushAlign;
                 GUI.contentColor = pushColor;
