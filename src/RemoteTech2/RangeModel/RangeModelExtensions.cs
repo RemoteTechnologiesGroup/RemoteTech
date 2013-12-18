@@ -45,10 +45,12 @@ namespace RemoteTech
 
         public static bool HasLineOfSightWith(this ISatellite a, ISatellite b)
         {
+            var aPos = a.Position;
+            var bPos = b.Position;
             foreach (CelestialBody referenceBody in FlightGlobals.Bodies)
             {
-                Vector3d bodyFromA = referenceBody.position - a.Position;
-                Vector3d bFromA = b.Position - a.Position;
+                Vector3d bodyFromA = referenceBody.position - aPos;
+                Vector3d bFromA = bPos - aPos;
                 if (Vector3d.Dot(bodyFromA, bFromA) <= 0) continue;
                 Vector3d bFromAnorm = bFromA.normalized;
                 if (Vector3d.Dot(bodyFromA, bFromAnorm) >= bFromA.magnitude) continue;
