@@ -129,26 +129,23 @@ namespace RemoteTech
                 s.Append(Math.Floor(time.TotalDays / DaysInAYear));
                 s.Append("y");
             }
-            if (time.TotalDays > 1)
+            if (time.TotalDays > 0)
             {
                 s.Append(Math.Floor(time.TotalDays % DaysInAYear));
                 s.Append("d");
             }
-            if (time.Hours > 1)
+            if (time.Hours > 0)
             {
                 s.Append(time.Hours);
                 s.Append("h");
             }
-            if (time.Minutes > 1)
+            if (time.Minutes > 0)
             {
                 s.Append(time.Minutes);
                 s.Append("m");
             }
-            if (time.Seconds >= 0 || time.Milliseconds >= 0)
-            {
-                s.Append((time.Seconds + time.Milliseconds / 1000.0f).ToString("F2"));
-                s.Append("s");
-            }
+            s.Append((time.Seconds + time.Milliseconds / 1000.0f).ToString("F2"));
+            s.Append("s");
             return s.ToString();
         }
 
@@ -266,21 +263,21 @@ namespace RemoteTech
             }
         }
 
-        public static void StateButton(GUIContent text, int state, int value, Action<int> onStateChange, params GUILayoutOption[] options)
+        public static void StateButton<T>(GUIContent text, T state, T value, Action<int> onStateChange, params GUILayoutOption[] options)
         {
             bool result;
-            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options)) != (state == value))
+            if ((result = GUILayout.Toggle(Object.Equals(state, value), text, GUI.skin.button, options)) != Object.Equals(state, value))
             {
-                onStateChange.Invoke(result ? value : ~value);
+                onStateChange.Invoke(result ? 1 : -1);
             }
         }
 
-        public static void StateButton(String text, int state, int value, Action<int> onStateChange, params GUILayoutOption[] options)
+        public static void StateButton<T>(String text, T state, T value, Action<int> onStateChange, params GUILayoutOption[] options)
         {
             bool result;
-            if ((result = GUILayout.Toggle(state == value, text, GUI.skin.button, options)) != (state == value))
+            if ((result = GUILayout.Toggle(Object.Equals(state, value), text, GUI.skin.button, options)) != Object.Equals(state, value))
             {
-                onStateChange.Invoke(result ? value : ~value);
+                onStateChange.Invoke(result ? 1 : -1);
             }
         }
 
@@ -322,6 +319,19 @@ namespace RemoteTech
                 {
                     yield return x;
                 }
+            }
+        }
+
+        public static T CachePerFrame<T>(ref CachedField<T> cachedField, Func<T> getter)
+        {
+            if (cachedField.Frame != Time.frameCount)
+            {
+                cachedField.Frame = Time.frameCount;
+                return cachedField.Field = getter();
+            }
+            else
+            {
+                return cachedField.Field;
             }
         }
 

@@ -79,8 +79,10 @@ namespace RemoteTech
             SignalProcessor = s;
             Vessel = s.Vessel;
             SanctionedPilots = new List<Action<FlightCtrlState>>();
-            Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget), true);
-            Enqueue(AttitudeCommand.Off(), true);
+            var target = TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget);
+            mActiveCommands[target.Priority] = target;
+            var attitude = AttitudeCommand.Off();
+            mActiveCommands[attitude.Priority] = attitude;
         }
 
         public void Dispose()
@@ -97,17 +99,16 @@ namespace RemoteTech
             }
         }
 
-        public void Enqueue(ICommand cmd, bool ignore_delay = false)
+        public void Enqueue(ICommand cmd, bool ignore_control = false, bool ignore_delay = false, bool ignore_extra = false)
         {
-            if (!InputAllowed) return;
+            if (!InputAllowed && !ignore_control) return;
 
             if (!ignore_delay) cmd.TimeStamp += Delay;
-            if (!ignore_delay) cmd.ExtraDelay += Math.Max(0, TotalDelay - Delay);
+            if (!ignore_extra) cmd.ExtraDelay += Math.Max(0, TotalDelay - Delay);
 
             int pos = mCommandQueue.BinarySearch(cmd);
             if (pos < 0)
             {
-                RTLog.Debug("Inserted " + cmd.Description);
                 mCommandQueue.Insert(~pos, cmd);
             }
         }
@@ -242,8 +243,7 @@ namespace RemoteTech
 
             if (SignalProcessor.Powered)
             {
-                foreach (var dc in mActiveCommands.Values.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime)
-                                                         .Where(c => c.ExtraDelay <= 0).ToList())
+                foreach (var dc in mActiveCommands.Values.ToList())
                 {
                     if (dc.Execute(this, fcs)) mActiveCommands.Remove(dc.Priority);
                 }

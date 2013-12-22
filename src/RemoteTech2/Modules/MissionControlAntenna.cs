@@ -6,9 +6,10 @@ namespace RemoteTech
     public sealed class MissionControlAntenna : IAntenna
     {
         [Persistent] public float Omni = 75000000;
+        public ISatellite Parent { get; set; }
 
         float IAntenna.Omni { get { return Omni; } }
-        Guid IAntenna.Guid { get { return MissionControlSatellite.Guid; } }
+        Guid IAntenna.Guid { get { return Parent.Guid; } }
         String IAntenna.Name { get { return "Dummy Antenna"; } }
         bool IAntenna.Powered { get { return true; } }
         bool IAntenna.Activated { get { return true; } set { return; } }

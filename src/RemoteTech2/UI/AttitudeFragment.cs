@@ -328,7 +328,7 @@ namespace RemoteTech
             }
             else
             {
-                mFlightComputer.Enqueue(cmd, true);
+                mFlightComputer.Enqueue(cmd, false, false, true);
             }
         }
     }

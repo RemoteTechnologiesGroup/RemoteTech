@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RemoteTech
 {
-    public class MapViewConfigFragment : IFragment, IDisposable
+    public class FilterOverlay : IFragment, IDisposable
     {
         private static class Texture
         {
@@ -16,7 +16,6 @@ namespace RemoteTech
             public static readonly Texture2D OmniDish;
             public static readonly Texture2D Empty;
             public static readonly Texture2D Planet;
-            public static readonly Texture2D Satellite;
 
             static Texture()
             {
@@ -28,34 +27,32 @@ namespace RemoteTech
                 RTUtil.LoadImage(out OmniDish, "texOmniDish.png");
                 RTUtil.LoadImage(out Empty, "texEmpty.png");
                 RTUtil.LoadImage(out Planet, "texPlanet.png");
-                RTUtil.LoadImage(out Satellite, "texSatellite.png");
             }
         }
 
         private static class Style
         {
-            public static readonly GUIStyle Standard;
-            public static readonly GUIStyle StandardGray;
-            public static readonly GUIStyle StandardGreen;
-            public static readonly GUIStyle StandardRed;
-            public static readonly GUIStyle StandardYellow;
-            public static readonly GUIStyle Focus;
+            public static readonly GUIStyle Button;
+            public static readonly GUIStyle ButtonGray;
+            public static readonly GUIStyle ButtonGreen;
+            public static readonly GUIStyle ButtonRed;
+            public static readonly GUIStyle ButtonYellow;
 
             static Style()
             {
-                Standard = GUITextureButtonFactory.CreateFromFilename("texButton.png");
-                StandardGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray.png");
-                StandardGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen.png");
-                StandardRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed.png");
-                StandardYellow = GUITextureButtonFactory.CreateFromFilename("texButtonYellow.png");
-                Focus = GUITextureButtonFactory.CreateFromFilename("texKnowledgeNormal.png", "texKnowledgeHover.png", "texKnowledgeActive.png", "texKnowledgeHover.png");
+                Button = GUITextureButtonFactory.CreateFromFilename("texButton.png");
+                ButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray.png");
+                ButtonGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen.png");
+                ButtonRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed.png");
+                ButtonYellow = GUITextureButtonFactory.CreateFromFilename("texButtonYellow.png");
             }
         }
 
-        private SatelliteWindow mConfig = new SatelliteWindow(null);
-        private FocusWindow mFocus = new FocusWindow();
+        private SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
+        private AntennaFragment mAntennaFragment = new AntennaFragment(null);
+        private bool mEnabled;
 
-        private Rect PositionFilter
+        private Rect Position
         {
             get
             {
@@ -66,16 +63,30 @@ namespace RemoteTech
             }
         }
 
-        private Rect PositionFocus
+        private Rect PositionSatellite
         {
             get
             {
-                if (!KnowledgeBase.Instance) return new Rect(0, 0, 0, 0);
-                var position = KnowledgeBase.Instance.KnowledgeContainer.transform.position;
-                return new Rect(Screen.width - Texture.Satellite.width + (position.x - 613.5f),
-                                250 + 2 * 31,
-                                Texture.Satellite.width,
-                                Texture.Satellite.height);
+                var width = 350;
+                var height = 350;
+                return new Rect(Screen.width - width,
+                                Screen.height - height,
+                                width,
+                                height);
+            }
+        }
+
+        private Rect PositionAntenna
+        {
+            get
+            {
+                var positionSatellite = PositionSatellite;
+                var width = 350;
+                var height = 350;
+                return new Rect(PositionSatellite.x - width,
+                                Screen.height - height,
+                                width,
+                                height);
             }
         }
 
@@ -120,59 +131,98 @@ namespace RemoteTech
         {
             get
             {
-                if (mConfig.Satellite == null)
-                    return Style.StandardGray;
-                if (RTCore.Instance.Network[mConfig.Satellite].Any())
-                    return Style.StandardGreen;
-                if (mConfig.Satellite.HasLocalControl)
-                    return Style.StandardYellow;
-                return Style.StandardRed;
+                var sat = mSatelliteFragment.Satellite;
+                if (sat == null)
+                    return Style.ButtonGray;
+                if (RTCore.Instance.Network[sat].Any())
+                    return Style.ButtonGreen;
+                if (sat.HasLocalControl)
+                    return Style.ButtonYellow;
+                return Style.ButtonRed;
             }
         }
 
-        public MapViewConfigFragment()
+        public FilterOverlay()
         {
             GameEvents.onPlanetariumTargetChanged.Add(OnChangeTarget);
+            MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
         }
 
         public void Dispose()
         {
             GameEvents.onPlanetariumTargetChanged.Remove(OnChangeTarget);
+            MapView.OnEnterMapView -= OnEnterMapView;
             MapView.OnExitMapView -= OnExitMapView;
+            mSatelliteFragment.Dispose();
+            mAntennaFragment.Dispose();
+        }
+
+        public void OnEnterMapView()
+        {
+            RTCore.Instance.OnGuiUpdate += Draw;
+            RTCore.Instance.OnFrameUpdate += Update;
         }
 
         public void OnExitMapView()
         {
-            mConfig.Hide();
-            mFocus.Hide();
+            RTCore.Instance.OnGuiUpdate -= Draw;
+            RTCore.Instance.OnFrameUpdate -= Update;
+        }
+
+        public void Update()
+        {
+            mAntennaFragment.Antenna = mSatelliteFragment.Antenna;
+            var sat = mSatelliteFragment.Satellite;
+            if (sat == null) return;
+            if (!RTCore.Instance.Network[sat].Any() && !sat.HasLocalControl)
+            { 
+                mSatelliteFragment.Satellite = null;
+                mAntennaFragment.Antenna = null;
+            }
         }
 
         public void Draw()
         {
             GUI.depth = 0;
-            GUILayout.BeginArea(PositionFilter, Texture.Background);
+            GUI.skin = HighLogic.Skin;
+
+            // Draw Satellite Selector
+            if (mEnabled && mSatelliteFragment.Satellite != null)
+            {
+                GUILayout.BeginArea(PositionSatellite, AbstractWindow.Frame);
+                {
+                    mSatelliteFragment.Draw();
+                }
+                GUILayout.EndArea();
+            }
+
+            // Draw Antenna Selector
+            if (mEnabled && mSatelliteFragment.Satellite != null && mAntennaFragment.Antenna != null)
+            {
+                GUILayout.BeginArea(PositionAntenna, AbstractWindow.Frame);
+                {
+                    mAntennaFragment.Draw();
+                }
+                GUILayout.EndArea();
+            }
+
+            // Draw Toolbar
+            GUILayout.BeginArea(Position, Texture.Background);
             {
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(TextureComButton, Style.Standard))
+                    if (GUILayout.Button(TextureComButton, Style.Button))
                         OnClickCompath();
-                    if (GUILayout.Button(TexturePlanetButton, Style.Standard))
+                    if (GUILayout.Button(TexturePlanetButton, Style.Button))
                         OnClickPlanet();
-                    if (GUILayout.Button(TextureTypeButton, Style.Standard))
+                    if (GUILayout.Button(TextureTypeButton, Style.Button))
                         OnClickType();
                     if (GUILayout.Button("", StyleStatusButton))
                         OnClickStatus();
                 }
                 GUILayout.EndHorizontal();
-            }
-            GUILayout.EndArea();
-
-            GUILayout.BeginArea(PositionFocus);
-            {
-                if (GUILayout.Toggle(mFocus.Enabled, Texture.Satellite, Style.Focus))
-                    OnClickFocus();
             }
             GUILayout.EndArea();
         }
@@ -181,17 +231,17 @@ namespace RemoteTech
         {
             if (mo != null && mo.type == MapObject.MapObjectType.VESSEL)
             {
-                mConfig.Satellite = RTCore.Instance.Satellites[mo.vessel];
+                mSatelliteFragment.Satellite = RTCore.Instance.Satellites[mo.vessel];
             }
             else if (FlightGlobals.ActiveVessel != null)
             {
-                mConfig.Satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel.id];
+                mSatelliteFragment.Satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel.id];
             }
             else
             {
-                mConfig.Satellite = null;
+                mSatelliteFragment.Satellite = null;
             }
-            mConfig.Hide();
+            mAntennaFragment.Antenna = null;
         }
 
         private void OnClickCompath()
@@ -238,27 +288,15 @@ namespace RemoteTech
             RTCore.Instance.Renderer.Filter |= MapFilter.Planet;
         }
 
-        private void OnClickFocus()
-        {
-            if (mFocus.Enabled)
-            {
-                mFocus.Hide();
-            }
-            else
-            {
-                mFocus.Show();
-            }
-        }
-
         private void OnClickStatus()
         {
-            if (mConfig.Enabled)
+            if (mEnabled)
             {
-                mConfig.Hide();
+                mEnabled = false;
             }
-            else if (StyleStatusButton != Style.StandardRed && StyleStatusButton != Style.StandardGray)
+            else if (StyleStatusButton != Style.ButtonRed && StyleStatusButton != Style.ButtonGray)
             {
-                mConfig.Show();
+                mEnabled = true;
             }
         }
     }

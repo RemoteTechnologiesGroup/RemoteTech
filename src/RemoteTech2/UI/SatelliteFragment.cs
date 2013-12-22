@@ -8,10 +8,16 @@ namespace RemoteTech
 {
     public class SatelliteFragment : IFragment, IDisposable
     {
-        public ISatellite Satellite { get; set; }
-        private readonly AntennaFragment mAntennaFragment = new AntennaFragment(null, () => { });
+        public ISatellite Satellite
+        {
+            get { return mSatellite; }
+            set { if (mSatellite != value) { mSatellite = value; Antenna = null; } }
+        }
+
+        public IAntenna Antenna { get; private set; }
+
+        private ISatellite mSatellite;
         private Vector2 mScrollPosition = Vector2.zero;
-        private int mSelection = 0;
 
         public SatelliteFragment(ISatellite sat)
         {
@@ -21,7 +27,6 @@ namespace RemoteTech
 
         public void Dispose()
         {
-            mAntennaFragment.Dispose();
             if (RTCore.Instance != null)
             {
                 RTCore.Instance.Satellites.OnUnregister -= Refresh;
@@ -30,43 +35,8 @@ namespace RemoteTech
 
         public void Draw()
         {
-            bool draw_antenna = mAntennaFragment.Antenna != null;
-            GUILayout.BeginHorizontal(GUILayout.Height(350));
-            {
-                if (draw_antenna)
-                {
-                    GUILayout.BeginVertical();
-                    {
-                        mAntennaFragment.Draw();
-                    }
-                    GUILayout.EndVertical();
-                }
-                else
-                {
-                    GUILayout.BeginVertical();
-                    {
-                        GUILayout.BeginScrollView(Vector2.zero, GUIStyle.none, GUILayout.ExpandHeight(true));
-                        GUILayout.EndScrollView();
-                    }
-                    GUILayout.EndVertical();
-                }
-                GUILayout.BeginVertical();
-                {
-                    DrawSelf();
-                }
-                GUILayout.EndVertical();
-            }
-            GUILayout.EndHorizontal();
-        }
-
-        private void Refresh(ISatellite sat)
-        {
-            if (sat == Satellite) Satellite = null;
-        }
-
-        private void DrawSelf()
-        {
             if (Satellite == null) return;
+
             GUILayout.BeginHorizontal();
             {
                 GUILayout.TextField(Satellite.Name.Truncate(25), GUILayout.ExpandWidth(true));
@@ -78,27 +48,29 @@ namespace RemoteTech
             }
             GUILayout.EndHorizontal();
 
-            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.ExpandHeight(true), GUILayout.Width(250));
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.ExpandHeight(true));
             {
                 Color pushColor = GUI.contentColor;
                 TextAnchor pushAlign = GUI.skin.button.alignment;
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                int i = 0;
                 foreach (var a in Satellite.Antennas.Where(a => a.CanTarget))
                 {
                     GUI.contentColor = (a.Powered) ? XKCDColors.ElectricLime : XKCDColors.Scarlet;
                     String text = a.Name.Truncate(25) + Environment.NewLine + "Target: " + RTUtil.TargetName(a.Target).Truncate(18);
-                    RTUtil.StateButton(text, mSelection, i, s =>
+                    RTUtil.StateButton(text, Antenna, a, s =>
                     {
-                        mSelection = (s > 0) ? s : 0;
-                        mAntennaFragment.Antenna = (s > 0) ? a : null;
+                        Antenna = (s > 0) ? a : null;
                     });
-                    i++;
                 }
                 GUI.skin.button.alignment = pushAlign;
                 GUI.contentColor = pushColor;
             }
             GUILayout.EndScrollView();
+        }
+
+        private void Refresh(ISatellite sat)
+        {
+            if (sat == Satellite) Satellite = null;
         }
     }
 }

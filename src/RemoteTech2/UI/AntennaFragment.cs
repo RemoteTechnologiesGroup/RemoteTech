@@ -24,17 +24,18 @@ namespace RemoteTech
             }
         }
 
-        public IAntenna Antenna { get { return mAntenna; } set { mAntenna = value; Refresh(); } }
+        public IAntenna Antenna { 
+            get { return mAntenna; }
+            set { if (mAntenna != value) { mAntenna = value; Refresh(); } }
+        }
         private IAntenna mAntenna;
         private Vector2 mScrollPosition = Vector2.zero;
         private Entry mRootEntry = new Entry();
         private Entry mSelection;
-        private Action mOnQuit;
 
-        public AntennaFragment(IAntenna antenna, Action quit)
+        public AntennaFragment(IAntenna antenna)
         {
             Antenna = antenna;
-            mOnQuit = quit;
             RTCore.Instance.Satellites.OnRegister += Refresh;
             RTCore.Instance.Satellites.OnUnregister += Refresh;
             RTCore.Instance.Antennas.OnUnregister += Refresh;
@@ -53,7 +54,7 @@ namespace RemoteTech
 
         public void Draw()
         {
-            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(350));
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
             {
                 Color pushColor = GUI.backgroundColor;
                 TextAnchor pushAlign = GUI.skin.button.alignment;
@@ -105,7 +106,7 @@ namespace RemoteTech
             GUILayout.EndScrollView();
         }
 
-        public void Refresh(IAntenna sat) { if (sat == Antenna) { Antenna = null; mOnQuit.Invoke(); } }
+        public void Refresh(IAntenna sat) { if (sat == Antenna) { Antenna = null; } }
         public void Refresh(ISatellite sat) { Refresh(); }
         public void Refresh()
         {
@@ -120,15 +121,22 @@ namespace RemoteTech
                 Depth = 0,
             };
             mRootEntry.SubEntries.Add(mSelection);
-            mRootEntry.SubEntries.Add(new Entry()
+
+            if (Antenna == null) return;
+
+            var activeVesselEntry = new Entry()
             {
                 Text = "Active Vessel",
                 Guid = NetworkManager.ActiveVesselGuid,
                 Color = Color.white,
                 Depth = 0,
-            });
+            };
+            mRootEntry.SubEntries.Add(activeVesselEntry);
+            if (Antenna.Target == activeVesselEntry.Guid)
+            {
+                mSelection = activeVesselEntry;
+            }
 
-            if (Antenna == null) return;
 
             // Add the planets
             foreach (var cb in RTCore.Instance.Network.Planets)

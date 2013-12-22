@@ -144,7 +144,9 @@ namespace RemoteTech
 
         private VesselSatellite For(Guid key)
         {
-            return mSatelliteCache.ContainsKey(key) ? mSatelliteCache[key] : null;
+            VesselSatellite result;
+            if (mSatelliteCache.TryGetValue(key, out result)) return result;
+            return null;
         }
 
         public IEnumerable<ISatellite> FindCommandStations()

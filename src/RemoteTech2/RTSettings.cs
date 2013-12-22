@@ -37,13 +37,16 @@ namespace RemoteTech
         [Persistent(collectionIndex="STATION")] 
         public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
 
-        private static String File { get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech2/RemoteTech_Settings.cfg"; } }
+        private static String File { 
+            get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech2/RemoteTech_Settings.cfg"; }
+        }
 
         public void Save()
         {
             try
             {
-                ConfigNode save = ConfigNode.CreateConfigFromObject(this);
+                ConfigNode save = new ConfigNode();
+                ConfigNode.CreateConfigFromObject(this, 0, save);
                 save.Save(File);
             }
             catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message); }

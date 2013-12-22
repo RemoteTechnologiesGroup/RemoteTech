@@ -85,7 +85,7 @@ namespace RemoteTech
         {
             IsRTActive = state;
             var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == MissionControlSatellite.Guid);
+            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
             if (mTransmitter == null && route_home)
             {
                 AddTransmitter();

@@ -18,8 +18,9 @@ namespace RemoteTech
         public event Action OnPhysicsUpdate = delegate { };
         public event Action OnGuiUpdate = delegate { };
 
-        private MapViewConfigFragment mConfig;
-        private TimeQuadrantPatcher mTimePatcher;
+        public FilterOverlay FilterOverlay { get; protected set; }
+        public FocusOverlay FocusOverlay { get; protected set; }
+        public TimeQuadrantPatcher TimeQuadrantPatcher { get; protected set; }
 
         public void Start()
         {
@@ -34,12 +35,13 @@ namespace RemoteTech
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();
             Network = new NetworkManager();
-            Renderer = NetworkRenderer.AttachToMapView();
+            Renderer = NetworkRenderer.CreateAndAttach();
 
-            mConfig = new MapViewConfigFragment();
-            mTimePatcher = new TimeQuadrantPatcher();
+            FilterOverlay = new FilterOverlay();
+            FocusOverlay = new FocusOverlay();
+            TimeQuadrantPatcher = new TimeQuadrantPatcher();
 
-            mTimePatcher.Patch();
+            TimeQuadrantPatcher.Patch();
             FlightUIPatcher.Patch();
 
             RTLog.Notify("RTCore loaded successfully.");
@@ -53,6 +55,8 @@ namespace RemoteTech
 
         public void Update()
         {
+            OnFrameUpdate.Invoke();
+
             if (FlightGlobals.ActiveVessel == null || FlightGlobals.ActiveVessel.packed) return;
             var vs = Satellites[FlightGlobals.ActiveVessel];
             if (vs != null)
@@ -86,11 +90,6 @@ namespace RemoteTech
             GUI.depth = 0;
             OnGuiUpdate.Invoke();
 
-            if (MapView.MapIsEnabled)
-            {
-                mConfig.Draw();
-            }
-
             Action windows = delegate { };
             foreach (var window in AbstractWindow.Windows.Values)
             {
@@ -99,10 +98,12 @@ namespace RemoteTech
             windows.Invoke();
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
-            if (mTimePatcher != null) mTimePatcher.Undo();
-            if (mConfig != null) mConfig.Dispose();
+            if (FocusOverlay != null) FocusOverlay.Dispose();
+            if (FilterOverlay != null) FilterOverlay.Dispose();
+            if (TimeQuadrantPatcher != null) TimeQuadrantPatcher.Undo();
+            if (FilterOverlay != null) FilterOverlay.Dispose();
             if (Renderer != null) Renderer.Detach();
             if (Network != null) Network.Dispose();
             if (Satellites != null) Satellites.Dispose();
@@ -205,6 +206,15 @@ namespace RemoteTech
         public new void Start()
         {
             base.Start();
+            FilterOverlay.OnEnterMapView();
+            FocusOverlay.OnEnterMapView();
+        }
+
+        private new void OnDestroy()
+        {
+            FilterOverlay.OnExitMapView();
+            FocusOverlay.OnExitMapView();
+            base.OnDestroy();
         }
     }
 }

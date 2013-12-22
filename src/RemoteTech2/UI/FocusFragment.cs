@@ -13,7 +13,7 @@ namespace RemoteTech
 
         public void Draw()
         {
-            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Height(Screen.height - 350), GUILayout.Width(300));
+            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, AbstractWindow.Frame);
             {
                 Color pushColor = GUI.contentColor;
                 TextAnchor pushAlign = GUI.skin.button.alignment;
@@ -34,10 +34,11 @@ namespace RemoteTech
                                 scaledMovement.tgtRef = vessel.transform;
                                 scaledMovement.name = sat.Name;
                                 scaledMovement.transform.parent = ScaledSpace.Instance.transform;
+                                scaledMovement.vessel = vessel;
+                                scaledMovement.type = MapObject.MapObjectType.VESSEL;
                                 newTarget = scaledMovement;
                             }
-                            sat.SignalProcessor.Vessel.orbitDriver.Renderer.isFocused = true;
-                            PlanetariumCamera.fetch.SetTarget(newTarget);
+                            PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
                         }
                     });
                 }
@@ -45,21 +46,6 @@ namespace RemoteTech
                 GUI.contentColor = pushColor;
             }
             GUILayout.EndScrollView();
-        }
-    }
-
-    public class FocusWindow : AbstractWindow
-    {
-        public static Guid Guid = new Guid("f7ba0240-d2a5-4733-8460-e5d98d3494c3");
-        public FocusFragment mFocusFragment = new FocusFragment();
-
-        public FocusWindow() : base(Guid, null, new Rect(0, 0, 300, 600), WindowAlign.TopRight) { }
-
-        public override void Window(int uid)
-        {
-            GUI.skin = HighLogic.Skin;
-            mFocusFragment.Draw();
-            base.Window(uid);
         }
     }
 }

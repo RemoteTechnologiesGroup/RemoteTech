@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace RemoteTech
 {
-    [KSPModule("RemoteTech Antenna")]
+    [KSPModule("Antenna")]
     public class ModuleRTAntenna : PartModule, IAntenna
     {
         public String Name { get { return part.partInfo.title; } }
@@ -160,15 +160,12 @@ namespace RemoteTech
             Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
 
             UpdateContext();
-            if (IsRTActive != prev_state)
-            {
-                StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
-            }
+            StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
 
             if (RTCore.Instance != null)
             {
                 var satellite = RTCore.Instance.Network[Guid];
-                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && r.Goal.Guid == MissionControlSatellite.Guid);
+                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
                 if (mTransmitter == null && route_home)
                 {
                     AddTransmitter();

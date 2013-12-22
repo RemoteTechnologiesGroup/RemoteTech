@@ -44,7 +44,7 @@ namespace RemoteTech
             RTUtil.LoadImage(out mTexMark, "mark.png");
         }
 
-        public static NetworkRenderer AttachToMapView()
+        public static NetworkRenderer CreateAndAttach()
         {
             var renderer = MapView.MapCamera.gameObject.GetComponent<NetworkRenderer>();
             if (renderer)
@@ -72,7 +72,7 @@ namespace RemoteTech
         {
             if (Event.current.type == EventType.Repaint && MapView.MapIsEnabled)
             {
-                foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations))
+                foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations.Values))
                 {
                     var world_pos = ScaledSpace.LocalToScaledSpace(s.Position);
                     if (MapView.MapCamera.transform.InverseTransformPoint(world_pos).z < 0f) continue;
@@ -85,10 +85,9 @@ namespace RemoteTech
 
         private void UpdateNetworkCones()
         {
-            var antennas = RTCore.Instance.Antennas.Where(a => ShowPlanet)
-                                                   .Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
-                                                                                        && RTCore.Instance.Network.Planets.ContainsKey(a.Target))
-                                                   .ToList();
+            var antennas = (ShowPlanet ? RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
+                                                                                       && RTCore.Instance.Network.Planets.ContainsKey(a.Target))
+                                       : Enumerable.Empty<IAntenna>()).ToList();
             int oldLength = mCones.Count;
             int newLength = antennas.Count;
 
@@ -98,7 +97,7 @@ namespace RemoteTech
                 GameObject.Destroy(mCones[i]);
             }
             mCones.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
-            mCones.AddRange(Enumerable.Repeat<NetworkCone>(null, Math.Max(newLength - oldLength, 0)));
+            mCones.AddRange(Enumerable.Repeat((NetworkCone) null, Math.Max(newLength - oldLength, 0)));
 
             for (int i = 0; i < newLength; i++)
             {

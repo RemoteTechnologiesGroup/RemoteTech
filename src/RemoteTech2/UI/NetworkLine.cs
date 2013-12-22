@@ -90,6 +90,7 @@ namespace RemoteTech
 
             mMeshFilter.mesh.vertices = MapView.Draw3DLines ? mPoints3D : mPoints2D;
             mMeshFilter.mesh.RecalculateBounds();
+            mMeshFilter.mesh.MarkDynamic();
         }
 
         private void SetupMesh()

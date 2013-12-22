@@ -48,7 +48,7 @@ namespace RemoteTech
         public static bool HasConnectionToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
-            return RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == MissionControlSatellite.Guid);
+            return RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
         }
 
         public static double GetShortestSignalDelay(Guid id)
@@ -61,8 +61,8 @@ namespace RemoteTech
         public static double GetSignalDelayToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
-            if (!RTCore.Instance.Network[satellite].Any(r => r.Goal.Guid == MissionControlSatellite.Guid)) return Double.PositiveInfinity;
-            return RTCore.Instance.Network[satellite].Where(r => r.Goal.Guid == MissionControlSatellite.Guid).Min().Delay;
+            if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return Double.PositiveInfinity;
+            return RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Delay;
         }
 
         public static double GetSignalDelayToSatellite(Guid a, Guid b)

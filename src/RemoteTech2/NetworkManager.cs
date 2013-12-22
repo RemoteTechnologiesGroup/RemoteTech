@@ -21,10 +21,10 @@ namespace RemoteTech
         public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkRemove = delegate { };
 
         public Dictionary<Guid, CelestialBody> Planets { get; private set; }
-        public ISatellite[] GroundStations { get { return RTSettings.Instance.GroundStations; } }
+        public Dictionary<Guid, ISatellite> GroundStations { get; private set; }
         public Dictionary<Guid, List<NetworkLink<ISatellite>>> Graph { get; private set; }
 
-        public int Count { get { return RTCore.Instance.Satellites.Count + GroundStations.Length; } }
+        public int Count { get { return RTCore.Instance.Satellites.Count + GroundStations.Count; } }
 
         public static Guid ActiveVesselGuid = new Guid(RTSettings.Instance.ActiveVesselGuid);
 
@@ -32,9 +32,9 @@ namespace RemoteTech
         {
             get
             {
-                if (guid == ActiveVesselGuid)
-                    return RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
-                return RTCore.Instance.Satellites[guid];
+                return RTCore.Instance.Satellites[guid] ??
+                       ((guid == ActiveVesselGuid) ? RTCore.Instance.Satellites[FlightGlobals.ActiveVessel] : null) ??
+                       (GroundStations.ContainsKey(guid) ? GroundStations[guid] : null);
             }
         }
 
@@ -56,16 +56,27 @@ namespace RemoteTech
         public NetworkManager()
         {
             Graph = new Dictionary<Guid, List<NetworkLink<ISatellite>>>();
-            Planets = new Dictionary<Guid, CelestialBody>();
 
+            // Load all planets into a dictionary;
+            Planets = new Dictionary<Guid, CelestialBody>();
             foreach (CelestialBody cb in FlightGlobals.Bodies)
             {
                 Planets[cb.Guid()] = cb;
             }
 
-            foreach (var sat in GroundStations)
+            // Load all ground stations into a dictionary;
+            GroundStations = new Dictionary<Guid, ISatellite>();
+            foreach (ISatellite sat in RTSettings.Instance.GroundStations)
             {
-                OnSatelliteRegister(sat);
+                try
+                {
+                    GroundStations.Add(sat.Guid, sat);
+                    OnSatelliteRegister(sat);
+                }
+                catch (Exception e) // Already exists.
+                {
+                    RTLog.Notify("A ground station cannot be loaded: " + e.Message);
+                }
             }
 
             RTCore.Instance.Satellites.OnRegister += OnSatelliteRegister;
@@ -86,7 +97,7 @@ namespace RemoteTech
         public void FindPath(ISatellite start, IEnumerable<ISatellite> commandStations)
         {
             var paths = new List<NetworkRoute<ISatellite>>();
-            foreach (ISatellite root in commandStations.Concat(GroundStations).Where(r => r != start))
+            foreach (ISatellite root in commandStations.Concat(GroundStations.Values).Where(r => r != start))
             {
                 paths.Add(NetworkPathfinder.Solve(start, root, FindNeighbors, RangeModelExtensions.DistanceTo, RangeModelExtensions.DistanceTo));
             }
@@ -154,7 +165,7 @@ namespace RemoteTech
             foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
             {
                 UpdateGraph(s);
-                //RTLog.Debug("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
+                //("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
                 if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION)
                 {
                     FindPath(s, commandStations);
@@ -183,7 +194,7 @@ namespace RemoteTech
 
         public IEnumerator<ISatellite> GetEnumerator()
         {
-            return RTCore.Instance.Satellites.Cast<ISatellite>().Concat(GroundStations).GetEnumerator();
+            return RTCore.Instance.Satellites.Cast<ISatellite>().Concat(GroundStations.Values).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -192,23 +203,21 @@ namespace RemoteTech
         }
     }
 
-    public sealed class MissionControlSatellite : ISatellite
+    public sealed class MissionControlSatellite : ISatellite, IPersistenceLoad
     {
-        public static Guid Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488");
-
         /* Config Node parameters */
+        [Persistent] private String Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488").ToString();
         [Persistent] private String Name = "Mission Control";
         [Persistent] private double Latitude = -0.1313315f;
         [Persistent] private double Longitude = -74.59484f;
         [Persistent] private double Height = 75.0f;
         [Persistent] private int Body = 1;
-        [Persistent(collectionIndex = "ANTENNA")]
-        private MissionControlAntenna[] Antennas = new MissionControlAntenna[] { new MissionControlAntenna() };
+        [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = new MissionControlAntenna[] { new MissionControlAntenna() };
 
         bool ISatellite.Powered { get { return true; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
-        Guid ISatellite.Guid { get { return Guid; } }
+        Guid ISatellite.Guid { get { return mGuid; } }
         Vector3d ISatellite.Position { get { return FlightGlobals.Bodies[Body].GetWorldSurfacePosition(Latitude, Longitude, Height); } }
         bool ISatellite.IsCommandStation { get { return true; } }
         bool ISatellite.HasLocalControl { get { return false; } }
@@ -216,6 +225,17 @@ namespace RemoteTech
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
+
+        private Guid mGuid;
+
+        void IPersistenceLoad.PersistenceLoad()
+        {
+            foreach (var antenna in Antennas)
+            {
+                antenna.Parent = this;
+            }
+            mGuid = new Guid(Guid);
+        }
 
         public override String ToString()
         {

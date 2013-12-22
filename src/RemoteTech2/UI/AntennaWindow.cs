@@ -22,7 +22,7 @@ namespace RemoteTech
 
         public override void Show()
         {
-            mAntennaFragment = mAntennaFragment ?? new AntennaFragment(mSetAntenna, () => Hide());
+            mAntennaFragment = mAntennaFragment ?? new AntennaFragment(mSetAntenna);
             GameEvents.onVesselChange.Add(OnVesselChange);
             base.Show();
         }
@@ -39,6 +39,7 @@ namespace RemoteTech
 
         public override void Window(int uid)
         {
+            if (mAntennaFragment.Antenna == null) { Hide(); return; }
             GUI.skin = HighLogic.Skin;
             GUILayout.BeginVertical(GUILayout.Width(300), GUILayout.Height(500));
             {

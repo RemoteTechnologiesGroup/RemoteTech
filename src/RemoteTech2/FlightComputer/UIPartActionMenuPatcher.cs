@@ -60,8 +60,7 @@ namespace RemoteTech
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);
                 Wrapper wrapper = new Wrapper(original, passthrough, ignore_delay);
-                BaseEvent new_event = new BaseEvent(original.listParent, original.name,
-                                                                         wrapper.Invoke);
+                BaseEvent new_event = new BaseEvent(original.listParent, original.name, wrapper.Invoke);
                 new_event.OnLoad(cn);
 
                 return new_event;

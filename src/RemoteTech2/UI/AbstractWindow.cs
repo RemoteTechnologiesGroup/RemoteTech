@@ -74,7 +74,7 @@ namespace RemoteTech
         {
             if (Title != null)
             {
-                GUI.DragWindow(new Rect(0, 0, 100000, 20));
+                GUI.DragWindow(new Rect(0, 0, Single.MaxValue, 20));
             }
             Tooltip = GUI.tooltip;
         }
@@ -87,6 +87,13 @@ namespace RemoteTech
                 Position.height = 0;
             }
             Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
+            if (Title != null)
+            {
+                if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
+                {
+                    Hide();
+                }
+            }
             if (Event.current.type == EventType.Repaint)
             {
                 switch (Alignment)
@@ -129,14 +136,6 @@ namespace RemoteTech
                     mTooltipTimer = 0.0;
                 }
                 mLastTime = Time.time;
-            }
-
-            if (Title != null)
-            {
-                if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
-                {
-                    Hide();
-                }
             }
         }
     }
