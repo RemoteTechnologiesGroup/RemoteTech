@@ -26,7 +26,7 @@ namespace RemoteTech
                         mSelection = (s > 0) ? sat : null;
                         if (mSelection != null)
                         {
-                            var newTarget = PlanetariumCamera.fetch.targets.FirstOrDefault(t => t.gameObject.name == sat.Name);
+                            var newTarget = PlanetariumCamera.fetch.targets.FirstOrDefault(t => t != null && t.gameObject.name == sat.Name);
                             if (newTarget == null)
                             {
                                 var vessel = sat.SignalProcessor.Vessel;
@@ -37,8 +37,14 @@ namespace RemoteTech
                                 scaledMovement.vessel = vessel;
                                 scaledMovement.type = MapObject.MapObjectType.VESSEL;
                                 newTarget = scaledMovement;
+                                PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
+                                PlanetariumCamera.fetch.targets.Remove(newTarget);
                             }
-                            PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
+                            else
+                            {
+                                PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
+                            }
+                            
                         }
                     });
                 }

@@ -129,6 +129,7 @@ namespace RemoteTech
             mMeshFilter.mesh.vertices = new Vector3[8];
             mMeshFilter.mesh.uv = new Vector2[8] { new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), new Vector2(1, 0), new Vector2(0, 1), new Vector2(0, 0), new Vector2(1, 1), new Vector2(1, 0) };
             mMeshFilter.mesh.SetIndices(new int[] { 0, 2, 1, 2, 3, 1,  4, 6, 5, 6, 7, 5}, MeshTopology.Triangles, 0);
+            mMeshFilter.mesh.MarkDynamic();
             Active = false;
         }
 

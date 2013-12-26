@@ -30,6 +30,8 @@ namespace RemoteTech
         // true: delete afterwards.
         public virtual bool Execute(FlightComputer f, FlightCtrlState fcs) { return true; }
 
+        public virtual void Abort() { }
+
         public int CompareTo(ICommand dc)
         {
             return TimeStamp.CompareTo(dc.TimeStamp);

@@ -122,14 +122,14 @@ namespace RemoteTech
 
         public static String FormatDuration(double duration)
         {
-            TimeSpan time = TimeSpan.FromSeconds(duration);
-            StringBuilder s = new StringBuilder();
-            if (time.TotalDays > DaysInAYear)
+            var time = TimeSpan.FromSeconds(duration);
+            var s = new StringBuilder();
+            if (time.TotalDays / DaysInAYear >= 1)
             {
                 s.Append(Math.Floor(time.TotalDays / DaysInAYear));
                 s.Append("y");
             }
-            if (time.TotalDays > 0)
+            if (time.TotalDays % DaysInAYear >= 1)
             {
                 s.Append(Math.Floor(time.TotalDays % DaysInAYear));
                 s.Append("d");
@@ -260,6 +260,15 @@ namespace RemoteTech
             {
                 group = group2;
                 onStateChange.Invoke(group2);
+            }
+        }
+
+        public static void StateButton(GUIContent text, int state, int value, Action<int> onStateChange, params GUILayoutOption[] options)
+        {
+            bool result;
+            if ((result = GUILayout.Toggle(Object.Equals(state, value), text, GUI.skin.button, options)) != Object.Equals(state, value))
+            {
+                onStateChange.Invoke(result ? value : ~value);
             }
         }
 

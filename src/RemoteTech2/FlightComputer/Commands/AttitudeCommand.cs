@@ -41,7 +41,7 @@ namespace RemoteTech
     {
         public static readonly Dictionary<FlightMode, String> FormatMode = new Dictionary<FlightMode, String>() 
         {
-            { FlightMode.Off,          "Mode: Off," },
+            { FlightMode.Off,          "Mode: Off" },
             { FlightMode.KillRot,      "Mode: Kill rotation" },
             { FlightMode.AttitudeHold, "Mode: Hold {0} {1}" },
             { FlightMode.AltitudeHold, "Mode: Hold {0}" },
@@ -101,6 +101,8 @@ namespace RemoteTech
             }
         }
 
+        private bool mAbort;
+
         public override bool Pop(FlightComputer f)
         {
             if (Mode == FlightMode.KillRot)
@@ -112,6 +114,12 @@ namespace RemoteTech
 
         public override bool Execute(FlightComputer f, FlightCtrlState fcs)
         {
+            if (mAbort)
+            {
+                Mode = FlightMode.Off;
+                mAbort = false;
+            }
+
             switch (Mode)
             {
                 case FlightMode.Off:
@@ -128,6 +136,8 @@ namespace RemoteTech
 
             return false;
         }
+
+        public override void Abort() { mAbort = true; }
 
         public static AttitudeCommand Off()
         {

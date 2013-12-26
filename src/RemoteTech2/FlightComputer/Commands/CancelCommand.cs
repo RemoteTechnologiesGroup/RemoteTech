@@ -14,7 +14,14 @@ namespace RemoteTech
 
         public override bool Pop(FlightComputer f)
         {
-            f.Remove(Command);
+            if (Command == null)
+            {
+                f.Reset();
+            }
+            else
+            {
+                f.Remove(Command);
+            }
             return false;
         }
 
@@ -23,6 +30,15 @@ namespace RemoteTech
             return new CancelCommand()
             {
                 Command = cmd,
+                TimeStamp = RTUtil.GameTime,
+            };
+        }
+
+        public static CancelCommand ResetActive()
+        {
+            return new CancelCommand()
+            {
+                Command = null,
                 TimeStamp = RTUtil.GameTime,
             };
         }

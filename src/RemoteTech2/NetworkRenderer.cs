@@ -95,6 +95,7 @@ namespace RemoteTech
             for (int i = newLength; i < oldLength; i++)
             {
                 GameObject.Destroy(mCones[i]);
+                mCones[i] = null;
             }
             mCones.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
             mCones.AddRange(Enumerable.Repeat((NetworkCone) null, Math.Max(newLength - oldLength, 0)));
@@ -121,6 +122,7 @@ namespace RemoteTech
             for (int i = newLength; i < oldLength; i++)
             {
                 GameObject.Destroy(mLines[i]);
+                mLines[i] = null;
             }
             mLines.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
             mLines.AddRange(Enumerable.Repeat<NetworkLine>(null, Math.Max(newLength - oldLength, 0)));
@@ -195,12 +197,12 @@ namespace RemoteTech
         {
             for (int i = 0; i < mLines.Count; i++)
             {
-                GameObject.Destroy(mLines[i]);
+                GameObject.DestroyImmediate(mLines[i]);
             }
             mLines.Clear();
             for (int i = 0; i < mCones.Count; i++)
             {
-                GameObject.Destroy(mCones[i]);
+                GameObject.DestroyImmediate(mCones[i]);
             }
             mCones.Clear();
             DestroyImmediate(this);

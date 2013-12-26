@@ -79,6 +79,7 @@ namespace RemoteTech
             SignalProcessor = s;
             Vessel = s.Vessel;
             SanctionedPilots = new List<Action<FlightCtrlState>>();
+
             var target = TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget);
             mActiveCommands[target.Priority] = target;
             var attitude = AttitudeCommand.Off();
@@ -96,6 +97,14 @@ namespace RemoteTech
             if (mWindow != null)
             {
                 mWindow.Hide();
+            }
+        }
+
+        public void Reset()
+        {
+            foreach (var cmd in mActiveCommands.Values)
+            {
+                cmd.Abort();
             }
         }
 

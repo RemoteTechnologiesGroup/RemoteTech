@@ -82,7 +82,7 @@ namespace RemoteTech
                 mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(250));
                 {
                     {
-                        GUILayout.BeginVertical(GUI.skin.box);
+                        GUILayout.BeginHorizontal(GUI.skin.box);
                         {
                             var s = new StringBuilder();
                             foreach (var c in mFlightComputer.ActiveCommands)
@@ -90,8 +90,10 @@ namespace RemoteTech
                                 s.Append(c.Description);
                             }
                             GUILayout.Label(s.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
+                            GUILayout.FlexibleSpace();
+                            RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickReset()), GUILayout.Width(21), GUILayout.Height(21));
                         }
-                        GUILayout.EndVertical();
+                        GUILayout.EndHorizontal();
 
                         foreach (var c in mFlightComputer.QueuedCommands)
                         {
@@ -99,7 +101,7 @@ namespace RemoteTech
                             {
                                 GUILayout.Label(c.Description);
                                 GUILayout.FlexibleSpace();
-                                RTUtil.Button("x", () => { RTCore.Instance.StartCoroutine(OnClickCancel(c)); }, GUILayout.Width(21), GUILayout.Height(21));
+                                RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
                             }
                             GUILayout.EndHorizontal();
                         }
@@ -124,6 +126,12 @@ namespace RemoteTech
         {
             yield return null;
             mFlightComputer.Enqueue(CancelCommand.WithCommand(c));
+        }
+
+        public IEnumerator OnClickReset()
+        {
+            yield return null;
+            mFlightComputer.Enqueue(CancelCommand.ResetActive());
         }
     }
 }

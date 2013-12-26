@@ -35,10 +35,12 @@ namespace RemoteTech
             {
                 if (!KnowledgeBase.Instance) return new Rect(0, 0, 0, 0);
                 var position = KnowledgeBase.Instance.KnowledgeContainer.transform.position;
-                return new Rect(Screen.width - Texture.Satellite.width + (position.x - 613.5f),
+                var position2 = UIManager.instance.rayCamera.WorldToScreenPoint(position);
+                var rect = new Rect(position2.x + 154,
                                 250 + 2 * 31,
                                 Texture.Satellite.width,
                                 Texture.Satellite.height);
+                return rect;
             }
         }
 
