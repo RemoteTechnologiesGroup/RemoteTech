@@ -1,0 +1,18 @@
+.header {
+	font-size: 49px;
+	margin: auto;
+	width: 500px;
+}
+
+.logo {
+	background: url(http://placehold.it/64x64) no-repeat;
+	height: 64px;
+	width: 64px;
+	margin-right: 10px;
+	float: left;
+}
+
+.content {
+	width: 1024px;
+	margin: auto;
+}

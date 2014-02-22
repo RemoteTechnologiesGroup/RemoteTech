@@ -1,86 +1,56 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>Remotetech2 by Cilph</title>
-  </head>
+<head>
+	<link href="stylesheets/main.css" rel="stylesheet">
+	<link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+	<link href="stylesheets/bootstrap-theme.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-inverse" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">RemoteTech</a>
+		</div>
+	</div>
+</nav>
 
-  <body>
-    <div id="container">
-      <div class="inner">
+<div class="header">
+	<div class="logo"></div>
+	RemoteTech
+</div>
+<div class="content">
+	<h2><a name="Intro"></a>Introduction to RemoteTech</h2>
+	<p>RemoteTech is a modification for Squad's 'Kerbal Space Program' which overhauls the unmanned space program. It does this by requiring unmanned vessels have a connection to Kerbal Space Center (KSC) to be able to be controlled. This adds a new layer of difficulty that compensates for the lack of live crewmembers.</p>
+	<h2><a name="First"></a>First steps</h2>
+	<p>*</p>
+	<h2><a name="Overview"></a>Overview of mechanics</h2>
+	<p>*</p>
+	<h3><a name="Antennas"></a>Antennas</h3>
+	<p>Using antennas, it is now possible to set up satellite networks to route your control input. There are two classes of antennas: 'Dishes' and 'Omnidirectionals'.</p>
+	<h4><a name="Dishes"></a>Dishes</h4>
+	<p>Dishes are antennas that must be instructed what direction to point at. They do not physically point at something; it is as simple as selecting a target from a list. Dishes tend to be used for long range communication and come with a cone of vision (getting smaller as range gets bigger). Anything inside this cone can achieve a stable connection with the dish.</p>
+	<h4><a name="Omni"></a>Omnidirectionals ('Omni')</h4>
+	<p>Omni antennas radiate in every direction equally, and as such do not require you to point them at anything. A consequence is that they are limited to shorter ranges and have higher power consumption.</p>
+	<h3><a name="SignalDelay"></a>Signal Delay</h3>
+	<p>To comply with Kerbal law, RemoteTech is required to delay your control input so that signalling does not exceed the 'speed of light' (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file.</p>
+	<h3><a name="Connections"></a>Connections</h3>
+	<p>A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that both satellites can transmit a signal to the other independently. For point A to transmit with a dish, the dish would need to be set to target point B and have sufficient available range. Omnis merely need to have the latter. Note that point B also has to pass these criteria. You have a connection when there is a sequence of links between a command center and the destination.</p>
+	<h3><a name="ScienceTransmissions"></a>Science Transmissions</h3>
+	<p>Transmitting science back to KSC now requires you have a working connection back to KSC.</p>
+	<h3><a name="SignalProcessors"></a>Signal Processors</h3>
+	<p>Signal Processors are the backbone of any unmanned vessel. All base game Probe Cores function as one and they are required to process your signal data and control the craft. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#SignalDelay).</p>
+	<h3><a name="CommandStations"></a>Command Stations</h3>
+	<p>For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. This Command Station can not process science, a connection to KSC will still be required for that. However, this allows you to work without the signal delay that might otherwise climb up to several minutes. Command Stations require a special probe part and a minimum number of kerbals to operate. Consult your VAB technicians for more information.</p>
+	<h2>Downloads</h2>
+	<p>*</p>
+	<h2>List of parts</h2>
+	<p>*</p>
+	<h2>Credits</h2>
+	<ul>
+		<li>The_Duck, for the precursor to this mod.</li>
+		<li>JDP, for RemoteTech 1.x.</li>
+		<li>*</li>
+	</ul>
+</div>
 
-        <header>
-          <h1>Remotetech2</h1>
-          <h2></h2>
-        </header>
-
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/Cilph/RemoteTech2/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/Cilph/RemoteTech2/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/Cilph/RemoteTech2" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
-
-        <hr>
-
-        <section id="main_content">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </section>
-
-        <footer>
-          Remotetech2 is maintained by <a href="https://github.com/Cilph">Cilph</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-                  <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-48324963-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
-      </div>
-    </div>
-  </body>
+</body>
 </html>
