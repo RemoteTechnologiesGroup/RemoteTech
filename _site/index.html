@@ -1,0 +1,127 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="stylesheets/main.css" rel="stylesheet">
+	<link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+	<link href="stylesheets/bootstrap-theme.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-inverse" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand" href="#">RemoteTech</a>
+		</div>
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class=""><a href="#">FAQ</a></li>
+				<li class=""><a href="#">Guide</a></li>
+				<li class=""><a href="#">Tutorial</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+
+<div class="content">
+
+<div class='header'>
+	<div class='logo'>
+	</div>
+	RemoteTech<br />
+	<span class='sub'>bleep, bloop, beep.</span>
+</div><ul class='inline'>
+	<li><a class='btn btn-primary' href='#' role='button'>Source &raquo;</a></li>
+	<li><a class='btn btn-success' href='#' role='button'>Download &raquo;</a></li>
+	<li style='float: right;'>
+		<a class='btn btn-warning' href='#' role='button'>Donate</a>
+	</li>
+</ul><div class='alert alert-danger'><b>Oh shit son!</b> This page is still under development!</div>
+<h2 id="introduction_to_remotetech">Introduction to RemoteTech</h2>
+
+<p>RemoteTech is a modification for Squad’s ‘Kerbal Space Program’ which overhauls the unmanned space program. It does this by requiring unmanned vessels have a connection to Kerbal Space Center (KSC) to be able to be controlled. This adds a new layer of difficulty that compensates for the lack of live crewmembers.</p>
+
+<h2 id="first_steps">First steps</h2>
+
+<ul>
+<li><hr /></li>
+</ul>
+
+<h2 id="overview_of_mechanics">Overview of mechanics</h2>
+
+<ul>
+<li><hr /></li>
+</ul>
+
+<h2 id="antennas">Antennas</h2>
+
+<p>Using antennas, it is now possible to set up satellite networks to route your control input. There are two classes of antennas: ‘Dishes’ and ‘Omnidirectionals’.</p>
+
+<h3 id="dishes">Dishes</h3>
+
+<p>Dishes are antennas that must be instructed what direction to point at. They do not physically point at something; it is as simple as selecting a target from a list. Dishes tend to be used for long range communication and come with a cone of vision (getting smaller as range gets bigger). Anything inside this cone can achieve a stable connection with the dish.</p>
+
+<h3 id="omnidirectionals_omni">Omnidirectionals (‘Omni’)</h3>
+
+<p>Omni antennas radiate in every direction equally, and as such do not require you to point them at anything. A consequence is that they are limited to shorter ranges and have higher power consumption.</p>
+
+<h2 id="signal_delay">Signal Delay</h2>
+
+<p>To comply with Kerbal law, RemoteTech is required to delay your control input so that signalling does not exceed the ‘speed of light’ (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file.</p>
+
+<h2 id="connections">Connections</h2>
+
+<p>A ‘working connection’ is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as ‘links’. To have a link between two satellites, it is required that both satellites can transmit a signal to the other independently. For point A to transmit with a dish, the dish would need to be set to target point B and have sufficient available range. Omnis merely need to have the latter. Note that point B also has to pass these criteria. You have a connection when there is a sequence of links between a command center and the destination.</p>
+
+<h2 id="science_transmissions">Science Transmissions</h2>
+
+<p>Transmitting science back to KSC now requires you have a working connection back to KSC.</p>
+
+<h2 id="signal_processors">Signal Processors</h2>
+
+<p>Signal Processors are the backbone of any unmanned vessel. All base game Probe Cores function as one and they are required to process your signal data and control the craft. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to <a href="#SignalDelay">signal delay</a>.</p>
+
+<h2 id="command_stations">Command Stations</h2>
+
+<p>For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. This Command Station can not process science, a connection to KSC will still be required for that. However, this allows you to work without the signal delay that might otherwise climb up to several minutes. Command Stations require a special probe part and a minimum number of kerbals to operate. Consult your VAB technicians for more information.</p>
+
+<h2 id="downloads">Downloads</h2>
+
+<ul>
+<li><hr /></li>
+</ul>
+
+<h2 id="list_of_parts">List of parts</h2>
+
+<ul>
+<li><hr /></li>
+</ul>
+
+<h2 id="credits">Credits</h2>
+
+<ul>
+<li>The_Duck, for the precursor to this mod.</li>
+
+<li>JDP, for RemoteTech 1.x.</li>
+
+<li><hr /></li>
+</ul>
+
+</div>
+
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-48324963-1', 'cilph.github.io');
+	ga('send', 'pageview');
+</script>
+</body>
+</html>
