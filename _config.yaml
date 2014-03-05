@@ -2,6 +2,7 @@ name: "RemoteTech"
 description: "KSP"
 
 base-url: "/RemoteTech2"
+excerpt_separator: ""
 
 permalink: pretty
 pygments: true

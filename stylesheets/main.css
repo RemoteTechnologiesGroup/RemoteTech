@@ -1,25 +1,34 @@
 .header {
-	font-size: 42px;
+	font-size: 40px;
 	margin: auto;
 	margin-bottom: 1em;
 	width: 500px;
-	color: #525252;
+	color: #3c3c3c;
 	vertical-align: center;
 }
 
-.header .sub {
-	font-size: 20px;
+.header > .sub {
+	font-size: 16px;
 	font-style: italic;
 	color: #8C8C8C;
 }
 
-ul.inline {
+ul.buttonrow {
 	padding-left: 0px;
 	list-style: none;
+	overflow: hidden;
 }
 
-ul.inline > li {
+ul.buttonrow > li {
 	display: inline-block;
+	padding-right: 5px;
+	float: left;
+}
+
+ul.buttonrow > li.right {
+	float: right;
+	padding-right: 0px;
+	vertical-align:top
 }
 
 .buttons {
@@ -27,9 +36,9 @@ ul.inline > li {
 }
 
 .logo {
-	background: url(http://placehold.it/96x96) no-repeat;
-	height: 96px;
-	width: 96px;
+	background: url(/images/47ysyso.png) no-repeat;
+	height: 95px;
+	width: 95px;
 	margin-right: 10px;
 	float: left;
 }
@@ -37,4 +46,14 @@ ul.inline > li {
 .content {
 	width: 820px;
 	margin: auto;
+}
+
+.maruku_toc {
+	min-height: 20px;
+	padding: 19px;
+	background-color: #eee;
+	border: 1px solid #e3e3e3;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 }
