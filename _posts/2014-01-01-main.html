@@ -34,18 +34,20 @@ To comply with Kerbal law, RemoteTech is required to delay your control input so
 ###Connections
 A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that both satellites can transmit a signal to the other independently. For point A to transmit with a dish, the dish would need to be set to target point B and point B would need to be within range of A's dish. Since omni antennas are never targeted, they merely need to have point B within range. Note that point B also has to pass these criteria (many new players forget that point A must be within range of whatever antenna point B is using). You have a connection when there is a sequence of links between a command center and the destination.
 
+If there are multiple ways to get a working connection (e.g., relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay. This won't always be the path with the fewest links.
+
 <img class="pairedimages" alt="A relay sends a transmission from the far side of the Mun towards Kerbin" title="Mun polar relay" src="images/connectiondemo1.jpg"> <img class="pairedimages" alt="A comsat gets the transmission from the Mun and forwards it to KSP" title="Kerbin comsat" src="images/connectiondemo2.jpg">
 
-Example: this probe in low Munar orbit can't link to KSP because it's on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay also can't link to KSP, because KSP is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSP (shown by the red dot). Therefore, the probe has a working connection with KSP, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.
-
-###Science Transmissions
-Transmitting science back to KSC now requires you have a working connection back to KSC. Any other source of control will not be valid.
+Example: this probe in low Munar orbit can't link to KSP because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay also can't link to KSP, because KSP is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSP (shown by the red dot). Therefore, the probe has a working connection with KSP, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.
 
 ###Signal Processors
-Signal Processors are the backbone of any unmanned vessel. All base game Probe Cores function as one and they are required to process your signal data and control the craft. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal_delay).
+Signal Processors are any part that can recieve commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal_delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, and that can carry out basic tasks while a connection is dropped.
 
 ###Command Stations
 For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. This Command Station can not process science, a connection to KSC will still be required for that. However, this allows you to work without the signal delay that might otherwise climb up to several minutes. Command Stations require a special probe part and a minimum number of kerbals to operate. Consult your VAB technicians for more information.
+
+###Science Transmissions
+Transmitting science back to KSC now requires you have a working connection back to KSC. Any other source of control, such as a crew pod or a working connection to a command station, does not count.
 
 ##Downloads
 * -
