@@ -59,7 +59,20 @@ ul.buttonrow > li.right {
 }
 
 
+/* Minimal formatting to get two images to appear side-by-side */
 div.pairedimages img {
 	max-width: 45%;
 	padding: 2px;
+}
+
+/* Default table style makes semantic tables illegible */
+table.datalayout {
+	border-collapse: separate;
+	
+}
+table.datalayout td, table.datalayout th {
+	padding: 2px;
+}
+table.datalayout th {
+	text-align: center;
 }
