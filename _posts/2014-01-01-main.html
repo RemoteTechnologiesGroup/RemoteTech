@@ -23,16 +23,16 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' which overhauls 
 Using antennas, it is now possible to set up satellite networks to route your control input. There are two classes of antennas: 'Dishes' and 'Omnidirectionals'.
 
 ####Dishes
-Dishes are antennas that must be instructed what direction to point at. They do not physically point at something; it is as simple as selecting a target from a list. Dishes tend to be used for long range communication and come with a cone of vision (getting smaller as range gets bigger). Anything inside this cone can achieve a stable connection with the dish.
+Dishes are antennas that must be instructed what direction to point at. They do not physically point at something; it is as simple as selecting a target from a list. Dishes tend to be used for long range communication and come with a cone of vision (getting smaller as range gets bigger). If the dish is pointed at a planet or moon, anything inside this cone can achieve a stable connection with the dish.
 
 ####Omnidirectionals
-Omni antennas radiate in every direction equally, and as such do not require you to point them at anything. A consequence is that they are limited to shorter ranges and have higher power consumption.
+Omni antennas radiate in every direction equally, and as such do not require you to target them at anything. A consequence is that they are limited to shorter ranges and have higher power consumption.
 
 ###Signal Delay
 To comply with Kerbal law, RemoteTech is required to delay your control input so that signalling does not exceed the 'speed of light' (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file.
 
 ###Connections
-A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that both satellites can transmit a signal to the other independently. For point A to transmit with a dish, the dish would need to be set to target point B and have sufficient available range. Omnis merely need to have the latter. Note that point B also has to pass these criteria. You have a connection when there is a sequence of links between a command center and the destination.
+A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that both satellites can transmit a signal to the other independently. For point A to transmit with a dish, the dish would need to be set to target point B and point B would need to be within range of A's dish. Since omni antennas are never targeted, they merely need to have point B within range. Note that point B also has to pass these criteria (many new players forget that point A must be within range of whatever antenna point B is using). You have a connection when there is a sequence of links between a command center and the destination.
 
 ###Science Transmissions
 Transmitting science back to KSC now requires you have a working connection back to KSC. Any other source of control will not be valid.
