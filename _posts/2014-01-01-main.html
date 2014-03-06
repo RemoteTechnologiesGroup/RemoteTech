@@ -20,10 +20,10 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' which overhauls 
 ##Overview of mechanics
 
 ###Antennas
-Using antennas, it is now possible to set up satellite networks to route your control input. There are two classes of antennas: 'Dishes' and 'Omnidirectionals'.
+Using antennas, it is now possible to set up satellite networks to route your control input. Unlike in stock KSP,  antennas will no longer activate or deactivate automatically; you must order an antenna to activate by right-clicking on it. There are two classes of antennas: 'Dishes' and 'Omnidirectionals'.
 
 ####Dishes
-Dishes are antennas that must be instructed what direction to point at. They do not physically point at something; it is as simple as selecting a target from a list. Dishes tend to be used for long range communication and come with a cone of vision (getting smaller as range gets bigger). If the dish is pointed at a planet or moon, anything inside this cone can achieve a stable connection with the dish.
+Dishes are antennas that must be instructed what direction to point at. They do not physically point at something; it is as simple as selecting a target from a list. Dishes tend to be used for long range communication and come with a cone of vision (which is narrower for longer-range antennas). If the dish is pointed at a planet or moon, anything inside this cone can achieve a stable connection with the dish.
 
 ####Omnidirectionals
 Omni antennas radiate in every direction equally, and as such do not require you to target them at anything. A consequence is that they are limited to shorter ranges.
@@ -38,14 +38,16 @@ If there are multiple ways to get a working connection (e.g., relaying through d
 
 <div class="pairedimages">
 
-<img alt="A relay sends a transmission from the far side of the Mun towards Kerbin" title="Mun polar relay" src="images/connectiondemo1.jpg"> <img alt="A comsat gets the transmission from the Mun and forwards it to KSP" title="Kerbin comsat" src="images/connectiondemo2.jpg">
+<img alt="A relay sends a transmission from the far side of the Mun towards Kerbin" title="Mun polar relay" src="images/connectiondemo1.jpg"> <img alt="A comsat gets the transmission from the Mun and forwards it to KSC" title="Kerbin comsat" src="images/connectiondemo2.jpg">
 
 </div>
 
-**Example:** this probe in low Munar orbit can't link to KSP because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay also can't link to KSP, because KSP is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSP (shown by the red dot). Therefore, the probe has a working connection with KSP, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.
+**Example:** this probe in low Munar orbit can't link to KSC because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay also can't link to KSC, because KSC is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSC (shown by the red dot). Therefore, the probe has a working connection with KSC, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.
 
 ###Signal Processors
 Signal Processors are any part that can recieve commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal_delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, and that can carry out basic tasks during a gap in communications.
+
+**Beware**: if you do not have a working connection, you cannot send **any** commands to an unmanned probe, including commands to activate its antennas!
 
 ###Command Stations
 For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. This Command Station can not process science, a connection to KSC will still be required for that. However, the Command Station allows you to work without the signal delay to Kerbin, which might otherwise climb up to several minutes. Command Stations require a special probe part and a minimum number of kerbals to operate. Consult your VAB technicians for more information.
@@ -70,11 +72,11 @@ All stock probe cores serve as [signal processors](#signal_processors). In addit
 <tr><th>Part</th><th>Cost</th><th>Mass</th><th>Drag</th><th>Range</th><th>Power Drain</th><th>Notes</th></tr>
 </thead>
 <tbody>
-<tr><td>Reflectron DP-10</td><td>80</td><td>0.005 tons</td><td>0.2</td><td>500 km</td><td>0.01 e/s</td><td>Not damaged by atmospheric flight</td></tr>
+<tr><td>Reflectron DP-10</td><td>80</td><td>0.005 tons</td><td>0.2</td><td>500 km</td><td>0.01 e/s</td><td>Activated on mission start. Not damaged by atmospheric flight</td></tr>
 <tr><td>Communotron 16</td><td>150</td><td>0.005 tons</td><td>0.2</td><td>2500 km</td><td>0.13 e/s</td><td></td></tr>
 <tr><td>CommTech EXP-VR-2T</td><td>550</td><td>0.02 tons</td><td>0.0</td><td>3000 km</td><td>0.18 e/s</td><td></td></tr>
 <tr><td>Communotron 32</td><td>150</td><td>0.01 tons</td><td>0.2</td><td>5000 km</td><td>0.6 e/s</td><td></td></tr>
-<tr><td>KSC Mission Control</td><td></td><td></td><td></td><td>50,000 km</td><td></td><td>Command Station</td></tr>
+<tr><td>KSC Mission Control</td><td></td><td></td><td></td><td>75,000 km</td><td></td><td>Command Station</td></tr>
 </tbody>
 
 </table>
@@ -90,16 +92,16 @@ In RemoteTech 2, all science transmissions cost 7.5 charge per Mit, regardless o
 </thead>
 <tbody>
 <tr><td>Comms DTS-M1</td><td>100</td><td>0.3 tons</td><td>0.2</td><td>45&deg;</td><td>9100 km</td><td>50,000 km</td><td>0.82 e/s</td><td></td></tr>
-<tr><td>Reflectron SS-5</td><td>50</td><td>0.5 tons</td><td>0.2</td><td>25&deg;</td><td>16,000 km</td><td>90,000 km</td><td>0.82 e/s</td><td></td></tr>
 <tr><td>Reflectron KR-7</td><td>100</td><td>0.5 tons</td><td>0.2</td><td>25&deg;</td><td>16,000 km</td><td>90,000 km</td><td>0.82 e/s</td><td>Not damaged by atmospheric flight</td></tr>
 <tr><td>Communotron 88-88</td><td>900</td><td>0.025 tons</td><td>0.2</td><td>0.06&deg;</td><td>6.6M km</td><td>40M km</td><td>0.93 e/s</td><td></td></tr>
-<tr><td>Reflectron LL-5</td><td>50</td><td>1.0 tons</td><td>0.2</td><td>0.04&deg;</td><td>9.9M km</td><td>60M km</td><td>0.93 e/s</td><td></td></tr>
 <tr><td>Reflectron KR-14</td><td>100</td><td>1.0 tons</td><td>0.2</td><td>0.04&deg;</td><td>9.9M km</td><td>60M km</td><td>0.93 e/s</td><td>Not damaged by atmospheric flight</td></tr>
 <tr><td>CommTech-1</td><td>800</td><td>1.0 tons</td><td>0.2</td><td>0.006&deg;</td><td>66M km</td><td>350M km</td><td>2.6 e/s</td><td>Not damaged by atmospheric flight</td></tr>
 <tr><td>Reflectron GX-128</td><td>800</td><td>0.5 tons</td><td>0.2</td><td>0.005&deg;</td><td>79M km</td><td>400M km</td><td>2.8 e/s</td><td></td></tr>
 </tbody>
 
 </table>
+
+**IMPORTANT** The Reflectron SS-5 and Reflectron LL-5 are legacy dishes included for backwards compatibility. Do not use them in new ships!
 
 The effective range is the distance from which the cone will cover anything in synchronous orbit around Kerbin, and therefore the distance beyond which constant contact with a well-developed satellite network is guaranteed. This is a worst-case estimate; if you have communications satellites in lower orbit than synchronous, or if you have three or more satellites in the same orbit, you will be able to get continuous contact at shorter ranges.
 
