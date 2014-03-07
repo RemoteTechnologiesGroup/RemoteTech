@@ -12,15 +12,15 @@ tags: main
 {:toc}
 
 ##Introduction to RemoteTech
-RemoteTech is a modification for Squad's 'Kerbal Space Program' which overhauls the unmanned space program. It does this by requiring unmanned vessels have a connection to Kerbal Space Center (KSC) to be able to be controlled. This adds a new layer of difficulty that compensates for the lack of live crewmembers.
+RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which overhauls the unmanned space program. It does this by requiring unmanned vessels have a connection to Kerbal Space Center (KSC) to be able to be controlled. This adds a new layer of difficulty that compensates for the lack of live crewmembers.
 
 ##First steps
 
-* Like in stock KSP, you need to research Flight Control before you can build unmanned probes. This unlocks not only the Stayputnik probe core, but also the vital Reflectron DP-10 antenna.
-* You **must** place a Reflectron DP-10 on any unmanned rocket to be able to control it during atmospheric flight. Most other antennas will break if deployed below 30-40 km, depending on your flight speed. Unlike other antennas, the DP-10 does not need to be activated by hand.
-* If your satellite will never go above 175 km, and if you aren't building a comsat network right away, then the DP-10 is sufficient for all your needs. Otherwise, your probe should also have more powerful antennas, such as the Communotron 16 (range 2500 km) or the Comms DTS-M1 (50,000 km, but only connects to a specific target). You will have to manually turn on these antennas once you get high enough, and you will also need to target the DTS-M1 at the KSC. Both commands can be done by right-clicking on the antenna; antenna activation can also be done with action groups.
-* When launching, try to angle your launch trajectory so that the rocket is still over the horizon (as seen from KSC) when you make your circularization burn. If that's not possible, you may wish to read the flight computer guide. Once your satellite is in a stable orbit, you can wait to send more commands until the satellite passes back over KSC.
-* Once you can place satellites in orbit, consider putting up some comsats to maintain a connection when out of sight of KSC. See the comsat tutorial for more details.
+* Like in stock KSP, you need to research Flight Control before you can build unmanned probes.
+* You need to use an antenna that won't break in the atmosphere to be able to control an unmanned rocket during atmospheric flight. The Reflectron DP-10, unlocked along with the Stayputnik probe core, is the earliest such antenna available. Others can be found in the [parts listing](#).
+* If your satellite will never go above 175 km, and if you aren't building a comsat network right away, then the DP-10 is sufficient for all your needs. Otherwise, your probe should also have more powerful antennas, such as the Communotron 16 (range 2500 km) or the Comms DTS-M1 (50,000 km, but only connects to a specific target). You will have to manually turn on these antennas once you get high enough that the airflow won't break them off (30-40 km should be enough), and if you are using the DTS-M1 you will also need to target it at the KSC. Both commands can be done by right-clicking on the antenna; antenna activation can also be done using action groups.
+* When launching, try to angle your launch trajectory so that the rocket is still over the horizon (as seen from KSC) when you make your circularization burn. If that's not possible, you may wish to read the [flight computer guide](#). Once your satellite is in a stable orbit, you can wait to send more commands until the satellite passes back over KSC.
+* Once you can place satellites in orbit, consider putting up some comsats to maintain a connection when out of sight of KSC. See the [comsat tutorial](#) for more details.
 * As you expand farther out into the system, you may need to expand and/or upgrade your comsat network to allow for connections to probes orbiting other moons or planets. Plan ahead!
 
 ##Overview of mechanics
@@ -65,9 +65,19 @@ Transmitting science back to KSC now requires you have a working connection back
 ##Downloads
 * -
 
-<!--
 ##List of parts
 
+###Modified stock parts
+
+All stock probe cores (Stayputnik Mk. 1, Probodobodyne OCTO, OCTO2, HECS, and QBE, RC-001S, and RC-L01) now have [signal processor capability](#signal_processors) so that they are affected by the communications network they are connected to. Except for the MechJeb AR202, which has been similarly modified, probe cores from third-party mods are *not* supported at this time.
+
+The three stock antennas (Communotron 16, Comms DTS-M1, and Communotron 88-88) have been modified to make them fit the rules of RemoteTech; the Communotron 16 is now the basic omnidirectional antenna, the Comms DTS-M1 a short-range dish, and the Communotron 88-88 a medium-range dish. All antennas now have the same research transmission specs, equivalent to the unmodified Comms DTS-M1.
+
+###New parts
+
+RemoteTech 2 includes seven new antennas. The Reflectron DP-10 is a short-range omnidirectional antenna intended for launch and landing. The CommTech EXP-VR-2T and Communotron 32 are enhanced omnidirectional antennas, with better range than the Communotron 16. The Reflectron KR-7 and KR-14 are short- and medium-range antennas, with better range but narrower cones than the Comms DTS-M1 and Communotron 88-88, respectively. Finally, the CommTech-1 and Reflectron GX-128 are long-range antennas designed for missions to the outer planets.
+
+<!--
 ###Probe Cores
 
 All stock probe cores serve as [signal processors](#signal_processors). In addition, the RC-L01 Remote Guidance Unit can serve as a [command station](#command_stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and sending instructions to nearby probes.
@@ -108,8 +118,6 @@ All science transmissions with stock or RemoteTech antennas cost 7.5 charge per 
 </tbody>
 
 </table>
-
-**IMPORTANT** The Reflectron SS-5 and Reflectron LL-5 are legacy dishes included for backwards compatibility. They may be removed in a future version. Do not use them in new ships!
 
 The effective range is the distance from which the cone will cover anything in synchronous orbit around Kerbin, and therefore the distance beyond which constant contact with a well-developed satellite network is guaranteed. This is a worst-case estimate; if you have communications satellites in lower orbit than synchronous, or if you have three or more satellites in the same orbit, you may be able to get continuous contact at shorter ranges.
 
