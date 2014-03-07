@@ -43,11 +43,8 @@ You have a connection when there is a sequence of links between a command center
 <!-- -->
 If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay. This won't always be the path with the fewest links.
 
-<!-- <div class="pairedimages">
-
-<img alt="A relay sends a transmission from the far side of the Mun towards Kerbin" title="Mun polar relay" src="images/connectiondemo1.jpg"> <img alt="A comsat gets the transmission from the Mun and forwards it to KSC" title="Kerbin comsat" src="images/connectiondemo2.jpg">
-
-</div>
+<!-- ![A relay sends a transmission from the far side of the Mun towards Kerbin](images/connectiondemo1.jpg "Mun polar relay"){.pairedimages}
+![A comsat gets the transmission from the Mun and forwards it to KSC](images/connectiondemo2.jpg "Kerbin comsat"){.pairedimages}
 
 **Example:** this probe in low Munar orbit can't link to KSC because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay also can't link to KSC, because KSC is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSC (shown by the red dot). Therefore, the probe has a working connection with KSC, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission. -->
 
@@ -84,40 +81,28 @@ All stock probe cores serve as [signal processors](#signal_processors). In addit
 
 ###Omnidirectional Antennas
 
-<table class="datalayout">
-
-<thead>
-<tr><th>Part</th><th>Cost</th><th>Mass</th><th>Drag</th><th>Range</th><th>Power Drain</th><th>Notes</th></tr>
-</thead>
-<tbody>
-<tr><td>Reflectron DP-10</td><td>80</td><td>0.005 tons</td><td>0.2</td><td>500 km</td><td>0.01 e/s</td><td>Activated on mission start. Not damaged by atmospheric flight</td></tr>
-<tr><td>Communotron 16</td><td>150</td><td>0.005 tons</td><td>0.2</td><td>2500 km</td><td>0.13 e/s</td><td></td></tr>
-<tr><td>CommTech EXP-VR-2T</td><td>550</td><td>0.02 tons</td><td>0.0</td><td>3000 km</td><td>0.18 e/s</td><td></td></tr>
-<tr><td>Communotron 32</td><td>150</td><td>0.01 tons</td><td>0.2</td><td>5000 km</td><td>0.6 e/s</td><td></td></tr>
-<tr><td>KSC Mission Control</td><td></td><td></td><td></td><td>75,000 km</td><td></td><td>Command Station</td></tr>
-</tbody>
-
-</table>
+<!-- Yes, the non-breaking spaces are necessary; the table won't set column widths sensibly without them --
+Part                | Cost | Mass            | Drag | Range          | Power Drain   | Notes
+--------------------|------|:----------------|------|---------------:|:--------------|-------
+Reflectron DP-10    | 80   | 0.005&nbsp;tons | 0.2  |    500&nbsp;km | 0.01&nbsp;e/s | Activated on mission start. Not damaged by atmospheric flight
+Communotron 16      | 150  | 0.005&nbsp;tons | 0.2  |   2500&nbsp;km | 0.13&nbsp;e/s | 
+CommTech EXP-VR-2T  | 550  | 0.02&nbsp;tons  | 0.0  |   3000&nbsp;km | 0.18&nbsp;e/s | 
+Communotron 32      | 150  | 0.01&nbsp;tons  | 0.2  |   5000&nbsp;km | 0.6&nbsp;e/s  | 
+KSC Mission Control |      |                 |      | 75,000&nbsp;km |               | Command Station
 
 All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.
 
 ###Dish Antennas
 
-<table class="datalayout">
-
-<thead>
-<tr><th>Antenna</th><th>Cost</th><th>Mass</th><th>Drag</th><th>Cone Angle</th><th>Eff. Range</th><th>Range</th><th>Power Drain</th><th>Notes</th></tr>
-</thead>
-<tbody>
-<tr><td>Comms DTS-M1</td><td>100</td><td>0.3 tons</td><td>0.2</td><td>45&deg;</td><td>9100 km</td><td>50,000 km</td><td>0.82 e/s</td><td></td></tr>
-<tr><td>Reflectron KR-7</td><td>100</td><td>0.5 tons</td><td>0.2</td><td>25&deg;</td><td>16,000 km</td><td>90,000 km</td><td>0.82 e/s</td><td>Not damaged by atmospheric flight</td></tr>
-<tr><td>Communotron 88-88</td><td>900</td><td>0.025 tons</td><td>0.2</td><td>0.06&deg;</td><td>6.6M km</td><td>40M km</td><td>0.93 e/s</td><td></td></tr>
-<tr><td>Reflectron KR-14</td><td>100</td><td>1.0 tons</td><td>0.2</td><td>0.04&deg;</td><td>9.9M km</td><td>60M km</td><td>0.93 e/s</td><td>Not damaged by atmospheric flight</td></tr>
-<tr><td>CommTech-1</td><td>800</td><td>1.0 tons</td><td>0.2</td><td>0.006&deg;</td><td>66M km</td><td>350M km</td><td>2.6 e/s</td><td>Not damaged by atmospheric flight</td></tr>
-<tr><td>Reflectron GX-128</td><td>800</td><td>0.5 tons</td><td>0.2</td><td>0.005&deg;</td><td>79M km</td><td>400M km</td><td>2.8 e/s</td><td></td></tr>
-</tbody>
-
-</table>
+<!-- Yes, the non-breaking spaces are necessary; the table won't set column widths sensibly without them --
+Antenna           | Cost | Mass            | Drag | Cone Angle | Range          | Power Drain   | Notes
+------------------|------|:----------------|------|-----------:|---------------:|:--------------|-------
+Comms DTS-M1      | 100  | 0.3&nbsp;tons   | 0.2  | 45&deg;    | 50,000&nbsp;km | 0.82&nbsp;e/s | 
+Reflectron KR-7   | 100  | 0.5&nbsp;tons   | 0.2  | 25&deg;    | 90,000&nbsp;km | 0.82&nbsp;e/s | Not damaged by atmospheric flight
+Communotron 88-88 | 900  | 0.025&nbsp;tons | 0.2  | 0.06&deg;  | 40M&nbsp;km    | 0.93&nbsp;e/s | 
+Reflectron KR-14  | 100  | 1.0&nbsp;tons   | 0.2  | 0.04&deg;  | 60M&nbsp;km    | 0.93&nbsp;e/s | Not damaged by atmospheric flight
+CommTech-1        | 800  | 1.0&nbsp;tons   | 0.2  | 0.006&deg; | 350M&nbsp;km   | 2.6&nbsp;e/s  | Not damaged by atmospheric flight
+Reflectron GX-128 | 800  | 0.5&nbsp;tons   | 0.2  | 0.005&deg; | 400M&nbsp;km   | 2.8&nbsp;e/s  | 
 
 The effective range is the distance from which the cone will cover anything in synchronous orbit around Kerbin, and therefore the distance beyond which constant contact with a well-developed satellite network is guaranteed. This is a worst-case estimate; if you have communications satellites in lower orbit than synchronous, or if you have three or more satellites in the same orbit, you may be able to get continuous contact at shorter ranges.
 
