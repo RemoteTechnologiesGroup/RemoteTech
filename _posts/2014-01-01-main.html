@@ -18,8 +18,8 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which over
 
 * Like in stock KSP, you need to research Flight Control before you can build unmanned probes.
 * You need to use an antenna that won't break in the atmosphere to be able to control an unmanned rocket during atmospheric flight. The Reflectron DP-10, unlocked along with the Stayputnik probe core, is the earliest such antenna available. Others can be found in the [parts listing](#).
-* If your satellite will never go above 175 km, and if you aren't building a comsat network right away, then the DP-10 is sufficient for all your needs. Otherwise, your probe should also have more powerful antennas, such as the Communotron 16 (range 2500 km) or the Comms DTS-M1 (50,000 km, but only connects to a specific target). You will have to manually turn on these antennas once you get high enough that the airflow won't break them off (30-40 km should be enough), and if you are using the DTS-M1 you will also need to target it at the KSC. Both commands can be done by right-clicking on the antenna; antenna activation can also be done using action groups.
-* When launching, try to angle your launch trajectory so that the rocket is still over the horizon (as seen from KSC) when you make your circularization burn. If that's not possible, you may wish to read the [flight computer guide](#). Once your satellite is in a stable orbit, you can wait to send more commands until the satellite passes back over KSC.
+* For farther flights, your probe should also have more powerful antennas, such as the Communotron 16 (range 2500 km) or the Comms DTS-M1 (50,000 km, but only connects to a specific target). You will have to manually turn on these antennas once you get high enough that the airflow won't break them off (30-40 km should be enough), and if you are using the DTS-M1 you will also need to target it at the KSC. Both commands can be done by right-clicking on the antenna.
+* Once your satellite is in a stable orbit, you can wait to send more commands until the satellite passes back over KSC.
 * Once you can place satellites in orbit, consider putting up some comsats to maintain a connection when out of sight of KSC. See the [comsat tutorial](#) for more details.
 * As you expand farther out into the system, you may need to expand and/or upgrade your comsat network to allow for connections to probes orbiting other moons or planets. Plan ahead!
 
@@ -38,10 +38,10 @@ Omni antennas radiate in every direction equally, and as such do not require you
 To comply with Kerbal law, RemoteTech is required to delay your control input so that signalling does not exceed the 'speed of light' (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file.
 
 ###Connections
-A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that both satellites can transmit a signal to the other independently <!--. For point A to transmit with a dish, the dish would need to be set to target point B, point B would need to be within range of A's dish, and there would need to be no planets or moons blocking the line of sight between point A and point B. Since omni antennas are never targeted, they merely need to have point B within range and a clear line of sight. Note that point B also has to pass these criteria --> (many new players forget that *both* satelites must be in range of *each others'* antennas).
+A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites can transmit a signal to the other independently. <!-- For point A to transmit with a dish, the dish would need to be set to target point B, point B would need to be within range of A's dish, and there would need to be no planets or moons blocking the line of sight between point A and point B. Since omni antennas are never targeted, they merely need to have point B within range and a clear line of sight. Note that point B also has to pass these criteria -->
 You have a connection when there is a sequence of links between a command center and the destination.
 <!-- -->
-If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay. This won't always be the path with the fewest links.
+If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
 
 <!-- ![A relay sends a transmission from the far side of the Mun towards Kerbin](images/connectiondemo1.jpg "Mun polar relay"){.pairedimages}
 ![A comsat gets the transmission from the Mun and forwards it to KSC](images/connectiondemo2.jpg "Kerbin comsat"){.pairedimages}
@@ -59,26 +59,27 @@ For those extra long distance missions, it is possible to set up a team of Kerba
 ###Science Transmissions
 Transmitting science back to KSC now requires you have a working connection back to KSC. Any other source of control, such as a crew pod or a working connection to a command station, does not count.
 
-##Downloads
-* -
-
 ##List of parts
 
 ###Modified stock parts
 
-All stock probe cores (Stayputnik Mk. 1, Probodobodyne OCTO, OCTO2, HECS, and QBE, RC-001S, and RC-L01) now have [signal processor capability](#signal_processors) so that they are affected by the communications network they are connected to.
+* All stock probe cores now have [signal processor capability](#signal_processors) so that they are affected by the communications network they are connected to.
 
-The three stock antennas (Communotron 16, Comms DTS-M1, and Communotron 88-88) have been modified to make them fit the rules of RemoteTech; the Communotron 16 is now the basic omnidirectional antenna, the Comms DTS-M1 a short-range dish, and the Communotron 88-88 a medium-range dish. All antennas now have the same research transmission specs, equivalent to the unmodified Comms DTS-M1.
+* The three stock antennas have been modified to make them fit the rules of RemoteTech: the Communotron 16 is now the basic omnidirectional antenna, the Comms DTS-M1 a short-range dish, and the Communotron 88-88 a medium-range dish.
 
-The Launch Stability Enhancer now acts as a land line for the rocket, allowing the player to send pre-launch commands regardless of whether any antennas are active.
+* The Launch Stability Enhancer now acts as a land line for the rocket, allowing the player to send pre-launch commands regardless of whether any antennas are active.
 
 ###Modified third-party mod parts
 
-The MechJeb AR202 can act as a signal processor, just like the stock probe cores. Other third-party probe cores, nor any third-party antennas, are supported at this time.
+* The MechJeb AR202 can act as a signal processor, just like the stock probe cores. Neither other third-party probe cores, nor any third-party antennas, are supported at this time.
 
 ###New parts
 
-RemoteTech 2 includes seven new antennas. The Reflectron DP-10 is a short-range omnidirectional antenna intended for launch and landing. The CommTech EXP-VR-2T and Communotron 32 are enhanced omnidirectional antennas, with better range than the Communotron 16. The Reflectron KR-7 and KR-14 are short- and medium-range antennas, with better range but narrower cones than the Comms DTS-M1 and Communotron 88-88, respectively. Finally, the CommTech-1 and Reflectron GX-128 are long-range antennas designed for missions to the outer planets.
+RemoteTech 2 includes seven new antennas.
+* The Reflectron DP-10 is a short-range omnidirectional antenna intended for launch and landing.
+* The CommTech EXP-VR-2T and Communotron 32 are enhanced omnidirectional antennas.
+* The Reflectron KR-7 and KR-14 are short- and medium-range dishes, respectively.
+* The CommTech-1 and Reflectron GX-128 are long-range dishes designed for missions to the outer planets.
 
 <!--
 ###Probe Cores
