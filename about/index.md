@@ -1,6 +1,5 @@
 ---
-title: main
-tags: main
+title: About
 ---
 
 {% include banner.html %}

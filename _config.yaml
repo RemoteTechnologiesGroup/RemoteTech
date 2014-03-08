@@ -6,3 +6,7 @@ excerpt_separator: ""
 
 permalink: pretty
 pygments: true
+markdown: kramdown
+
+kramdown:
+  input: GFM
