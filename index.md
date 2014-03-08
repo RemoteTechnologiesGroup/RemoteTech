@@ -8,8 +8,7 @@ layout: content
 **Oh shit son!** This page is still under development!
 {: .alert .alert-danger}
 
-* Table of Contents
-{:toc}
+{% include toc.html %}
 
 ##Introduction to RemoteTech
 RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which overhauls the unmanned space program. It does this by requiring unmanned vessels have a connection to Kerbal Space Center (KSC) to be able to be controlled. This adds a new layer of difficulty that compensates for the lack of live crewmembers.
