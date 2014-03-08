@@ -1,7 +1,7 @@
 name: "RemoteTech"
 description: "KSP"
 
-baseurl: "/RemoteTech2/"
+baseurl: /RemoteTech2
 excerpt_separator: ""
 
 permalink: pretty
