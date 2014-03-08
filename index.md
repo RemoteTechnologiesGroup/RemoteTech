@@ -76,6 +76,7 @@ Neither other third-party probe cores, nor any third-party antennas, are support
 ###New parts
 
 RemoteTech 2 includes seven new antennas.
+
 * The Reflectron DP-10 is a short-range omnidirectional antenna intended for launch and landing.
 * The CommTech EXP-VR-2T and Communotron 32 are enhanced omnidirectional antennas.
 * The Reflectron KR-7 and KR-14 are short- and medium-range dishes, respectively.
