@@ -57,3 +57,32 @@ ul.buttonrow > li.right {
 	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 	box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
 }
+
+
+/* Minimal formatting to get two images to appear side-by-side */
+img.pairedimages, div.pairedimages img {
+	max-width: 45%;
+	padding: 2px;
+}
+
+/* Default table style makes them illegible */
+/*table.datalayout {
+	border-collapse: separate;
+}*/
+
+table.data td, table.data th {
+	padding: 3px;
+}
+table.data th {
+	text-align: center;
+}
+
+/* Text just after images */
+p.caption {
+	font-size: 90%;
+	border-width: 1px;
+	border-style: solid;
+	padding: 2px;
+	border-color: rgb(192,192,192);
+	background-color: rgb(240,240,240);
+}

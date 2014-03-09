@@ -36,7 +36,7 @@ Omni antennas radiate in every direction equally, and as such do not require you
 To comply with Kerbal law, RemoteTech is required to delay your control input so that signalling does not exceed the 'speed of light' (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file.
 
 ###Connections
-A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites can transmit a signal to the other independently. You have a connection when there is a sequence of links between a command center and the destination. If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
+A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites [can transmit a signal](guide/#connection-rules) to the other independently. You have a connection when there is a sequence of links between a command center and the destination. If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
 
 ###Signal Processors
 Signal Processors are any part that can recieve commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal_delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, for example to carry out basic tasks during a communications gap.
@@ -67,7 +67,7 @@ Neither other third-party probe cores, nor any third-party antennas, are support
 
 ###New parts
 
-RemoteTech 2 includes seven new antennas.
+RemoteTech includes seven new antennas.
 
 * The Reflectron DP-10 is a short-range omnidirectional antenna intended for launch and landing.
 * The CommTech EXP-VR-2T and Communotron 32 are enhanced omnidirectional antennas.
