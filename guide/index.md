@@ -17,7 +17,7 @@ navbar: true
 
 ###Antenna Configuration
 
-With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Deploy" or "Retract". The antenna can also be activated or deactivated using action groups. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate all antennas at your peril.
+With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Activate" or "Deactivate". The antenna can also be activated or deactivated using action groups. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate all antennas at your peril.
 
 Omnidirectional antennas will automatically [connect](#connection-rules) to all antennas in range as soon as they are activated. Dish antennas must also be given a [target](#targeting). Targets may be selected either before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "Target: None". This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use *Cone Mode*, a ship or "Mission Control" for a *Direct Link*, or "Active Vessel" to always target the ship you are flying. To create a link, the other ship may need to target your ship as well.
 
@@ -37,7 +37,7 @@ RemoteTech adds an overlay to the map view to display the state of your communic
 :   This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links. All links that *could* be used for a connection are shown, even if they are not being used.
 
 ![Fourth button](icon_targets.png)
-:   This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are retracted. Clicking on any dish in the list will pull up the target selection window for that dish. You cannot activate or deactivate dishes from this window; you will have to right-click or use an action group.
+:   This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are deactivated. Clicking on any dish in the list will pull up the target selection window for that dish. You cannot activate or deactivate dishes from this window; you will have to right-click or use an action group.
 
 RemoteTech also adds one button to the right side of the map view, below the planet/ship information button. Clicking this button will open a list of loaded ships; clicking on any ship will center the map view on that ship.
 
