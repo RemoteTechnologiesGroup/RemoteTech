@@ -17,40 +17,42 @@ navbar: true
 
 ###Antenna Configuration
 
-With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Activate" or "Deactivate". The antenna can also be activated or deactivated using action groups. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate all antennas at your peril.
+With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Activate" (or "Deactivate"). Antennas can also be activated or deactivated using action groups, or preset by right-clicking on them in the VAB. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate your last antenna at your peril!
 
-Omnidirectional antennas will automatically [connect](#connection-rules) to all antennas in range as soon as they are activated. Dish antennas must also be given a [target](#targeting). Targets may be selected either before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "Target: None". This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use *Cone Mode*, a ship or "Mission Control" for a *Direct Link*, or "Active Vessel" to always target the ship you are flying. To create a link, the other ship may need to target your ship as well.
+Omnidirectional antennas will automatically [connect](#connection-rules) to any antenna they can as soon as they are activated. Dish antennas must also be given a [target](#targeting). Targets may be selected either before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "Target: None". This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use [Cone Mode](#target_cone), a ship or "Mission Control" for a [Direct Link](#target_direct), or [Active Vessel](#target_active) to always target the ship you are flying. To create a link, the other ship may need to target your ship as well.
 
-You do not need to place your satellite in any special orientation to use a dish antenna. As long as the targets are set correctly, the dish will connect, even if it is actually facing the other way!
+You do not need to place your satellite in any special orientation to use a dish antenna. As long as the targets are set correctly, the dish will connect, even if it is "really" facing the other way!
+
+If necessary, you can send an EVA to open, close, or retarget an antenna from the outside. This is usually the only way to restore contact with a probe whose antennas are all shut down.
 
 ###The Map View
 
 RemoteTech adds an overlay to the map view to display the state of your communication network. The overlay may be toggled with the bottons located on the lower right: 
 
 ![First button](icon_connection.png)
-:   This button will highlight the links used in the working connection (if any) as a green line. It has no effect if the map view is not centered on the active vessel.
+:   This button will highlight the links used in the working connection (if any) as a green line.
 
 ![Second button](icon_cones.png)
 :   This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships off the edge of the screen will not be shown.
 
 ![Third button](icon_links.png)
-:   This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links. All links that *could* be used for a connection are shown, even if they are not being used.
+:   This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links.
 
 ![Fourth button](icon_targets.png)
-:   This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are deactivated. Clicking on any dish in the list will pull up the target selection window for that dish. You cannot activate or deactivate dishes from this window; you will have to right-click or use an action group.
+:   This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are deactivated. Clicking on any dish in the list will pull up the target selection window for that dish.
 
-RemoteTech also adds one button to the right side of the map view, below the planet/ship information button. Clicking this button will open a list of loaded ships; clicking on any ship will center the map view on that ship.
+RemoteTech also adds one button to the right side of the map view, below the planet info/ship crew button. Clicking this button will open a list of loaded ships; clicking on any ship on the list will center the map view on that ship.
 
 ###The Flight Computer
 
 ##Connection Rules
 
-To have a [working connection](../#connections) to the Kerbal Space Center (KSC) or a [remote command station](#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below.
+To have a [working connection](../#connections) to the Kerbal Space Center (KSC) or a [remote command station](#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing communications lag.
 
 ![A relay sends a transmission from the far side of the Mun towards Kerbin](connectiondemo1.jpg "Mun polar relay"){:.pairedimages} 
 ![A comsat gets the transmission from the Mun and forwards it to KSC](connectiondemo2.jpg "Kerbin comsat"){:.pairedimages}
 
-**Example:** this probe in low Munar orbit can't link to the Kerbal Space Center (KSC) because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay also can't link to KSC, because KSC is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSC. Therefore, the probe has a working connection with KSC, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.
+**Example:** this probe in low Munar orbit can't link to the Kerbal Space Center (KSC) because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay can't link to KSC, either, because KSC is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSC. Therefore, the probe has a working connection with KSC, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.
 {:.caption}
 
 A link will be formed between two satellites if, and only if, three conditions are met. For the purposes of these rules, Mission Control at the Kerbal Space Center (KSC) is considered a grounded satellite with a [special omnidirectional antenna](#omnidirectional-antennas).
@@ -61,7 +63,7 @@ The first condition is that there must not be a planet or moon blocking the line
 
 ###Range
 
-The second condition is that *both* satellites must have an antenna that can reach as far as the other satellite. A special case is that a direct link to KSC is impossible unless the satellite establishing the link is within [75,000 km](#omnidirectional-antennas) of Kerbin. Any connections from farther out will need to go through at least one relay.
+The second condition is that *both* satellites must have an antenna that can reach as far as the other satellite. A special case is that a link to KSC is impossible unless the satellite establishing the link is within [75,000 km](#omnidirectional-antennas) of Kerbin. Any connections from farther out will need to go through at least one relay.
 
 **Example:** a probe with a Communotron 16 antenna (range 2500 km) and a probe with a CommTech-1 dish (350,000,000 km) are located 3000 km apart. Although the CommTech-1 is one of the most powerful dishes in RemoteTech, the two probes cannot link because the first probe can never link to anything more than 2500 km away. Unless, of course, it has a longer-range antenna in addition to the Communotron 16.
 
@@ -74,14 +76,14 @@ What's going on here? The kramdown manual says "The column number of the first n
 {:/comment}
 
 Direct Link
-:   if the dish's target is set to a specific satellite, or to KSC Mission Control, it will maintain a link to that target as long as the line of sight and range conditions are met. A dish in Direct Link mode cannot be used to make connections with anything other than its specific target. Direct link mode is recommended for situations where the other two modes won't work, because updating direct links as ships move around can be a lot of work.
+:   {:#target_direct}if the dish's target is set to a specific satellite, or to KSC Mission Control, it will maintain a link to that target as long as the line of sight and range conditions are met. A dish in Direct Link mode cannot be used to make connections with anything other than its specific target. Direct link mode is recommended for situations where the other two modes won't work, because updating direct links as ships move around can be a lot of work.
 
 Cone
-:   if the dish's target is set to a planet or moon, it can simultaneously maintain a link to all targets that are within a cone centered on that planet *and* that are within that planet or moon's sphere of influence. The [list of parts](#dish-antennas) includes the cone diameter for each dish, as well as the minimum distance the dish needs to be from Kerbin to see anything to the side of the planet or to see anything in synchronous orbit (try to avoid the situation in the picture). Cone mode is recommended for links to relay satellites orbiting another planet or moon, as it will automatically choose the best relay at any moment. 
-![Why cone mode is best used from a distance](conetooclose.png)
-
+:   {:#target_cone}if the dish's target is set to a planet or moon, it can simultaneously maintain a link to all targets that are within a cone centered on that planet *and* that are within that planet or moon's sphere of influence. The [list of parts](#dish-antennas) includes the cone diameter for each dish, as well as the minimum distance the dish needs to be from Kerbin to see anything to the side of the planet or to see anything in synchronous orbit (try to avoid the situation in the picture). Cone mode is recommended for links to relay satellites orbiting another planet or moon, as it will automatically choose the best relay at any moment. 
+![Using too narrow a cone](conetooclose.png)
+ 
 Active Vessel
-:   if the dish's target is set to "Active Vessel", it will attempt to contact the ship the player is currently flying as if that ship had been selected using Direct Link. The ship will be out of contact whenever the player is *not* directly controlling it. Active Vessel targeting is usually only useful on dedicated communications satellites or [remote command stations](#command-stations), and should only be used to contact isolated ships where there is not enough demand for a dedicated link. It should **not** be used if the player wants to relay a transmission through a third ship, or you may run into the common situation below:
+:   {:#target_active}if the dish's target is set to "Active Vessel", it will attempt to contact the ship the player is currently flying as if that ship had been selected using Direct Link. The ship will be out of contact whenever the player is *not* directly controlling it. Active Vessel targeting is usually only useful on dedicated communications satellites or [remote command stations](#command-stations), and should only be used to contact isolated ships where there is not enough demand for a dedicated link. It should **not** be used if the player wants to relay a transmission through a third ship, or you may run into the common situation below:
 
 ![A common situation in which active vessel is not appropriate](activerelaybug.png)
 
@@ -92,7 +94,7 @@ Active Vessel
 
 ###Probe Cores
 
-All stock probe cores serve as [signal processors](../#signal_processors). In addition, the RC-L01 Remote Guidance Unit can serve as a [command station](../#command_stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and sending instructions to nearby probes.
+All stock probe cores serve as [signal processors](../#signal_processors). In addition, the [RC-L01 Remote Guidance Unit](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) can serve as a [command station](../#command_stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and sending instructions to nearby probes.
 
 The probe cores are otherwise unchanged from their [stock versions](http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods).
 
@@ -159,7 +161,7 @@ Reach: Low Kerbin Orbit
 Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
 Maximum safe speed at sea level: 99 m/s
 Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 32.5 km
+Minimum safe altitude at 2300 m/s: 32 km
 
 ####CommTech EXP-VR-2T
 
@@ -184,7 +186,7 @@ Reach: Low Kerbin Orbit
 Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
 Maximum safe speed at sea level: 99 m/s
 Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 32.5 km
+Minimum safe altitude at 2300 m/s: 32 km
 
 ####Communotron 32
 
@@ -209,7 +211,7 @@ Reach: Near-Kerbin space, synchronous orbit
 Maximum ram pressure when deployed: 3 kN/m<sup>2</sup>
 Maximum safe speed at sea level: 70 m/s
 Maximum safe speed at 10 km: 190 m/s
-Minimum safe altitude at 2300 m/s: 34.9 km
+Minimum safe altitude at 2300 m/s: 35 km
 
 ###Dish Antennas
 
@@ -256,7 +258,7 @@ Reach: Minmus orbit
 Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
 Maximum safe speed at sea level: 99 m/s
 Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 31.5 km
+Minimum safe altitude at 2300 m/s: 32 km
 
 ####Reflectron KR-7
 
@@ -309,7 +311,7 @@ Reach: Duna (all times), Dres (same side of sun only)
 Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
 Maximum safe speed at sea level: 99 m/s
 Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 31.5 km
+Minimum safe altitude at 2300 m/s: 32 km
 
 ####Reflectron KR-14
 
@@ -387,4 +389,4 @@ Reach: Eeloo (all times)
 Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
 Maximum safe speed at sea level: 99 m/s
 Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 31.5 km
+Minimum safe altitude at 2300 m/s: 32 km
