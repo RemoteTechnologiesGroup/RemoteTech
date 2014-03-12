@@ -2,6 +2,8 @@
 title: Player's Guide
 layout: content
 navbar: true
+custom_css: true
+extra_css: antennas
 ---
 
 {% include banner.html %}
@@ -54,7 +56,9 @@ RemoteTech adds two new displays below the mission clock in the upper left corne
 
 The second element is a colored calculator icon -- green for a [working connection](../#connections), red for a broken connection, and yellow for local control. Clicking the icon while green or red pulls up the flight computer window. You can't use the flight computer if you have local control.
 
-The basic flight computer window shows only the controls for operating it; clicking ">>" will display the computer's current state as well as a queue of any "instant" commands sent to it. Instant commands are anything you normally do once, including right-click actions, staging commands, action groups, and anything with a toggle key (RCS, SAS, landing gear...). They do not include slewing, translation, changing the throttle, or anything else that normally involves holding down a key. An instant command may be canceled by clicking the "X" button next to the command. Non-instant commands cannot be canceled.
+The basic flight computer window shows only the controls for operating it; clicking ">>" will display the computer's current state as well as a queue of any "instant" commands sent to it. Instant commands are anything you normally do with a single click or key press, including right-click actions, staging commands, action groups, and anything with a toggle key (RCS, SAS, landing gear...). They do not include slewing, translation, changing the throttle, or anything else that might involve holding down a key.
+
+An instant command may be canceled by clicking the "X" button next to the command. Non-instant commands cannot be canceled.
 
 ![IMAGE: flight computer window, with a simple queue](flightcomputer.png)
 
@@ -72,7 +76,7 @@ If the manual delay is less than the signal delay, the delay will be ignored -- 
 
 **Example:** a probe is ten light-minutes away and about to pass behind a planet for a burn, which is scheduled 20 minutes from now. Type "20m" into the delay box and hit enter to set it as the current delay. Then issue a command to (for example) point retrograde. The flight queue will read "9m56s+10m00s", indicating that the signal will take just under ten minutes to reach the ship, followed by ten minutes before the ship acts on it.
 
-Cancellations are not affected by manual delay, so a command will be removed from the queue as soon as the cancellation reaches the ship. This makes manual delay helpful if you want to review a complex sequence of commands before they are executed.
+Cancellations are not affected by manual delay, so a command will be removed from the queue as soon as the cancellation reaches the ship. This makes manual delay helpful if you want to edit a complex sequence of commands before they are executed.
 
 ####Autopilot commands
 
@@ -80,11 +84,11 @@ The buttons on the left side of the screen control a simple autopilot. All butto
 
 #####Attitude Control
 
-Pointing a ship with several minutes of lag is nearly impossible, so the computer can be programmed to hold a particular position. Choosing any attitude will immediately override the previous attitude command. The path the ship takes in pointing toward a new position can be very roundabout, so be sure to allow plenty of time to turn the ship before a burn.
+Pointing a ship manually with several minutes of lag is nearly impossible, so the computer can be programmed to hold a particular position. Choosing any attitude will override the previous attitude command. The path the ship takes in pointing toward a new position can be very roundabout, so be sure to allow plenty of time to turn the ship.
 
 ![IMAGE: layout of the attitude controls](flightcomputer_att.png)
 
-There are six basic positions:
+There are six basic directions:
 
 GRD+
 :   points the ship prograde
@@ -93,7 +97,7 @@ GRD-
 :   points the ship retrograde
 
 RAD+
-:   points the ship outward
+:   points the ship outward from its orbit
 
 RAD-
 :   points the ship inward
@@ -102,13 +106,13 @@ NRM+
 :   points the ship up, out of its orbital plane
 
 NRM-
-:   points the ship up, out of its orbital plane
+:   points the ship down, out of its orbital plane
 
-Clicking on a position once it's already selected will revert to prograde.
+Clicking on a direction once it's already selected will revert to prograde.
 
 Three of the buttons at the top of the screen, marked "ORB", "SRF", and "RVEL", will decide if prograde/retrograde/etc. are measured relative to the ship's orbital motion, relative to its surface motion, or relative to its target's motion. The effects are identical to clicking through the three velocity displays at the top of the navball. A fourth button, "TGT", will have prograde pointing directly at the target instead of the relative velocity vector. Clicking on a reference frame once it's already selected will turn off the flight computer's attitude control.
 
-The other attitude options, which don't work with the six position buttons, are:
+The other attitude options, which don't work with the six direction buttons, are:
 
 KILL
 :   this attempts to hold the ship in a fixed direction. While less subtle than SAS, it is useful for maintaining attitude in the middle of a sequence, because SAS can't run while the flight computer is running any attitude control commands.
@@ -117,7 +121,7 @@ NODE
 :   this attempts to face the direction required for the next maneuver node.
 
 CUSTOM
-:   this attempts to keep the ship in a specific pitch, yaw, and roll, as chosen by the options below the six position buttons.
+:   this attempts to keep the ship in a specific pitch, yaw, and roll, as chosen by the options below the six direction buttons.
 
 #####Executing Maneuver Nodes
 
@@ -133,7 +137,7 @@ Unlike most commands, EXEC ignores manual delays -- the time of the burn is set 
 
 Automatic node execution has a few limitations: it needs a well-defined maneuver node, making it difficult to do small velocity corrections, it doesn't start the burn until it passes the node, which may make long burns less accurate, and it ignores any nodes after the first. For more control over burns, players may set the burn parameters by hand.
 
-First, adjust the throttle slider to the desired intensity of the burn (as a safety measure, the default is no thrust). In the box, type either the desired duration of the burn, or the desired delta-V (e.g., "100 m/s"). The delta-V will be converted to a burn time; the flight computer **will not** adjust the burn while it's happening to get the right delta-V. Clicking "BURN" will add the burn to the command queue, with signal delay and whatever manual delay was set.
+First, set a manual delay for the start of the burn. Adjust the throttle slider to the desired level (as a safety measure, the default is no thrust). In the box, type either the desired duration of the burn, or the desired delta-V (e.g., "100 m/s"). Clicking "BURN" will add the burn to the command queue, with signal delay and whatever manual delay was set.
 
 Just like automatic node execution, the manual burn doesn't include staging or attitude control. Those commands must be scheduled separately.
 
@@ -184,6 +188,8 @@ Active Vessel
 
 ##List of Parts
 
+<!-- parse_block_html-->
+
 ###Probe Cores
 
 All stock probe cores serve as [signal processors](../#signal_processors). In addition, the [RC-L01 Remote Guidance Unit](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) can serve as a [command station](../#command_stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and sending instructions to nearby probes.
@@ -210,100 +216,169 @@ KSC Mission Control |      |                 |      | 75,000&nbsp;km |          
 
 ####Reflectron DP-10
 
-The Reflectron DP-10 is a lightweight omnidirectional antenna. Its omnidirectional nature and its ability to function in atmosphere even at high speeds make it an excellent choice for launches and landings, but its short range means it rapidly becomes useless outside low Kerbin orbit. Unlike other antennas, the DP-10 is active by default, although this state can be toggled in the antenna's right-click menu.
+{::comment}
+Neither Markdown's nor GFM's hard line breaks seem to be supported within HTML blocks :(
+Use a table instead
+{:/comment}
+
+<div class="antenna" markdown="1">
 
 ![Picture of Reflectron DP-10](antenna_dp10.png)
-VAB Category: Science Parts
-Tech to Unlock: [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control)
-Manufacturer: Parabolic Industries
-Cost: 80
-Mass: 0.005 tons
-Drag: 0.2
-Comlink power: 0.01 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 500 km
-Reach: Any unbroken line of sight to KSC Mission Control, if below 150 km altitude
+The Reflectron DP-10 is a lightweight omnidirectional antenna. Its omnidirectional nature and its ability to function in atmosphere even at high speeds make it an excellent choice for launches and landings, but its short range means it rapidly becomes useless outside low Kerbin orbit. Unlike other antennas, the DP-10 is active by default, although this state can be toggled in the antenna's right-click menu.
+{:.blurb}
 
-**Atmosphere Performance**
-Does not break in atmospheric flight.
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control)
+VAB Category        | Science Parts
+Manufacturer        | Parabolic Industries
+Cost                | 80
+Mass                | 0.005 tons
+Drag                | 0.2
+Comlink power       | 0.01 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 500 km
+Reach                                 | Any line of sight to KSC Mission Control, if below 150 km altitude
+{:.xmit}
+
+|Atmosphere Performance
+|------------------------------------
+|Does not break in atmospheric flight.
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####Communotron 16
 
-As in the stock game, the Communotron 16 is the starting omnidirectional antenna, essential for transmitting science from those early flights. It also forms the backbone of most players' low-orbit communications networks until the CommTech EXP-VR-2T and Communotron 32 are researched.
+<div class="antenna" markdown="1">
 
 ![Picture of Communotron 16](antenna_com16.png)
-VAB Category: Science Parts
-Tech to Unlock: [None](http://wiki.kerbalspaceprogram.com/wiki/Start)
-Manufacturer: Ionic Protonic Electronics
-Cost: 150
-Mass: 0.005 tons
-Drag: 0.2
-Comlink power: 0.13 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 2500 km
-Reach: Low Kerbin Orbit
+As in the stock game, the Communotron 16 is the starting omnidirectional antenna, essential for transmitting science from those early flights. It also forms the backbone of most players' low-orbit communications networks until the CommTech EXP-VR-2T and Communotron 32 are researched.
+{:.blurb}
 
-**Atmosphere Performance**
-Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level: 99 m/s
-Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 32 km
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [None](http://wiki.kerbalspaceprogram.com/wiki/Start)
+VAB Category        | Science Parts
+Manufacturer        | Ionic Protonic Electronics
+Cost                | 150
+Mass                | 0.005 tons
+Drag                | 0.2
+Comlink power       | 0.13 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 2500 km
+Reach                                 | Low Kerbin Orbit
+{:.xmit}
+
+|Atmosphere Performance
+------------------------------------|-------------------
+Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
+Maximum safe speed at sea level     | 99 m/s
+Maximum safe speed at 10 km         | 269 m/s
+Minimum safe altitude at 2300 m/s   | 32 km
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####CommTech EXP-VR-2T
 
-The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron series when retracted, but slightly larger when deployed. It is slightly more powerful than the Communotron 16.
+<div class="antenna" markdown="1">
 
 ![Picture of EXP-VR-2T](antenna_expvr2t.png)
-VAB Category: Science Parts
-Tech to Unlock: [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
-Manufacturer: AIES Aerospace
-Cost: 150
-Mass: 0.005 tons
-Drag: 0.2
-Comlink power: 0.13 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 3000 km
-Reach: Low Kerbin Orbit
+The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron series when retracted, but slightly larger when deployed. It is slightly more powerful than the Communotron 16.
+{:.blurb}
 
-**Atmosphere Performance**
-Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level: 99 m/s
-Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 32 km
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
+VAB Category        | Science Parts
+Manufacturer        | AIES Aerospace
+Cost                | 150
+Mass                | 0.005 tons
+Drag                | 0.2
+Comlink power       | 0.13 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 3000 km
+Reach                                 | Low Kerbin Orbit
+{:.xmit}
+
+|Atmosphere Performance
+------------------------------------|-------------------
+Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
+Maximum safe speed at sea level     | 99 m/s
+Maximum safe speed at 10 km         | 269 m/s
+Minimum safe altitude at 2300 m/s   | 32 km
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####Communotron 32
 
-The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past kerbosynchonous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active.
+<div class="antenna" markdown="1">
 
 ![Picture of Communotron 32](antenna_com32.png)
-VAB Category: Science Parts
-Tech to Unlock: [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
-Manufacturer: Ionic Protonic Electronics
-Cost: 150
-Mass: 0.01 tons
-Drag: 0.2
-Comlink power: 0.6 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 5000 km
-Reach: Near-Kerbin space, synchronous orbit
+The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past kerbosynchonous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active.
+{:.blurb}
 
-**Atmosphere Performance**
-Maximum ram pressure when deployed: 3 kN/m<sup>2</sup>
-Maximum safe speed at sea level: 70 m/s
-Maximum safe speed at 10 km: 190 m/s
-Minimum safe altitude at 2300 m/s: 35 km
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
+VAB Category        | Science Parts
+Manufacturer        | Ionic Protonic Electronics
+Cost                | 150
+Mass                | 0.01 tons
+Drag                | 0.2
+Comlink power       | 0.6 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 5000 km
+Reach                                 | Near-Kerbin space, synchronous orbit
+{:.xmit}
+
+|Atmosphere Performance
+------------------------------------|-------------------
+Maximum ram pressure when deployed  | 3 kN/m<sup>2</sup>
+Maximum safe speed at sea level     | 70 m/s
+Maximum safe speed at 10 km         | 190 m/s
+Minimum safe altitude at 2300 m/s   | 35 km
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ###Dish Antennas
 
@@ -326,159 +401,255 @@ Antenna           | Cost | Mass            | Drag | Cone | Range          | Powe
 
 ####Comms DTS-M1
 
-The Comms DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone makes it perfect for maintaining contact with multiple satellites within Kerbin's sphere of influence.
+<div class="antenna" markdown="1">
 
 ![Picture of Comms DTS-M1](antenna_dtsm1.png)
-VAB Category: Science Parts
-Tech to Unlock: [Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Science_Tech)
-Manufacturer: Ionic Symphonic Protonic Electronics
-Cost: 100
-Mass: 0.03 tons
-Drag: 0.2
-Comlink power: 0.82 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 50,000 km
-Cone Diameter: 45&deg;
-Cone covers Kerbin at: 1600 km
-Cone covers kerbosynchronous orbit at: 9100 km
-Reach: Minmus orbit
+The Comms DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone makes it perfect for maintaining contact with multiple satellites within Kerbin's sphere of influence.
+{:.blurb}
 
-**Atmosphere Performance**
-Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level: 99 m/s
-Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 32 km
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Science_Tech)
+VAB Category        | Science Parts
+Manufacturer        | Ionic Symphonic Protonic Electronics
+Cost                | 100
+Mass                | 0.03 tons
+Drag                | 0.2
+Comlink power       | 0.82 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 50,000 km
+Reach                                 | Minmus
+Cone Diameter                         | 45&deg;
+Cone covers Kerbin at                 | 1600 km
+Cone covers kerbosynchronous orbit at | 9100 km
+{:.xmit}
+
+|Atmosphere Performance
+------------------------------------|-------------------
+Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
+Maximum safe speed at sea level     | 99 m/s
+Maximum safe speed at 10 km         | 269 m/s
+Minimum safe altitude at 2300 m/s   | 32 km
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####Reflectron KR-7
 
-The Reflectron KR-7 is the second short-range antenna available from RemoteTech. It has a longer range than the Comms DTS-M1, making it well-suited for spacecraft beyond Minmus's orbit. However, its narrow cone reduces its effectiveness at the Mun's distance or closer. The Reflectron KR-7 is too sturdy to be ripped off by atmospheric flight, so if properly targeted it can replace the Reflectron DP-10 as a launch antenna.
+<div class="antenna" markdown="1">
 
 ![Picture of Reflectron KR-7](antenna_refl7.png)
-VAB Category: Science Parts
-Tech to Unlock: [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Electrics)
-Manufacturer: Parabolic Industries
-Cost: 100
-Mass: 0.5 tons
-Drag: 0.2
-Comlink power: 0.82 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 90,000 km
-Cone Diameter: 25&deg;
-Cone covers Kerbin at: 2800 km
-Cone covers kerbosynchronous orbit at: 16,000 km
-Reach: Kerbin sphere of influence
+The Reflectron KR-7 is the second short-range antenna available from RemoteTech. It has a longer range than the Comms DTS-M1, making it well-suited for spacecraft beyond Minmus's orbit. However, its narrow cone reduces its effectiveness at the Mun's distance or closer. The Reflectron KR-7 is too sturdy to be ripped off by atmospheric flight, so if properly targeted it can replace the Reflectron DP-10 as a launch antenna.
+{:.blurb}
 
-**Atmosphere Performance**
-Does not break in atmospheric flight.
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Electrics)
+VAB Category        | Science Parts
+Manufacturer        | Parabolic Industries
+Cost                | 100
+Mass                | 0.5 tons
+Drag                | 0.2
+Comlink power       | 0.82 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 90,000 km
+Reach                                 | Kerbin sphere of influence
+Cone Diameter                         | 25&deg;
+Cone covers Kerbin at                 | 2800 km
+Cone covers kerbosynchronous orbit at | 16,000 km
+{:.xmit}
+
+|Atmosphere Performance
+|------------------------------------
+|Does not break in atmospheric flight.
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####Communotron 88-88
 
-The Communotron 88-88 is by far the lightest interplanetary antenna. It can easily reach all the inner planets, and can even contact Dres when it is on the same side of the sun as Kerbin. However, its narrow cone means that players will have to point it at a specific satellite if they wish to make course corrections while en route to Eve or Duna.
+<div class="antenna" markdown="1">
 
 ![Picture of Communotron 88-88](antenna_com88-88.png)
-VAB Category: Science Parts
-Tech to Unlock: [Electronics](http://wiki.kerbalspaceprogram.com/wiki/Electronics)
-Manufacturer: Ionic Protonic Electronics
-Cost: 1100
-Mass: 0.025 tons
-Drag: 0.2
-Comlink power: 0.93 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 40,000,000 km
-Cone Diameter: 0.06&deg;
-Cone covers Kerbin at: 1,100,000 km
-Cone covers kerbosynchronous orbit at: 6,600,000 km
-Reach: Duna (all times), Dres (same side of sun only)
+The Communotron 88-88 is by far the lightest interplanetary antenna. It can easily reach all the inner planets, and can even contact Dres when it is on the same side of the sun as Kerbin. However, its narrow cone means that players will have to point it at a specific satellite if they wish to make course corrections while en route to Eve or Duna.
+{:.blurb}
 
-**Atmosphere Performance**
-Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level: 99 m/s
-Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 32 km
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Electronics](http://wiki.kerbalspaceprogram.com/wiki/Electronics)
+VAB Category        | Science Parts
+Manufacturer        | Ionic Protonic Electronics
+Cost                | 1100
+Mass                | 0.025 tons
+Drag                | 0.2
+Comlink power       | 0.93 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 40,000,000 km
+Reach                                 | Duna (all times), Dres (same side of sun only)
+Cone Diameter                         | 0.06&deg;
+Cone covers Kerbin at                 | 1,100,000 km
+Cone covers kerbosynchronous orbit at | 6,600,000 km
+{:.xmit}
+
+|Atmosphere Performance
+------------------------------------|-------------------
+Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
+Maximum safe speed at sea level     | 99 m/s
+Maximum safe speed at 10 km         | 269 m/s
+Minimum safe altitude at 2300 m/s   | 32 km
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####Reflectron KR-14
 
-The Reflectron KR-14 is an intermediate-range interplanetary antenna. It can easily reach all the inner planets as well as Dres. Like the Communotron-88, the KR-14 has a narrow cone and will have difficulty "seeing" communications satellites if pointed directly at Kerbin from too close a range.
+<div class="antenna" markdown="1">
 
 ![Picture of Reflectron KR-14](antenna_refl14.png)
-VAB Category: Science Parts
-Tech to Unlock: [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
-Manufacturer: Parabolic Industries
-Cost: 100
-Mass: 1.0 tons
-Drag: 0.2
-Comlink power: 0.93 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 60,000,000 km
-Cone Diameter: 0.04&deg;
-Cone covers Kerbin at: 1,700,000 km
-Cone covers kerbosynchronous orbit at: 9,900,000 km
-Reach: Dres (all times), Jool (same side of sun only), Eeloo (periapsis and same side of sun only)
+The Reflectron KR-14 is an intermediate-range interplanetary antenna. It can easily reach all the inner planets as well as Dres. Like the Communotron-88, the KR-14 has a narrow cone and will have difficulty "seeing" communications satellites if pointed directly at Kerbin from too close a range.
+{:.blurb}
 
-**Atmosphere Performance**
-Does not break in atmospheric flight.
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
+VAB Category        | Science Parts
+Manufacturer        | Parabolic Industries
+Cost                | 100
+Mass                | 1.0 tons
+Drag                | 0.2
+Comlink power       | 0.93 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 60,000,000 km
+Reach                                 | Dres (all times), Jool (same side of sun only), Eeloo (periapsis and same side of sun only)
+Cone Diameter                         | 0.04&deg;
+Cone covers Kerbin at                 | 1,700,000 km
+Cone covers kerbosynchronous orbit at | 9,900,000 km
+{:.xmit}
+
+|Atmosphere Performance
+|------------------------------------
+|Does not break in atmospheric flight.
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####CommTech-1
 
-The CommTech-1 is the first antenna capable of returning signals to Kerbin from the outer solar system. Despite the in-game description, it can reach any planet available in version 0.23 of the game, even Eeloo at apoapsis. However, it has an extremely narrow cone; players should avoid using the dish in cone mode until they pass the orbit of Dres. Even a satellite in orbit around Jool may have occasional connection problems when using cone mode, as it can approach within 52 million km of Kerbin.
+<div class="antenna" markdown="1">
 
 ![Picture of CommTech-1](antenna_ct1.png)
-VAB Category: Science Parts
-Tech to Unlock: [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
-Manufacturer: AIES Aerospace
-Cost: 800
-Mass: 1.0 tons
-Drag: 0.2
-Comlink power: 2.60 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 350,000,000 km
-Cone Diameter: 0.006&deg;
-Cone covers Kerbin at: 11,000,000 km
-Cone covers kerbosynchronous orbit at: 66,000,000 km
-Reach: Eeloo (all times)
+The CommTech-1 is the first antenna capable of returning signals to Kerbin from the outer solar system. Despite the in-game description, it can reach any planet available in version 0.23 of the game, even Eeloo at apoapsis. However, it has an extremely narrow cone; players should avoid using the dish in cone mode until they pass the orbit of Dres. Even a satellite in orbit around Jool may have occasional connection problems when using cone mode, as it can approach within 52 million km of Kerbin.
+{:.blurb}
 
-**Atmosphere Performance**
-Does not break in atmospheric flight.
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
+VAB Category        | Science Parts
+Manufacturer        | AIES Aerospace
+Cost                | 800
+Mass                | 1.0 tons
+Drag                | 0.2
+Comlink power       | 2.60 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 350,000,000 km
+Reach                                 | Eeloo (all times)
+Cone Diameter                         | 0.006&deg;
+Cone covers Kerbin at                 | 11,000,000 km
+Cone covers kerbosynchronous orbit at | 66,000,000 km
+{:.xmit}
+
+|Atmosphere Performance
+|------------------------------------
+|Does not break in atmospheric flight.
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
 
 ####Reflectron GX-128
 
-The Reflecton-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
+<div class="antenna" markdown="1">
 
 ![Picture of GX-128](antenna_gx128.png)
-VAB Category: Science Parts
-Tech to Unlock: [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Advanced_Science_Tech)
-Manufacturer: Parabolic Industries
-Cost: 800
-Mass: 0.5 tons
-Drag: 0.2
-Comlink power: 2.80 charge/s
-Science power: 50 charge/s
-Science efficiency: 7.5 charge/Mit
 
-**Transmission Properties**
-Maximum Range: 400,000,000 km
-Cone Diameter: 0.005&deg;
-Cone covers Kerbin at: 14,000,000 km
-Cone covers kerbosynchronous orbit at: 79,000,000 km
-Reach: Eeloo (all times)
+The Reflecton-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
+{:.blurb}
 
-**Atmosphere Performance**
-Maximum ram pressure when deployed: 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level: 99 m/s
-Maximum safe speed at 10 km: 269 m/s
-Minimum safe altitude at 2300 m/s: 32 km
+|Basic Properties
+--------------------|-------------------
+Tech to Unlock      | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Advanced_Science_Tech)
+VAB Category        | Science Parts
+Manufacturer        | Parabolic Industries
+Cost                | 800
+Mass                | 0.5 tons
+Drag                | 0.2
+Comlink power       | 2.80 charge/s
+Science power       | 50 charge/s
+Science efficiency  | 7.5 charge/Mit
+{:.basic}
+
+|Transmission Properties
+--------------------------------------|-------------------
+Maximum Range                         | 400,000,000 km
+Reach                                 | Eeloo (all times)
+Cone Diameter                         | 0.005&deg;
+Cone covers Kerbin at                 | 14,000,000 km
+Cone covers kerbosynchronous orbit at | 79,000,000 km
+{:.xmit}
+
+|Atmosphere Performance
+------------------------------------|-------------------
+Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
+Maximum safe speed at sea level     | 99 m/s
+Maximum safe speed at 10 km         | 269 m/s
+Minimum safe altitude at 2300 m/s   | 32 km
+{:.atm}
+
+&nbsp;
+{:.spacer}
+
+</div>
