@@ -20,34 +20,128 @@ navbar: true
 With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Activate" (or "Deactivate"). Antennas can also be activated or deactivated using action groups, or preset by right-clicking on them in the VAB. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate your last antenna at your peril!
 
 Omnidirectional antennas will automatically [connect](#connection-rules) to any antenna they can as soon as they are activated. Dish antennas must also be given a [target](#targeting). Targets may be selected either before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "Target: None". This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use [Cone Mode](#target_cone), a ship or "Mission Control" for a [Direct Link](#target_direct), or [Active Vessel](#target_active) to always target the ship you are flying. To create a link, the other ship may need to target your ship as well.
+![IMAGE: target selection window](targetselector.png)
 
 You do not need to place your satellite in any special orientation to use a dish antenna. As long as the targets are set correctly, the dish will connect, even if it is "really" facing the other way!
 
-If necessary, you can send an EVA to open, close, or retarget an antenna from the outside. This is usually the only way to restore contact with a probe whose antennas are all shut down.
+If necessary, you can send an EVA to open, close, or retarget an antenna from the outside. This is usually the only way to restore contact with a probe whose antennas are all shut down. Simply float up to the antenna, right click on it, and select the command you want to force.
 
 ###The Map View
 
 RemoteTech adds an overlay to the map view to display the state of your communication network. The overlay may be toggled with the bottons located on the lower right: 
 
-![First button](icon_connection.png)
+![IMAGE: First button](icon_connection.png)
 :   This button will highlight the links used in the working connection (if any) as a green line.
 
-![Second button](icon_cones.png)
+![IMAGE: Second button](icon_cones.png)
 :   This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships off the edge of the screen will not be shown.
 
-![Third button](icon_links.png)
+![IMAGE: Third button](icon_links.png)
 :   This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links.
 
-![Fourth button](icon_targets.png)
+![IMAGE: Fourth button](icon_targets.png)
 :   This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are deactivated. Clicking on any dish in the list will pull up the target selection window for that dish.
+
+![IMAGE: map view, with each type of overlay (active, cones, omni, dish, command center) labeled](rtmapview.png)
+
+The Kerbal Space Center and any remote command stations will be marked on the map with red dots. This overlay cannot be toggled.
 
 RemoteTech also adds one button to the right side of the map view, below the planet info/ship crew button. Clicking this button will open a list of loaded ships; clicking on any ship on the list will center the map view on that ship.
 
 ###The Flight Computer
 
+RemoteTech adds two new displays below the mission clock in the upper left corner. The first is the connection status. If it reads "D+", the number after it is the signal delay in seconds. You cannot make the ship execute any command faster than this time, which increases as you go farther from mission control. If it reads "No connection", you can't send commands at all. Finally, "Local Control" means that the ship has either a crewed pod or a [non-RemoteTech-compatible](../modders/) probe core, and you can control the ship with no delay as in the stock game.
+
+The second element is a colored calculator icon -- green for a [working connection](../#connections), red for a broken connection, and yellow for local control. Clicking the icon while green or red pulls up the flight computer window. You can't use the flight computer if you have local control.
+
+The basic flight computer window shows only the controls for operating it; clicking ">>" will display the computer's current state as well as a queue of any "instant" commands sent to it. Instant commands are anything you normally do once, including right-click actions, staging commands, action groups, and anything with a toggle key (RCS, SAS, landing gear...). They do not include slewing, translation, changing the throttle, or anything else that normally involves holding down a key. An instant command may be canceled by clicking the "X" button next to the command. Non-instant commands cannot be canceled.
+
+![IMAGE: flight computer window, with a simple queue](flightcomputer.png)
+
+####Signal delay
+
+All commands, instantaneous and otherwise, are subject to signal delay, whether or not the flight computer's window is open. Instant commands will be shown in the queue along with the amount of time remaining until the probe receives the command. Once the time drops to zero, the command will be executed. Cancellations also count as commands and appear in the queue, along with a signal delay. Unless you are using manual delay (see below), there is no way to get a cancel command to the ship before it starts executing the original command.
+
+If a command pulls up a window, you may press buttons in the window without signal delay. For example, if you have a two-minute delay and activate a science experiment, you have to only wait two minutes, not four, before the probe discards, saves, or transmits the data.
+
+####Manual delay
+
+The text box in the lower right corner of the computer window lets you choose to delay an action by a specific amount. This is useful if you expect to go out of contact, but want the probe to carry out a command while out of reach. To set the manual delay, type a delay into the box *and hit enter*. Merely typing the delay does nothing. Numbers with no units will be interpreted as seconds; otherwise, you need to give exact units -- "1m20s" will be parsed as one minute and twenty seconds, while "1m20" will be treated as bad input. Once a manual delay is set, any command, instant or not, will be delayed, whether the flight computer window is open or not. **Remember to set your delay to zero when you're done!**
+
+If the manual delay is less than the signal delay, the delay will be ignored -- the probe will execute the command as soon as it gets it, just as if the delay were zero. If the manual delay is more than the signal delay, the computer queue will list two delays: the first is the signal delay, while the second is the amount the computer will wait after it gets the signal. Manual delays are always relative to the time the command was sent, not when it was received.
+
+**Example:** a probe is ten light-minutes away and about to pass behind a planet for a burn, which is scheduled 20 minutes from now. Type "20m" into the delay box and hit enter to set it as the current delay. Then issue a command to (for example) point retrograde. The flight queue will read "9m56s+10m00s", indicating that the signal will take just under ten minutes to reach the ship, followed by ten minutes before the ship acts on it.
+
+Cancellations are not affected by manual delay, so a command will be removed from the queue as soon as the cancellation reaches the ship. This makes manual delay helpful if you want to review a complex sequence of commands before they are executed.
+
+####Autopilot commands
+
+The buttons on the left side of the screen control a simple autopilot. All buttons are instant actions, so they are saved in the queue and may be canceled. Like all commands, they are subject to signal delay and manual delay. The buttons are as follows:
+
+#####Attitude Control
+
+Pointing a ship with several minutes of lag is nearly impossible, so the computer can be programmed to hold a particular position. Choosing any attitude will immediately override the previous attitude command. The path the ship takes in pointing toward a new position can be very roundabout, so be sure to allow plenty of time to turn the ship before a burn.
+
+![IMAGE: layout of the attitude controls](flightcomputer_att.png)
+
+There are six basic positions:
+
+GRD+
+:   points the ship prograde
+
+GRD-
+:   points the ship retrograde
+
+RAD+
+:   points the ship outward
+
+RAD-
+:   points the ship inward
+
+NRM+
+:   points the ship up, out of its orbital plane
+
+NRM-
+:   points the ship up, out of its orbital plane
+
+Clicking on a position once it's already selected will revert to prograde.
+
+Three of the buttons at the top of the screen, marked "ORB", "SRF", and "RVEL", will decide if prograde/retrograde/etc. are measured relative to the ship's orbital motion, relative to its surface motion, or relative to its target's motion. The effects are identical to clicking through the three velocity displays at the top of the navball. A fourth button, "TGT", will have prograde pointing directly at the target instead of the relative velocity vector. Clicking on a reference frame once it's already selected will turn off the flight computer's attitude control.
+
+The other attitude options, which don't work with the six position buttons, are:
+
+KILL
+:   this attempts to hold the ship in a fixed direction. While less subtle than SAS, it is useful for maintaining attitude in the middle of a sequence, because SAS can't run while the flight computer is running any attitude control commands.
+
+NODE
+:   this attempts to face the direction required for the next maneuver node.
+
+CUSTOM
+:   this attempts to keep the ship in a specific pitch, yaw, and roll, as chosen by the options below the six position buttons.
+
+#####Executing Maneuver Nodes
+
+Pressing the "EXEC" button causes the ship to wait until it reaches a maneuver node, then slew to the maneuver position and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or "Toggle SAS" to keep the ship pointed.
+
+**Note:** the flight computer does not understand staging, and will continue to count down to the end of the burn even if the current fuel tanks are empty. Schedule any staging commands separately.
+
+Because node execution does not wait for the ship to face the node before turning on the engine, players are *strongly* encouraged to use a NODE attitude command well before executing a maneuver node. The management is not responsible for any burns that had the opposite of their intended effect.
+
+![IMAGE: a complete command queue including EXEC](flightcomputer_exec.png)
+
+Unlike most commands, EXEC ignores manual delays -- the time of the burn is set by the location of the maneuver node. If the time to the node is less than the signal delay, the execution command won't be sent.
+
+#####Manual Burns
+
+Automatic node execution has a few limitations: it needs a well-defined maneuver node, making it difficult to do small velocity corrections, it doesn't start the burn until it passes the node, which may make long burns less accurate, and it ignores any nodes after the first. For more control over burns, players may set the burn parameters by hand.
+
+First, adjust the throttle slider to the desired intensity of the burn (as a safety measure, the default is no thrust). In the box, type either the desired duration of the burn, or the desired delta-V (e.g., "100 m/s"). The delta-V will be converted to a burn time; the flight computer **will not** adjust the burn while it's happening to get the right delta-V. Clicking "BURN" will add the burn to the command queue, with signal delay and whatever manual delay was set.
+
+Just like automatic node execution, the manual burn doesn't understand staging or attitude control. Those commands must be scheduled separately.
+
 ##Connection Rules
 
-To have a [working connection](../#connections) to the Kerbal Space Center (KSC) or a [remote command station](#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing communications lag.
+To have a [working connection](../#connections) to the Kerbal Space Center (KSC) or a [remote command station](#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing [signal delay](#signal-delay).
 
 ![A relay sends a transmission from the far side of the Mun towards Kerbin](connectiondemo1.jpg "Mun polar relay"){:.pairedimages} 
 ![A comsat gets the transmission from the Mun and forwards it to KSC](connectiondemo2.jpg "Kerbin comsat"){:.pairedimages}
@@ -79,11 +173,11 @@ Direct Link
 :   {:#target_direct}if the dish's target is set to a specific satellite, or to KSC Mission Control, it will maintain a link to that target as long as the line of sight and range conditions are met. A dish in Direct Link mode cannot be used to make connections with anything other than its specific target. Direct link mode is recommended for situations where the other two modes won't work, because updating direct links as ships move around can be a lot of work.
 
 Cone
-:   {:#target_cone}if the dish's target is set to a planet or moon, it can simultaneously maintain a link to all targets that are within a cone centered on that planet *and* that are within that planet or moon's sphere of influence. The [list of parts](#dish-antennas) includes the cone diameter for each dish, as well as the minimum distance the dish needs to be from Kerbin to see anything to the side of the planet or to see anything in synchronous orbit (try to avoid the situation in the picture). Cone mode is recommended for links to relay satellites orbiting another planet or moon, as it will automatically choose the best relay at any moment. 
-![Using too narrow a cone](conetooclose.png)
+:   {:#target_cone}if the dish's target is set to a planet or moon, it can simultaneously maintain a link to all targets that are within a cone centered on that planet *and* that are within that planet or moon's sphere of influence. The [list of parts](#dish-antennas) includes the cone diameter for each dish, as well as the minimum distance the dish needs to be from Kerbin to see anything to the side of the planet or to see anything in synchronous orbit (if you're too close, you'll get the situation in the picture). Cone mode is recommended for links to relay satellites orbiting another planet or moon, as it will automatically choose the best relay at any moment. 
+![IMAGE: Using too narrow a cone](conetooclose.png)
  
 Active Vessel
-:   {:#target_active}if the dish's target is set to "Active Vessel", it will attempt to contact the ship the player is currently flying as if that ship had been selected using Direct Link. The ship will be out of contact whenever the player is *not* directly controlling it. Active Vessel targeting is usually only useful on dedicated communications satellites or [remote command stations](#command-stations), and should only be used to contact isolated ships where there is not enough demand for a dedicated link. It should **not** be used if the player wants to relay a transmission through a third ship, or you may run into the common situation below:
+:   {:#target_active}if the dish's target is set to "Active Vessel", it will attempt to contact the ship the player is currently flying as if that ship had been selected using Direct Link. Active Vessel targeting is meant for dedicated communications satellites or [remote command stations](#command-stations), where it prevents the player from having to manually re-target all their comsats every time they focus on a different mission. Active Vessel is best suited for contacting isolated ships where there is not enough demand for a dedicated link. It should **not** be used if the player wants to relay a transmission through a third ship, or you may run into the common situation below:
 
 ![A common situation in which active vessel is not appropriate](activerelaybug.png)
 
@@ -367,7 +461,7 @@ Does not break in atmospheric flight.
 
 The Reflecton-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
 
-![Picture of CommTech-1](antenna_ct1.png)
+![Picture of GX-128](antenna_gx128.png)
 VAB Category: Science Parts
 Tech to Unlock: [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Advanced_Science_Tech)
 Manufacturer: Parabolic Industries
