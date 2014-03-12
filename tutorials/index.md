@@ -35,8 +35,6 @@ Need Sandworm's permission to use: http://forum.kerbalspaceprogram.com/threads/5
 
 ###Trans-Munar and Interplanetary Relay Networks
 
-Address the active relay "bug" and how to prevent it
-
 ##Using the Flight Computer Effectively
 
 ###Example Re-Entry Sequence
