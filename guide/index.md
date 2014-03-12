@@ -121,13 +121,11 @@ CUSTOM
 
 #####Executing Maneuver Nodes
 
-Pressing the "EXEC" button causes the ship to wait until it reaches a maneuver node, then slew to the maneuver position and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or "Toggle SAS" to keep the ship pointed.
+Pressing the "EXEC" button causes the ship to wait until it reaches a maneuver node, then slew to the maneuver position and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or toggle SAS to keep the ship pointed.
 
 **Note:** the flight computer does not understand staging, and will continue to count down to the end of the burn even if the current fuel tanks are empty. Schedule any staging commands separately.
 
 Because node execution does not wait for the ship to face the node before turning on the engine, players are *strongly* encouraged to use a NODE attitude command well before executing a maneuver node. The management is not responsible for any burns that had the opposite of their intended effect.
-
-![IMAGE: a complete command queue including EXEC](flightcomputer_exec.png)
 
 Unlike most commands, EXEC ignores manual delays -- the time of the burn is set by the location of the maneuver node. If the time to the node is less than the signal delay, the execution command won't be sent.
 
@@ -137,7 +135,7 @@ Automatic node execution has a few limitations: it needs a well-defined maneuver
 
 First, adjust the throttle slider to the desired intensity of the burn (as a safety measure, the default is no thrust). In the box, type either the desired duration of the burn, or the desired delta-V (e.g., "100 m/s"). The delta-V will be converted to a burn time; the flight computer **will not** adjust the burn while it's happening to get the right delta-V. Clicking "BURN" will add the burn to the command queue, with signal delay and whatever manual delay was set.
 
-Just like automatic node execution, the manual burn doesn't understand staging or attitude control. Those commands must be scheduled separately.
+Just like automatic node execution, the manual burn doesn't include staging or attitude control. Those commands must be scheduled separately.
 
 ##Connection Rules
 
