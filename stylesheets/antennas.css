@@ -2,7 +2,7 @@
  * @file antennas.css
  * @author Starstrider42
  * @date Created March 11, 2014
- * @date Last modified March 11, 2014
+ * @date Last modified March 12, 2014
  */
 
 div.antenna {
@@ -34,7 +34,8 @@ div.antenna p.blurb {
 	margin-left: 30%;
 }
 
-div.antenna .spacer {
+/* Spacer to ensure the visible box includes all the floats */
+div.antenna hr {
 	visibility: hidden;
 	height: 0px;
 	padding: 0px;

@@ -88,29 +88,31 @@ Pointing a ship manually with several minutes of lag is nearly impossible, so th
 
 ![IMAGE: layout of the attitude controls](flightcomputer_att.png)
 
-There are six basic directions:
+There are six basic directions, corresponding roughly to the six maneuver node axes. The exact meaning of each direction depends on the reference frame, chosen with one of four buttons in the flight computer window: 
 
-GRD+
-:   points the ship prograde
+ORB
+: directions are relative to the ship's orbital motion. This is the default if no reference frame is selected.
 
-GRD-
-:   points the ship retrograde
+SRF
+: directions are relative to the ship's surface motion.
 
-RAD+
-:   points the ship outward from its orbit
+RVEL
+: directions are relative to the ship's motion past the current target.
 
-RAD-
-:   points the ship inward
+TGT
+: directions are relative to the position of the current target.
 
-NRM+
-:   points the ship up, out of its orbital plane
+Direction   | ORB Frame (Default)        | SRF Frame                                         | RVEL Frame                                               | TGT Frame
+------------|----------------------------|---------------------------------------------------|----------------------------------------------------------|-------------------
+GRD+        | Towards orbital velocity   | Towards surface velocity                          | Towards target relative velocity                         | Towards target
+GRD-        | Away from orbital velocity | Away from surface velocity                        | Away from target relative velocity                       | Away from target
+RAD+        | Outward from orbit         | Outward from surface trajectory                   | Perpendicular to relative velocity, in orbital plane     | Perpendicular to target, roughly facing away from sun
+RAD-        | Inward from orbit          | Inward from surface trajectory                    | Perpendicular to relative velocity, in orbital plane     | Perpendicular to target, roughly facing the sun
+NRM+        | Up, out of orbital plane   | North (south) from eastward (westward) trajectory | Perpendicular to relative velocity, out of orbital plane | Perpendicular to target
+NRM-        | Down, out of orbital plane | South (north) from eastward (westward) trajectory | Perpendicular to relative velocity, out of orbital plane | Perpendicular to target
+{:.data .shadecol}
 
-NRM-
-:   points the ship down, out of its orbital plane
-
-Clicking on a direction once it's already selected will revert to prograde.
-
-Three of the buttons at the top of the screen, marked "ORB", "SRF", and "RVEL", will decide if prograde/retrograde/etc. are measured relative to the ship's orbital motion, relative to its surface motion, or relative to its target's motion. The effects are identical to clicking through the three velocity displays at the top of the navball. A fourth button, "TGT", will have prograde pointing directly at the target instead of the relative velocity vector. Clicking on a reference frame once it's already selected will turn off the flight computer's attitude control.
+Clicking on a direction once it's already selected will revert to GRD+. Clicking on a reference frame once it's already selected will turn off the flight computer's attitude control.
 
 The other attitude options, which don't work with the six direction buttons, are:
 
@@ -216,11 +218,6 @@ KSC Mission Control |      |                 |      | 75,000&nbsp;km |          
 
 ####Reflectron DP-10
 
-{::comment}
-Neither Markdown's nor GFM's hard line breaks seem to be supported within HTML blocks :(
-Use a table instead
-{:/comment}
-
 <div class="antenna" markdown="1">
 
 ![Picture of Reflectron DP-10](antenna_dp10.png)
@@ -252,8 +249,7 @@ Reach                                 | Any line of sight to KSC Mission Control
 |Does not break in atmospheric flight.
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -293,8 +289,7 @@ Maximum safe speed at 10 km         | 269 m/s
 Minimum safe altitude at 2300 m/s   | 32 km
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -334,8 +329,7 @@ Maximum safe speed at 10 km         | 269 m/s
 Minimum safe altitude at 2300 m/s   | 32 km
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -375,8 +369,7 @@ Maximum safe speed at 10 km         | 190 m/s
 Minimum safe altitude at 2300 m/s   | 35 km
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -438,8 +431,7 @@ Maximum safe speed at 10 km         | 269 m/s
 Minimum safe altitude at 2300 m/s   | 32 km
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -479,8 +471,7 @@ Cone covers kerbosynchronous orbit at | 16,000 km
 |Does not break in atmospheric flight.
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -523,8 +514,7 @@ Maximum safe speed at 10 km         | 269 m/s
 Minimum safe altitude at 2300 m/s   | 32 km
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -564,8 +554,7 @@ Cone covers kerbosynchronous orbit at | 9,900,000 km
 |Does not break in atmospheric flight.
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -605,8 +594,7 @@ Cone covers kerbosynchronous orbit at | 66,000,000 km
 |Does not break in atmospheric flight.
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
 
@@ -649,7 +637,6 @@ Maximum safe speed at 10 km         | 269 m/s
 Minimum safe altitude at 2300 m/s   | 32 km
 {:.atm}
 
-&nbsp;
-{:.spacer}
+---------------
 
 </div>
