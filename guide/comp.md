@@ -77,7 +77,7 @@ Clicking on a direction once it's already selected will revert to GRD+. Clicking
 The other attitude options, which don't work with the six direction buttons, are:
 
 KILL
-:   this attempts to hold the ship in a fixed direction. While less subtle than SAS, it is useful for maintaining attitude in the middle of a sequence, because SAS can't run while the flight computer is running any attitude control commands.
+:   this attempts to hold the ship in a fixed direction. It is useful for maintaining attitude in the middle of a sequence.
 
 NODE
 :   this attempts to face the direction required for the next maneuver node.

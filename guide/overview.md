@@ -12,13 +12,13 @@ layout: content
 
 {% include toc.html %}
 
-To play RemoteTech, you must manage both the antennas on your current ship, selecting the right antenna(s) for the right situation and shutting down unnecessary antennas to save power. You must also manage your overall communications network, ensuring that every craft has a link to mission control when it needs it.
+To play RemoteTech, you must not only manage the antennas on your current ship, selecting the right antenna(s) for the right situation and shutting down unnecessary antennas to save power, but you must also manage your overall communications network, ensuring that every craft has a link to mission control when it needs it.
 
 ##Antenna Configuration
 
 With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Activate" (or "Deactivate"). Antennas can also be activated or deactivated using action groups, or preset by right-clicking on them in the VAB. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate your last antenna at your peril!
 
-Omnidirectional antennas will automatically [connect](../connections) to any antenna they can as soon as they are activated. Dish antennas must also be given a [target](#targeting). Targets may be selected either before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "Target: None". This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use [Cone Mode](#target_cone), a ship or "Mission Control" for a [Direct Link](#target_direct), or [Active Vessel](#target_active) to always target the ship you are flying. To create a link, the other ship may need to target your ship as well.
+Omnidirectional antennas will automatically [connect](../connections) to any antenna they can as soon as they are activated. Dish antennas must also be given a [target](#targeting). Targets may be selected before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "Target: None". This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use [Cone Mode](#target_cone), a ship or "Mission Control" for a [Direct Link](#target_direct), or [Active Vessel](#target_active) to always target the ship you are flying. To create a link, the other ship may need to target your ship as well.
 ![IMAGE: target selection window](targetselector.png)
 
 You do not need to place your satellite in any special orientation to use a dish antenna. As long as the targets are set correctly, the dish will connect, even if it is "really" facing the other way!
@@ -49,7 +49,7 @@ RemoteTech also adds one button to the right side of the map view, below the pla
 
 ##Connection Rules
 
-To have a [working connection](../../#connections) to the Kerbal Space Center (KSC) or a [remote command station](../../#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing [signal delay](../comp/#signal-delay).
+To have a [working connection](../../#connections) to the Kerbal Space Center (KSC) or a [remote command station](../../#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing [signal delay](../comp/#signal-delay). There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below.
 
 ![A relay sends a transmission from the far side of the Mun towards Kerbin](../connectiondemo1.jpg "Mun polar relay"){:.pairedimages} 
 ![A comsat gets the transmission from the Mun and forwards it to KSC](../connectiondemo2.jpg "Kerbin comsat"){:.pairedimages}
@@ -67,7 +67,7 @@ The first condition is that there must not be a planet or moon blocking the line
 
 The second condition is that *both* satellites must have an antenna that can reach as far as the other satellite. A special case is that a link to KSC is impossible unless the satellite establishing the link is within [75,000 km](../parts/#omnidirectional-antennas) of Kerbin. Any connections from farther out will need to go through at least one relay.
 
-**Example:** a probe with a Communotron 16 antenna (range 2500 km) and a probe with a CommTech-1 dish (350,000,000 km) are located 3000 km apart. Although the CommTech-1 is one of the most powerful dishes in RemoteTech, the two probes cannot link because the first probe can never link to anything more than 2500 km away. Unless, of course, it has a longer-range antenna in addition to the Communotron 16.
+**Example:** a probe with a Communotron 16 antenna (range 2500 km) and a probe with a CommTech-1 dish (350,000,000 km) are located 3000 km apart. Although the CommTech-1 is one of the most powerful dishes in RemoteTech, the two probes cannot link because the first probe can never link to anything more than 2500 km away -- unless, of course, it has a longer-range antenna in addition to the Communotron 16.
 
 ###Targeting
 
