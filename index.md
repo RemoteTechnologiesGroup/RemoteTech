@@ -1,5 +1,5 @@
 ---
-title: About
+title: RemoteTech
 layout: content
 ---
 
@@ -16,7 +16,7 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which over
 ##First steps
 
 * Like in stock KSP, you need to research Flight Control before you can build unmanned probes.
-* You need to use an antenna that won't break in the atmosphere to be able to control an unmanned rocket during atmospheric flight. The Reflectron DP-10, unlocked along with the Stayputnik probe core, is the earliest such antenna available. Others can be found in the [parts listing](#).
+* You need to use an antenna that won't break in the atmosphere to be able to control an unmanned rocket during atmospheric flight. The Reflectron DP-10, unlocked along with the Stayputnik probe core, is the earliest such antenna available. Others can be found in the [parts listing](guide/#list-of-parts).
 * For farther flights, your probe should also have more powerful antennas, such as the Communotron 16 or the Comms DTS-M1. You will have to manually turn on these antennas once you get high enough that the airflow won't break them off, and if you are using the DTS-M1 you will also need to target it at the KSC. Both commands can be done by right-clicking on the antenna.
 * Once you can place satellites in orbit, consider putting up some comsats to maintain a connection when out of sight of KSC. See the [comsat tutorial](#) for more details.
 * As you expand farther out into the system, you may need to expand and/or upgrade your comsat network to allow for connections to probes orbiting other moons or planets. Plan ahead!
@@ -36,15 +36,7 @@ Omni antennas radiate in every direction equally, and as such do not require you
 To comply with Kerbal law, RemoteTech is required to delay your control input so that signalling does not exceed the 'speed of light' (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file.
 
 ###Connections
-A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites can transmit a signal to the other independently. <!-- For point A to transmit with a dish, the dish would need to be set to target point B, point B would need to be within range of A's dish, and there would need to be no planets or moons blocking the line of sight between point A and point B. Since omni antennas are never targeted, they merely need to have point B within range and a clear line of sight. Note that point B also has to pass these criteria -->
-You have a connection when there is a sequence of links between a command center and the destination.
-<!-- -->
-If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
-
-<!-- ![A relay sends a transmission from the far side of the Mun towards Kerbin](images/connectiondemo1.jpg "Mun polar relay"){.pairedimages}
-![A comsat gets the transmission from the Mun and forwards it to KSC](images/connectiondemo2.jpg "Kerbin comsat"){.pairedimages}
-
-**Example:** this probe in low Munar orbit can't link to KSC because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay also can't link to KSC, because KSC is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSC (shown by the red dot). Therefore, the probe has a working connection with KSC, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission. -->
+A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites [can transmit a signal](guide/#connection-rules) to the other independently. You have a connection when there is a sequence of links between a command center and the destination. If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
 
 ###Signal Processors
 Signal Processors are any part that can recieve commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal_delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, for example to carry out basic tasks during a communications gap.
@@ -75,43 +67,12 @@ Neither other third-party probe cores, nor any third-party antennas, are support
 
 ###New parts
 
-RemoteTech 2 includes seven new antennas.
+RemoteTech includes seven new antennas.
 
 * The Reflectron DP-10 is a short-range omnidirectional antenna intended for launch and landing.
 * The CommTech EXP-VR-2T and Communotron 32 are enhanced omnidirectional antennas.
 * The Reflectron KR-7 and KR-14 are short- and medium-range dishes, respectively.
 * The CommTech-1 and Reflectron GX-128 are long-range dishes designed for missions to the outer planets.
-
-<!--
-###Probe Cores
-
-All stock probe cores serve as [signal processors](#signal_processors). In addition, the RC-L01 Remote Guidance Unit can serve as a [command station](#command_stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and sending instructions to nearby probes.
-
-###Omnidirectional Antennas
-
-Yes, the non-breaking spaces are necessary; the table won't set column widths sensibly without them
-Part                | Cost | Mass            | Drag | Range          | Power Drain   | Notes
-Reflectron DP-10    | 80   | 0.005&nbsp;tons | 0.2  |    500&nbsp;km | 0.01&nbsp;e/s | Activated on mission start. Not damaged by atmospheric flight
-Communotron 16      | 150  | 0.005&nbsp;tons | 0.2  |   2500&nbsp;km | 0.13&nbsp;e/s | 
-CommTech EXP-VR-2T  | 550  | 0.02&nbsp;tons  | 0.0  |   3000&nbsp;km | 0.18&nbsp;e/s | 
-Communotron 32      | 150  | 0.01&nbsp;tons  | 0.2  |   5000&nbsp;km | 0.6&nbsp;e/s  | 
-KSC Mission Control |      |                 |      | 75,000&nbsp;km |               | Command Station
-
-All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.
-
-###Dish Antennas
-
-Yes, the non-breaking spaces are necessary; the table won't set column widths sensibly without them
-Antenna           | Cost | Mass            | Drag | Cone Angle | Range          | Power Drain   | Notes
-Comms DTS-M1      | 100  | 0.3&nbsp;tons   | 0.2  | 45&deg;    | 50,000&nbsp;km | 0.82&nbsp;e/s | 
-Reflectron KR-7   | 100  | 0.5&nbsp;tons   | 0.2  | 25&deg;    | 90,000&nbsp;km | 0.82&nbsp;e/s | Not damaged by atmospheric flight
-Communotron 88-88 | 900  | 0.025&nbsp;tons | 0.2  | 0.06&deg;  | 40M&nbsp;km    | 0.93&nbsp;e/s | 
-Reflectron KR-14  | 100  | 1.0&nbsp;tons   | 0.2  | 0.04&deg;  | 60M&nbsp;km    | 0.93&nbsp;e/s | Not damaged by atmospheric flight
-CommTech-1        | 800  | 1.0&nbsp;tons   | 0.2  | 0.006&deg; | 350M&nbsp;km   | 2.6&nbsp;e/s  | Not damaged by atmospheric flight
-Reflectron GX-128 | 800  | 0.5&nbsp;tons   | 0.2  | 0.005&deg; | 400M&nbsp;km   | 2.8&nbsp;e/s  | 
-
-All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.
--->
 
 ##Credits
 * The_Duck, for the precursor to this mod.
