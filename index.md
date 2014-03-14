@@ -39,7 +39,7 @@ To comply with Kerbal law, RemoteTech is required to delay your control input so
 A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites [can transmit a signal](guide/overview/#connection-rules) to the other independently. You have a connection when there is a sequence of links between a command center and the destination. If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
 
 ###Signal Processors
-Signal Processors are any part that can recieve commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal_delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, for example to carry out basic tasks during a communications gap.
+Signal Processors are any part that can recieve commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal-delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, for example to carry out basic tasks during a communications gap.
 
 <!--**Beware**: if you do not have a working connection, you cannot send **any** commands to an unmanned probe, including commands to activate its antennas!-->
 
@@ -53,9 +53,9 @@ Transmitting science back to KSC now requires you have a working connection back
 
 ###Modified stock parts
 
-* All stock probe cores now have [signal processor capability](#signal_processors) so that they are affected by the communications network they are connected to.
+* All stock probe cores now have [signal processor capability](#signal-processors) so that they are affected by the communications network they are connected to.
 
-* The three stock antennas have been modified to make them fit the rules of RemoteTech: the Communotron 16 is now the basic [omnidirectional antenna](guide/parts/#omnidirectionals), the Comms DTS-M1 a short-range [dish](guide/parts/#dishes), and the Communotron 88-88 a medium-range dish.
+* The three stock antennas have been modified to make them fit the rules of RemoteTech: the Communotron 16 is now the basic [omnidirectional antenna](#omnidirectionals), the Comms DTS-M1 a short-range [dish](#dishes), and the Communotron 88-88 a medium-range dish.
 
 * The Launch Stability Enhancer now acts as a land line for the rocket, allowing the player to send pre-launch commands regardless of whether any antennas are active.
 
