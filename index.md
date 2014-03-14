@@ -16,9 +16,9 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which over
 ##First steps
 
 * Like in stock KSP, you need to research Flight Control before you can build unmanned probes.
-* You need to use an antenna that won't break in the atmosphere to be able to control an unmanned rocket during atmospheric flight. The Reflectron DP-10, unlocked along with the Stayputnik probe core, is the earliest such antenna available. Others can be found in the [parts listing](guide/#list-of-parts).
+* You need to use an antenna that won't break in the atmosphere to be able to control an unmanned rocket during atmospheric flight. The Reflectron DP-10, unlocked along with the Stayputnik probe core, is the earliest such antenna available. Others can be found in the [parts listing](guide/parts/).
 * For farther flights, your probe should also have more powerful antennas, such as the Communotron 16 or the Comms DTS-M1. You will have to manually turn on these antennas once you get high enough that the airflow won't break them off, and if you are using the DTS-M1 you will also need to target it at the KSC. Both commands can be done by right-clicking on the antenna.
-* Once you can place satellites in orbit, consider putting up some comsats to maintain a connection when out of sight of KSC. See the [comsat tutorial](#) for more details.
+* Once you can place satellites in orbit, consider putting up some comsats to maintain a connection when out of sight of KSC. See the [tutorials](tutorials/) for more details.
 * As you expand farther out into the system, you may need to expand and/or upgrade your comsat network to allow for connections to probes orbiting other moons or planets. Plan ahead!
 
 ##Overview of mechanics
@@ -36,7 +36,7 @@ Omni antennas radiate in every direction equally, and as such do not require you
 To comply with Kerbal law, RemoteTech is required to delay your control input so that signalling does not exceed the 'speed of light' (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file.
 
 ###Connections
-A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites [can transmit a signal](guide/#connection-rules) to the other independently. You have a connection when there is a sequence of links between a command center and the destination. If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
+A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites [can transmit a signal](guide/overview/#connection-rules) to the other independently. You have a connection when there is a sequence of links between a command center and the destination. If there are multiple ways to get a working connection (relaying through different satellites), RemoteTech will automatically pick the shortest path with the smallest signal delay.
 
 ###Signal Processors
 Signal Processors are any part that can recieve commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal_delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, for example to carry out basic tasks during a communications gap.
@@ -55,7 +55,7 @@ Transmitting science back to KSC now requires you have a working connection back
 
 * All stock probe cores now have [signal processor capability](#signal_processors) so that they are affected by the communications network they are connected to.
 
-* The three stock antennas have been modified to make them fit the rules of RemoteTech: the Communotron 16 is now the basic [omnidirectional antenna](#omnidirectionals), the Comms DTS-M1 a short-range [dish](#dishes), and the Communotron 88-88 a medium-range dish.
+* The three stock antennas have been modified to make them fit the rules of RemoteTech: the Communotron 16 is now the basic [omnidirectional antenna](guide/parts/#omnidirectionals), the Comms DTS-M1 a short-range [dish](guide/parts/#dishes), and the Communotron 88-88 a medium-range dish.
 
 * The Launch Stability Enhancer now acts as a land line for the rocket, allowing the player to send pre-launch commands regardless of whether any antennas are active.
 
