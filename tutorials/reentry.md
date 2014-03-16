@@ -31,13 +31,15 @@ You may also want to bind other re-entry commands (such as antenna and solar pan
 
 This tutorial assumes you are using the default staging sequence: one stage to drop the engine, and a final stage to both jettison the heat shield and deploy parachutes. Adapt the instructions to custom staging as appropriate.
 
+![IMAGE: assumed staging sequence](staging_reentry.png)
+
 ##Pre-Reentry
 
 Set up your re-entry trajectory as usual. When you are about 5-10 minutes away from periapsis, open the flight computer by clicking on the calculator icon in the upper left corner of the screen, then clicking ">>" in the window that pops up.
 
 ###Attitude Control
 
-Point your heat shield into the airflow by pressing "SRF", followed by "GRD-". The flight computer state should read "surface retrograde". This is a safe attitude all the way from atmospheric entry to touchdown.
+Point your heat shield into the airflow by pressing "SRF", followed by "GRD-". The flight computer state should read "surface retrograde". Unlike SAS, which loves to fight with parachutes, this is a safe attitude all the way from atmospheric entry to touchdown.
 
 ###Parachutes
 
@@ -50,6 +52,8 @@ Once you've decided when you want to deploy parachutes, type in the scheduled ti
 ###Engine Jettison
 
 When you load a game or switch active vessels, Kerbal Space Program will sometimes reset the ship's staging state to "prelaunch", and sometimes not. Because the staging indicator does not work in RemoteTech, you can't tell when this has happened and when it hasn't. Therefore, it's safest to jettison the engine manually. If the first staging keypress doesn't jettison the engine (instead taking you from prelaunch to the engine stage), the second will. Once you've jettisoned the engine, you *know* that the next staging command will deploy parachutes, as intended.
+
+![IMAGE: full pre-entry flight queue](queue_reentry.png)
 
 ###Final Steps
 

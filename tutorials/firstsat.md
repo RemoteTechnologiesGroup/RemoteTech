@@ -37,6 +37,8 @@ Your launch trajectory is important. Were fuel efficiency your only concern, you
 
 Make sure you take care of all maneuvers before you pass out of contact. This means tuning your launch trajectory so that you finish your final burn less than 280 km (27&deg;) downrange of KSC. Some trial and error may be necessary if you're used to shallower launches.
 
+![IMAGE: Good launch trajectory in map view](steepascent.png)
+
 Your satellite probably won't have enough batteries to do a full orbit without recharging. Deploy your solar panels as soon as you are out of the atmosphere, even if it's a night launch. If you fail to deploy the panels before the satellite goes out of contact, your may not be able to recover it.
 
 ###Flight Computer
@@ -44,6 +46,8 @@ Your satellite probably won't have enough batteries to do a full orbit without r
 Once you are coasting to apoapsis, set a maneuver node to represent the final burn to reach orbit. Then, open the flight computer by clicking on the calculator icon below the mission clock, followed by ">>" to open the command queue. Click "GRD+" to tell the ship to always face prograde, then click "EXEC" to tell it to execute the maneuver node. 
 
 You need to deploy solar panels once in orbit, or it won't last until its next pass over KSC. Type "1m" (for "one minute", or whatever delay you think appropriate) in the lower right text box, then press enter. Then right click on each panel, or run an action group if you have it. Once the solar panel command(s) are in the queue, type "0" followed by enter to reset the delay (otherwise ALL your commands will have a several-minute delay).
+
+![IMAGE: Flight computer panel after queueing everything](queue_launch.png)
 
 ##The End
 
@@ -64,3 +68,5 @@ If you have an antenna other than the DP-10, you will need to deploy it in fligh
 ##Post-Burn Attitude Control
 
 If you are using the flight computer to get into orbit, the computer will turn off attitude control at the end of the burn, which will leave the satellite slowly tumbling. If you like, you can add a command to maintain attitude after the burn. Type a delay that corresponds to just after the orbit insertion is *finished* (any attitude commands sent during the burn will be ignored). Then pick the attitude command of your choice: press the SAS key, or click "KILL" to kill rotation, or click "GRD+" to hold prograde (if you already have an active GRD+ command, you may have to click twice, then delete the command labeled "mode: off"). Don't forget to reset the delay to 0 when you're done!
+
+![IMAGE: Flight computer panel with post-burn attitude control](queue_holdfacing.png)
