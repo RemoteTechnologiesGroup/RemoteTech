@@ -1,0 +1,1346 @@
+ï»¿<html>
+<head>
+	<meta charset="utf-8">
+	<link href="/stylesheets/main.css" rel="stylesheet">
+	<link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+	
+		<link href="/stylesheets/antennas.css" rel="stylesheet">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<title>RemoteTech List of Parts</title>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+		  <button hidden="true" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-data">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand" href="">RemoteTech</a>
+		</div>
+		<div class="" id="navbar-data">
+			<ul class="nav navbar-nav">
+				
+					
+				
+					
+				
+					
+						<li><a href="/guide/">Player's Guide</a></li>
+					
+				
+					
+				
+					
+				
+					
+				
+					
+						<li><a href="/modders/">API</a></li>
+					
+				
+					
+						<li><a href="/tutorials/">Tutorials</a></li>
+					
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+<script>
+<!-- Let's respect those mobile users who disable javascript. -->
+$("#navbar-data").addClass("collapse navbar-collapse");
+$(".navbar-toggle").prop("hidden", false);
+</script>
+
+
+
+<div class="container" role="main">
+
+<div class="header">
+	<div class="logo">
+	</div>
+	RemoteTech<br />
+	<span class="sub">"beep... beep... beep... beep..." - Leonard Nimoy</span>
+</div>
+
+<ul class="buttonrow">
+	<li><a href="#" class="btn btn-primary" role="button">Source &raquo;</a></li>
+	<li><a href="#" class="btn btn-success" role="button">Download &raquo;</a></li>
+	<li class="right">
+		<a href="#" class="btn btn-warning" role="button">Donate</a>
+	</li>
+</ul>
+
+<p class="alert alert-danger"><strong>Oh shit son!</strong> This page is still under development!</p>
+
+<h1 id="list-of-parts">List of Parts</h1>
+
+<div class="toc">
+<ul id="markdown-toc">
+  <li><a href="#list-of-parts">List of Parts</a>    <ul>
+      <li><a href="#probe-cores">Probe Cores</a></li>
+      <li><a href="#omnidirectional-antennas">Omnidirectional Antennas</a>        <ul>
+          <li><a href="#reflectron-dp-10">Reflectron DP-10</a></li>
+          <li><a href="#communotron-16">Communotron 16</a></li>
+          <li><a href="#commtech-exp-vr-2t">CommTech EXP-VR-2T</a></li>
+          <li><a href="#communotron-32">Communotron 32</a></li>
+        </ul>
+      </li>
+      <li><a href="#dish-antennas">Dish Antennas</a>        <ul>
+          <li><a href="#comms-dts-m1">Comms DTS-M1</a></li>
+          <li><a href="#reflectron-kr-7">Reflectron KR-7</a></li>
+          <li><a href="#communotron-88-88">Communotron 88-88</a></li>
+          <li><a href="#reflectron-kr-14">Reflectron KR-14</a></li>
+          <li><a href="#commtech-1">CommTech-1</a></li>
+          <li><a href="#reflectron-gx-128">Reflectron GX-128</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+</div>
+
+<h2 id="probe-cores">Probe Cores</h2>
+
+<p>All stock probe cores serve as <a href="../../#signal-processors">signal processors</a>. In addition, the <a href="http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit">RC-L01 Remote Guidance Unit</a> can serve as a <a href="../../#command-stations">command station</a>, provided a crew of 6 or more kerbals is available to split the jobs of running the ship and sending instructions to nearby probes.</p>
+
+<p>The probe cores are otherwise unchanged from their <a href="http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods">stock versions</a>.</p>
+
+<h2 id="omnidirectional-antennas">Omnidirectional Antennas</h2>
+
+<!-- Yes, the non-breaking spaces are necessary. Without them, when printing the table on a narrow screen, browsers won't be smart enough to realize that notes is the only column that word-wraps well, and will try to create eye-wrenching entries like 2500
+km -->
+
+<table class="data">
+  <thead>
+    <tr>
+      <th style="text-align: left">Part</th>
+      <th style="text-align: right">Cost</th>
+      <th style="text-align: left">Mass</th>
+      <th>Drag</th>
+      <th style="text-align: right">Range</th>
+      <th style="text-align: left">Power Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><a href="#reflectron-dp-10">Reflectron DP-10</a></td>
+      <td style="text-align: right">80</td>
+      <td style="text-align: left">0.005ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: right">500ÿkm</td>
+      <td style="text-align: left">0.01ÿe/s</td>
+      <td style="text-align: left">Activated on mission start. Not damaged by atmospheric flight</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#communotron-16">Communotron 16</a></td>
+      <td style="text-align: right">150</td>
+      <td style="text-align: left">0.005ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: right">2500ÿkm</td>
+      <td style="text-align: left">0.13ÿe/s</td>
+      <td style="text-align: left">ÿ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#commtech-exp-vr-2t">CommTech EXP-VR-2T</a></td>
+      <td style="text-align: right">550</td>
+      <td style="text-align: left">0.02ÿtons</td>
+      <td>0.0</td>
+      <td style="text-align: right">3000ÿkm</td>
+      <td style="text-align: left">0.18ÿe/s</td>
+      <td style="text-align: left">ÿ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#communotron-32">Communotron 32</a></td>
+      <td style="text-align: right">150</td>
+      <td style="text-align: left">0.01ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: right">5000ÿkm</td>
+      <td style="text-align: left">0.6ÿe/s</td>
+      <td style="text-align: left">ÿ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">KSC Mission Control</td>
+      <td style="text-align: right">ÿ</td>
+      <td style="text-align: left">ÿ</td>
+      <td>ÿ</td>
+      <td style="text-align: right">75,000ÿkm</td>
+      <td style="text-align: left">ÿ</td>
+      <td style="text-align: left">Command Station</td>
+    </tr>
+  </tbody>
+</table>
+
+<!--All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.-->
+
+<h3 id="reflectron-dp-10">Reflectron DP-10</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_dp10.png" alt="Picture of Reflectron DP-10" /></p>
+
+  <p class="blurb">The Reflectron DP-10 is a lightweight omnidirectional antenna. Its omnidirectional nature and its ability to function in atmosphere even at high speeds make it an excellent choice for launches and landings, but its short range means it rapidly becomes useless outside low Kerbin orbit. Unlike other antennas, the DP-10 is active by default, although this state can be toggled in the antenna&#8217;s right-click menu.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Flight_Control">Flight Control</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Parabolic Industries</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>80</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.005 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.01 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>500 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Any line of sight to KSC Mission Control, if below 150 km altitude</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Does not break in atmospheric flight.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="communotron-16">Communotron 16</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_com16.png" alt="Picture of Communotron 16" /></p>
+
+  <p class="blurb">As in the stock game, the Communotron 16 is the starting omnidirectional antenna, essential for transmitting science from those early flights. It also forms the backbone of most players&#8217; low-orbit communications networks until the CommTech EXP-VR-2T and Communotron 32 are researched.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Start">None</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Ionic Protonic Electronics</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>150</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.005 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.13 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>2500 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Low Kerbin Orbit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum ram pressure when deployed</td>
+        <td>6 kN/m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at sea level</td>
+        <td>99 m/s</td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at 10 km</td>
+        <td>269 m/s</td>
+      </tr>
+      <tr>
+        <td>Minimum safe altitude at 2300 m/s</td>
+        <td>32 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="commtech-exp-vr-2t">CommTech EXP-VR-2T</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_expvr2t.png" alt="Picture of EXP-VR-2T" /></p>
+
+  <p class="blurb">The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron series when retracted, but slightly larger when deployed. It is slightly more powerful than the Communotron 16.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics">Specialized Electrics</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>AIES Aerospace</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>150</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.005 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.13 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>3000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Low Kerbin Orbit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum ram pressure when deployed</td>
+        <td>6 kN/m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at sea level</td>
+        <td>99 m/s</td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at 10 km</td>
+        <td>269 m/s</td>
+      </tr>
+      <tr>
+        <td>Minimum safe altitude at 2300 m/s</td>
+        <td>32 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="communotron-32">Communotron 32</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_com32.png" alt="Picture of Communotron 32" /></p>
+
+  <p class="blurb">The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past kerbosynchonous orbit and filling many moons&#8217; spheres of influence. However, it consumes a lot of energy when active.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics">Large Electrics</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Ionic Protonic Electronics</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>150</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.01 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.6 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>5000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Near-Kerbin space, synchronous orbit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum ram pressure when deployed</td>
+        <td>3 kN/m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at sea level</td>
+        <td>70 m/s</td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at 10 km</td>
+        <td>190 m/s</td>
+      </tr>
+      <tr>
+        <td>Minimum safe altitude at 2300 m/s</td>
+        <td>35 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h2 id="dish-antennas">Dish Antennas</h2>
+
+<!-- Yes, the non-breaking spaces are necessary. Without them, when printing the table on a narrow screen, browsers won't be smart enough to realize that notes is the only column that word-wraps well, and will try to create eye-wrenching entries like 2500
+km -->
+
+<table class="data">
+  <thead>
+    <tr>
+      <th style="text-align: left">Antenna</th>
+      <th style="text-align: right">Cost</th>
+      <th style="text-align: left">Mass</th>
+      <th>Drag</th>
+      <th style="text-align: left">Cone</th>
+      <th style="text-align: right">Range</th>
+      <th style="text-align: left">Power Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><a href="#comms-dts-m1">Comms DTS-M1</a></td>
+      <td style="text-align: right">100</td>
+      <td style="text-align: left">0.03ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: left">45ø</td>
+      <td style="text-align: right">50,000ÿkm</td>
+      <td style="text-align: left">0.82ÿe/s</td>
+      <td style="text-align: left">ÿ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#reflectron-kr-7">Reflectron KR-7</a></td>
+      <td style="text-align: right">100</td>
+      <td style="text-align: left">0.5ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: left">25ø</td>
+      <td style="text-align: right">90,000ÿkm</td>
+      <td style="text-align: left">0.82ÿe/s</td>
+      <td style="text-align: left">Not damaged by atmospheric flight</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#communotron-88-88">Communotron 88-88</a></td>
+      <td style="text-align: right">900</td>
+      <td style="text-align: left">0.025ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: left">0.06ø</td>
+      <td style="text-align: right">40Mÿkm</td>
+      <td style="text-align: left">0.93ÿe/s</td>
+      <td style="text-align: left">ÿ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#reflectron-kr-14">Reflectron KR-14</a></td>
+      <td style="text-align: right">100</td>
+      <td style="text-align: left">1.0ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: left">0.04ø</td>
+      <td style="text-align: right">60Mÿkm</td>
+      <td style="text-align: left">0.93ÿe/s</td>
+      <td style="text-align: left">Not damaged by atmospheric flight</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#commtech-1">CommTech-1</a></td>
+      <td style="text-align: right">800</td>
+      <td style="text-align: left">1.0ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: left">0.006ø</td>
+      <td style="text-align: right">350Mÿkm</td>
+      <td style="text-align: left">2.6ÿe/s</td>
+      <td style="text-align: left">Not damaged by atmospheric flight</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><a href="#reflectron-gx-128">Reflectron GX-128</a></td>
+      <td style="text-align: right">800</td>
+      <td style="text-align: left">0.5ÿtons</td>
+      <td>0.2</td>
+      <td style="text-align: left">0.005ø</td>
+      <td style="text-align: right">400Mÿkm</td>
+      <td style="text-align: left">2.8ÿe/s</td>
+      <td style="text-align: left">ÿ</td>
+    </tr>
+  </tbody>
+</table>
+
+<!--All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.-->
+
+<h3 id="comms-dts-m1">Comms DTS-M1</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_dtsm1.png" alt="Picture of Comms DTS-M1" /></p>
+
+  <p class="blurb">The Comms DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone makes it perfect for maintaining contact with multiple satellites within Kerbin&#8217;s sphere of influence.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Science_Tech">Science Tech</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Ionic Symphonic Protonic Electronics</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.03 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.82 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>50,000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Minmus</td>
+      </tr>
+      <tr>
+        <td>Cone Diameter</td>
+        <td>45ø</td>
+      </tr>
+      <tr>
+        <td>Cone covers Kerbin at</td>
+        <td>1600 km</td>
+      </tr>
+      <tr>
+        <td>Cone covers kerbosynchronous orbit at</td>
+        <td>9100 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum ram pressure when deployed</td>
+        <td>6 kN/m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at sea level</td>
+        <td>99 m/s</td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at 10 km</td>
+        <td>269 m/s</td>
+      </tr>
+      <tr>
+        <td>Minimum safe altitude at 2300 m/s</td>
+        <td>32 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="reflectron-kr-7">Reflectron KR-7</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_refl7.png" alt="Picture of Reflectron KR-7" /></p>
+
+  <p class="blurb">The Reflectron KR-7 is the second short-range antenna available from RemoteTech. It has a longer range than the Comms DTS-M1, making it well-suited for spacecraft beyond Minmus&#8217;s orbit. However, its narrow cone reduces its effectiveness at the Mun&#8217;s distance or closer. The Reflectron KR-7 is too sturdy to be ripped off by atmospheric flight, so if properly targeted it can replace the Reflectron DP-10 as a launch antenna.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Electrics">Electrics</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Parabolic Industries</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.5 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.82 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>90,000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Kerbin sphere of influence</td>
+      </tr>
+      <tr>
+        <td>Cone Diameter</td>
+        <td>25ø</td>
+      </tr>
+      <tr>
+        <td>Cone covers Kerbin at</td>
+        <td>2800 km</td>
+      </tr>
+      <tr>
+        <td>Cone covers kerbosynchronous orbit at</td>
+        <td>16,000 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Does not break in atmospheric flight.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="communotron-88-88">Communotron 88-88</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_com88-88.png" alt="Picture of Communotron 88-88" /></p>
+
+  <p class="blurb">The Communotron 88-88 is by far the lightest interplanetary antenna. It can easily reach all the inner planets, and can even contact Dres when it is on the same side of the sun as Kerbin. However, its narrow cone means that players will have to point it at a specific satellite if they wish to make course corrections while en route to Eve or Duna.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Electronics">Electronics</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Ionic Protonic Electronics</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>1100</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.025 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.93 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>40,000,000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Duna (all times), Dres (same side of sun only)</td>
+      </tr>
+      <tr>
+        <td>Cone Diameter</td>
+        <td>0.06ø</td>
+      </tr>
+      <tr>
+        <td>Cone covers Kerbin at</td>
+        <td>1,100,000 km</td>
+      </tr>
+      <tr>
+        <td>Cone covers kerbosynchronous orbit at</td>
+        <td>6,600,000 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum ram pressure when deployed</td>
+        <td>6 kN/m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at sea level</td>
+        <td>99 m/s</td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at 10 km</td>
+        <td>269 m/s</td>
+      </tr>
+      <tr>
+        <td>Minimum safe altitude at 2300 m/s</td>
+        <td>32 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="reflectron-kr-14">Reflectron KR-14</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_refl14.png" alt="Picture of Reflectron KR-14" /></p>
+
+  <p class="blurb">The Reflectron KR-14 is an intermediate-range interplanetary antenna. It can easily reach all the inner planets as well as Dres. Like the Communotron-88, the KR-14 has a narrow cone and will have difficulty &#8220;seeing&#8221; communications satellites if pointed directly at Kerbin from too close a range.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics">Large Electrics</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Parabolic Industries</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>100</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>1.0 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>0.93 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>60,000,000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Dres (all times), Jool (same side of sun only), Eeloo (periapsis and same side of sun only)</td>
+      </tr>
+      <tr>
+        <td>Cone Diameter</td>
+        <td>0.04ø</td>
+      </tr>
+      <tr>
+        <td>Cone covers Kerbin at</td>
+        <td>1,700,000 km</td>
+      </tr>
+      <tr>
+        <td>Cone covers kerbosynchronous orbit at</td>
+        <td>9,900,000 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Does not break in atmospheric flight.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="commtech-1">CommTech-1</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_ct1.png" alt="Picture of CommTech-1" /></p>
+
+  <p class="blurb">The CommTech-1 is the first antenna capable of returning signals to Kerbin from the outer solar system. Despite the in-game description, it can reach any planet available in version 0.23 of the game, even Eeloo at apoapsis. However, it has an extremely narrow cone; players should avoid using the dish in cone mode until they pass the orbit of Dres. Even a satellite in orbit around Jool may have occasional connection problems when using cone mode, as it can approach within 52 million km of Kerbin.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics">Specialized Electrics</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>AIES Aerospace</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>800</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>1.0 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>2.60 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>350,000,000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Eeloo (all times)</td>
+      </tr>
+      <tr>
+        <td>Cone Diameter</td>
+        <td>0.006ø</td>
+      </tr>
+      <tr>
+        <td>Cone covers Kerbin at</td>
+        <td>11,000,000 km</td>
+      </tr>
+      <tr>
+        <td>Cone covers kerbosynchronous orbit at</td>
+        <td>66,000,000 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Does not break in atmospheric flight.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+<h3 id="reflectron-gx-128">Reflectron GX-128</h3>
+
+<div class="antenna">
+
+  <p><img src="antenna_gx128.png" alt="Picture of GX-128" /></p>
+
+  <p class="blurb">The Reflecton-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.</p>
+
+  <table class="basic">
+    <thead>
+      <tr>
+        <th>Basic Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech to Unlock</td>
+        <td><a href="http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Advanced_Science_Tech">Advanced Science Tech</a></td>
+      </tr>
+      <tr>
+        <td>VAB Category</td>
+        <td>Science Parts</td>
+      </tr>
+      <tr>
+        <td>Manufacturer</td>
+        <td>Parabolic Industries</td>
+      </tr>
+      <tr>
+        <td>Cost</td>
+        <td>800</td>
+      </tr>
+      <tr>
+        <td>Mass</td>
+        <td>0.5 tons</td>
+      </tr>
+      <tr>
+        <td>Drag</td>
+        <td>0.2</td>
+      </tr>
+      <tr>
+        <td>Comlink power</td>
+        <td>2.80 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science power</td>
+        <td>50 charge/s</td>
+      </tr>
+      <tr>
+        <td>Science efficiency</td>
+        <td>7.5 charge/Mit</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="xmit">
+    <thead>
+      <tr>
+        <th>Transmission Properties</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum Range</td>
+        <td>400,000,000 km</td>
+      </tr>
+      <tr>
+        <td>Reach</td>
+        <td>Eeloo (all times)</td>
+      </tr>
+      <tr>
+        <td>Cone Diameter</td>
+        <td>0.005ø</td>
+      </tr>
+      <tr>
+        <td>Cone covers Kerbin at</td>
+        <td>14,000,000 km</td>
+      </tr>
+      <tr>
+        <td>Cone covers kerbosynchronous orbit at</td>
+        <td>79,000,000 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="atm">
+    <thead>
+      <tr>
+        <th>Atmosphere Performance</th>
+        <th>ÿ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maximum ram pressure when deployed</td>
+        <td>6 kN/m<sup>2</sup></td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at sea level</td>
+        <td>99 m/s</td>
+      </tr>
+      <tr>
+        <td>Maximum safe speed at 10 km</td>
+        <td>269 m/s</td>
+      </tr>
+      <tr>
+        <td>Minimum safe altitude at 2300 m/s</td>
+        <td>32 km</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+</div>
+
+
+</div>
+
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-48324963-1', 'cilph.github.io');
+	ga('send', 'pageview');
+</script>
+</body>
+</html>

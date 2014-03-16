@@ -1,0 +1,186 @@
+﻿<html>
+<head>
+	<meta charset="utf-8">
+	<link href="/stylesheets/main.css" rel="stylesheet">
+	<link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+	<title>Basic Rules</title>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse" role="navigation">
+	<div class="container">
+		<div class="navbar-header">
+		  <button hidden="true" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-data">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand" href="">RemoteTech</a>
+		</div>
+		<div class="" id="navbar-data">
+			<ul class="nav navbar-nav">
+				
+					
+				
+					
+				
+					
+						<li><a href="/guide/">Player's Guide</a></li>
+					
+				
+					
+				
+					
+				
+					
+				
+					
+						<li><a href="/modders/">API</a></li>
+					
+				
+					
+						<li><a href="/tutorials/">Tutorials</a></li>
+					
+				
+			</ul>
+		</div>
+	</div>
+</nav>
+<script>
+<!-- Let's respect those mobile users who disable javascript. -->
+$("#navbar-data").addClass("collapse navbar-collapse");
+$(".navbar-toggle").prop("hidden", false);
+</script>
+
+
+
+<div class="container" role="main">
+
+<div class="header">
+	<div class="logo">
+	</div>
+	RemoteTech<br />
+	<span class="sub">"beep... beep... beep... beep..." - Leonard Nimoy</span>
+</div>
+
+<ul class="buttonrow">
+	<li><a href="#" class="btn btn-primary" role="button">Source &raquo;</a></li>
+	<li><a href="#" class="btn btn-success" role="button">Download &raquo;</a></li>
+	<li class="right">
+		<a href="#" class="btn btn-warning" role="button">Donate</a>
+	</li>
+</ul>
+
+<p class="alert alert-danger"><strong>Oh shit son!</strong> This page is still under development!</p>
+
+<h1 id="playing-remotetech">Playing RemoteTech</h1>
+
+<div class="toc">
+<ul id="markdown-toc">
+  <li><a href="#playing-remotetech">Playing RemoteTech</a>    <ul>
+      <li><a href="#antenna-configuration">Antenna Configuration</a></li>
+      <li><a href="#the-map-view">The Map View</a></li>
+      <li><a href="#connection-rules">Connection Rules</a>        <ul>
+          <li><a href="#line-of-sight">Line of Sight</a></li>
+          <li><a href="#range">Range</a></li>
+          <li><a href="#targeting">Targeting</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+</div>
+
+<p>To play RemoteTech, you must not only manage the antennas on your current ship, selecting the right antenna(s) for the right situation, but you must also manage your overall communications network, ensuring that every craft has a link to Mission Control when it needs it.</p>
+
+<h2 id="antenna-configuration">Antenna Configuration</h2>
+
+<p>With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click &#8220;Activate&#8221; (or &#8220;Deactivate&#8221;). Antennas can also be activated or deactivated using action groups, or preset by right-clicking on them in the VAB. Activating an antenna counts as a command: you <strong>cannot</strong> activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate your last antenna at your peril!</p>
+
+<p>Omnidirectional antennas will automatically <a href="#connection-rules">connect</a> to any antenna they can as soon as they are activated. Dish antennas must also be given a <a href="#targeting">target</a>. Targets may be selected before or after the dish is activated. To set a target, right-click on the antenna and click the button marked &#8220;Target: None&#8221;. This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use <a href="#target-cone">Cone Mode</a>, a ship or &#8220;Mission Control&#8221; for a <a href="#target-direct">Direct Link</a>, or <a href="#target-active">Active Vessel</a> to always target the ship you are flying. To create a link, the other ship may need to target your ship as well.
+<img src="targetselector.png" alt="IMAGE: target selection window" /></p>
+
+<p>You do not need to place your satellite in any special orientation to use a dish antenna. As long as the targets are set correctly, the dish will connect, even if it is &#8220;really&#8221; facing the other way!</p>
+
+<p>If necessary, you can send an EVA to open, close, or retarget an antenna from the outside. This is usually the only way to restore contact with a probe whose antennas are all shut down. Simply float up to the antenna, right click on it, and select the command you want to force.</p>
+
+<h2 id="the-map-view">The Map View</h2>
+
+<p>RemoteTech adds an overlay to the map view to display the state of your communication network. The overlay may be toggled with the bottons located on the lower right: </p>
+
+<dl>
+  <dt><img src="icon_connection.png" alt="IMAGE: First button" /></dt>
+  <dd>This button will highlight the links used in the working connection (if any) as a green line.</dd>
+  <dt><img src="icon_cones.png" alt="IMAGE: Second button" /></dt>
+  <dd>This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships off the edge of the screen will not be shown.</dd>
+  <dt><img src="icon_links.png" alt="IMAGE: Third button" /></dt>
+  <dd>This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links.</dd>
+  <dt><img src="icon_targets.png" alt="IMAGE: Fourth button" /></dt>
+  <dd>This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are deactivated. Clicking on any dish in the list will pull up the target selection window for that dish.</dd>
+</dl>
+
+<p><img src="rtmapview.png" alt="IMAGE: map view, with each type of overlay (active, cones, omni, dish, command center) labeled" /></p>
+
+<p>The Kerbal Space Center and any remote command stations will be marked on the map with red dots. This overlay cannot be toggled.</p>
+
+<p>RemoteTech also adds one button to the right side of the map view, below the planet info/ship crew button. Clicking this button will open a list of loaded ships; clicking on any ship on the list will center the map view on that ship.</p>
+
+<h2 id="connection-rules">Connection Rules</h2>
+
+<p>To have a <a href="../../#connections">working connection</a> to the Kerbal Space Center (KSC) or a <a href="../../#command-stations">remote command station</a>, there must be an unbroken chain of links between satellites and between a satellite and the command center. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing <a href="../comp/#signal-delay">signal delay</a>. There is no limit to the number of links in the chain, but <em>all</em> links must be valid to establish a connection. An example with three links is shown below.</p>
+
+<p><img src="../connectiondemo1.jpg" alt="A relay sends a transmission from the far side of the Mun towards Kerbin" title="Mun polar relay" class="pairedimages" /> 
+<img src="../connectiondemo2.jpg" alt="A comsat gets the transmission from the Mun and forwards it to KSC" title="Kerbin comsat" class="pairedimages" /></p>
+
+<p class="caption"><strong>Example:</strong> this probe in low Munar orbit can&#8217;t link to the Kerbal Space Center (KSC) because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay can&#8217;t link to KSC, either, because KSC is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSC. Therefore, the probe has a working connection with KSC, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.</p>
+
+<p>A link will be formed between two satellites if, and only if, three conditions are met. For the purposes of these rules, Mission Control at the Kerbal Space Center (KSC) is considered a grounded satellite with a <a href="../parts/#omnidirectional-antennas">special omnidirectional antenna</a>.</p>
+
+<h3 id="line-of-sight">Line of Sight</h3>
+
+<p>The first condition is that there must not be a planet or moon blocking the line of sight between the two satellites. Line of sight calculations assume all planets are perfect spheres, so mountains and other terrain will not affect line of sight.</p>
+
+<h3 id="range">Range</h3>
+
+<p>The second condition is that <em>both</em> satellites must have an antenna that can reach as far as the other satellite. A special case is that a link to KSC is impossible unless the satellite establishing the link is within <a href="../parts/#omnidirectional-antennas">75,000 km</a> of Kerbin. Any connections from farther out will need to go through at least one relay.</p>
+
+<p><strong>Example:</strong> a probe with a Communotron 16 antenna (range 2500 km) and a probe with a CommTech-1 dish (350,000,000 km) are located 3000 km apart. Although the CommTech-1 is one of the most powerful dishes in RemoteTech, the two probes cannot link because the first probe can never link to anything more than 2500 km away &#8211; unless, of course, it has a longer-range antenna in addition to the Communotron 16.</p>
+
+<h3 id="targeting">Targeting</h3>
+
+<p>The third, and most complex, condition applies only to dish antennas. To establish a link, a dish with sufficient range must be <em>targeted</em> at the other satellite, either directly or indirectly. If the other satellite is also trying to connect through a dish rather than an omnidirectional antenna, it must target the first satellite as well. There are three ways to target a satellite:</p>
+
+<!-- What's going on here? The kramdown manual says "The column number of the first non-space character which appears after a definition marker on the same line specifies the indentation that has to be used for the following lines of the definition.", but no style information gets applied! -->
+
+<dl>
+  <dt>Direct Link</dt>
+  <dd id="target-direct">if the dish&#8217;s target is set to a specific satellite, or to KSC Mission Control, it will maintain a link to that target as long as the line of sight and range conditions are met. A dish in Direct Link mode cannot be used to make connections with anything other than its specific target. Direct link mode is recommended for situations where the other two modes won&#8217;t work, because updating direct links as ships move around can be a lot of work.</dd>
+  <dt>Cone</dt>
+  <dd id="target-cone">if the dish&#8217;s target is set to a planet or moon, it can simultaneously maintain a link to all targets that are within a cone centered on that planet <em>and</em> that are within that planet or moon&#8217;s sphere of influence. The <a href="../parts/#dish-antennas">list of parts</a> includes the cone diameter for each dish, as well as the minimum distance the dish needs to be from Kerbin to see anything to the side of the planet or to see anything in synchronous orbit (if you&#8217;re too close, you&#8217;ll get the situation in the picture). Cone mode is recommended for links to relay satellites orbiting another planet or moon, as it will automatically choose the best relay at any moment. 
+<img src="../conetooclose.png" alt="IMAGE: Using too narrow a cone" /></dd>
+  <dt>Active Vessel</dt>
+  <dd id="target-active">if the dish&#8217;s target is set to &#8220;Active Vessel&#8221;, it will attempt to contact the ship the player is currently flying as if that ship had been selected using Direct Link. Active Vessel targeting is meant for dedicated communications satellites or <a href="../../#command-stations">remote command stations</a>, where it prevents the player from having to manually re-target all their comsats every time they focus on a different mission. Active Vessel is best suited for contacting isolated ships where there is not enough demand for a dedicated link. It should <strong>not</strong> be used if the player wants to relay a transmission through a third ship, or you may run into the common situation below:</dd>
+</dl>
+
+<p><img src="../activerelaybug.png" alt="A common situation in which active vessel is not appropriate" /></p>
+
+<p class="caption"><strong>Example:</strong> a mothership is in orbit around a planet and has just detached a lander. Both mothership and lander are equipped with omnidirectional antennas; the mothership also has a dish that is pointed at Kerbin in cone mode. In orbit around Kerbin is a comsat with one of its dishes set to Active Vessel. If the player is controlling the lander, the comsat tries to link directly to it, bypassing the mothership entirely. The lander&#8217;s antenna is too short to link to the comsat, and the mothership can&#8217;t link because the comsat isn&#8217;t trying to link to the mothership. To establish a connection, the comsat needs to either target the mothership with a <strong>direct link</strong>, or target the planet with a <strong>cone</strong>. Either would create a link between comsat and mothership, letting the mothership act as a relay for the lander.</p>
+
+
+</div>
+
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-48324963-1', 'cilph.github.io');
+	ga('send', 'pageview');
+</script>
+</body>
+</html>
