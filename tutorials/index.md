@@ -13,11 +13,14 @@ navbar: true
 
 {% include toc.html %}
 
-##Launching Your First Satellite
+##[Launching Your First Satellite](firstsat/)
 
 ##Setting Up Satellite Constellations
 
 ###General Satellite Design Tips
+
+Requires familiarity with target groups
+{: .alert .alert-danger}
 
 ###"Realistic" Kerbosynchronous Relay
 
@@ -35,7 +38,10 @@ Need Sandworm's permission to use: http://forum.kerbalspaceprogram.com/threads/5
 
 ###Trans-Munar and Interplanetary Relay Networks
 
+Requires familiarity with target groups
+{: .alert .alert-danger}
+
 ##Using the Flight Computer Effectively
 
-###Example Re-Entry Sequence
+###[Kerbin Re-Entry](reentry/)
 
