@@ -12,7 +12,7 @@ layout: content
 
 {% include toc.html %}
 
-RemoteTech adds two new displays below the mission clock in the upper left corner. The first is the connection status. "N/A" means the ship does not have a probe core. "Local Control" means that the ship has either a crewed pod or a [non-RemoteTech-compatible](../../modders/) probe core, and you can control the ship with no delay as in the stock game. "D+" followed by a number means the ship has a working connection to Mission Control, with the number being the signal delay in seconds. If it reads "No connection", you can't send commands at all.
+RemoteTech adds two new displays below the mission clock in the upper left corner. The first is the connection status. "N/A" means the ship does not have a probe core. "Local Control" means that the ship has either a crewed pod or a [non-RemoteTech-compatible](../../modders/) probe core, and you can control the ship with no delay as in the stock game. "D+" followed by a number means the ship has a working connection to Mission Control, with the number being the signal delay in seconds. "No connection" means you can't send commands at all.
 
 The second element is a colored calculator icon -- green for a [working connection](../../#connections), red for a broken connection, and yellow for local control. Clicking the icon with a working connection or no connection pulls up the flight computer window. You can't use the flight computer if you have local control.
 
