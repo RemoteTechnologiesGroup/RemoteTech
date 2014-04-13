@@ -52,27 +52,17 @@ Again, placement doesn't have to be exact. As long as you're within about 20&deg
 
 If you don't have a pre-existing satellite network, all four possible burns will be out of contact with KSC. Once you're satisfied with your maneuver node, open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until you next fly over KSC). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. Once the satellite comes back over the horizon, you'll be able to control it manually again.
 
-Once you are approaching apoapsis (and are in contact with KSC, thanks to your careful maneuver timing), circularize your orbit as usual. Your goal is to set your period as close to 6 Earth hours (1 Kerbin day) as you can. It does not matter if your orbit is perfectly circular; it does not matter if your orbit is perfectly uninclined. **The orbital period is what makes a kerbosynchronous orbit work.** Write down your final period for later use.
+Once you are approaching apoapsis (and are in contact with KSC, thanks to your careful maneuver timing), circularize your orbit as usual. Your goal is to set your period as close to 6 Earth hours (1 Kerbin day) as you can . It does not matter if your orbit is perfectly circular; it does not matter if your orbit is perfectly uninclined. **The orbital period is what makes a kerbosynchronous orbit work.** Write down your final period for later use.
 
 Once you've achieved your final orbit, you're done. If you're using a dish antenna to contact the KSC, switch its target to Kerbin. This will let the remaining satellites in the network benefit from your first satellite's superior coverage.
 
 ###Remaining Satellites
 
-Fortunately, the first satellite was the hardest, because now you can use Kerbal Space Program's built-in tools to place your remaining satellites. Launch each satellite into low Kerbin orbit as before. You want to have a dish targeting your previously launched satellites, rather than KSC directly, to get improved coverage. If you like, you can set up your satellite's sibling connections while in low Kerbin orbit. Just make sure to have the previous satellites point a dish at your new satellite as well!
+Fortunately, the first satellite was the hardest, because now you can use Kerbal Space Program's built-in tools to place your remaining satellites. Launch each satellite into low Kerbin orbit as before. Set up all your satellite's sibling connections while in low Kerbin orbit, making sure to have the previous satellites point a dish at your new satellite as well. This will let you keep in touch with your new satellite for a much larger portion of its orbit than it it relied on a direct line to KSC.
 
 Use the map view to select the previous satellite in the network as the target. Set a maneuver node that reaches an apoapsis of 2870&nbsp;km; a rendezvous marker should appear, telling you how far your satellite will be from the target at apoapsis. Adjust the maneuver node's position until this distance equals 6008&nbsp;km (for a 3-satellite network) or 4906&nbsp;km (for a 4-satellite network). If the maneuver node is in one of your network's blind spots, use the flight computer to handle the burn.
 
-Once your satellite reaches apoapsis, circularize your orbit. This time, your goal is to get **exactly** the same period as your first satellite. It is more important that your satellites stay in formation with each other than that they stay synchronized with Kerbin's rotation. RCS can help with this, as can right-clicking on your engine and setting the throttle limiter to a very low value.
-
-The precision with which you need to match the period depends on how much drift between satellites you're willing to tolerate:
-
-Period Error        | Drift Rate             | Time to drift 20&deg;
---------------------|:----------------------:|:-------------------------:
-0.01 Earth seconds  | 0.00017&deg; per orbit | 82.2 Earth years (282 Kerbin years)
-0.1  Earth seconds  | 0.0017&deg; per orbit  | 8.2 Earth years (28.2 Kerbin years)
-1    Earth seconds  | 0.017&deg; per orbit   | 300 Earth days (2 Kerbin years 347 days)
-5    Earth seconds  | 0.083&deg; per orbit   | 60 Earth days (240 Kerbin days)
-{: .data}
+Once your satellite reaches apoapsis, circularize your orbit. This time, your goal is to get **exactly** the same period as your first satellite (to within [high tolerances](#appendix-orbit-tolerances)). It is more important that your satellites stay in formation with each other than that they stay synchronized with Kerbin's rotation. RCS can help with this, as can right-clicking on your engine and setting the throttle limiter to a very low value.
 
 Once you are happy with your orbit, make sure all dishes have the targets they need to, and that all *previously* launched satellites that need to target your new satellite have done so. You're done!
 
@@ -92,37 +82,39 @@ Network Size | 1st Satellite East of KSC | 1st Satellite West of KSC
 -------------|:-------------------------:|:-------------------------:
 3 satellites | 180&deg; from KSC         | 60&deg; after KSC
 4 satellites | 135&deg; after KSC        | 45&deg; after KSC
+{: .data}
 
 Again, placement doesn't have to be exact. As long as you're within about 20&deg; or so, the worst that will happen is that your network will look a little lopsided.
 
 If you don't have a pre-existing satellite network, all four possible burns will be out of contact with KSC. Once you're satisfied with your maneuver node, open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until you next fly over KSC). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. Once the satellite comes back over the horizon, you'll be able to control it manually again.
 
-Once you are approaching apoapsis (and are in contact with KSC, thanks to your careful maneuver timing), circularize your orbit as usual. Your goal is to set your period as close to 6 Earth hours (1 Kerbin day) as you can. It does not matter if your orbit is perfectly circular; it does not matter if your orbit is perfectly uninclined. **The orbital period is what makes a kerbosynchronous orbit work.** Write down your final period for later use.
+Once you've made the burn, double-check that the period is close to 4 hours or 4.5 hours. Up to a minute of error won't matter, since you only need to worry about the drift over 3-4 orbits. If your period is really inaccurate, you will need to arrange a correction burn. As long as you do it before (or just after) your first apoapsis, this method will still work.
 
-Once you've achieved your final orbit, you're done. If you're using a dish antenna to contact the KSC, switch its target to Kerbin. This will let the remaining satellites in the network benefit from your first satellite's superior coverage.
+###Deployment
 
-###Remaining Satellites
+Once you are approaching apoapsis (and are in contact with KSC, thanks to your careful maneuver timing), deploy whatever antennas you need for your first satellite and your rocket to be able to maintain contact with KSC *independently*, then release the satellite. 
 
-Fortunately, the first satellite was the hardest, because now you can use Kerbal Space Program's built-in tools to place your remaining satellites. Launch each satellite into low Kerbin orbit as before. You want to have a dish targeting your previously launched satellites, rather than KSC directly, to get improved coverage. If you like, you can set up your satellite's sibling connections while in low Kerbin orbit. Just make sure to have the previous satellites point a dish at your new satellite as well!
+You may need to make some small corrections to your rocket's orbit to keep the period the same after the satellite pushes off. Do so, then switch to the satellite.
 
-Use the map view to select the previous satellite in the network as the target. Set a maneuver node that reaches an apoapsis of 2870&nbsp;km; a rendezvous marker should appear, telling you how far your satellite will be from the target at apoapsis. Adjust the maneuver node's position until this distance equals 6008&nbsp;km (for a 3-satellite network) or 4906&nbsp;km (for a 4-satellite network). If the maneuver node is in one of your network's blind spots, use the flight computer to handle the burn.
+Once your satellite reaches apoapsis, circularize its orbit using its built-in engine. Your goal is to set your period as close to 6 Earth hours (1 Kerbin day) as you can. It does not matter if your orbit is perfectly circular; it does not matter if your orbit is perfectly uninclined. **The orbital period is what makes a kerbosynchronous orbit work.** Write down your final period for later use.
 
-Once your satellite reaches apoapsis, circularize your orbit. This time, your goal is to get **exactly** the same period as your first satellite. It is more important that your satellites stay in formation with each other than that they stay synchronized with Kerbin's rotation. RCS can help with this, as can right-clicking on your main engine and setting the throttle limiter to a very low value.
+Once you've achieved your final orbit, all that's left is setting up the antennas. If you're using a dish antenna to contact the KSC, switch its target to Kerbin. This will let the remaining satellites in the network benefit from your first satellite's superior coverage.
 
-The precision with which you need to match the period depends on how much drift between satellites you're willing to tolerate:
+The rocket's orbital period is set so that it will next return to apoapsis 120&deg; (for a 3-satellite network) or 90&deg; (for a 4-satellite network) behind the satellite you just launched. Every time the rocket approaches apoapsis, release another satellite and circularize its orbit. This time, your goal is to get **exactly** the same period as your first satellite (to within [high tolerances](#appendix-orbit-tolerances)). It is more important that your satellites stay in formation with each other than that they stay synchronized with Kerbin's rotation. RCS can help with this, as can right-clicking on your main engine and setting the throttle limiter to a very low value.
 
-Period Error        | Drift Rate                | Time to drift 20&deg;
---------------------|:-------------------------:|:-------------------------:
-0.01 Kerbin seconds | 0.000042&deg; per orbit   | 1127 Kerbin years
-0.01 Earth seconds  | 0.00017&deg; per orbit    | 1315 Earth years
-0.1  Kerbin seconds | 0.00042&deg; per orbit    | 113 Kerbin years
-0.1  Earth seconds  | 0.0017&deg; per orbit     | 132 Earth years
-1    Kerbin seconds | 0.0042&deg; per orbit     | 11.3 Kerbin years
-1    Earth seconds  | 0.017&deg; per orbit      | 13.2 Earth years
-5    Kerbin seconds | 0.021&deg; per orbit      | 2 Kerbin years 108 days
-5    Earth seconds  | 0.083&deg; per orbit      | 2 Earth years 230 days
+Don't forget to set up the antennas for each satellite, including two-way connections between siblings!
 
-Once you are happy with your orbit, make sure all dishes have the targets they need to, and that all *previously* launched satellites that need to target your new satellite have done so. You're done!
+##Appendix: Orbit Tolerances
+
+The precision with which you need to match the periods of your KEO satellites depends on how much drift between satellites you're willing to tolerate:
+
+Period Error        | Drift Rate             | Time to drift 20&deg;
+--------------------|:----------------------:|:-------------------------:
+0.01 Earth seconds  | 0.00017&deg; per orbit | 82.2 Earth years (282 Kerbin years)
+0.1  Earth seconds  | 0.0017&deg; per orbit  | 8.2 Earth years (28.2 Kerbin years)
+1    Earth seconds  | 0.017&deg; per orbit   | 300 Earth days (2 Kerbin years 347 days)
+5    Earth seconds  | 0.083&deg; per orbit   | 60 Earth days (240 Kerbin days)
+{: .data}
 
 #Optional Steps
 
