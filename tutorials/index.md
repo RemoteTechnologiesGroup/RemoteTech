@@ -22,9 +22,7 @@ navbar: true
 Requires familiarity with target groups
 {: .alert .alert-danger}
 
-###"Realistic" Kerbosynchronous Relay
-
-This one I can write myself, since I planned it pretty carefully for my own career save
+###["Realistic" Kerbosynchronous Relay](keo/)
 
 ###Medium-Altitude Omni Network
 

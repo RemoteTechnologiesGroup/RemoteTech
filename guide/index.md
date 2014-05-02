@@ -11,10 +11,22 @@ navbar: true
 
 #RemoteTech Player's Guide
 
-For details on how to play, follow one of the links below.
+{::comment}
+Can't generate this automatically at present
+{:/comment}
 
-[RemoteTech Basics](overview/)
-
-[The Flight Computer](comp/)
-
-[List of Parts](parts/)
+<div class="toc" markdown="1">
+* [Playing RemoteTech](overview/)
+    * [Antenna Configuration](overview/#antenna-configuration)
+    * [The Map View](overview/#the-map-view)
+    * [Connection Rules](overview/#connection-rules)
+* [The Flight Computer](comp/)
+    * [Signal delay](comp/#signal-delay)
+    * [Manual delay](comp/#manual-delay)
+    * [Autopilot commands](comp/#autopilot-commands)
+* [List of Parts](parts/)
+    * [Probe Cores](parts/#probe-cores)
+    * [Omnidirectional Antennas](parts/#omnidirectional-antennas)
+    * [Dish Antennas](parts/#dish-antennas)
+{: #markdown-toc}
+</div>
