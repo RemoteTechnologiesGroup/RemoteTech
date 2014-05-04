@@ -65,6 +65,19 @@ img.pairedimages, div.pairedimages img {
 	padding: 2px;
 }
 
+/* Moderate-sized image with word wrapping */
+img.left, img.right {
+	max-width: 45%;
+	padding: 5px;
+	clear: both;
+}
+img.left {
+	float: left;
+}
+img.right {
+	float: right;
+}
+
 /* Default table style makes them illegible */
 table.data td, table.data th {
 	padding: 3px;

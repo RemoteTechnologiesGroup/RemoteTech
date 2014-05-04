@@ -42,7 +42,7 @@ KSC Mission Control |      |                 |      | 75,000&nbsp;km |          
 
 <div class="antenna" markdown="1">
 
-![Picture of Reflectron DP-10](antenna_dp10.png)
+![Picture of Reflectron DP-10](antenna_dp10_B.png)
 
 The Reflectron DP-10 is a lightweight omnidirectional antenna. Its omnidirectional nature and its ability to function in atmosphere even at high speeds make it an excellent choice for launches and landings, but its short range means it rapidly becomes useless outside low Kerbin orbit. Unlike other antennas, the DP-10 is active by default, although this state can be toggled in the antenna's right-click menu.
 {:.blurb}
@@ -218,7 +218,7 @@ Antenna           | Cost | Mass            | Drag | Cone | Range          | Powe
 
 <div class="antenna" markdown="1">
 
-![Picture of Comms DTS-M1](antenna_dtsm1.png)
+![Picture of Comms DTS-M1](antenna_dtsm1_B.png)
 
 The Comms DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone makes it perfect for maintaining contact with multiple satellites within Kerbin's sphere of influence.
 {:.blurb}
@@ -386,7 +386,7 @@ Cone covers kerbosynchronous orbit at | 9,900,000 km
 
 ![Picture of CommTech-1](antenna_ct1.png)
 
-The CommTech-1 is the first antenna capable of returning signals to Kerbin from the outer solar system. Despite the in-game description, it can reach any planet available in version 0.23 of the game, even Eeloo at apoapsis. However, it has an extremely narrow cone; players should avoid using the dish in cone mode until they pass the orbit of Dres. Even a satellite in orbit around Jool may have occasional connection problems when using cone mode, as it can approach within 52 million km of Kerbin.
+The CommTech-1 is the first antenna capable of returning signals to Kerbin from the outer solar system. Despite the in-game description, it can reach any planet available in version 0.23.5 of the game, even Eeloo at apoapsis. However, it has an extremely narrow cone; players should avoid using the dish in cone mode until they pass the orbit of Dres. Even a satellite in orbit around Jool may have occasional connection problems when using cone mode, as it can approach within 52 million km of Kerbin.
 {:.blurb}
 
 |Basic Properties

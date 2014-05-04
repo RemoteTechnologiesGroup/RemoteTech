@@ -51,8 +51,8 @@ RemoteTech also adds one button to the right side of the map view, below the pla
 
 To have a [working connection](../../#connections) to the Kerbal Space Center (KSC) or a [remote command station](../../#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing [signal delay](../comp/#signal-delay). There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below.
 
-![A relay sends a transmission from the far side of the Mun towards Kerbin](../connectiondemo1.jpg "Mun polar relay"){:.pairedimages} 
-![A comsat gets the transmission from the Mun and forwards it to KSC](../connectiondemo2.jpg "Kerbin comsat"){:.pairedimages}
+![A relay sends a transmission from the far side of the Mun towards Kerbin](connectiondemo1.jpg "Mun polar relay"){:.pairedimages} 
+![A comsat gets the transmission from the Mun and forwards it to KSC](connectiondemo2.jpg "Kerbin comsat"){:.pairedimages}
 
 **Example:** this probe in low Munar orbit can't link to the Kerbal Space Center (KSC) because the probe is on the far side of the Mun. However, it can link to a relay satellite in polar orbit. The relay can't link to KSC, either, because KSC is on the other side of the planet. However, it can link to any of several communications satellites orbiting Kerbin (for clarity, only the best connection is shown). One of these satellites can link to KSC. Therefore, the probe has a working connection with KSC, as relayed by the two intermediate satellites, even though there are nearly 1600 km of solid rock blocking a direct transmission.
 {:.caption}
@@ -82,12 +82,12 @@ Direct Link
 
 Cone
 :   {:#target-cone}if the dish's target is set to a planet or moon, it can simultaneously maintain a link to all targets that are within a cone centered on that planet *and* that are within that planet or moon's sphere of influence. The [list of parts](../parts/#dish-antennas) includes the cone diameter for each dish, as well as the minimum distance the dish needs to be from Kerbin to see anything to the side of the planet or to see anything in synchronous orbit (if you're too close, you'll get the situation in the picture). Cone mode is recommended for links to relay satellites orbiting another planet or moon, as it will automatically choose the best relay at any moment. 
-![IMAGE: Using too narrow a cone](../conetooclose.png)
+![IMAGE: Using too narrow a cone](conetooclose.png)
  
 Active Vessel
 :   {:#target-active}if the dish's target is set to "Active Vessel", it will attempt to contact the ship the player is currently flying as if that ship had been selected using Direct Link. Active Vessel targeting is meant for dedicated communications satellites or [remote command stations](../../#command-stations), where it prevents the player from having to manually re-target all their comsats every time they focus on a different mission. Active Vessel is best suited for contacting isolated ships where there is not enough demand for a dedicated link. It should **not** be used if the player wants to relay a transmission through a third ship, or you may run into the common situation below:
 
-![A common situation in which active vessel is not appropriate](../activerelaybug.png)
+![A common situation in which active vessel is not appropriate](activerelaybug.png)
 
 **Example:** a mothership is in orbit around a planet and has just detached a lander. Both mothership and lander are equipped with omnidirectional antennas; the mothership also has a dish that is pointed at Kerbin in cone mode. In orbit around Kerbin is a comsat with one of its dishes set to Active Vessel. If the player is controlling the lander, the comsat tries to link directly to it, bypassing the mothership entirely. The lander's antenna is too short to link to the comsat, and the mothership can't link because the comsat isn't trying to link to the mothership. To establish a connection, the comsat needs to either target the mothership with a **direct link**, or target the planet with a **cone**. Either would create a link between comsat and mothership, letting the mothership act as a relay for the lander.
 {:.caption}

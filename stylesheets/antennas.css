@@ -19,6 +19,8 @@ div.antenna img {
 	min-height: 200px;
 	max-height: 400px;
 	max-width: 40%;
+	padding: 2px;
+	padding-right: 5px;
 }
 
 div.antenna table {
