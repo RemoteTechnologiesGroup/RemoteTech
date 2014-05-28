@@ -33,11 +33,11 @@ namespace RemoteTech
                 {
                     return "Local Control";
                 }
-                else if (vs.Connections.Any())
+                else if (vs.Connections().Any())
                 {
                     if (RTSettings.Instance.EnableSignalDelay)
                     {
-                        return "D+ " + vs.Connections[0].Delay.ToString("F6") + "s";
+                        return "D+ " + vs.Connections().ShortestDelay().SignalDelay.ToString("F6") + "s";
                     }
                     else
                     {
@@ -61,7 +61,7 @@ namespace RemoteTech
                 {
                     return mFlightButtonYellow;
                 }
-                else if (vs.Connections.Any())
+                else if (vs.Connections().Any())
                 {
                     return mFlightButtonGreen;
                 }
@@ -74,18 +74,16 @@ namespace RemoteTech
 
         static TimeQuadrantPatcher()
         {
-            mFlightButtonGreen = GUITextureButtonFactory.CreateFromFilename("texFlightGreen.png",
-                                                                       "texFlightGreenOver.png",
-                                                                       "texFlightGreenDown.png",
-                                                                       "texFlightGreenOver.png");
-            mFlightButtonYellow = GUITextureButtonFactory.CreateFromFilename("texFlightYellow.png",
-                                                                       "texFlightYellowOver.png",
-                                                                       "texFlightYellowDown.png",
-                                                                       "texFlightYellowOver.png");
-            mFlightButtonRed = GUITextureButtonFactory.CreateFromFilename("texFlightRed.png",
-                                                                       "texFlightRed.png",
-                                                                       "texFlightRed.png",
-                                                                       "texFlightRed.png");
+            mFlightButtonGreen = GUITextureButtonFactory.CreateFromTextures(Textures.FlightComputerGreen,
+                                                                       Textures.FlightComputerGreenOver,
+                                                                       Textures.FlightComputerGreenDown,
+                                                                       Textures.FlightComputerGreenOver);
+            mFlightButtonYellow = GUITextureButtonFactory.CreateFromTextures(Textures.FlightComputerYellow,
+                                                                       Textures.FlightComputerYellowOver,
+                                                                       Textures.FlightComputerYellowDown,
+                                                                       Textures.FlightComputerYellowOver);
+            mFlightButtonRed = GUITextureButtonFactory.CreateFromTexture(Textures.FlightComputerRed);
+
             mFlightButtonGreen.fixedHeight = mFlightButtonGreen.fixedWidth = 0;
             mFlightButtonYellow.fixedHeight = mFlightButtonYellow.fixedWidth = 0;
             mFlightButtonRed.fixedHeight = mFlightButtonRed.fixedWidth = 0;
@@ -127,8 +125,7 @@ namespace RemoteTech
 
             // Set the new texture
             float old_height = tab.renderer.material.mainTexture.height;
-            Texture2D newTexture;
-            RTUtil.LoadImage(out newTexture, "texTimeQuadrant.png");
+            Texture2D newTexture = Textures.TimeQuadrant;
             newTexture.filterMode = FilterMode.Trilinear;
             newTexture.wrapMode = TextureWrapMode.Clamp;
             tab.renderer.material.mainTexture = newTexture;

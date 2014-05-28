@@ -7,20 +7,24 @@ namespace RemoteTech
 {
     public abstract class RTCore : MonoBehaviour
     {
+        private static ILogger Logger = RTLogger.CreateLogger(typeof(RTCore));
         public static RTCore Instance { get; protected set; }
-
+        public IVesselProvider Vessels { get { return vesselProvider; } }
+        public ICelestialBodyProvider Bodies { get { return celestialBodyProvider; } }
         public SatelliteManager Satellites { get; protected set; }
         public AntennaManager Antennas { get; protected set; }
         public NetworkManager Network { get; protected set; }
         public NetworkRenderer Renderer { get; protected set; }
+        public GroupManager Groups { get; protected set; }
+        protected FilterOverlay FilterOverlay { get; set; }
+        protected FocusOverlay FocusOverlay { get; set; }
+        protected TimeQuadrantPatcher TimeQuadrantPatcher { get; set; }
 
-        public event Action OnFrameUpdate = delegate { };
-        public event Action OnPhysicsUpdate = delegate { };
         public event Action OnGuiUpdate = delegate { };
+        public event Action OnFrameUpdate = delegate { };
 
-        public FilterOverlay FilterOverlay { get; protected set; }
-        public FocusOverlay FocusOverlay { get; protected set; }
-        public TimeQuadrantPatcher TimeQuadrantPatcher { get; protected set; }
+        protected VesselProvider vesselProvider;
+        protected CelestialBodyProvider celestialBodyProvider;
 
         public void Start()
         {
@@ -32,10 +36,13 @@ namespace RemoteTech
 
             Instance = this;
 
+            vesselProvider = new VesselProvider();
+            celestialBodyProvider = new CelestialBodyProvider();
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();
             Network = new NetworkManager();
             Renderer = NetworkRenderer.CreateAndAttach();
+            Groups = new GroupManager();
 
             FilterOverlay = new FilterOverlay();
             FocusOverlay = new FocusOverlay();
@@ -44,21 +51,22 @@ namespace RemoteTech
             TimeQuadrantPatcher.Patch();
             FlightUIPatcher.Patch();
 
-            RTLog.Notify("RTCore loaded successfully.");
+            Logger.Info("Loaded core.");
 
-            foreach (var vessel in FlightGlobals.Vessels)
+            foreach (var vessel in Vessels)
             {
                 Satellites.RegisterProto(vessel);
                 Antennas.RegisterProtos(vessel);
             }
+
+            Logger.Info("Loaded all vessels");
         }
 
         public void Update()
         {
             OnFrameUpdate.Invoke();
-
-            if (FlightGlobals.ActiveVessel == null || FlightGlobals.ActiveVessel.packed) return;
-            var vs = Satellites[FlightGlobals.ActiveVessel];
+            if (Vessels.ActiveVessel == null || Vessels.ActiveVessel.IsPacked) return;
+            var vs = Satellites[Vessels.ActiveVessel];
             if (vs != null)
             {
                 if (vs.HasLocalControl)
@@ -82,20 +90,19 @@ namespace RemoteTech
 
         public void FixedUpdate()
         {
-            OnPhysicsUpdate.Invoke();
+            Satellites.OnFixedUpdate();
+            Antennas.OnFixedUpdate();
+            Network.OnFixedUpdate();
         }
 
         public void OnGUI()
         {
             GUI.depth = 0;
-            OnGuiUpdate.Invoke();
-
-            Action windows = delegate { };
-            foreach (var window in AbstractWindow.Windows.Values)
+            foreach (var window in AbstractWindow.Windows.Values.ToList())
             {
-                windows += window.Draw;
+                window.Draw();
             }
-            windows.Invoke();
+            OnGuiUpdate.Invoke();
         }
 
         public void OnDestroy()
@@ -107,7 +114,7 @@ namespace RemoteTech
             if (Renderer != null) Renderer.Detach();
             if (Network != null) Network.Dispose();
             if (Satellites != null) Satellites.Dispose();
-            if (Antennas != null) Antennas.Dispose();
+            if (vesselProvider != null) vesselProvider.Dispose();
 
             Instance = null;
         }

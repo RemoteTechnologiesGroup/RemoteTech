@@ -9,25 +9,27 @@ namespace RemoteTech
 {
     public class RTSettings
     {
-        private static Settings mInstance;
+        private static Settings instance;
         public static Settings Instance
         {
             get
             {
-                return mInstance = mInstance ?? Settings.Load();
+                return instance ?? (instance = Settings.Load());
             }
         }
     }
 
     public class Settings
     {
+        private static ILogger Logger = RTLogger.CreateLogger(typeof(RTSettings));
+
         [Persistent] public float ConsumptionMultiplier = 1.0f;
         [Persistent] public float RangeMultiplier = 1.0f;
         [Persistent] public String ActiveVesselGuid = "35b89a0d664c43c6bec8d0840afc97b2";
         [Persistent] public float SpeedOfLight = 3e8f;
         [Persistent] public MapFilter MapFilter = MapFilter.Path | MapFilter.Omni | MapFilter.Dish;
         [Persistent] public bool EnableSignalDelay = true;
-        [Persistent] public RangeModel RangeModelType = RangeModel.Standard;
+        [Persistent] public RangeModelType RangeModelType = RangeModelType.Standard;
         [Persistent] public double MultipleAntennaMultiplier = 0.0;
         [Persistent] public bool ThrottleTimeWarp = true;
         [Persistent] public Color DishConnectionColor = XKCDColors.Amber;
@@ -45,17 +47,17 @@ namespace RemoteTech
         {
             try
             {
-                ConfigNode save = new ConfigNode();
+                var save = new ConfigNode();
                 ConfigNode.CreateConfigFromObject(this, 0, save);
                 save.Save(File);
             }
-            catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message); }
+            catch (Exception e) { Logger.Error("An error occurred while attempting to save: " + e.Message); }
         }
 
         public static Settings Load()
         {
-            ConfigNode load = ConfigNode.Load(File);
-            Settings settings = new Settings();
+            var load = ConfigNode.Load(File);
+            var settings = new Settings();
             if (load == null)
             {
                 settings.Save();

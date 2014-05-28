@@ -1,5 +1,6 @@
 ﻿using System;
 using KSP.IO;
+using System.Resources;
 using System.Diagnostics;
 using System.Reflection;
 using System.Collections;
@@ -167,32 +168,7 @@ namespace RemoteTech
             return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
         }
 
-        public static String TargetName(Guid guid)
-        {
-            ISatellite sat;
-            if (RTCore.Instance != null && RTCore.Instance.Network != null && RTCore.Instance.Satellites != null)
-            {
-                if (guid == System.Guid.Empty)
-                {
-                    return "No Target";
-                }
-                if (RTCore.Instance.Network.Planets.ContainsKey(guid))
-                {
-                    return RTCore.Instance.Network.Planets[guid].name;
-                }
-                if (guid == NetworkManager.ActiveVesselGuid)
-                {
-                    return "Active Vessel";
-                }
-                if ((sat = RTCore.Instance.Network[guid]) != null)
-                {
-                    return sat.Name;
-                }
-            }
-            return "Unknown Target";
-        }
-
-        public static Guid Guid(this CelestialBody cb)
+        public static Guid GenerateGuid(this CelestialBody cb)
         {
             char[] name = cb.GetName().ToCharArray();
             var s = new StringBuilder();
@@ -219,99 +195,37 @@ namespace RemoteTech
             return Boolean.TryParse(n.GetValue(value) ?? "False", out result) ? result : false;
         }
 
-        public static void Button(Texture2D icon, Action onClick, params GUILayoutOption[] options)
+        public static Single? TryParseSingleNullable(String s)
         {
-            if (GUILayout.Button(icon, options))
+            Single tmp;
+            return Single.TryParse(s, out tmp) ? (Single?) tmp : null;
+        }
+
+        public static Double? TryParseDoubleNullable(String s)
+        {
+            Double tmp;
+            return Double.TryParse(s, out tmp) ? (Double?) tmp : null;
+        }
+
+        public static Int32? TryParseIntNullable(String s)
+        {
+            Int32 tmp;
+            return Int32.TryParse(s, out tmp) ? (Int32?) tmp : null;
+        }
+        public static Boolean? TryParseBooleanNullable(String s)
+        {
+            Boolean tmp;
+            return Boolean.TryParse(s, out tmp) ? (Boolean?) tmp : null;
+        }
+        public static Guid? TryParseGuidNullable(String s)
+        {
+            try
             {
-                onClick.Invoke();
+                return new Guid(s);
             }
-        }
-
-        public static void Button(String text, Action onClick, params GUILayoutOption[] options)
-        {
-            if (GUILayout.Button(text, options))
+            catch (ArgumentException)
             {
-                onClick.Invoke();
-            }
-        }
-
-        public static void Button(GUIContent text, Action onClick, params GUILayoutOption[] options)
-        {
-            if (GUILayout.Button(text, options))
-            {
-                onClick.Invoke();
-            }
-        }
-
-        public static void HorizontalSlider(ref float state, float min, float max, params GUILayoutOption[] options)
-        {
-            state = GUILayout.HorizontalSlider(state, min, max, options);
-        }
-
-        public static void GroupButton(int wide, String[] text, ref int group, params GUILayoutOption[] options)
-        {
-            group = GUILayout.SelectionGrid(group, text, wide, options);
-        }
-
-        public static void GroupButton(int wide, String[] text, ref int group, Action<int> onStateChange, params GUILayoutOption[] options)
-        {
-            int group2;
-            if ((group2 = GUILayout.SelectionGrid(group, text, wide, options)) != group)
-            {
-                group = group2;
-                onStateChange.Invoke(group2);
-            }
-        }
-
-        public static void StateButton(GUIContent text, int state, int value, Action<int> onStateChange, params GUILayoutOption[] options)
-        {
-            bool result;
-            if ((result = GUILayout.Toggle(Object.Equals(state, value), text, GUI.skin.button, options)) != Object.Equals(state, value))
-            {
-                onStateChange.Invoke(result ? value : ~value);
-            }
-        }
-
-        public static void StateButton<T>(GUIContent text, T state, T value, Action<int> onStateChange, params GUILayoutOption[] options)
-        {
-            bool result;
-            if ((result = GUILayout.Toggle(Object.Equals(state, value), text, GUI.skin.button, options)) != Object.Equals(state, value))
-            {
-                onStateChange.Invoke(result ? 1 : -1);
-            }
-        }
-
-        public static void StateButton<T>(String text, T state, T value, Action<int> onStateChange, params GUILayoutOption[] options)
-        {
-            bool result;
-            if ((result = GUILayout.Toggle(Object.Equals(state, value), text, GUI.skin.button, options)) != Object.Equals(state, value))
-            {
-                onStateChange.Invoke(result ? 1 : -1);
-            }
-        }
-
-        public static void TextField(ref String text, params GUILayoutOption[] options)
-        {
-            text = GUILayout.TextField(text, options);
-        }
-
-        public static bool ContainsMouse(this Rect window)
-        {
-            return window.Contains(new Vector2(Input.mousePosition.x,
-                Screen.height - Input.mousePosition.y));
-        }
-
-        public static void LoadImage(out Texture2D texture, String fileName)
-        {
-            fileName = fileName.Split('.')[0];
-            String path = "RemoteTech2/Textures/" + fileName;
-            RTLog.Notify("LoadImage({0})", path);
-            texture = GameDatabase.Instance.GetTexture(path, false);
-            if (texture == null)
-            {
-                texture = new Texture2D(32, 32);
-                texture.SetPixels32(Enumerable.Repeat((Color32) Color.magenta, 32 * 32).ToArray());
-                texture.Apply();
+                return null;
             }
         }
 
@@ -331,17 +245,30 @@ namespace RemoteTech
             }
         }
 
-        public static T CachePerFrame<T>(ref CachedField<T> cachedField, Func<T> getter)
+        public static void ExecuteNextFrame(Action a)
         {
-            if (cachedField.Frame != Time.frameCount)
+            RTCore.Instance.StartCoroutine(Coroutine_DelayFrame(a));
+        }
+
+        private static IEnumerator Coroutine_DelayFrame(Action a)
+        {
+            yield return null;
+            a.Invoke();
+        }
+
+        public static IEnumerable<T> WrapAround<T>(this IEnumerable<T> input)
+        {
+            for (; ; )
             {
-                cachedField.Frame = Time.frameCount;
-                return cachedField.Field = getter();
+                foreach (var a in input) {
+                    yield return a;
+                }
             }
-            else
-            {
-                return cachedField.Field;
-            }
+        }
+
+        public static String TrimLines(this String text)
+        {
+            return text.TrimEnd(Environment.NewLine.ToCharArray());
         }
 
         // Thanks Fractal_UK!

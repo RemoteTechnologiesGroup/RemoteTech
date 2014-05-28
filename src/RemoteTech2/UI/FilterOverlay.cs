@@ -6,30 +6,6 @@ namespace RemoteTech
 {
     public class FilterOverlay : IFragment, IDisposable
     {
-        private static class Texture
-        {
-            public static readonly Texture2D Background;
-            public static readonly Texture2D Path;
-            public static readonly Texture2D Any;
-            public static readonly Texture2D Dish;
-            public static readonly Texture2D Omni;
-            public static readonly Texture2D OmniDish;
-            public static readonly Texture2D Empty;
-            public static readonly Texture2D Planet;
-
-            static Texture()
-            {
-                RTUtil.LoadImage(out Background, "texBackground.png");
-                RTUtil.LoadImage(out Path, "texPath.png");
-                RTUtil.LoadImage(out Any, "texAll.png");
-                RTUtil.LoadImage(out Dish, "texDish.png");
-                RTUtil.LoadImage(out Omni, "texOmni.png");
-                RTUtil.LoadImage(out OmniDish, "texOmniDish.png");
-                RTUtil.LoadImage(out Empty, "texEmpty.png");
-                RTUtil.LoadImage(out Planet, "texPlanet.png");
-            }
-        }
-
         private static class Style
         {
             public static readonly GUIStyle Button;
@@ -40,11 +16,11 @@ namespace RemoteTech
 
             static Style()
             {
-                Button = GUITextureButtonFactory.CreateFromFilename("texButton.png");
-                ButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray.png");
-                ButtonGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen.png");
-                ButtonRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed.png");
-                ButtonYellow = GUITextureButtonFactory.CreateFromFilename("texButtonYellow.png");
+                Button = GUITextureButtonFactory.CreateFromTexture(Textures.FilterButton);
+                ButtonGray = GUITextureButtonFactory.CreateFromTexture(Textures.FilterButtonSatelliteGray);
+                ButtonGreen = GUITextureButtonFactory.CreateFromTexture(Textures.FilterButtonSatelliteGreen);
+                ButtonRed = GUITextureButtonFactory.CreateFromTexture(Textures.FilterButtonSatelliteRed);
+                ButtonYellow = GUITextureButtonFactory.CreateFromTexture(Textures.FilterButtonSatelliteYellow);
             }
         }
 
@@ -56,10 +32,10 @@ namespace RemoteTech
         {
             get
             {
-                return new Rect(Screen.width - Texture.Background.width,
-                                Screen.height - Texture.Background.height,
-                                Texture.Background.width,
-                                Texture.Background.height);
+                return new Rect(Screen.width - Textures.FilterBackground.width,
+                                Screen.height - Textures.FilterBackground.height,
+                                Textures.FilterBackground.width,
+                                Textures.FilterBackground.height);
             }
         }
 
@@ -96,8 +72,8 @@ namespace RemoteTech
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & MapFilter.Path) == MapFilter.Path)
-                    return Texture.Path;
-                return Texture.Empty;
+                    return Textures.FilterButtonPath;
+                return Textures.FilterButtonEmpty;
             }
         }
 
@@ -107,8 +83,8 @@ namespace RemoteTech
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & MapFilter.Planet) == MapFilter.Planet)
-                    return Texture.Planet;
-                return Texture.Empty;
+                    return Textures.FilterButtonPlanet;
+                return Textures.FilterButtonEmpty;
             }
         }
 
@@ -118,12 +94,12 @@ namespace RemoteTech
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & (MapFilter.Omni | MapFilter.Dish)) == (MapFilter.Omni | MapFilter.Dish))
-                    return Texture.OmniDish;
+                    return Textures.FilterButtonOmniDish;
                 if ((mask & MapFilter.Omni) == MapFilter.Omni)
-                    return Texture.Omni;
+                    return Textures.FilterButtonOmni;
                 if ((mask & MapFilter.Dish) == MapFilter.Dish)
-                    return Texture.Dish;
-                return Texture.Empty;
+                    return Textures.FilterButtonDish;
+                return Textures.FilterButtonEmpty;
             }
         }
 
@@ -208,7 +184,7 @@ namespace RemoteTech
             }
 
             // Draw Toolbar
-            GUILayout.BeginArea(Position, Texture.Background);
+            GUILayout.BeginArea(Position, Textures.FilterBackground);
             {
                 GUILayout.BeginHorizontal();
                 {
@@ -231,7 +207,7 @@ namespace RemoteTech
         {
             if (mo != null && mo.type == MapObject.MapObjectType.VESSEL)
             {
-                mSatelliteFragment.Satellite = RTCore.Instance.Satellites[mo.vessel];
+                mSatelliteFragment.Satellite = RTCore.Instance.Satellites[(VesselProxy) mo.vessel];
             }
             else if (FlightGlobals.ActiveVessel != null)
             {

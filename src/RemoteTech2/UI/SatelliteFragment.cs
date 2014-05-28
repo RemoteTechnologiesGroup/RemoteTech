@@ -10,14 +10,33 @@ namespace RemoteTech
     {
         public ISatellite Satellite
         {
-            get { return mSatellite; }
-            set { if (mSatellite != value) { mSatellite = value; Antenna = null; } }
+            get { return satellite; }
+            set { if (satellite != value) { satellite = value; Antenna = null; } }
         }
 
         public IAntenna Antenna { get; private set; }
 
-        private ISatellite mSatellite;
-        private Vector2 mScrollPosition = Vector2.zero;
+        private ISatellite satellite;
+        private Vector2 scrollPosition;
+        private List<AntennaEntry> Entries = new List<AntennaEntry>();
+
+        private class AntennaEntry
+        {
+            public readonly String Name;
+            public readonly String DescLeft;
+            public readonly String DescRight;
+            public readonly IAntenna Antenna;
+            public readonly Color Color;
+
+            public AntennaEntry(String name, String left, String right, IAntenna antenna, Color color)
+            {
+                this.Name = name;
+                this.DescLeft = left;
+                this.DescRight = right;
+                this.Antenna = antenna;
+                this.Color = color;
+            }
+        }
 
         public SatelliteFragment(ISatellite sat)
         {
@@ -33,39 +52,80 @@ namespace RemoteTech
             }
         }
 
+        public void Update()
+        {
+            const int TruncateWidth = 25;
+            Entries.Clear();
+            foreach (var antenna in Satellite.Antennas.Where(a => a.CanTarget))
+            {
+                var left = String.Empty;
+                var right = String.Empty;
+                if (antenna.Targets.Count == 0)
+                {
+                    left = "No Target";
+                }
+                else if (antenna.Targets[0].IsMultiple) {
+                    left = antenna.Targets[0].ToString().Truncate(TruncateWidth);
+                }
+                else
+                {
+                    var origin = Satellite.Position;
+                    var target = antenna.Targets[0].FirstOrDefault();
+                    if (target == null)
+                    {
+                        left = "Unknown Target";
+                    }
+                    else
+                    {
+                        var goal = target.Position;
+                        var distance = (goal - origin).magnitude;
+                        var formattedDistance = "(" + RTUtil.FormatSI(distance, "m") + ")";
+                        left = target.Name.Truncate(TruncateWidth - formattedDistance.Length - 1);
+                        right = formattedDistance;
+                    }
+                }
+                Entries.Add(new AntennaEntry(antenna.Name, left, right, antenna, antenna.Powered ? XKCDColors.ElectricLime : XKCDColors.Scarlet));
+            }
+        }
         public void Draw()
         {
             if (Satellite == null) return;
+            if (Event.current.type == EventType.Layout) Update();
 
-            GUILayout.BeginHorizontal();
+            RTGui.HorizontalBlock(() =>
             {
                 GUILayout.TextField(Satellite.Name.Truncate(25), GUILayout.ExpandWidth(true));
-                RTUtil.Button("Name", () =>
+                RTGui.Button("Name", () =>
                 {
                     var vessel = FlightGlobals.Vessels.First(v => v.id == Satellite.Guid);
                     if (vessel) vessel.RenameVessel();
                 }, GUILayout.ExpandWidth(false), GUILayout.Height(24));
-            }
-            GUILayout.EndHorizontal();
+            });
 
-            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.ExpandHeight(true));
+            RTGui.ScrollViewBlock(ref scrollPosition, () =>
             {
                 Color pushColor = GUI.contentColor;
                 TextAnchor pushAlign = GUI.skin.button.alignment;
-                GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                foreach (var a in Satellite.Antennas.Where(a => a.CanTarget))
+                foreach (var entry in Entries)
                 {
-                    GUI.contentColor = (a.Powered) ? XKCDColors.ElectricLime : XKCDColors.Scarlet;
-                    String text = a.Name.Truncate(25) + Environment.NewLine + "Target: " + RTUtil.TargetName(a.Target).Truncate(18);
-                    RTUtil.StateButton(text, Antenna, a, s =>
+                    RTGui.VerticalBlock(() =>
                     {
-                        Antenna = (s > 0) ? a : null;
+                        GUILayout.Label(entry.Name);
+                        RTGui.HorizontalBlock(() =>
+                        {
+                            GUILayout.Label(entry.DescLeft);
+                            GUILayout.FlexibleSpace();
+                            GUILayout.Label(entry.DescRight);
+                        });
                     });
+                    RTGui.ClickableOverlay(() =>
+                    {
+                        Antenna = (Antenna != entry.Antenna) ? entry.Antenna : null;
+                    }, GUILayoutUtility.GetLastRect());
                 }
                 GUI.skin.button.alignment = pushAlign;
                 GUI.contentColor = pushColor;
-            }
-            GUILayout.EndScrollView();
+            }, GUILayout.ExpandHeight(true));
         }
 
         private void Refresh(ISatellite sat)

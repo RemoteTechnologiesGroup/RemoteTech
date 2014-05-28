@@ -8,7 +8,7 @@ namespace RemoteTech
 {
     public class NetworkLine : MonoBehaviour
     {
-        public BidirectionalEdge<ISatellite> Edge
+        public NetworkLink<ISatellite> Edge
         {
             set
             {
@@ -62,7 +62,7 @@ namespace RemoteTech
             Material = new Material("Shader \"Vertex Colors/Alpha\" {Category{Tags {\"Queue\"=\"Transparent\" \"IgnoreProjector\"=\"True\" \"RenderType\"=\"Transparent\"}SubShader {Cull Off ZWrite On Blend SrcAlpha OneMinusSrcAlpha Pass {BindChannels {Bind \"Color\", color Bind \"Vertex\", vertex}}}}}");
         }
 
-        private void UpdateMesh(BidirectionalEdge<ISatellite> edge)
+        private void UpdateMesh(NetworkLink<ISatellite> edge)
         {
             var camera = MapView.MapCamera.camera;
 

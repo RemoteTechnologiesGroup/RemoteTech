@@ -91,7 +91,7 @@ namespace RemoteTech
                             }
                             GUILayout.Label(s.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
                             GUILayout.FlexibleSpace();
-                            RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickReset()), GUILayout.Width(21), GUILayout.Height(21));
+                            RTGui.Button("x", () => RTCore.Instance.StartCoroutine(OnClickReset()), GUILayout.Width(21), GUILayout.Height(21));
                         }
                         GUILayout.EndHorizontal();
 
@@ -101,7 +101,7 @@ namespace RemoteTech
                             {
                                 GUILayout.Label(c.Description);
                                 GUILayout.FlexibleSpace();
-                                RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                RTGui.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
                             }
                             GUILayout.EndHorizontal();
                         }
@@ -115,7 +115,7 @@ namespace RemoteTech
                     GUILayout.Label(new GUIContent("Delay (+ signal): " + RTUtil.FormatDuration(mFlightComputer.TotalDelay), "Total delay including signal delay."));
                     GUILayout.FlexibleSpace();
                     GUI.SetNextControlName("xd");
-                    RTUtil.TextField(ref mExtraDelay, GUILayout.Width(50));
+                    RTGui.TextField(ref mExtraDelay, GUILayout.Width(50));
                 }
                 GUILayout.EndHorizontal();
             }

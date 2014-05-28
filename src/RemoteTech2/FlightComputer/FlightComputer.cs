@@ -34,9 +34,9 @@ namespace RemoteTech
             {
                 var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
                 if (satellite != null && satellite.HasLocalControl) return 0.0;
-                var connection = RTCore.Instance.Network[satellite];
-                if (!connection.Any()) return Double.PositiveInfinity;
-                return connection.Min().Delay;
+                var connections = RTCore.Instance.Network[satellite];
+                if (!connections.Any()) return Double.PositiveInfinity;
+                return connections.ShortestDelay().SignalDelay;
             }
         }
 
@@ -48,7 +48,7 @@ namespace RemoteTech
                 var connection = RTCore.Instance.Network[satellite];
                 var status = State.Normal;
                 if (!SignalProcessor.Powered) status |= State.OutOfPower;
-                if (!SignalProcessor.IsMaster) status |= State.NotMaster;
+                if (!IsMaster) status |= State.NotMaster;
                 if (!connection.Any()) status |= State.NoConnection;
                 if (Vessel.packed) status |= State.Packed;
                 return status;
@@ -73,6 +73,8 @@ namespace RemoteTech
 
         private FlightComputerWindow mWindow;
         public FlightComputerWindow Window { get { if (mWindow != null) mWindow.Hide(); return mWindow = new FlightComputerWindow(this); } }
+
+        private bool IsMaster { get { return SignalProcessor == RTCore.Instance.Satellites[SignalProcessor.Guid].SignalProcessor; } }
 
         public FlightComputer(ISignalProcessor s)
         {
@@ -130,7 +132,7 @@ namespace RemoteTech
 
         public void OnUpdate()
         {
-            if (!SignalProcessor.IsMaster) return;
+            if (!IsMaster) return;
             PopCommand();
         }
 
@@ -227,7 +229,7 @@ namespace RemoteTech
 
         private void OnFlyByWirePre(FlightCtrlState fcs)
         {
-            if (!SignalProcessor.IsMaster) return;
+            if (!IsMaster) return;
             var satellite = RTCore.Instance.Satellites[SignalProcessor.Guid];
 
             if (Vessel == FlightGlobals.ActiveVessel && InputAllowed && !satellite.HasLocalControl)
@@ -243,7 +245,7 @@ namespace RemoteTech
 
         private void OnFlyByWirePost(FlightCtrlState fcs)
         {
-            if (!SignalProcessor.IsMaster) return;
+            if (!IsMaster) return;
 
             if (!InputAllowed)
             {

@@ -6,23 +6,16 @@ namespace RemoteTech
 {
     public class FocusOverlay : IFragment, IDisposable
     {
-        private static class Texture
-        {
-            public static readonly Texture2D Satellite;
-
-            static Texture()
-            {
-                RTUtil.LoadImage(out Satellite, "texSatellite.png");
-            }
-        }
-
         private static class Style
         {
             public static readonly GUIStyle Button;
 
             static Style()
             {
-                Button = GUITextureButtonFactory.CreateFromFilename("texKnowledgeNormal.png", "texKnowledgeHover.png", "texKnowledgeActive.png", "texKnowledgeHover.png");
+                Button = GUITextureButtonFactory.CreateFromTextures(Textures.KnowledgeButton,
+                                                                    Textures.KnowledgeButtonHover,
+                                                                    Textures.KnowledgeButtonActive,
+                                                                    Textures.KnowledgeButtonHover);
             }
         }
 
@@ -38,8 +31,8 @@ namespace RemoteTech
                 var position2 = UIManager.instance.rayCamera.WorldToScreenPoint(position);
                 var rect = new Rect(position2.x + 154,
                                 250 + 2 * 31,
-                                Texture.Satellite.width,
-                                Texture.Satellite.height);
+                                Textures.SatelliteIcon.width,
+                                Textures.SatelliteIcon.height);
                 return rect;
             }
         }
@@ -84,7 +77,7 @@ namespace RemoteTech
 
             GUILayout.BeginArea(PositionButton);
             {
-                mEnabled = GUILayout.Toggle(mEnabled, Texture.Satellite, Style.Button);
+                mEnabled = GUILayout.Toggle(mEnabled, Textures.SatelliteIcon, Style.Button);
             }
             GUILayout.EndArea();
 

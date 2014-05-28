@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace RemoteTech
+namespace RemoteTech.KSP
 {
     public class FlightUIPatcher
     {
@@ -24,7 +24,7 @@ namespace RemoteTech
 
         private static void ActivateActionGroup(KSPActionGroup ag)
         {
-            var satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
+            var satellite = RTCore.Instance.Satellites.ActiveSatellite;
             if (satellite != null && satellite.FlightComputer != null)
             {
                 satellite.SignalProcessor.FlightComputer.Enqueue(ActionGroupCommand.WithGroup(ag));

@@ -21,27 +21,27 @@ namespace RemoteTech
         [KSPField(guiName = "Comms", guiActive = true)]
         public String GUI_Status = "";
 
-        private ModuleRTAntenna mParent;
-        private bool mBusy;
-        private List<ScienceData> mQueue = new List<ScienceData>();
+        private ModuleRTAntenna parent;
+        private bool busy;
+        private List<ScienceData> queue = new List<ScienceData>();
 
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
         {
             foreach (ConfigNode data in node.GetNodes("CommsData"))
             {
-                mQueue.Add(new ScienceData(data));
+                queue.Add(new ScienceData(data));
             }
 
             var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
-            mParent = antennas.Count > 0 ? antennas[0] : null;
+            parent = antennas.Count > 0 ? antennas[0] : null;
             GUI_Status = "Idle";
         }
 
         // Compatible with ModuleDataTransmitter
         public override void OnSave(ConfigNode node)
         {
-            mQueue.ForEach(d => d.Save(node.AddNode("CommsData")));
+            queue.ForEach(d => d.Save(node.AddNode("CommsData")));
         }
        
         bool IScienceDataTransmitter.CanTransmit()
@@ -51,12 +51,12 @@ namespace RemoteTech
 
         float IScienceDataTransmitter.DataRate { get { return PacketSize / PacketInterval; } }
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
-        bool IScienceDataTransmitter.IsBusy() { return mBusy; }
+        bool IScienceDataTransmitter.IsBusy() { return busy; }
 
         void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
         {
-            mQueue.AddRange(dataQueue);
-            if (!mBusy)
+            queue.AddRange(dataQueue);
+            if (!busy)
             {
                 StartCoroutine(Transmit());
             }
@@ -68,14 +68,14 @@ namespace RemoteTech
             var msg_status = new ScreenMessage(String.Empty, 4.0f, ScreenMessageStyle.UPPER_LEFT);
             ScreenMessages.PostScreenMessage(msg);
 
-            mBusy = true;
+            busy = true;
 
-            while (mQueue.Any())
+            while (queue.Any())
             {
                 RnDCommsStream commStream = null;
-                var science_data = mQueue[0];
+                var science_data = queue[0];
                 var data_amount = science_data.dataAmount;
-                mQueue.RemoveAt(0);
+                queue.RemoveAt(0);
                 var subject = ResearchAndDevelopment.GetSubjectByID(science_data.subjectID);
                 int packets = Mathf.CeilToInt(science_data.dataAmount / PacketSize);
                 if (ResearchAndDevelopment.Instance != null)
@@ -99,7 +99,7 @@ namespace RemoteTech
                         //StartCoroutine(SetFXModules_Coroutine(modules_progress, progress));
                         msg_status.message = String.Format("[{0}]: Uploading Data... {1}", part.partInfo.title, progress.ToString("P0"));
                         RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
-                            science_data.title, (PacketSize / PacketInterval).ToString("0.00"), packets, mQueue.Count);
+                            science_data.title, (PacketSize / PacketInterval).ToString("0.00"), packets, queue.Count);
                         ScreenMessages.PostScreenMessage(msg_status, true);
                         if (commStream != null)
                         {
@@ -117,7 +117,7 @@ namespace RemoteTech
                 }
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
-            mBusy = false;
+            busy = false;
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
             ScreenMessages.PostScreenMessage(msg, true);
             GUI_Status = "Idle";

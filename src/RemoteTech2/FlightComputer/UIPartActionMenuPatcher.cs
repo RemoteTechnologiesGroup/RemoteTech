@@ -7,7 +7,40 @@ namespace RemoteTech
 {
     public static class UIPartActionMenuPatcher
     {
-        public static void Wrap(Vessel parent, Action<BaseEvent, bool> pass)
+        public static void Patch(IVessel vessel)
+        {
+            UIPartActionMenuPatcher.Wrap(vessel, (e, ignore_delay) =>
+            {
+                if (RTCore.Instance == null)
+                {
+                    e.Invoke();
+                    return;
+                }
+                var v = RTCore.Instance.Vessels.ActiveVessel;
+                var vs = RTCore.Instance.Satellites[v];
+                if (v == null || v.IsEVA || vs == null || vs.HasLocalControl)
+                {
+                    e.Invoke();
+                    return;
+                }
+                if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
+                {
+                    if (ignore_delay)
+                    {
+                        e.Invoke();
+                    }
+                    else
+                    {
+                        vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
+                    }
+                }
+                else
+                {
+                    ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                }
+            });
+        }
+        private static void Wrap(IVessel parent, Action<BaseEvent, bool> pass)
         {
             var controller = UIPartActionController.Instance;
             if (!controller) return;
@@ -15,7 +48,7 @@ namespace RemoteTech
                 .First(fi => fi.FieldType == typeof(List<UIPartActionWindow>));
 
             var list = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
-            foreach (var window in list.Where(l => l.part.vessel == parent))
+            foreach (var window in list.Where(l => (VesselProxy) l.part.vessel == parent))
             {
                 var itemsFieldInfo = window.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                     .First(fi => fi.FieldType == typeof(List<UIPartActionItem>));
