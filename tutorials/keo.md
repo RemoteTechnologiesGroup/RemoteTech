@@ -26,12 +26,12 @@ Ensure your satellite has an option for making very low-thrust burns (either RCS
 
 In addition to any antennas pointed at moons, planets, or vessel groups, you will need antennas for the following two roles:
 
-* Communicating with Kerbin's surface and low Kerbin orbit: KEO is located 2869&nbsp;km above the surface, or 3469&nbsp;km from Kerbin's center. The farthest point on Kerbin's surface from any satellite will be 3420&nbsp;km away, near the poles. Therefore, the best antennas for this role are the Communotron&nbsp;32 or the Comms DTS-M1.
+* Communicating with Kerbin's surface and low Kerbin orbit: KEO is located 2869&nbsp;km above the surface, or 3469&nbsp;km from Kerbin's center. The farthest point on Kerbin's surface from any satellite will be 3420&nbsp;km away, near the poles. Therefore, the best antennas for this role are the [Communotron&nbsp;32](../../guide/parts/#communotron-32) or the [Comms DTS-M1](../../guide/parts/#comms-dts-m1).
 * Communicating with the satellites' siblings: KEO satellites in an equilateral triangle formation will be located 6008&nbsp;km apart, requiring the use of the Comms DTS-M1 to maintain contact. KEO satellites in a square formation will be only 4906&nbsp;km apart, allowing the Communotron&nbsp;32 to fill this role if you have the necessary technology.
 
 ##Method 1: Separate Launches
 
-Use a rocket with at least 5615 m/s of delta-V, preferably a little more.
+Use a rocket with at least 5615 m/s of delta-V.
 
 ![Set antenna targets from the map view by clicking the lower right icon, then choosing a dish, followed by its target](single_1_setup.png "Setting up targets"){: .right}
 
@@ -52,7 +52,7 @@ Again, placement doesn't have to be exact. As long as you're within about 20&deg
 ![Example of a transfer node 143&deg; before KSC's longitude](single_1_xfer.png "Starting a 3-satellite network, with the first satellite 60&deg; west of KSC"){: .pairedimages}
 ![Example of flight computer queue](single_xfercomp.png "Flight computer programmed for burn, followed by re-activating SAS"){: .pairedimages}
 
-If you don't have a pre-existing satellite network, all four possible burns will be out of contact with KSC. Once you're satisfied with your maneuver node, open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until you next fly over KSC). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. You can optionally schedule post-burn attitude controls using [manual delay](../../guide/comp/#manual-delay). Once the satellite comes back over the horizon after the burn, you'll be able to control it directly again.
+If you don't have a pre-existing satellite network, three of the four possible burns will be out of contact with KSC. Once you're satisfied with your maneuver node, open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until you next fly over KSC). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. You can optionally schedule post-burn attitude controls using [manual delay](../../guide/comp/#manual-delay), as done in the screenshot above. Once the satellite comes back over the horizon after the burn, you'll be able to control it directly again.
 
 ![Image showing how to look up orbital period in Kerbal Engineer](single_finalorbit.png "Getting an (almost) 6 hour orbit"){: .left}
 
@@ -83,11 +83,11 @@ Once you are happy with your orbit, double-check that all dishes have the target
 
 For this method, you want to stack all your satellites on top of your rocket, with a stack separator (NOT a decoupler) between each. Configure your staging so that the satellites are released from top to bottom.
 
-Use a rocket with at least 5400 m/s of delta-V, not including any fuel in the satellites. Make sure each satellite has at least 435 m/s, preferably a little more.
+Use a rocket with at least 5400 m/s of delta-V, not including any fuel in the satellites. Make sure each satellite has at least 435 m/s.
 
 ###Transfer orbit 1
 
-Begin by launching into an elliptical orbit with an apoapsis of 2870&nbsp;km (it doesn't have to be exact). If you are using the Comms DTS-M1 as your Kerbin communication antenna, target the Kerbin antenna on each of the satellites at Mission Control (not Kerbin) to maintain contact whenever your satellite is above the horizon.
+Begin by launching into an elliptical orbit with an apoapsis of 2870&nbsp;km (it doesn't have to be exact). If you are using the [Comms DTS-M1](../../guide/parts/#comms-dts-m1) as your Kerbin communication antenna, target the Kerbin antenna on each of the satellites at Mission Control (not Kerbin) to maintain contact whenever your satellite is above the horizon.
 
 ![A screenshot of a good position to drop the first satellite](multi_1_align.png){: .left}
 
@@ -107,7 +107,7 @@ Switch back to the rocket, which should still be close to apoapsis, and burn pro
 
 ###Deployment
 
-The rocket's orbital period is set so that it will next return to apoapsis 120&deg; (for a 3-satellite network) or 90&deg; (for a 4-satellite network) behind the satellite you just launched. Every time the rocket approaches apoapsis, release another satellite. If you are using dishes rather than the Communotron 32 to set up connections between keostationary satellites, you need to take care with the dish targets, especially if you have not yet researched [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wiki/Unmanned_Tech) (which unlocks a 3&nbsp;km omni antenna for all probe cores).
+The rocket's orbital period is set so that it will next return to apoapsis 120&deg; (for a 3-satellite network) or 90&deg; (for a 4-satellite network) behind the satellite you just launched. Every time the rocket approaches apoapsis, release another satellite. If you are using dishes rather than the [Communotron 32](../../guide/parts/#communotron-32) to set up connections between keostationary satellites, you need to take care with the dish targets, especially if you have not yet researched [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wiki/Unmanned_Tech) (which unlocks a 3&nbsp;km omni antenna for all probe cores).
 
 Before releasing the satellite:
 
@@ -148,7 +148,7 @@ Period Error | Drift Rate             | Time to drift 20&deg;
 
 It is nearly impossible to give two satellites exactly the same orbital period, because the period will change whenever the satellite rotates (for example, to keep facing the sun over the course of the year). For the last word in satellite synchronization, you may wish to edit your save file. Some RemoteTech players see this as essential to get around game engine limitations, others see it as cheating. You will have to decide for yourself.
 
-Once you've synched up your satellites in-game as best you can, exit the game and open saves/&lt;Your Game Name&gt;/persistent.sfs in any text editor. Search for the name of your first satellite, then find a block a few lines down that looks like this:
+Once you've synched up your satellites in-game as best you can, exit the game and open saves/&lt;Your Game Name&gt;/persistent.sfs in any text editor. Search for the name of your first satellite, ignoring any debris entries, then find a block a few lines down that looks like this:
 
     ORBIT
     {
