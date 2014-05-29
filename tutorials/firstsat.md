@@ -30,7 +30,7 @@ As for any probe, you will need a probe core, a battery, and (once you have the 
 At low tech levels you have access to only three antennas: the [Communotron 16](../../guide/parts/#communotron-16), the [Reflectron DP-10](../../guide/parts/#reflectron-dp-10), and the [Comms DTS-M1](../../guide/parts/#comms-dts-m1). Of these three, the Reflectron DP-10 is the only one that can work in Kerbin's lower atmosphere without breaking off, so you *must* include it on the satellite (several atmosphere-safe dishes become available later in the tech tree). The other two antennas are [optional](#high-powered-antennas) for low enough orbits.
 
 ##Launch
-{:style="clear: both;"}
+{: .spacer}
 
 The DP-10 is unique among RemoteTech antennas in that it is automatically switched on on mission start, so you don't need to do any fine-tuning on the pad.
 
@@ -59,7 +59,7 @@ Once you are coasting to apoapsis, set a maneuver node to represent the final bu
 You need to deploy solar panels once in orbit, or it won't last until its next pass over KSC. Type "1m" (for "one minute", or whatever delay you think appropriate) in the lower right text box, then press enter. Then right click on each panel, or run an action group if you have it. Once the solar panel command(s) are in the queue, type "0" followed by enter to reset the delay (otherwise ALL your commands will have a several-minute delay).
 
 ##The End
-{:style="clear: both;"}
+{: .spacer}
 
 That's it! You now have a basic satellite in orbit around Kerbin. Every time it passes over KSC, you can send or schedule more commands. Or you can just leave it where it is, happily beeping away.
 

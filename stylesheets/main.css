@@ -78,6 +78,11 @@ img.right {
 	float: right;
 }
 
+/* Force text to appear after floats  */
+.spacer {
+	clear: both;
+}
+
 /* Default table style makes them illegible */
 table.data td, table.data th {
 	padding: 3px;

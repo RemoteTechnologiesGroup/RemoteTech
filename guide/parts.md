@@ -121,7 +121,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 ![Picture of EXP-VR-2T](antenna_expvr2t.png)
 
-The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron series when retracted, but slightly larger when deployed. It is slightly more powerful than the Communotron 16.
+The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron 16 when retracted, but slightly larger when deployed. It is slightly more powerful than the Communotron 16.
 {:.blurb}
 
 |Basic Properties
@@ -161,7 +161,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 ![Picture of Communotron 32](antenna_com32.png)
 
-The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past kerbosynchonous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active.
+The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past keosynchonous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active, nearly as much as the low-end dishes.
 {:.blurb}
 
 |Basic Properties
@@ -242,7 +242,7 @@ Maximum Range                         | 50,000 km
 Reach                                 | Minmus
 Cone Diameter                         | 45&deg;
 Cone covers Kerbin at                 | 1600 km
-Cone covers kerbosynchronous orbit at | 9100 km
+Cone covers keosynchronous orbit at | 9100 km
 {:.xmit}
 
 |Atmosphere Performance
@@ -285,7 +285,7 @@ Maximum Range                         | 90,000 km
 Reach                                 | Kerbin sphere of influence
 Cone Diameter                         | 25&deg;
 Cone covers Kerbin at                 | 2800 km
-Cone covers kerbosynchronous orbit at | 16,000 km
+Cone covers keosynchronous orbit at | 16,000 km
 {:.xmit}
 
 |Atmosphere Performance
@@ -325,7 +325,7 @@ Maximum Range                         | 40,000,000 km
 Reach                                 | Duna (all times), Dres (same side of sun only)
 Cone Diameter                         | 0.06&deg;
 Cone covers Kerbin at                 | 1,100,000 km
-Cone covers kerbosynchronous orbit at | 6,600,000 km
+Cone covers keosynchronous orbit at | 6,600,000 km
 {:.xmit}
 
 |Atmosphere Performance
@@ -368,7 +368,7 @@ Maximum Range                         | 60,000,000 km
 Reach                                 | Dres (all times), Jool (same side of sun only), Eeloo (periapsis and same side of sun only)
 Cone Diameter                         | 0.04&deg;
 Cone covers Kerbin at                 | 1,700,000 km
-Cone covers kerbosynchronous orbit at | 9,900,000 km
+Cone covers keosynchronous orbit at | 9,900,000 km
 {:.xmit}
 
 |Atmosphere Performance
@@ -408,7 +408,7 @@ Maximum Range                         | 350,000,000 km
 Reach                                 | Eeloo (all times)
 Cone Diameter                         | 0.006&deg;
 Cone covers Kerbin at                 | 11,000,000 km
-Cone covers kerbosynchronous orbit at | 66,000,000 km
+Cone covers keosynchronous orbit at | 66,000,000 km
 {:.xmit}
 
 |Atmosphere Performance
@@ -448,7 +448,7 @@ Maximum Range                         | 400,000,000 km
 Reach                                 | Eeloo (all times)
 Cone Diameter                         | 0.005&deg;
 Cone covers Kerbin at                 | 14,000,000 km
-Cone covers kerbosynchronous orbit at | 79,000,000 km
+Cone covers keosynchronous orbit at | 79,000,000 km
 {:.xmit}
 
 |Atmosphere Performance

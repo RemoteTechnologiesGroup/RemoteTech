@@ -17,7 +17,7 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which over
 
 * Like in stock KSP, you need to research Flight Control before you can build unmanned probes.
 * You need to use an antenna that won't break in the atmosphere to be able to control an unmanned rocket during atmospheric flight. The Reflectron DP-10, unlocked along with the Stayputnik probe core, is the earliest such antenna available. Others can be found in the [parts listing](#).
-* For farther flights, your probe should also have more powerful antennas, such as the Communotron 16 or the Comms DTS-M1. You will have to manually turn on these antennas once you get high enough that the airflow won't break them off, and if you are using the DTS-M1 you will also need to target it at the KSC. Both commands can be done by right-clicking on the antenna.
+* For farther flights, your probe should also have more powerful antennas, such as the Communotron 16 or the Comms DTS-M1. You will have to manually turn on these antennas once you get high enough that the airflow won't break them off, and if you are using the DTS-M1 you will also need to target it at Mission Control. Both commands can be done by right-clicking on the antenna.
 * Once you can place satellites in orbit, consider putting up some comsats to maintain a connection when out of sight of KSC. See the [comsat tutorial](#) for more details.
 * As you expand farther out into the system, you may need to expand and/or upgrade your comsat network to allow for connections to probes orbiting other moons or planets. Plan ahead!
 
