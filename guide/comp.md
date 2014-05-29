@@ -5,7 +5,7 @@ layout: content
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
+**UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
 #The Flight Computer

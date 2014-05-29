@@ -6,9 +6,6 @@ navbar: true
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
-{: .alert .alert-danger}
-
 #RemoteTech Player's Guide
 
 {::comment}

@@ -6,7 +6,7 @@ navbar: true
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
+**UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
 #RemoteTech Tutorials

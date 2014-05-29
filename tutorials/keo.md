@@ -6,9 +6,6 @@ navbar: false
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
-{: .alert .alert-danger}
-
 #Creating a Keosynchronous Satellite Network
 
 {% include toc.html %}
@@ -50,12 +47,12 @@ Network Size | 1st Satellite East of KSC | 1st Satellite West of KSC
 4 satellites |  38&deg; before KSC       | 128&deg; before KSC
 {: .data}
 
-Again, placement doesn't have to be exact. As long as you're within about 20&deg; or so, the worst that will happen is that your network will look a little lopsided.
+Again, placement doesn't have to be exact. As long as you're within about 20&deg; or so, the worst that will happen is that your network will look a little lopsided. The screenshot below shows the 143&deg; offset needed to get a satellite 60&deg; west of KSC.
 
 ![Example of a transfer node 143&deg; before KSC's longitude](single_1_xfer.png "Starting a 3-satellite network, with the first satellite 60&deg; west of KSC"){: .pairedimages}
 ![Example of flight computer queue](single_xfercomp.png "Flight computer programmed for burn, followed by re-activating SAS"){: .pairedimages}
 
-If you don't have a pre-existing satellite network, all four possible burns will be out of contact with KSC. Once you're satisfied with your maneuver node, open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until you next fly over KSC). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. Once the satellite comes back over the horizon after the burn, you'll be able to control it manually again.
+If you don't have a pre-existing satellite network, all four possible burns will be out of contact with KSC. Once you're satisfied with your maneuver node, open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until you next fly over KSC). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. You can optionally schedule post-burn attitude controls using [manual delay](../../guide/comp/#manual-delay). Once the satellite comes back over the horizon after the burn, you'll be able to control it directly again.
 
 ![Image showing how to look up orbital period in Kerbal Engineer](single_finalorbit.png "Getting an (almost) 6 hour orbit"){: .left}
 
@@ -110,7 +107,7 @@ Switch back to the rocket, which should still be close to apoapsis, and burn pro
 
 ###Deployment
 
-The rocket's orbital period is set so that it will next return to apoapsis 120&deg; (for a 3-satellite network) or 90&deg; (for a 4-satellite network) behind the satellite you just launched. Every time the rocket approaches apoapsis, release another satellite. If you are using dishes rather than the Communotron 32 to set up connections between keostationary satellites, you need to take care with the dish targets.
+The rocket's orbital period is set so that it will next return to apoapsis 120&deg; (for a 3-satellite network) or 90&deg; (for a 4-satellite network) behind the satellite you just launched. Every time the rocket approaches apoapsis, release another satellite. If you are using dishes rather than the Communotron 32 to set up connections between keostationary satellites, you need to take care with the dish targets, especially if you have not yet researched [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wiki/Unmanned_Tech) (which unlocks a 3&nbsp;km omni antenna for all probe cores).
 
 Before releasing the satellite:
 
@@ -151,7 +148,7 @@ Period Error | Drift Rate             | Time to drift 20&deg;
 
 It is nearly impossible to give two satellites exactly the same orbital period, because the period will change whenever the satellite rotates (for example, to keep facing the sun over the course of the year). For the last word in satellite synchronization, you may wish to edit your save file. Some RemoteTech players see this as essential to get around game engine limitations, others see it as cheating. You will have to decide for yourself.
 
-Once you've synched up your satellites in game as best you can, exit the game and open saves/&lt;Your Game Name&gt;/persistent.sfs in any text editor. Search for the name of your first satellite, then find a block a few lines down that looks like this:
+Once you've synched up your satellites in-game as best you can, exit the game and open saves/&lt;Your Game Name&gt;/persistent.sfs in any text editor. Search for the name of your first satellite, then find a block a few lines down that looks like this:
 
     ORBIT
     {

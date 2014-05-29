@@ -7,9 +7,6 @@ extra_css: antennas
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
-{: .alert .alert-danger}
-
 #List of Parts
 
 {% include toc.html %}

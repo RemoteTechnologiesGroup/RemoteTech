@@ -6,9 +6,6 @@ navbar: false
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
-{: .alert .alert-danger}
-
 #Launching Your First Satellite
 
 {% include toc.html %}

@@ -6,7 +6,7 @@ navbar: false
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
+**UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
 #Re-Entry Using the Flight Computer

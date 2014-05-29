@@ -5,9 +5,6 @@ layout: content
 
 {% include banner.html %}
 
-**Oh shit son!** This page is still under development!
-{: .alert .alert-danger}
-
 {% include toc.html %}
 
 ##Introduction to RemoteTech
