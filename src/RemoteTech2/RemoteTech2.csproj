@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="C:\Program Files\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{42155D82-1F25-4E59-9F65-64ABC583F420}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RemoteTech</RootNamespace>
+    <AssemblyName>RemoteTech2</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>C:\Users\Sander\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>C:\Users\Sander\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>C:\Users\Sander\Desktop\KSP Dev\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>C:\Users\Sander\Desktop\KSP Dev\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:\Users\Sander\Desktop\KSP Dev\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\API.cs" />
+    <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
+    <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
+    <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
+    <Compile Include="FlightComputer\Commands\BurnCommand.cs" />
+    <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
+    <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
+    <Compile Include="FlightComputer\EventCommand.cs" />
+    <Compile Include="FlightComputer\FlightCore.cs" />
+    <Compile Include="FlightComputer\Commands\ICommand.cs" />
+    <Compile Include="FlightComputer\Commands\TargetCommand.cs" />
+    <Compile Include="Modules\MissionControlAntenna.cs" />
+    <Compile Include="Modules\ProtoSignalProcessor.cs" />
+    <Compile Include="RangeModel\RangeModelStandard.cs" />
+    <Compile Include="RangeModel\RangeModelRoot.cs" />
+    <Compile Include="RangeModel\RangeModelExtensions.cs" />
+    <Compile Include="RTDebugUnit.cs" />
+    <Compile Include="RTLog.cs" />
+    <Compile Include="FlightComputer\DelayedCommand.cs" />
+    <Compile Include="FlightComputer\FlightComputer.cs" />
+    <Compile Include="FlightComputer\UIPartActionMenuPatcher.cs" />
+    <Compile Include="IAntenna.cs" />
+    <Compile Include="ISatellite.cs" />
+    <Compile Include="ISignalProcessor.cs" />
+    <Compile Include="Modules\ModuleRTAntennaPassive.cs" />
+    <Compile Include="Modules\ModuleSPUPassive.cs" />
+    <Compile Include="Modules\ModuleRTAntenna.cs" />
+    <Compile Include="Modules\ModuleRTDataTransmitter.cs" />
+    <Compile Include="Modules\ModuleSPU.cs" />
+    <Compile Include="NetworkManager.cs" />
+    <Compile Include="NetworkRenderer.cs" />
+    <Compile Include="NetworkPathfinder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Modules\ProtoAntenna.cs" />
+    <Compile Include="RTCore.cs" />
+    <Compile Include="RTSettings.cs" />
+    <Compile Include="RTUtil.cs" />
+    <Compile Include="SatelliteManager.cs" />
+    <Compile Include="AntennaManager.cs" />
+    <Compile Include="SimpleTypes\BidirectionalEdge.cs" />
+    <Compile Include="SimpleTypes\BinaryHeap.cs" />
+    <Compile Include="SimpleTypes\CachedField.cs" />
+    <Compile Include="SimpleTypes\Dish.cs" />
+    <Compile Include="SimpleTypes\GUITextureButtonFactory.cs" />
+    <Compile Include="SimpleTypes\NetworkRoute.cs" />
+    <Compile Include="SimpleTypes\PriorityQueue.cs" />
+    <Compile Include="SimpleTypes\NetworkLink.cs" />
+    <Compile Include="UI\AbstractWindow.cs" />
+    <Compile Include="UI\AntennaFragment.cs" />
+    <Compile Include="UI\AntennaWindow.cs" />
+    <Compile Include="UI\AttitudeFragment.cs" />
+    <Compile Include="UI\FocusOverlay.cs" />
+    <Compile Include="UI\FocusFragment.cs" />
+    <Compile Include="UI\FlightComputerWindow.cs" />
+    <Compile Include="UI\NetworkCone.cs" />
+    <Compile Include="UI\EZGUIPointerDisablePatcher.cs" />
+    <Compile Include="UI\FlightUIPatcher.cs" />
+    <Compile Include="UI\IFragment.cs" />
+    <Compile Include="UI\FilterOverlay.cs" />
+    <Compile Include="UI\NetworkLine.cs" />
+    <Compile Include="UI\QueueFragment.cs" />
+    <Compile Include="UI\SatelliteFragment.cs" />
+    <Compile Include="UI\TimeQuadrantPatcher.cs" />
+    <Compile Include="VesselSatellite.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+    <PropertyGroup>
+      <PathToZip>../../GameData</PathToZip>
+      <PluginLocation>../../GameData/RemoteTech2/Plugins/</PluginLocation>
+      <ZipDate>$([System.DateTime]::Now.ToString(`yyyy.MM.dd.HH.mm`))</ZipDate>
+    </PropertyGroup>
+    <Copy DestinationFolder="$(PluginLocation)" OverwriteReadOnlyFiles="True" SkipUnchangedFiles="False" SourceFiles="$(OutputPath)$(AssemblyName).dll" />
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(PathToZip)" ZipFileName="../../dist/RemoteTech2_$(ZipDate).zip" />
+  </Target>
+</Project>
