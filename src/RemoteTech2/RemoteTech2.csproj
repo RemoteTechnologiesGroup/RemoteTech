@@ -125,12 +125,5 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-    <PropertyGroup>
-      <PathToZip>../../GameData</PathToZip>
-      <PluginLocation>../../GameData/RemoteTech2/Plugins/</PluginLocation>
-      <ZipDate>$([System.DateTime]::Now.ToString(`yyyy.MM.dd.HH.mm`))</ZipDate>
-    </PropertyGroup>
-    <Copy DestinationFolder="$(PluginLocation)" OverwriteReadOnlyFiles="True" SkipUnchangedFiles="False" SourceFiles="$(OutputPath)$(AssemblyName).dll" />
-    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(PathToZip)" ZipFileName="../../dist/RemoteTech2_$(ZipDate).zip" />
   </Target>
 </Project>
