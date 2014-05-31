@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="C:\Program Files\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks" />
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\$(MSBuildToolsVersion)\MSBuild.ExtensionPack.tasks" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -18,7 +18,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Users\Sander\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
+    <OutputPath>..\..\GameData\RemoteTech2\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>C:\Users\Sander\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
+    <OutputPath>..\..\GameData\RemoteTech2\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -133,4 +133,11 @@
     <Copy DestinationFolder="$(PluginLocation)" OverwriteReadOnlyFiles="True" SkipUnchangedFiles="False" SourceFiles="$(OutputPath)$(AssemblyName).dll" />
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(PathToZip)" ZipFileName="../../dist/RemoteTech2_$(ZipDate).zip" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>set GAMEPATH="D:\KerbalDev"
+set DestPath="%25GAMEPATH%25\GameData\RemoteTech2\Plugins"
+set Binary="%25GAMEPATH%25\KSP.exe"
+copy "$(TargetPath)" "%25DestPath%25"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
