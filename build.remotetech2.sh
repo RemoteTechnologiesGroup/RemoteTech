@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SRCDIR=/src/RemoteTech2
+SRCDIR=src/RemoteTech2
 
 if [ ! -f "$SRCDIR/Assembly-CSharp-firstpass.dll" ] \
    || [ ! -f "$SRCDIR/Assembly-CSharp.dll" ] \
@@ -14,4 +14,4 @@ fi
 
 cd src/RemoteTech2 && xbuild
 
-zip -r remotetech2.zip GameData/
+cd ../../ && zip -r remotetech2.zip GameData/
