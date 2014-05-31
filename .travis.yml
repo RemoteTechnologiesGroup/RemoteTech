@@ -10,7 +10,7 @@ before_install:
 
 install:
  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then echo "Should only be on OSX"; exit 1; fi
- - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ./CI/travis.osx.install.deps.sh; fi
+ - ./CI/travis.osx.install.deps.sh # it appears TRAVIS_OS_NAME is unset often, assume we're OSX if not linux
 
 script:
  - ./build.remotetech2.sh
