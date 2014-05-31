@@ -20,7 +20,7 @@ namespace RemoteTech
 
         public FilterOverlay FilterOverlay { get; protected set; }
         public FocusOverlay FocusOverlay { get; protected set; }
-        public TimeQuadrantPatcher TimeQuadrantPatcher { get; protected set; }
+        public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
 
         public void Start()
         {
@@ -39,9 +39,8 @@ namespace RemoteTech
 
             FilterOverlay = new FilterOverlay();
             FocusOverlay = new FocusOverlay();
-            TimeQuadrantPatcher = new TimeQuadrantPatcher();
+            TimeWarpDecorator = new TimeWarpDecorator();
 
-            TimeQuadrantPatcher.Patch();
             FlightUIPatcher.Patch();
 
             RTLog.Notify("RTCore loaded successfully.");
@@ -102,7 +101,6 @@ namespace RemoteTech
         {
             if (FocusOverlay != null) FocusOverlay.Dispose();
             if (FilterOverlay != null) FilterOverlay.Dispose();
-            if (TimeQuadrantPatcher != null) TimeQuadrantPatcher.Undo();
             if (FilterOverlay != null) FilterOverlay.Dispose();
             if (Renderer != null) Renderer.Detach();
             if (Network != null) Network.Dispose();
