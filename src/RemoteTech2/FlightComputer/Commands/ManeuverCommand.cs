@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,7 @@ namespace RemoteTech
         public double OriginalDelta { get; set; }
         public double RemainingTime { get; set; }
         public double RemainingDelta { get; set; }
+        public bool EngineActivated { get; set; }
         public override int Priority { get { return 0; } }
 
         public override string Description
@@ -19,8 +20,19 @@ namespace RemoteTech
             get
             {
                 if (RemainingTime > 0 || RemainingDelta > 0)
-                    return "Executing maneuver: " + RemainingDelta.ToString("F2") + "m/s" + Environment.NewLine +
-                           "Remaining duration: " + RTUtil.FormatDuration(RemainingTime) + Environment.NewLine + base.Description;
+                {
+                    string flightInfo = "Executing maneuver: " + RemainingDelta.ToString("F2") +
+                                        "m/s" + Environment.NewLine + "Remaining duration: ";
+
+                    if (EngineActivated)
+                    {
+                        flightInfo += RTUtil.FormatDuration(RemainingTime);
+                    }
+                    else
+                        flightInfo += "-:-";
+
+                    return flightInfo + Environment.NewLine + base.Description;
+                }
                 else
                     return "Execute planned maneuver" + Environment.NewLine + base.Description;
             }
@@ -32,7 +44,17 @@ namespace RemoteTech
             if (burn != null) f.Remove(burn);
             OriginalDelta = Node.DeltaV.magnitude;
             RemainingDelta = Node.GetBurnVector(f.Vessel.orbit).magnitude;
-            RemainingTime = RemainingDelta / (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
+            EngineActivated = true;
+            double thrustToMass = (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
+
+            if (thrustToMass != 0.0)
+                RemainingTime = RemainingDelta / thrustToMass;
+            else
+            {
+                EngineActivated = false;
+                RTUtil.ScreenMessage("[Flight Computer]: No engine to carry out the maneuver.");
+            }
+
             return true;
         }
 
@@ -44,9 +66,19 @@ namespace RemoteTech
                 var up = (f.SignalProcessor.Body.position - f.SignalProcessor.Position).normalized;
                 var orientation = Quaternion.LookRotation(forward, up);
                 FlightCore.HoldOrientation(fcs, f, orientation);
+
+                double thrustToMass = (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
+
+                if (thrustToMass == 0.0)
+                {
+                    EngineActivated = false;
+                    return false;
+                }
+
+                EngineActivated = true;
                 fcs.mainThrottle = 1.0f;
-                RemainingTime -= TimeWarp.deltaTime;
-                RemainingDelta -= (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass()) * TimeWarp.deltaTime;
+                RemainingTime = RemainingDelta / thrustToMass;
+                RemainingDelta -= thrustToMass * TimeWarp.deltaTime;
                 return false;
             }
             f.Enqueue(AttitudeCommand.Off(), true, true, true);
