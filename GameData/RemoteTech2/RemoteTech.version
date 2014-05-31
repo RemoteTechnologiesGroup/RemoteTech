@@ -1,7 +1,7 @@
 {
 	"NAME": "RemoteTech",
 	"URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/RemoteTech.version",
-	"DOWNLOAD": "",
+	"DOWNLOAD": "https://github.com/RemoteTechnologiesGroup/RemoteTech/releases/latest",
 	"_comment": "Use old-style format to keep compatibility with KSP-AVC Utility 0.3.",
 	"VERSION": {
 		"MAJOR": 1,
