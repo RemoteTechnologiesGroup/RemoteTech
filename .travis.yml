@@ -8,7 +8,7 @@ before_install:
  - wget "http://download.mono-project.com/archive/${MONO_VERSION}/macos-10-x86/MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg"
  - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
  - wget "http://files.pezcuckow.com/dlls.zip"
- - unzip dlls.zip src/RemoteTech2
+ - unzip dlls.zip -d src/RemoteTech2/
 
 script:
  - cd src/RemoteTech2 && xbuild
