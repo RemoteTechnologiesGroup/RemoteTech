@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace RemoteTech
 {
+    /// <summary>
+    /// Deprecated
+    /// </summary>
     public class TimeQuadrantPatcher
     {
         private class Backup
