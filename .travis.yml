@@ -1,7 +1,7 @@
-language: c 
+language: objective-c # force osx machines
 
 os:
- - osx # force osx machines
+ - osx
 
 before_install:
  - date -u
@@ -9,7 +9,7 @@ before_install:
  - env | sort
 
 install:
- - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then echo "Should only be on OSX"; exit 1 fi
+ - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then echo "Should only be on OSX"; exit 1; fi
  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ./CI/travis.osx.install.deps.sh; fi
 
 script:
