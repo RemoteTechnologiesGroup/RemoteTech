@@ -1,0 +1,34 @@
+language: objective-c # force osx machines
+
+os:
+ - osx
+
+env:
+  global:
+    secure: VNy9cMdF07hSpmyOcmsccRcB6PNt/lJm8pQRqbQ+0QaO1DCkVKqRCiEaCsNJFXM4lsCa+m6QsWOx4HTrHpqmMD2dIerev5/xTjVoEIPHx5VK5FvH02lA66vva7/v0XVdOKdZEm9lTFECkSS5wmi8h4wHjeh5c3gJPZJHLVDVCyw=
+
+before_install:
+ - date -u
+ - uname -a
+ - export BUILDTAG=`git describe --abbrev=0 --tags`
+ - env | sort | grep -v ZIPPASSWORD
+
+install:
+ - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then echo "Should only be on OSX"; exit 1; fi
+ - ./CI/travis.osx.install.deps.sh # it appears TRAVIS_OS_NAME is unset often, assume we're OSX if not linux
+
+script:
+ - ./build.remotetech2.sh
+
+before_deploy: 
+ - zip -r remotetech2-build${TRAVIS_BUILD_NUMBER}.zip GameData/
+
+deploy:
+  provider: releases
+  api_key:
+    secure: f6crWTZL3cntisg4tXoM+J7vejmnUqSPmMGvkvGHul93KnDjHofg2DLACc/hWGbHEZ07P9/SZuCnrSVEFAETttZKPVHsg5GgldUH70s/P5VKWkaS++iBPwaoazt86Tj1Nmd6TZTDMaKFMkXVnKGAprxHuS9owLUHcNZ0md/wuRk=
+  file: remotetech2-build${TRAVIS_BUILD_NUMBER}.zip
+  release-number: ${BUILDTAG}-alpha-build${TRAVIS_BUILD_NUMBER}
+  on:
+    tags: true # even though appearing to not work, setting this false make the deploy fail as there's no tag_name set
+    repo: Pezmc/RemoteTech
