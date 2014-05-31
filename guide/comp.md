@@ -5,28 +5,27 @@ layout: content
 
 {% include banner.html %}
 
-**UNDER CONSTRUCTION:** Please watch your step!
-{: .alert .alert-danger}
-
 #The Flight Computer
 
 {% include toc.html %}
+
+![IMAGE: new time quadrant, with connection status below the mission clock and the computer icon below it](compicon.png){: .left}
 
 RemoteTech adds two new displays below the mission clock in the upper left corner. The first is the connection status. "N/A" means the ship does not have a probe core. "Local Control" means that the ship has either a crewed pod or a [non-RemoteTech-compatible](../../modders/) probe core, and you can control the ship with no delay as in the stock game. "D+" followed by a number means the ship has a working connection to Mission Control, with the number being the signal delay in seconds. "No connection" means you can't send commands at all.
 
 The second element is a colored calculator icon -- green for a [working connection](../../#connections), red for a broken connection, and yellow for local control. Clicking the icon with a working connection or no connection pulls up the flight computer window. You can't use the flight computer if you have local control.
 
-The basic flight computer window shows only the controls for operating it; clicking ">>" will display the computer's current state as well as a queue of any "instant" commands sent to it. Instant commands are anything you normally do with a single click or key press, including right-click actions, staging commands, action groups, and anything with a toggle key (RCS, SAS, landing gear...). They do not include slewing, translation, changing the throttle, or anything else that might involve holding down a key.
+![IMAGE: flight computer window, with a simple queue](flightcomputer.png){: .right}
+
+The basic flight computer window shows only the controls for operating it; clicking ">>" will display the computer's current state as well as a queue of any "instant" commands sent to it. Instant commands are anything you normally do with a single click or key press, including right-click actions, staging commands, action groups, and anything with a toggle key (RCS, SAS, landing gear...). They do not include slewing, translation, changing (or cutting) the throttle, or anything else that might involve holding down a key.
 
 An instant command may be canceled by clicking the "X" button next to the command. Non-instant commands cannot be canceled.
 
-![IMAGE: flight computer window, with a simple queue](flightcomputer.png)
-
 ##Signal delay
 
-All commands, instantaneous and otherwise, are subject to signal delay, whether or not the flight computer's window is open. Instant commands will be shown in the queue along with the amount of time remaining until the probe receives the command. Once the time drops to zero, the command will be executed. Cancellations also count as commands and appear in the queue, along with a signal delay. Unless you are using manual delay (see below), there is no way to get a cancel command to the ship before it starts executing the original command.
+All commands, instant and otherwise, are subject to signal delay, whether or not the flight computer's window is open. Instant commands will be shown in the queue along with the amount of time remaining until the probe receives the command. Once the time drops to zero, the command will be executed. Cancellations also count as commands and appear in the queue, along with a signal delay. Unless you are using manual delay (see below), there is no way to get a cancel command to the ship before it starts executing the original command.
 
-If a command pulls up a window, you may press buttons in the window without signal delay. For example, if you have a two-minute delay and activate a science experiment, you have to only wait two minutes, not four, before the probe discards, saves, or transmits the data.
+If a command pulls up a window, you may press buttons in the window without signal delay. For example, if you have a two-minute delay and activate a science experiment, you have to wait only two minutes, not four, before the probe discards, saves, or transmits the data.
 
 ##Manual delay
 
@@ -34,7 +33,7 @@ The text box in the lower right corner of the computer window lets you choose to
 
 If the manual delay is less than the signal delay, the delay will be ignored -- the probe will execute the command as soon as it gets it, just as if the delay were zero. If the manual delay is more than the signal delay, the command will be delayed by the given amount from when the command was *sent*, not recieved. The computer queue will list two delays: the first is the signal delay, while the second is the amount the computer will wait after it gets the signal.
 
-**Example:** a probe is ten light-minutes away and about to pass behind a planet for a burn, which is scheduled 20 minutes from now. Type "20m" into the delay box and hit enter to set it as the current delay. Then issue a command to (for example) point retrograde. After a few seconds the flight queue will read "9m56s+10m00s", indicating that the signal will take just under ten minutes to reach the ship, followed by ten minutes before the ship acts on it.
+**Example:** a probe is ten light-minutes away and about to pass behind a planet for a burn, which is scheduled 20 minutes from now. Type "20m" into the delay box and hit enter to set it as the current delay. Then issue a command to (for example) point retrograde. After a few seconds the flight queue will read "9m56s+10m00s", indicating that the signal will take just under ten minutes to reach the ship, followed by another ten minutes before the ship acts on it.
 
 Cancellations are not affected by manual delay, so a command will be removed from the queue as soon as the cancellation reaches the ship. This makes manual delay helpful if you want to double-check a complex sequence of commands before they are executed.
 
@@ -44,14 +43,16 @@ The buttons on the left side of the screen control a simple autopilot. All butto
 
 ###Attitude Control
 
+![IMAGE: layout of the attitude controls](flightcomputer_att.png){: .left}
+
 Pointing a ship manually with several minutes of lag is nearly impossible, so the computer can be programmed to hold a particular position. Choosing any attitude will override the previous attitude command. The path the ship takes in pointing toward a new position can be very roundabout, so be sure to allow plenty of time to turn the ship.
 
-![IMAGE: layout of the attitude controls](flightcomputer_att.png)
+There are six basic directions (+/- GRD, RAD, and NRM), corresponding roughly to the six maneuver node axes. The exact meaning of each direction depends on the reference frame, chosen with one of four buttons in the flight computer window: 
 
-There are six basic directions, corresponding roughly to the six maneuver node axes. The exact meaning of each direction depends on the reference frame, chosen with one of four buttons in the flight computer window: 
+<div></div>{:.spacer}
 
 ORB
-: directions are relative to the ship's orbital motion. This is the default if no reference frame is selected.
+: directions are relative to the ship's orbital motion. This is the default if no reference frame is selected, and the only reference frame in which the six directions correspond *exactly* to those from the game's maneuver node editor.
 
 SRF
 : directions are relative to the ship's surface motion.
@@ -60,14 +61,14 @@ RVEL
 : directions are relative to the ship's motion past the current target.
 
 TGT
-: directions are relative to the position of the current target.
+: directions are relative to the direction towards the current target.
 
 Direction   | ORB Frame (Default)        | SRF Frame                                         | RVEL Frame                                               | TGT Frame
 ------------|----------------------------|---------------------------------------------------|----------------------------------------------------------|-------------------
 GRD+        | Towards orbital velocity   | Towards surface velocity                          | Towards target relative velocity                         | Towards target
 GRD-        | Away from orbital velocity | Away from surface velocity                        | Away from target relative velocity                       | Away from target
-RAD+        | Outward from orbit         | Outward from surface trajectory                   | Perpendicular to relative velocity, in orbital plane     | Perpendicular to target, roughly facing away from sun
-RAD-        | Inward from orbit          | Inward from surface trajectory                    | Perpendicular to relative velocity, in orbital plane     | Perpendicular to target, roughly facing the sun
+RAD+        | Outward from orbit         | Outward from surface trajectory                   | Perpendicular to relative velocity, in orbital plane     | Perpendicular to target
+RAD-        | Inward from orbit          | Inward from surface trajectory                    | Perpendicular to relative velocity, in orbital plane     | Perpendicular to target
 NRM+        | Up, out of orbital plane   | North (south) from eastward (westward) trajectory | Perpendicular to relative velocity, out of orbital plane | Perpendicular to target
 NRM-        | Down, out of orbital plane | South (north) from eastward (westward) trajectory | Perpendicular to relative velocity, out of orbital plane | Perpendicular to target
 {:.data .shadecol}
@@ -94,6 +95,8 @@ Because node execution does not wait for the ship to face the node before turnin
 Unlike most commands, EXEC ignores manual delays -- the time of the burn is set by the location of the maneuver node. If the time to the node is less than the signal delay, the execution command won't be sent.
 
 **Note:** the flight computer does not understand staging, and will continue to count down to the end of the burn even if the current fuel tanks are empty. Schedule any staging commands separately.
+
+![IMAGE: a simple example of a manual burn](manualburn.png){: .right}
 
 ###Manual Burns
 
