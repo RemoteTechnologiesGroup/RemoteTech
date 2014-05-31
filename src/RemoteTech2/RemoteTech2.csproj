@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\$(MSBuildToolsVersion)\MSBuild.ExtensionPack.tasks" />
+  <Import Project="C:\Program Files\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -18,7 +18,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\GameData\RemoteTech2\Plugins\</OutputPath>
+    <OutputPath>C:\Users\Sander\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\GameData\RemoteTech2\Plugins\</OutputPath>
+    <OutputPath>C:\Users\Sander\Desktop\KSP Dev\GameData\RemoteTech2\Plugins\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,11 +36,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>D:\KerbalDev\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>C:\Users\Sander\Desktop\KSP Dev\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>D:\KerbalDev\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>C:\Users\Sander\Desktop\KSP Dev\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -50,7 +50,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>D:\KerbalDev\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>C:\Users\Sander\Desktop\KSP Dev\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -125,20 +125,12 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-    <!--->PropertyGroup>
+    <PropertyGroup>
       <PathToZip>../../GameData</PathToZip>
       <PluginLocation>../../GameData/RemoteTech2/Plugins/</PluginLocation>
       <ZipDate>$([System.DateTime]::Now.ToString(`yyyy.MM.dd.HH.mm`))</ZipDate>
     </PropertyGroup>
     <Copy DestinationFolder="$(PluginLocation)" OverwriteReadOnlyFiles="True" SkipUnchangedFiles="False" SourceFiles="$(OutputPath)$(AssemblyName).dll" />
-    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(PathToZip)" ZipFileName="../../dist/RemoteTech2_$(ZipDate).zip" /-->
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(PathToZip)" ZipFileName="../../dist/RemoteTech2_$(ZipDate).zip" />
   </Target>
-  <PropertyGroup>
-    <PostBuildEvent>set GAMEPATH="D:\KerbalDev"
-set DestPath="%25GAMEPATH%25\GameData\RemoteTech2\Plugins
-set Binary="%25GAMEPATH%25\KSP.exe"
-copy "$(TargetPath)" "%25DestPath%25"
-rem Copy DLL and run KSP
-"%25Binary%25"</PostBuildEvent>
-  </PropertyGroup>
 </Project>
