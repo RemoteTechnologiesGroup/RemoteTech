@@ -16,13 +16,13 @@ script:
  - ./build.remotetech2.sh
 
 before_deploy: 
- - zip -r remotetech2.zip GameData/
+ - zip -r remotetech2-build${TRAVIS_BUILD_NUMBER}.zip GameData/
 
 deploy:
   provider: releases
   api_key:
     secure: f6crWTZL3cntisg4tXoM+J7vejmnUqSPmMGvkvGHul93KnDjHofg2DLACc/hWGbHEZ07P9/SZuCnrSVEFAETttZKPVHsg5GgldUH70s/P5VKWkaS++iBPwaoazt86Tj1Nmd6TZTDMaKFMkXVnKGAprxHuS9owLUHcNZ0md/wuRk=
-  file: remotetech2.zip
+  file: remotetech2-build${TRAVIS_BUILD_NUMBER}.zip
   on:
     repo: Pezmc/RemoteTech
     tags: true
