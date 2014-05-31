@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,7 +52,7 @@ namespace RemoteTech
             else
             {
                 EngineActivated = false;
-                RTUtil.ScreenMessage("[Flight Computer]: No Engine to proceed the maneuver.");
+                RTUtil.ScreenMessage("[Flight Computer]: No engine to carry out the maneuver.");
             }
 
             return true;
