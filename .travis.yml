@@ -14,3 +14,11 @@ install:
 
 script:
  - ./build.remotetech2.sh
+
+deploy:
+  provider: releases
+  api_key:
+    secure: f6crWTZL3cntisg4tXoM+J7vejmnUqSPmMGvkvGHul93KnDjHofg2DLACc/hWGbHEZ07P9/SZuCnrSVEFAETttZKPVHsg5GgldUH70s/P5VKWkaS++iBPwaoazt86Tj1Nmd6TZTDMaKFMkXVnKGAprxHuS9owLUHcNZ0md/wuRk=
+  file: remotetech2.zip
+  on:
+    repo: Pezmc/RemoteTech
