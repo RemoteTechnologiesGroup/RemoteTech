@@ -13,5 +13,3 @@ then
 fi
 
 cd src/RemoteTech2 && xbuild
-
-cd ../../ && zip -r remotetech2.zip GameData/

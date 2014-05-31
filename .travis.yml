@@ -15,6 +15,9 @@ install:
 script:
  - ./build.remotetech2.sh
 
+before_deploy: 
+ - zip -r remotetech2.zip GameData/
+
 deploy:
   provider: releases
   api_key:
@@ -22,3 +25,4 @@ deploy:
   file: remotetech2.zip
   on:
     repo: Pezmc/RemoteTech
+    tags: true
