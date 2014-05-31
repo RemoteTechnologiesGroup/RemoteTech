@@ -12,7 +12,7 @@ navbar: false
 
 This tutorial covers how to launch three or four equally spaced satellites into keosynchronous equatorial orbit (KEO). It assumes you have no pre-existing satellite network. This network is recommended for players interested in role-playing or in a challenge. Since, in RemoteTech, dishes can be pointed and signals rerouted instantaneously, there is no in-game advantage to keeping communications satellites stationary, and a lower orbit is both easier to achieve and better for interplanetary communications.
 
-The tutorial gives two methods for creating a KEO network. Separate launches have an easier rocket design and less specific orbit requirements, but are more tedious. A single launch is faster, but requires skill in both rocket design and orbital maneuvers.
+The tutorial gives two methods for creating a KEO network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers.
 
 ##Requirements
 

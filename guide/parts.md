@@ -53,6 +53,7 @@ VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 80
 Mass                | 0.005 tons
+Length              | 1.375 m
 Drag                | 0.2
 Comlink power       | 0.01 charge/s
 Science power       | 50 charge/s
@@ -90,6 +91,7 @@ VAB Category        | Science Parts
 Manufacturer        | Ionic Protonic Electronics
 Cost                | 150
 Mass                | 0.005 tons
+Length              | 1.5 m
 Drag                | 0.2
 Comlink power       | 0.13 charge/s
 Science power       | 50 charge/s
@@ -120,7 +122,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 ![Picture of EXP-VR-2T](antenna_expvr2t.png)
 
-The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron 16 when retracted, but slightly larger when deployed. It is slightly more powerful than the Communotron 16.
+The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron 16 when retracted, but somewhat larger when deployed. It is slightly more powerful than the Communotron 16.
 {:.blurb}
 
 |Basic Properties
@@ -130,6 +132,7 @@ VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
 Cost                | 150
 Mass                | 0.005 tons
+Length              | 2 m
 Drag                | 0.2
 Comlink power       | 0.13 charge/s
 Science power       | 50 charge/s
@@ -170,6 +173,7 @@ VAB Category        | Science Parts
 Manufacturer        | Ionic Protonic Electronics
 Cost                | 150
 Mass                | 0.01 tons
+Length              | 3 m
 Drag                | 0.2
 Comlink power       | 0.6 charge/s
 Science power       | 50 charge/s
@@ -229,6 +233,7 @@ VAB Category        | Science Parts
 Manufacturer        | Ionic Symphonic Protonic Electronics
 Cost                | 100
 Mass                | 0.03 tons
+Dimensions          | 1&times;0.75  m
 Drag                | 0.2
 Comlink power       | 0.82 charge/s
 Science power       | 50 charge/s
@@ -272,6 +277,7 @@ VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 100
 Mass                | 0.5 tons
+Diameter            | 1.375 m
 Drag                | 0.2
 Comlink power       | 0.82 charge/s
 Science power       | 50 charge/s
@@ -312,6 +318,7 @@ VAB Category        | Science Parts
 Manufacturer        | Ionic Protonic Electronics
 Cost                | 1100
 Mass                | 0.025 tons
+Diameter            | 2.375 m
 Drag                | 0.2
 Comlink power       | 0.93 charge/s
 Science power       | 50 charge/s
@@ -355,6 +362,7 @@ VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 100
 Mass                | 1.0 tons
+Diameter            | 2.75 m
 Drag                | 0.2
 Comlink power       | 0.93 charge/s
 Science power       | 50 charge/s
@@ -386,6 +394,8 @@ Cone covers keosynchronous orbit at | 9,900,000 km
 ![Picture of CommTech-1](antenna_ct1.png)
 
 The CommTech-1 is the first antenna capable of returning signals to Kerbin from the outer solar system. Despite the in-game description, it can reach any planet available in version 0.23.5 of the game, even Eeloo at apoapsis. However, it has an extremely narrow cone; players should avoid using the dish in cone mode until they pass the orbit of Dres. Even a satellite in orbit around Jool may have occasional connection problems when using cone mode, as it can approach within 52 million km of Kerbin.
+
+For players using Planet Factory, the CommTech-1 can reach Inaccessable and Sentar, but not Serious, Stella, or Barry.
 {:.blurb}
 
 |Basic Properties
@@ -395,6 +405,7 @@ VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
 Cost                | 800
 Mass                | 1.0 tons
+Diameter            | 3.5 m
 Drag                | 0.2
 Comlink power       | 2.60 charge/s
 Science power       | 50 charge/s
@@ -435,6 +446,7 @@ VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 800
 Mass                | 0.5 tons
+Diameter            | 6.5 m
 Drag                | 0.2
 Comlink power       | 2.80 charge/s
 Science power       | 50 charge/s
