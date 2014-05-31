@@ -106,6 +106,14 @@ namespace RemoteTech
             // Crap timewarp object
             mTimewarpObject = TimeWarp.fetch;
 
+            // objects on this scene?
+            if (mTimewarpObject == null || mTimewarpObject.timeQuadrantTab == null)
+            {
+                // to skip the draw calls
+                mTimewarpObject = null;
+                return;
+            }
+
             var text = mTimewarpObject.timeQuadrantTab.transform.FindChild("MET timer").GetComponent<ScreenSafeGUIText>();
             mTextStyle = new GUIStyle(text.textStyle);
             mTextStyle.fontSize = (int)(text.textSize * ScreenSafeUI.PixelRatio);
@@ -122,6 +130,10 @@ namespace RemoteTech
         /// </summary>
         public void Draw()
         {
+            // no drawing without timewarp object
+            if (mTimewarpObject == null)
+                return;
+
             float scale = ScreenSafeUI.VerticalRatio * 900.0f / Screen.height;
             Vector2 screenCoord = ScreenSafeUI.referenceCam.WorldToScreenPoint(mTimewarpObject.timeQuadrantTab.transform.position);
             Rect screenPos = new Rect(9.0f / scale, Screen.height - screenCoord.y + 26.0f / scale, 50.0f / scale, 20.0f / scale);
