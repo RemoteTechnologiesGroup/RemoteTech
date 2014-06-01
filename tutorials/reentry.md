@@ -28,7 +28,7 @@ If you want a probe to be controllable during re-entry, you may want to keep a [
 
 You may also want to bind other re-entry commands (such as antenna and solar panel retraction, or parachute deployment) to action groups for convenience.
 
-This tutorial assumes you are using the default staging sequence: one stage to drop the engine, one stage to drop the heat shield, and a final stage to deploy parachutes. Adapt the instructions to custom staging as appropriate.
+This tutorial assumes you are using the default staging sequence: one stage to drop the engine, and a final stage to both drop the heat shield and deploy parachutes. Adapt the instructions to custom staging as appropriate.
 
 ##Pre-Reentry
 {: .spacer}
@@ -41,7 +41,7 @@ Point your heat shield into the airflow by clicking "GRD-", followed by "SRF". T
 
 ###Timing
 
-The most difficult part of an automated re-entry is knowing when re-entry heating begins and ends. This depends on both the angle of your approach and on whether you are using stock aerodynamics or Ferram Aerospace Research (FAR). If you have FAR installed, then your tonnage also matters: heavier spacecraft slow to safe speeds later than light spacecraft. You may need to experiment with the timing for new spacecraft (quicksave is your friend).
+The most difficult part of an automated re-entry is knowing when re-entry heating begins and ends. This depends on both the angle of your approach and on whether you are using stock aerodynamics or Ferram Aerospace Research (FAR). If you have FAR installed, then your tonnage also matters: heavier spacecraft slow to safe speeds later than light spacecraft. You may need to experiment with the timing for new spacecraft or for other planets (quicksave is your friend).
 
 The most convenient time to compare re-entry sequencing to is the time of your orbit's periapsis before you enter the atmosphere. The table below shows when heating ends, compared to the time of periapsis. For example, if you are entering from LKO, playing with stock aerodynamics, and the map view says you will reach periapsis in 10 minutes, then your probe will be out of danger 8:45 from now.
 
@@ -61,19 +61,19 @@ From Mun to 30&nbsp;km periapsis |                    | +1:15
 
 Your highest priority should be scheduling parachute deployment. Use the table above to pick a time just after major heating ends. Once you've decided when you want to deploy parachutes, type in the scheduled time (minus, say, 10-20 seconds) in the box in the lower right corner of the screen and hit enter. Feel free to pause the game while you do the math.
 
-Wait until the time to periapsis advances by your 10-20 second margin, then hit the staging key twice -- once to separate the heat shield, and once to deploy the parachutes. Type "0" followed by enter once you've scheduled parachute deployment, or your other commands will happen too late!
+Wait until the time to periapsis advances by your 10-20 second margin, then hit the staging key. Type "0" followed by enter once you've scheduled parachute deployment, or your other commands will happen too late!
 
-**Example:** if your orbit should hit periapsis in 8:53, and you want to deploy parachutes 1:15 before periapsis, type "7m20s" into the text box and hit enter. Wait until the time to periapsis equals 8:35 (7:20 + 1:15), then hit the staging key to schedule the parachute stage.
+**Example:** if your orbit should hit periapsis in 8:53, and you want to deploy parachutes 1:00 before periapsis, type "7m40s" into the text box and hit enter. Wait until the time to periapsis equals 8:40, then hit the staging key to schedule the parachute stage.
 
 ###Engine Jettison
 
-When you load a game or switch vessels, Kerbal Space Program will sometimes reset the ship's staging state to "prelaunch", and sometimes not. Because the staging indicator does not work in RemoteTech, you can't tell when this has happened and when it hasn't. Therefore, it's safest to jettison the engine manually, in real time. If the first staging keypress doesn't jettison the engine (instead taking you from prelaunch to the engine stage), the second will. Once you've jettisoned the engine, you *know* that the next staging command will jettison the heat shield, as intended.
+When you load a game or switch vessels, Kerbal Space Program will sometimes reset the ship's staging state to "prelaunch", and sometimes not. Because the staging indicator does not work in RemoteTech, you can't tell when this has happened and when it hasn't. Therefore, it's safest to jettison the engine manually, in real time. If the first staging keypress doesn't jettison the engine (instead taking you from prelaunch to the engine stage), the second will. Once you've jettisoned the engine, you *know* that the next staging command will deploy parachutes, as intended.
 
-![IMAGE: benefits of a good queue](chute.png){:.left}
+![IMAGE: image of probe parachuting down, with a deployed antenna](chute.png "Benefits of a good re-entry queue."){:.left}
 
 ###Final Steps
 
-Retract any solar panels just before you hit the atmosphere, and any non-atmospheric antennas before you reach 40 km. If you are out of radio contact at atmosphere entry you will need to schedule the retraction(s) with the flight computer, just like with the [parachutes](#parachutes). The time at which you hit the atmosphere depends on your trajectory -- 9-10 minutes before periapsis if entering from LKO, 4-5 minutes before periapsis if entering from high orbit, and 1-2 minutes before periapsis if returning from the Mun.
+Retract any solar panels just before you hit the atmosphere, and any non-atmospheric antennas before you reach 40 km. If you are out of radio contact at atmosphere entry you will need to schedule the retraction(s) with the flight computer, just like with the [parachutes](#parachutes). The time at which you hit the atmosphere depends on your trajectory -- 8-10 minutes before periapsis if entering from LKO, 4-5 minutes before periapsis if entering from high orbit, and 1-2 minutes before periapsis if returning from the Mun.
 
 Good luck, and see you on the other side!
 
@@ -86,6 +86,6 @@ Good luck, and see you on the other side!
 
 Most antennas can't be deployed in the lower atmosphere unless the ship is going less than 100 m/s (70 m/s for the [Communotron 32](../../guide/parts/#communotron-32)). If you rely on such an antenna for communication, you won't be able to use it until well after parachute (pre)deployment. 
 
-If you want to use your antenna on the surface, you will need to schedule its activation during the pre-reentry stage. Schedule antenna deployment for 1-2 minutes after parachute deployment, using the manual delay method you used to set the [parachutes](#parachutes).
+If you want to use your antenna on the surface, you will need to schedule its activation during the pre-reentry stage. Schedule antenna deployment for 1 minute (with stock aerodynamics) or 2 minutes (with FAR) after parachute deployment, using the manual delay method you used to set the [parachutes](#parachutes).
 
 **Important:** because you can't right click an antenna to deploy it while it's already deployed, you will need to use an action group to send the deploy command.
