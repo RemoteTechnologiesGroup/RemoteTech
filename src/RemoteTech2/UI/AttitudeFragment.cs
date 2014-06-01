@@ -254,7 +254,7 @@ namespace RemoteTech
             if (!mFlightComputer.InputAllowed)
                 return;
             mAttitude = (state < 0) ? 0 : state;
-            if (mMode < 4)
+            if (mMode < 3)
             {
                 mMode = 4;
             }
