@@ -24,7 +24,7 @@ This tutorial assumes you have at least one mod that gives you orbital periods i
 
 Ensure your satellite has an option for making very low-thrust burns (either RCS or a light engine).
 
-In addition to any antennas pointed at moons, planets, or vessel groups, you will need antennas for the following two roles:
+In addition to any antennas pointed at moons, planets, or specific vessels, you will need antennas for the following two roles:
 
 * Communicating with Kerbin's surface and low Kerbin orbit: KEO is located 2869&nbsp;km above the surface, or 3469&nbsp;km from Kerbin's center. The farthest point on Kerbin's surface from any satellite will be 3420&nbsp;km away, near the poles. Therefore, the best antennas for this role are the [Communotron&nbsp;32](../../guide/parts/#communotron-32) or the [Comms DTS-M1](../../guide/parts/#comms-dts-m1).
 * Communicating with the satellites' siblings: KEO satellites in an equilateral triangle formation will be located 6008&nbsp;km apart, requiring the use of the Comms DTS-M1 to maintain contact. KEO satellites in a square formation will be only 4906&nbsp;km apart, allowing the Communotron&nbsp;32 to fill this role if you have the necessary technology.
