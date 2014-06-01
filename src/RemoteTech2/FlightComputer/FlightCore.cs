@@ -110,6 +110,11 @@ namespace RemoteTech
                 if (!pm.EngineIgnited) continue;
                 thrust += pm.maxThrust;
             }
+            foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>()))
+            {
+                if (!pm.EngineIgnited) continue;
+                thrust += (double) pm.maxThrust * (pm.thrustPercentage * 0.01);
+            }
             return thrust;
         }
     }
