@@ -108,7 +108,7 @@ namespace RemoteTech
 
         public IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
         {
-            if (!s.Powered || !Graph.ContainsKey(s.Guid)) return Enumerable.Empty<NetworkLink<ISatellite>>();
+            if (!Graph.ContainsKey(s.Guid) || !s.Powered) return Enumerable.Empty<NetworkLink<ISatellite>>();
             return Graph[s.Guid].Where(l => l.Target.Powered);
         }
 
