@@ -108,12 +108,13 @@ namespace RemoteTech
 
         public IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
         {
-            if (!s.Powered) return Enumerable.Empty<NetworkLink<ISatellite>>();
+            if (!s.Powered || !Graph.ContainsKey(s.Guid)) return Enumerable.Empty<NetworkLink<ISatellite>>();
             return Graph[s.Guid].Where(l => l.Target.Powered);
         }
 
         private void UpdateGraph(ISatellite a)
         {
+            if (!Graph.ContainsKey(a.Guid)) return;
             var result = new List<NetworkLink<ISatellite>>();
 
             foreach (ISatellite b in this)

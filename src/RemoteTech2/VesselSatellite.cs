@@ -7,8 +7,8 @@ namespace RemoteTech
 {
     public class VesselSatellite : ISatellite
     {
-        public bool Visible { 
-            get { return SignalProcessor.Visible; }
+        public bool Visible {
+            get { return SignalProcessor != null ? SignalProcessor.Visible : false; }
         }
 
         public String Name { 
@@ -43,7 +43,7 @@ namespace RemoteTech
             get {
                 return RTUtil.CachePerFrame(ref mSignalProcessor, () =>
                 {
-                    return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors[0];
+                    return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors.FirstOrDefault();
                 });
             }
         }
