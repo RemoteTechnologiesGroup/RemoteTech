@@ -83,6 +83,11 @@ img.right {
 	clear: both;
 }
 
+/* Default definition list style is confusing and ugly */
+dd {
+	margin-left: 40px;
+}
+
 /* Default table style makes them illegible */
 table.data td, table.data th {
 	padding: 3px;

@@ -127,7 +127,7 @@ The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
+Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
 Cost                | 150
@@ -168,7 +168,7 @@ The Communotron 32 is the most powerful omnidirectional antenna available in Rem
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
+Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | Ionic Protonic Electronics
 Cost                | 150
@@ -234,7 +234,7 @@ VAB Category        | Science Parts
 Manufacturer        | Ionic Symphonic Protonic Electronics
 Cost                | 100
 Mass                | 0.03 tons
-Dimensions          | 1&times;0.75  m
+Dimensions          | 1 &times; 0.75  m
 Drag                | 0.2
 Comlink power       | 0.82 charge/s
 Science power       | 50 charge/s
@@ -358,7 +358,7 @@ The Reflectron KR-14 is an intermediate-range interplanetary antenna. It can eas
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
+Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 100
@@ -401,7 +401,7 @@ For players using Planet Factory, the CommTech-1 can reach Inaccessable and Sent
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
+Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
 Cost                | 800
@@ -442,7 +442,7 @@ The Reflecton-GX-128 is the longest-range antenna available in RemoteTech. While
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Advanced_Science_Tech)
+Tech to Unlock      | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Advanced_Science_Tech)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 800

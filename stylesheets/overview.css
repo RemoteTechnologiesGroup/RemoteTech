@@ -1,0 +1,18 @@
+/** Custom CSS for overview page
+ * @file overview.css
+ * @author Starstrider42
+ * @date Created June 1, 2014
+ */
+
+/** Make the icon-labeled list easier to read */
+dl.indentedlist dd {
+    margin-left: 100px;
+}
+dl.indentedlist dt {
+    float: left;
+    clear: left;
+}
+
+dd.para {
+    margin-left: 0px;
+}

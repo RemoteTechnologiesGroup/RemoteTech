@@ -16,7 +16,7 @@ The tutorial gives two methods for creating a KEO network. [Separate launches](#
 
 ##Requirements
 
-For part requirements, see the [General Satellite Design tutorial](#).
+For part requirements, see the [General Satellite Design tutorial](../comsats/).
 
 This tutorial assumes you have at least one mod that gives you orbital periods in-game. In order of decreasing precision, the best choices are Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb.
 

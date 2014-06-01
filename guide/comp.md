@@ -11,9 +11,9 @@ layout: content
 
 ![IMAGE: new time quadrant, with connection status below the mission clock and the computer icon below it](compicon.png){: .left}
 
-RemoteTech adds two new displays below the mission clock in the upper left corner. The first is the connection status. "N/A" means the ship does not have a probe core. "Local Control" means that the ship has either a crewed pod or a [non-RemoteTech-compatible](../../modders/) probe core, and you can control the ship with no delay as in the stock game. "D+" followed by a number means the ship has a working connection to Mission Control, with the number being the signal delay in seconds. "No connection" means you can't send commands at all.
+RemoteTech adds two new displays below the mission clock in the upper left corner. The first is the connection status. "N/A" means the ship does not have a part with a [signal processor](../../#signal-processors). "Local Control" means that the ship has either a crewed pod or a [non-RemoteTech-compatible](../../modders/) probe core, and you can control the ship with no delay as in the stock game. "Connected" or "D+" followed by a number means the ship has a working connection to Mission Control. The number after "D+" is the signal delay in seconds. "No connection" means you can't send commands at all.
 
-The second element is a colored calculator icon -- green for a [working connection](../../#connections), red for a broken connection, and yellow for local control. Clicking the icon with a working connection or no connection pulls up the flight computer window. You can't use the flight computer if you have local control.
+The second element is a colored calculator icon -- green for a [working connection](../../#connections), yellow for local control, and red otherwise. Clicking the icon with a working connection or no connection pulls up the flight computer window. You can't use the flight computer if you do not have a signal processor on board.
 
 ![IMAGE: flight computer window, with a simple queue](flightcomputer.png){: .right}
 
@@ -52,16 +52,16 @@ There are six basic directions (+/- GRD, RAD, and NRM), corresponding roughly to
 <div></div>{:.spacer}
 
 ORB
-: directions are relative to the ship's orbital motion. This is the default if no reference frame is selected, and the only reference frame in which the six directions correspond *exactly* to those from the game's maneuver node editor.
+: Directions are relative to the ship's orbital motion. This is the default if no reference frame is selected, and the only reference frame in which the six directions correspond *exactly* to those from the game's maneuver node editor.
 
 SRF
-: directions are relative to the ship's surface motion.
+: Directions are relative to the ship's surface motion.
 
 RVEL
-: directions are relative to the ship's motion past the current target.
+: Directions are relative to the ship's motion past the current target.
 
 TGT
-: directions are relative to the direction towards the current target.
+: Directions are relative to the direction towards the current target.
 
 Direction   | ORB Frame (Default)        | SRF Frame                                         | RVEL Frame                                               | TGT Frame
 ------------|----------------------------|---------------------------------------------------|----------------------------------------------------------|-------------------
@@ -78,13 +78,13 @@ Clicking on a direction once it's already selected will revert to GRD+. Clicking
 The other attitude options, which don't work with the six direction buttons, are:
 
 KILL
-:   this attempts to hold the ship in a fixed direction. It is useful for maintaining attitude in the middle of a sequence.
+:   This attempts to hold the ship in a fixed direction. It is useful for maintaining attitude in the middle of a sequence.
 
 NODE
-:   this attempts to face the direction required for the next maneuver node.
+:   This attempts to face the direction required for the next maneuver node.
 
 CUSTOM
-:   this attempts to keep the ship in a specific pitch, yaw, and roll, as chosen by the options below the six direction buttons.
+:   This attempts to keep the ship in a specific pitch, yaw, and roll, as chosen by the options below the six direction buttons.
 
 ###Executing Maneuver Nodes
 

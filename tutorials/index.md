@@ -17,7 +17,7 @@ navbar: true
 
 ##Setting Up Satellite Constellations
 
-###General Satellite Design Tips
+###[General Satellite Design Tips](comsats/)
 
 ###Kessler Network
 
