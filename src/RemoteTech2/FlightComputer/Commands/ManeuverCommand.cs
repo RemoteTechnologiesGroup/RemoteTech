@@ -24,12 +24,7 @@ namespace RemoteTech
                     string flightInfo = "Executing maneuver: " + RemainingDelta.ToString("F2") +
                                         "m/s" + Environment.NewLine + "Remaining duration: ";
 
-                    if (EngineActivated)
-                    {
-                        flightInfo += RTUtil.FormatDuration(RemainingTime);
-                    }
-                    else
-                        flightInfo += "-:-";
+                    flightInfo += EngineActivated ? RTUtil.FormatDuration(RemainingTime) : "-:-";
 
                     return flightInfo + Environment.NewLine + base.Description;
                 }
@@ -41,18 +36,20 @@ namespace RemoteTech
         public override bool Pop(FlightComputer f)
         {
             var burn = f.ActiveCommands.FirstOrDefault(c => c is BurnCommand);
-            if (burn != null) f.Remove(burn);
+            if (burn != null) {
+                f.Remove (burn);
+            }
+
             OriginalDelta = Node.DeltaV.magnitude;
             RemainingDelta = Node.GetBurnVector(f.Vessel.orbit).magnitude;
             EngineActivated = true;
-            double thrustToMass = (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
 
-            if (thrustToMass != 0.0)
-                RemainingTime = RemainingDelta / thrustToMass;
-            else
-            {
+            double thrustToMass = FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass();
+            if (thrustToMass == 0.0) {
                 EngineActivated = false;
                 RTUtil.ScreenMessage("[Flight Computer]: No engine to carry out the maneuver.");
+            } else {
+                RemainingTime = RemainingDelta / thrustToMass;
             }
 
             return true;
@@ -68,9 +65,7 @@ namespace RemoteTech
                 FlightCore.HoldOrientation(fcs, f, orientation);
 
                 double thrustToMass = (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
-
-                if (thrustToMass == 0.0)
-                {
+                if (thrustToMass == 0.0) {
                     EngineActivated = false;
                     return false;
                 }
