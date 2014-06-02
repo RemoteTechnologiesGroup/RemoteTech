@@ -6,6 +6,12 @@ if [ ! -f "$SRCDIR/Assembly-CSharp-firstpass.dll" ] \
    || [ ! -f "$SRCDIR/Assembly-CSharp.dll" ] \
    || [ ! -f "$SRCDIR/UnityEngine.dll" ];
 then
+   if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ]; then
+      # this should only happen for pull requests
+      echo "Unable to build as the env vars have not been set. Can't decrypt the zip."
+      exit 0; # can't decide if this should error
+   fi
+
    if [[ ! -f dlls.zip ]]; then
       echo "Need to get dependency .dll's"
       wget -O dlls.zip "https://www.dropbox.com/s/kyv25p3qn166nzp/dlls.zip?dl=1"
@@ -27,3 +33,4 @@ then
 fi
 
 cd src/RemoteTech2 && xbuild
+
