@@ -83,7 +83,7 @@ namespace RemoteTech
         public static ManeuverCommand WithNode(ManeuverNode node, FlightComputer f)
         {
             double thrust = FlightCore.GetTotalThrust(f.Vessel);
-            double advance = 0;
+            double advance = f.Delay;
 
             if (thrust > 0) {
                 advance += (node.DeltaV.magnitude / (thrust / f.Vessel.GetTotalMass())) / 2;
