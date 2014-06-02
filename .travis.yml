@@ -30,4 +30,5 @@ deploy:
   file: remotetech2-build${TRAVIS_BUILD_NUMBER}.zip
   release-number: ${BUILDTAG}-alpha-build${TRAVIS_BUILD_NUMBER}
   on:
+    tags: true # even though appearing to not work, setting this false make the deploy fail as there's no tag_name set
     repo: Pezmc/RemoteTech
