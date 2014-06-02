@@ -2,10 +2,11 @@
 
 # These should be set by Travis
 #TRAVIS_BUILD_NUMBER=1
-#TRAVIS_BRANCH=master/travis
+#TRAVIS_BRANCH=master
 #TRAVIS_REPO_SLUG="RemoteTechnologiesGroup/RemoteTech"
-#TRAVIS_COMMIT=a sha hash
+#TRAVIS_COMMIT=master
 #GITHUB_TOKEN="Personal access token from https://github.com/settings/applications"
+#TRAVIS_PULL_REQUEST=false
 
 VERSION="build-${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}"
 FILENAME=$(echo "${VERSION}.zip" | tr '/' '_') # else it will fail on branches like chore/travis
@@ -15,20 +16,26 @@ python_parse_json() {
 	cat | python -c 'import sys,json;obj=json.load(sys.stdin);print obj[sys.argv[1]];' $1 2>/dev/null
 }
 
-echo "Creating ${FILENAME}"
-zip -r "${FILENAME}" GameData/
-
 if [ -z "$GITHUB_TOKEN" ] || [ -z "$TRAVIS_REPO_SLUG" ] \
-	|| [ -z "$TRAVIS_BUILD_NUMBER" ] || [ -z "$TRAVIS_BRANCH" ]
+	|| [ -z "$TRAVIS_BUILD_NUMBER" ] || [ -z "$TRAVIS_BRANCH" ] \
 	|| [ -z "$TRAVIS_COMMIT" ]
 then
-	echo "GITHUB_TOKEN, TRAVIS_REPO_SLUG and TRAVIS_BUILD_NUMBER must be set in order to deploy";
+	echo "GITHUB_TOKEN, TRAVIS_REPO_SLUG, TRAVIS_BUILD_NUMBER and TRAVIS_COMMIT must be set in order to deploy";
 	echo "Skipping deploy for now";
 	exit 0; # prevent build failing if unset
 fi
 
-echo "Attempting to create tag v${VERSION} on ${TRAVIS_REPO_SLUG}"
-API_JSON=$(printf '{"tag_name": "%s","target_commitish": "%s","name": "%s","body": "Automated pre-release of version %s","draft": false,"prerelease": true}' $TRAVIS_COMMIT $VERSION $VERSION $VERSION)
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]
+then
+	echo "This is a pull request build, it doesn't need to be released."
+	exit 0; # prevent build fail
+fi
+
+echo "Creating ${FILENAME}"
+zip -r "${FILENAME}" GameData/
+
+echo "Attempting to create tag ${VERSION} on ${TRAVIS_REPO_SLUG}"
+API_JSON=$(printf '{"tag_name": "%s","target_commitish": "%s","name": "%s","body": "Automated pre-release of version %s","draft": false,"prerelease": true}' $VERSION $TRAVIS_COMMIT $VERSION $VERSION)
 ADDRESS=$(printf 'https://api.github.com/repos/%s/releases?access_token=%s' $TRAVIS_REPO_SLUG $GITHUB_TOKEN)
 
 REPLY=$(curl --data "$API_JSON" "$ADDRESS");
