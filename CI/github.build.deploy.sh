@@ -27,8 +27,8 @@ then
 	exit 0; # prevent build failing if unset
 fi
 
-echo "Attempting to create tag v${VERSION} on ${TRAVIS_REPO_SLUG}"
-API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "%s","name": "v%s","body": "Automated pre-release of version %s","draft": false,"prerelease": true}' $TRAVIS_COMMIT $VERSION $VERSION $VERSION)
+echo "Attempting to create tag ${VERSION} on ${TRAVIS_REPO_SLUG}"
+API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "v%s","body": "Automated pre-release build %s","draft": false,"prerelease": true}' $VERSION $VERSION $VERSION)
 ADDRESS=$(printf 'https://api.github.com/repos/%s/releases?access_token=%s' $TRAVIS_REPO_SLUG $GITHUB_TOKEN)
 
 REPLY=$(curl --data "$API_JSON" "$ADDRESS");
@@ -44,7 +44,7 @@ fi
 
 UPLOAD_URL="https://uploads.github.com/repos/${TRAVIS_REPO_SLUG}/releases/${UPLOAD_ID}/assets"
 
-echo "Uploading ${FILENAME} to GitHub repo ${UPLOAD_ID} (tag v${VERSION} on ${TRAVIS_REPO_SLUG})"
+echo "Uploading ${FILENAME} to GitHub repo ${UPLOAD_ID} (tag ${VERSION} on ${TRAVIS_REPO_SLUG})"
 REPLY=$(curl -H "Authorization: token ${GITHUB_TOKEN}" \
      -H "Accept: application/vnd.github.manifold-preview" \
      -H "Content-Type: application/zip" \
