@@ -159,3 +159,4 @@ $RECYCLE.BIN/
 src/RemoteTech2/*.dll
 *.zip
 GameData/RemoteTech2/Plugins/RemoteTech2.dll
+GameData/build.txt
