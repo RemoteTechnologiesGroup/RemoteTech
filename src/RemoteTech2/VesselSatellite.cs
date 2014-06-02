@@ -41,7 +41,10 @@ namespace RemoteTech
         public ISignalProcessor SignalProcessor
         { 
             get {
-                return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors[0];
+                return RTUtil.CachePerFrame(ref mSignalProcessor, () =>
+                {
+                    return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors[0];
+                });
             }
         }
 
