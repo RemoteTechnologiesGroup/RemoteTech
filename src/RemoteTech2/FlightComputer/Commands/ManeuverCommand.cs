@@ -82,7 +82,12 @@ namespace RemoteTech
 
         public static ManeuverCommand WithNode(ManeuverNode node, FlightComputer f)
         {
-            double burnLength = node.DeltaV.magnitude / (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
+            double thrust = FlightCore.GetTotalThrust(f.Vessel);
+            double advance = f.Delay;
+
+            if (thrust > 0) {
+                advance += (node.DeltaV.magnitude / (thrust / f.Vessel.GetTotalMass())) / 2;
+            }
 
             var newNode = new ManeuverCommand()
             {
@@ -96,7 +101,7 @@ namespace RemoteTech
                     UT = node.UT,
                     nodeRotation = node.nodeRotation,
                 },
-                TimeStamp = node.UT - (burnLength / 2),
+                TimeStamp = node.UT - advance,
             };
             return newNode;
         }
