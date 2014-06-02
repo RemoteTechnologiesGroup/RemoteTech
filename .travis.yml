@@ -5,8 +5,8 @@ os:
 
 env:
   global:
-   - secure: VNy9cMdF07hSpmyOcmsccRcB6PNt/lJm8pQRqbQ+0QaO1DCkVKqRCiEaCsNJFXM4lsCa+m6QsWOx4HTrHpqmMD2dIerev5/xTjVoEIPHx5VK5FvH02lA66vva7/v0XVdOKdZEm9lTFECkSS5wmi8h4wHjeh5c3gJPZJHLVDVCyw=
-   - secure: AAF4EAxVt/VpOQi30/M6qD0n8xey0LMlpn/dXEMzI2yKWd5p+Hub6VSTdnvWR6Rp+7YOAWyR/Dxau53P42o+xYCkYS3O1AUbz+a18XiuiSoU1gwMyaHXP57Ija2xqeoiF9YtikkTczsn3ju/uRTC39Wr7X9iFP8eXdoCiHIzWKc=
+   - secure: Q4UfP54tnvoioOnoQElnkUQMd4qQ/2dLLkhnSz35MiwUrraxqrixdh22EWsTmcqD8ntjPI4tt3P9N6On9+qn8D+qYpt+zX5otikfgvXdKCxGJj+q1Nv0rWq6b0P5QGo61vXFV1cH4EOONBDyAq0IbmtjtEISBhQaefFdzaAAk/Y=
+   - secure: J/M1/WIRgP4GssMr9HS9k7Wr9XUqlo0S+olIVWvr8eY8jxxVbx+ONZbkkjKey2BvC1BRVtRXpbBe+YcPLYe7V1jG5mmm3Lc1B/x5WC54q4KKfoV53m+ARAtaHFYrJY2h4O+GLaysQoCwCG/tAt0GhJmgJgy9IojH4ojJjDOGHCE=
 before_install:
  - date -u
  - uname -a
