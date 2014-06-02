@@ -6,8 +6,7 @@
 #TRAVIS_REPO_SLUG="RemoteTechnologiesGroup/RemoteTech"
 #GITHUB_TOKEN="Personal access token from https://github.com/settings/applications"
 
-RECENT_TAG=`git describe --abbrev=0 --tags | cut -c2-`
-VERSION="${RECENT_TAG}-build-${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}"
+VERSION="build-${TRAVIS_BRANCH}-${TRAVIS_BUILD_NUMBER}"
 FILENAME=$(echo "${VERSION}.zip" | tr '/' '_') # else it will fail on branches like chore/travis
 
 python_parse_json() {
