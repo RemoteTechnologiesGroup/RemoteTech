@@ -4,6 +4,7 @@
 #TRAVIS_BUILD_NUMBER=1
 #TRAVIS_BRANCH=master/travis
 #TRAVIS_REPO_SLUG="RemoteTechnologiesGroup/RemoteTech"
+#TRAVIS_COMMIT=a sha hash
 #GITHUB_TOKEN="Personal access token from https://github.com/settings/applications"
 
 RECENT_TAG=`git describe --abbrev=0 --tags | cut -c2-`
@@ -20,6 +21,7 @@ zip -r "${FILENAME}" GameData/
 
 if [ -z "$GITHUB_TOKEN" ] || [ -z "$TRAVIS_REPO_SLUG" ] \
 	|| [ -z "$TRAVIS_BUILD_NUMBER" ] || [ -z "$TRAVIS_BRANCH" ]
+	|| [ -z "$TRAVIS_COMMIT" ]
 then
 	echo "GITHUB_TOKEN, TRAVIS_REPO_SLUG and TRAVIS_BUILD_NUMBER must be set in order to deploy";
 	echo "Skipping deploy for now";
@@ -27,7 +29,7 @@ then
 fi
 
 echo "Attempting to create tag v${VERSION} on ${TRAVIS_REPO_SLUG}"
-API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "master","name": "v%s","body": "Automated pre-release of version %s","draft": false,"prerelease": true}' $VERSION $VERSION $VERSION)
+API_JSON=$(printf '{"tag_name": "v%s","target_commitish": "%s","name": "v%s","body": "Automated pre-release of version %s","draft": false,"prerelease": true}' $TRAVIS_COMMIT $VERSION $VERSION $VERSION)
 ADDRESS=$(printf 'https://api.github.com/repos/%s/releases?access_token=%s' $TRAVIS_REPO_SLUG $GITHUB_TOKEN)
 
 REPLY=$(curl --data "$API_JSON" "$ADDRESS");
