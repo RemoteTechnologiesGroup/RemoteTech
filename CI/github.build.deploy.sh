@@ -28,7 +28,7 @@ then
 fi
 
 echo "Attempting to create tag ${VERSION} on ${TRAVIS_REPO_SLUG}"
-API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "v%s","body": "Automated pre-release build %s","draft": false,"prerelease": true}' $VERSION $VERSION $VERSION)
+API_JSON=$(printf '{"tag_name": "%s","target_commitish": "master","name": "%s","body": "Automated pre-release build %s","draft": false,"prerelease": true}' $VERSION $VERSION $VERSION)
 ADDRESS=$(printf 'https://api.github.com/repos/%s/releases?access_token=%s' $TRAVIS_REPO_SLUG $GITHUB_TOKEN)
 
 REPLY=$(curl --data "$API_JSON" "$ADDRESS");
