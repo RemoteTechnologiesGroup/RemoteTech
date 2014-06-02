@@ -31,6 +31,12 @@ then
 	exit 0; # prevent build fail
 fi
 
+if [[ "$TRAVIS_BRANCH" == build* ]]
+then
+	echo "We're already on a 'build branch' (or tag), don't need to deploy again";
+	exit 0;
+fi
+
 echo "Creating ${FILENAME}"
 zip -r "${FILENAME}" GameData/
 
