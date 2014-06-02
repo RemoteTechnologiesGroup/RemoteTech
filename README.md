@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Pezmc/RemoteTech.svg?branch=master)](https://travis-ci.org/Pezmc/RemoteTech)
+[![Build Status](https://travis-ci.org/RemoteTechnologiesGroup/RemoteTech.svg?branch=master)](https://travis-ci.org/RemoteTechnologiesGroup/RemoteTech)
 
 RemoteTech
 ==========
