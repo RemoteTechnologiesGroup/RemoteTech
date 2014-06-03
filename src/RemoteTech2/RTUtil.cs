@@ -219,6 +219,30 @@ namespace RemoteTech
             return Boolean.TryParse(n.GetValue(value) ?? "False", out result) ? result : false;
         }
 
+        /// <summary>
+        /// Searches a ProtoPartModuleSnapshot for an integer field
+        /// </summary>
+        /// 
+        /// <returns>The value of the field named by <paramref name="value"/> in the PartModule represented 
+        ///     by <paramref name="ppms"/></returns>
+        /// <param name="ppms">The ProtoPartModule to query</param>
+        /// <param name="value">The name of a member PartModule </param>
+        /// 
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="value"/> does not exist 
+        ///     or cannot be parsed as an integer.</exception>
+        /// <exceptionsafe>The program state is unchanged in the event of an exception.</exceptionsafe>
+        public static int GetInt(this ProtoPartModuleSnapshot ppms, String value)
+        {
+            var n = new ConfigNode();
+            ppms.Save(n);
+            int result;
+            if (Int32.TryParse(n.GetValue(value) ?? "", out result)) {
+                return result;
+            } else {
+                throw new ArgumentException (String.Format ("No integer '{0}' in ProtoPartModule", value), "value");
+            }
+        }
+
         public static void Button(Texture2D icon, Action onClick, params GUILayoutOption[] options)
         {
             if (GUILayout.Button(icon, options))
