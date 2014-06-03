@@ -16,7 +16,9 @@ namespace RemoteTech
         public CelestialBody Body { get { return vessel.mainBody; } }
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(vessel); } }
         public bool Powered { get { return IsRTPowered; } }
-        public bool IsCommandStation { get { return IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= 6; } }
+        public bool IsCommandStation { get { 
+            return IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= RTCommandMinCrew; 
+            } }
         public FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel { get { return vessel; } }
         public bool IsMaster { get { return Satellite != null && Satellite.SignalProcessor == (ISignalProcessor) this; } }
@@ -28,6 +30,8 @@ namespace RemoteTech
             IsRTPowered = false,
             IsRTSignalProcessor = true,
             IsRTCommandStation = false;
+        [KSPField(isPersistant = true)]
+        public int RTCommandMinCrew = 6;
 
         [KSPField]
         public bool
@@ -49,7 +53,9 @@ namespace RemoteTech
         public override String GetInfo()
         {
             if (!ShowEditor_Type) return String.Empty;
-            return IsRTCommandStation ? "Remote Command capable (6+ crew)" : "Remote Control capable";
+            return IsRTCommandStation 
+                ? String.Format("Remote Command capable ({0}+ crew)", RTCommandMinCrew) 
+                : "Remote Control capable";
         }
 
         public override void OnStart(StartState state)
