@@ -163,7 +163,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 ![Picture of Communotron 32](antenna_com32.png)
 
-The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past keosynchonous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active, nearly as much as the low-end dishes.
+The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past keosynchronous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active, nearly as much as the low-end dishes.
 {:.blurb}
 
 |Basic Properties
@@ -437,7 +437,7 @@ Cone covers keosynchronous orbit at | 66,000,000 km
 
 ![Picture of GX-128](antenna_gx128.png)
 
-The Reflecton-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
+The Reflectron-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
 {:.blurb}
 
 |Basic Properties

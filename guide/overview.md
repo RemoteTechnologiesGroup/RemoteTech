@@ -28,7 +28,7 @@ If necessary, you can send an EVA to open, close, or retarget an antenna from th
 ##The Map View
 {: .spacer}
 
-RemoteTech adds an overlay to the map view to display the state of your communication network. The overlay may be toggled with the bottons located on the lower right: 
+RemoteTech adds an overlay to the map view to display the state of your communication network. The overlay may be toggled with the buttons located on the lower right: 
 
 ![IMAGE: map view, with each type of overlay (active, cones, omni, dish, command center) labeled](rtmapview.png){:.right}
 

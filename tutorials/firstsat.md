@@ -29,7 +29,7 @@ At low tech levels you have access to only three antennas: the [Communotron 16](
 ##Launch
 {: .spacer}
 
-The DP-10 is unique among RemoteTech antennas in that it is automatically switched on on mission start, so you don't need to do any fine-tuning on the pad.
+The DP-10 is unique among RemoteTech antennas in that it is automatically switched on at mission start, so you don't need to do any fine-tuning on the pad.
 
 Your launch trajectory is important. Were fuel efficiency your only concern, you would want a long, flat launch path to build up speed, and some mods (particularly Ferram Aerospace Research) encourage this. Unfortunately, a path like that means you won't reach orbit until you are out of sight of Mission Control, and therefore out of contact. There are two ways to avoid this, depending on your play style:
 
@@ -47,7 +47,7 @@ Right: The position of a satellite in an 80&nbsp;km orbit just before it loses l
 
 Your satellite probably won't have enough batteries to do a full orbit without recharging. Deploy your solar panels as soon as you are out of the atmosphere, even if it's a night launch. If you fail to deploy the panels before the satellite goes out of contact, you may not be able to recover it.
 
-![IMAGE: Flight computer panel after queueing everything](comp_preburn.png){: .left}
+![IMAGE: Flight computer panel after queuing everything](comp_preburn.png){: .left}
 
 ###Method 2: Flight Computer
 

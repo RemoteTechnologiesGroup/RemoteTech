@@ -16,7 +16,7 @@ This tutorial shows how to get the flight computer to execute a survivable re-en
 
 You must have researched [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control), which unlocks basic probe technologies.
 
-Following this tutorial does not *require* any mods other than RemoteTech, but the instructions assume you are using Deadly Reentry. Most of the precautions described here are unneccessary in the stock game.
+Following this tutorial does not *require* any mods other than RemoteTech, but the instructions assume you are using Deadly Reentry. Most of the precautions described here are unnecessary in the stock game.
 
 Some mods will make the instructions in this tutorial easier to follow. Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb will let you see the time to periapsis from the flight screen, not just the map view, making it easier to schedule actions in the flight computer. RealChutes and Smart Parts will let you replace timing-based triggers with altitude-based ones, taking a lot of the guesswork out of the re-entry sequence.
 
@@ -67,7 +67,7 @@ Wait until the time to periapsis advances by your 10-20 second margin, then hit 
 
 ###Engine Jettison
 
-When you load a game or switch vessels, Kerbal Space Program will sometimes reset the ship's staging state to "prelaunch", and sometimes not. Because the staging indicator does not work in RemoteTech, you can't tell when this has happened and when it hasn't. Therefore, it's safest to jettison the engine manually, in real time. If the first staging keypress doesn't jettison the engine (instead taking you from prelaunch to the engine stage), the second will. Once you've jettisoned the engine, you *know* that the next staging command will deploy parachutes, as intended.
+When you load a game or switch vessels, Kerbal Space Program will sometimes reset the ship's staging state to "prelaunch", and sometimes not. Because the staging indicator does not work in RemoteTech, you can't tell when this has happened and when it hasn't. Therefore, it's safest to jettison the engine manually, in real time. If the first staging key press doesn't jettison the engine (instead taking you from prelaunch to the engine stage), the second will. Once you've jettisoned the engine, you *know* that the next staging command will deploy parachutes, as intended.
 
 ![IMAGE: image of probe parachuting down, with a deployed antenna](chute.png "Benefits of a good re-entry queue."){:.left}
 

@@ -150,7 +150,7 @@ Period Error | Drift Rate             | Time to drift 20&deg;
 
 It is nearly impossible to give two satellites exactly the same orbital period, because the period will change whenever the satellite rotates (for example, to keep facing the sun over the course of the year). For the last word in satellite synchronization, you may wish to edit your save file. Some RemoteTech players see this as essential to get around game engine limitations, others see it as cheating. You will have to decide for yourself.
 
-Once you've synched up your satellites in-game as best you can, exit the game and open saves/&lt;Your Game Name&gt;/persistent.sfs in any text editor. Search for the name of your first satellite, ignoring any debris entries, then find a block a few lines down that looks like this:
+Once you've synced up your satellites in-game as best you can, exit the game and open saves/&lt;Your Game Name&gt;/persistent.sfs in any text editor. Search for the name of your first satellite, ignoring any debris entries, then find a block a few lines down that looks like this:
 
     ORBIT
     {
