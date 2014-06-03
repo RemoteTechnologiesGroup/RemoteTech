@@ -19,7 +19,7 @@ This tutorial covers general principles that apply to any communications satelli
 To create a viable communications satellite, you need at least the following technologies:
 
 * [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control), which unlocks probe cores and the [Reflectron DP-10](../../guide/parts/#reflectron-dp-10) launch antenna
-* [Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Science_Tech) or [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Electrics), which unlock short-range dishes.
+* [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Electrics), which unlocks solar panels and the [Reflectron KR-7 dish](../../guide/parts/#reflectron-kr-7).
 
 If you want to communicate with interplanetary probes, you will have to wait until you develop [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics) or [Electronics](http://wiki.kerbalspaceprogram.com/wiki/Electronics).
 
@@ -50,17 +50,17 @@ Communication with deep-space missions
 
 Once you know what dishes you're using, you're ready to start working in the VAB.
 
-![P × (1/180&deg;) arcsin (r/a)](kerbin_darkness.png){:.right}
+![plot of orbital dark time vs. height above Kerbin](kerbin_darkness.png){:.right}
 
 ###Power Use
 
-RemoteTech antennas consume a large amount of power. For example, a brute-force approach to a late-game interplanetary satellite (1 Communotron 32, 2 Comms DTS-M1's, 3 Communotron 88-88's, 2 Reflectron KR-14's, 3 CommTech-1's) will consume 15 ElectricCharge per second. Ensure you have enough solar panels or RTG's to power all your antennas. Unlike in the stock game, you can't just take for granted that you have enough electricity.
+RemoteTech antennas consume a large amount of power. Ensure you have enough solar panels or RTG's to power all your antennas. Unlike in the stock game, you can't just take for granted that you have enough electricity.
 
 For solar-powered satellites, make sure you have enough battery capacity to make it through the night side of the orbit. If you know your orbital period (P), orbital radius (a), and planetary radius (r), the time spent in darkness in a circular equatorial orbit is ![P × (1/180&deg;) arcsin (r/a)](darktime.png). For eccentric or inclined orbits, the calculation is much more complex.
 
-The time for orbits around Kerbin is plotted on the right, as a function of orbital height from the top of Kerbin's atmosphere of the edge of Kerbin's SoI. For a 100&nbsp;km orbit, darkness lasts only 640 seconds, while for a keosynchronous equatorial orbit (KEO) it lasts 1200 seconds. So the brute-force satellite from the earlier example, if placed in KEO, would need storage for 18,000 units of charge!
+The time for orbits around Kerbin is plotted on the right, as a function of orbital height from the top of Kerbin's atmosphere of the edge of Kerbin's SoI. For a 100&nbsp;km orbit, darkness lasts only 640 seconds, while for a keosynchronous equatorial orbit (KEO) it lasts 1200 seconds. 
 
-**Remember: there is no such thing as too many batteries.**
+**Example:** a brute-force approach to a late-game interplanetary satellite might feature 1 Communotron 32, 2 Comms DTS-M1's, 3 Communotron 88-88's, 2 Reflectron KR-14's, 3 CommTech-1's. This monstrosity will consume 15 ElectricCharge per second. If placed in KEO, it will need storage for 18,000 units of charge!
 
 ###Station-Keeping
 {:.spacer}

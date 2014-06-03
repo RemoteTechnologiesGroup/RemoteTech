@@ -12,7 +12,7 @@ navbar: false
 
 This tutorial covers how to launch three or four equally spaced satellites into keosynchronous equatorial orbit (KEO). It assumes you have no pre-existing satellite network. This network is recommended for players interested in role-playing or in a challenge. Since, in RemoteTech, dishes can be pointed and signals rerouted instantaneously, there is no in-game advantage to keeping communications satellites stationary, and a lower orbit is both easier to achieve and better for interplanetary communications.
 
-The tutorial gives two methods for creating a KEO network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers.
+The tutorial gives two methods for creating a KEO network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers. Many thanks to Elan for the idea!
 
 ##Requirements
 
@@ -21,6 +21,8 @@ For part requirements, see the [General Satellite Design tutorial](../comsats/).
 This tutorial assumes you have at least one mod that gives you orbital periods in-game. In order of decreasing precision, the best choices are Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb.
 
 ###Satellite Design
+
+In keosynchronous orbit, a satellite will experience up to 1200&nbsp;seconds of darkness. Make sure you have enough battery power!
 
 Ensure your satellite has an option for making very low-thrust burns (either RCS or a light engine).
 
