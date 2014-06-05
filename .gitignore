@@ -154,3 +154,9 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+# Ignore dependencies and builds
+src/RemoteTech2/*.dll
+*.zip
+GameData/RemoteTech2/Plugins/RemoteTech2.dll
+GameData/build.txt
