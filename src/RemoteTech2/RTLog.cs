@@ -1,55 +1,51 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Diagnostics;
 
 namespace RemoteTech
 {
     public static class RTLog
     {
-        [Conditional("DEBUG")]
-        public static void Debug(String message)
+        private static readonly bool verboseLogging;
+
+        static RTLog()
+        {
+            verboseLogging = GameSettings.VERBOSE_DEBUG_LOG;
+        }
+
+        public static void Notify(string message)
         {
             UnityEngine.Debug.Log("RemoteTech: " + message);
         }
 
-        [Conditional("DEBUG")]
-        public static void Debug(String message, params System.Object[] param)
+        public static void Notify(string message, params UnityEngine.Object[] param)
         {
-            UnityEngine.Debug.Log(String.Format("RemoteTech: " + message, param));
+            UnityEngine.Debug.Log(string.Format("RemoteTech: " + message, param));
         }
 
-        [Conditional("DEBUG")]
-        public static void Debug(String message, params UnityEngine.Object[] param)
+        public static void Notify(string message, params object[] param)
         {
-            UnityEngine.Debug.Log(String.Format("RemoteTech: " + message, param));
+            UnityEngine.Debug.Log(string.Format("RemoteTech: " + message, param));
         }
 
-        public static void Notify(String message)
+        public static void Verbose(string message, params object[] param)
         {
-            UnityEngine.Debug.Log("RemoteTech: " + message);
+            if (verboseLogging)
+            {
+                Notify(message, param);
+            }
         }
 
-        public static void Notify(String message, params UnityEngine.Object[] param)
+        public static void Verbose(string message, params UnityEngine.Object[] param)
         {
-            UnityEngine.Debug.Log(String.Format("RemoteTech: " + message, param));
+            if (verboseLogging)
+            {
+                Notify(message, param);
+            }
         }
+    }
 
-        public static void Notify(String message, params System.Object[] param)
-        {
-            UnityEngine.Debug.Log(String.Format("RemoteTech: " + message, param));
-        }
-
-        public static string ToDebugString<TKey, TValue>(this IDictionary<TKey, TValue> dictionary)
-        {
-            return "{" +
-                   string.Join(",",
-                               dictionary.Select(kv => kv.Key.ToString() + "=" + kv.Value.ToString())
-                                         .ToArray()) + "}";
-        }
-
+    public static class LoggingExtenstions
+    {
         public static string ToDebugString<T>(this List<T> list)
         {
             return "{" + string.Join(",", list.Select(x => x.ToString()).ToArray()) + "}";
