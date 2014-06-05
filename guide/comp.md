@@ -88,7 +88,7 @@ CUSTOM
 
 ###Executing Maneuver Nodes
 
-Pressing the "EXEC" button causes the ship to wait until it reaches a maneuver node, then slew to the maneuver position and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or toggle SAS to keep the ship pointed.
+Pressing the "EXEC" button causes the ship to wait until it approaches a maneuver node, then slew to the maneuver position and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or toggle SAS to keep the ship pointed.
 
 Because node execution does not wait for the ship to face the node before turning on the engine, players are *strongly* encouraged to use a NODE attitude command well before executing a maneuver node. The management is not responsible for any burns that had the opposite of their intended effect.
 
@@ -100,7 +100,7 @@ Unlike most commands, EXEC ignores manual delays -- the time of the burn is set 
 
 ###Manual Burns
 
-Automatic node execution is convenient, but has a few limitations: it needs a well-defined maneuver node, making it difficult to do small velocity corrections, it doesn't start the burn until it passes the node, which may make long burns less accurate, and it ignores any nodes after the first. For more control over burns, players may set the burn parameters by hand.
+Automatic node execution is convenient, but has a few limitations: it needs a well-defined maneuver node, making it difficult to do small velocity corrections, and it ignores any nodes after the first. For more control over burns, players may set the burn parameters by hand.
 
 First, set a manual delay for the start of the burn. Adjust the throttle slider to the desired level. In the box, type either the desired duration of the burn, or the desired delta-V (e.g., "100 m/s"). Numbers without units are interpreted as burn time in seconds. Clicking "BURN" will add the burn to the command queue, with signal delay and whatever manual delay was set.
 

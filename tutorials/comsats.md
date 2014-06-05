@@ -56,7 +56,7 @@ Once you know what dishes you're using, you're ready to start working in the VAB
 
 RemoteTech antennas consume a large amount of power. Ensure you have enough solar panels or RTG's to power all your antennas. Unlike in the stock game, you can't just take for granted that you have enough electricity.
 
-For solar-powered satellites, make sure you have enough battery capacity to make it through the night side of the orbit. If you know your orbital period (P), orbital radius (a), and planetary radius (r), the time spent in darkness in a circular equatorial orbit is ![P × (1/180&deg;) arcsin (r/a)](darktime.png). For eccentric or inclined orbits, the calculation is much more complex.
+For solar-powered satellites, make sure you have enough battery capacity to make it through the night side of the orbit. If you know your orbital period (P), orbital radius (a), and planetary radius (r), the time spent in darkness in a circular equatorial orbit is ![P &times; (1/180&deg;) arcsin (r/a)](darktime.png). For eccentric or inclined orbits, the calculation is much more complex.
 
 The time for orbits around Kerbin is plotted on the right, as a function of orbital height from the top of Kerbin's atmosphere of the edge of Kerbin's SoI. For a 100&nbsp;km orbit, darkness lasts only 640 seconds, while for a keosynchronous equatorial orbit (KEO) it lasts 1200 seconds. 
 
