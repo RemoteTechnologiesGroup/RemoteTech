@@ -37,11 +37,14 @@ then
 	exit 0;
 fi
 
+echo "Build ${TRAVIS_BUILD_NUMBER} from branch ${TRAVIS_BRANCH} in ${TRAVIS_REPO_SLUG}" > GameData/build.txt
+echo "Built from commit ${TRAVIS_COMMIT} with tag ${BUILDTAG}" >>  GameData/build.txt
 echo "Creating ${FILENAME}"
 zip -r "${FILENAME}" GameData/
 
 echo "Attempting to create tag ${VERSION} on ${TRAVIS_REPO_SLUG}"
-API_JSON=$(printf '{"tag_name": "%s","target_commitish": "%s","name": "%s","body": "Automated pre-release of version %s","draft": false,"prerelease": true}' $VERSION $TRAVIS_COMMIT $VERSION $VERSION)
+API_JSON=$(printf '{"tag_name": "%s","target_commitish": "%s","name": "%s","body": "Automated pre-release of branch %s build %s","draft": false,"prerelease": true}' \
+		   $VERSION $TRAVIS_COMMIT $VERSION $TRAVIS_BRANCH $TRAVIS_BUILD_NUMBER)
 ADDRESS=$(printf 'https://api.github.com/repos/%s/releases?access_token=%s' $TRAVIS_REPO_SLUG $GITHUB_TOKEN)
 
 REPLY=$(curl --data "$API_JSON" "$ADDRESS");
