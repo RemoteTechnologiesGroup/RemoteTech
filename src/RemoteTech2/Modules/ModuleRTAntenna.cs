@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using UnityEngine;
 
 namespace RemoteTech
@@ -383,12 +384,47 @@ namespace RemoteTech
             Events["EventTarget"].guiName = RTUtil.TargetName(Target);
         }
 
+        private bool GetShieldedStateFromFAR()
+        {
+            // Check if this part is shielded by fairings/cargobays according to FAR's information...
+            PartModule FARPartModule = null;
+            if (part.Modules.Contains("FARBasicDragModel"))
+            {
+                    FARPartModule = part.Modules["FARBasicDragModel"];
+            }
+            else if (part.Modules.Contains("FARWingAerodynamicModel"))
+            {
+                    FARPartModule = part.Modules["FARWingAerodynamicModel"];
+            }
+            else if (part.Modules.Contains("FARPayloadFairingModule"))
+            {
+                    FARPartModule = part.Modules["FARPayloadFairingModule"];
+            }
+            
+            if(FARPartModule != null)
+            {
+                try
+                {
+                    FieldInfo fi = FARPartModule.GetType().GetField("isShielded");
+                    return (bool)(fi.GetValue(FARPartModule));
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("[DREC]: " + e.Message);
+                    return false;
+                }
+            }
+            else
+                return false;
+        }
+        
         private void HandleDynamicPressure()
         {
             if (vessel == null) return;
             if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && mDeployFxModules.Any(a => a.GetScalar > 0.9f))
             {
-                if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > MaxQ)
+                if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > MaxQ 
+                    && GetShieldedStateFromFAR() == false)
                 {
                     MaxQ = -1.0f;
                     part.decouple(0.0f);
