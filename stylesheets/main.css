@@ -88,6 +88,12 @@ dd {
 	margin-left: 40px;
 }
 
+/* Default code list style makes it look like an error */
+code {
+	color: black;
+	background-color: #f5f5f5
+}
+
 /* Default table style makes them illegible */
 table.data td, table.data th {
 	padding: 3px;

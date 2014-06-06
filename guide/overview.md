@@ -36,7 +36,7 @@ RemoteTech adds an overlay to the map view to display the state of your communic
 :   This button will highlight the links used in the working connection (if any) as a green line.
 
 ![IMAGE: Second button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texPlanet.png)
-:   This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships off the edge of the screen will not be shown.
+:   This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships far off the edge of the screen will not be shown.
 
 ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texOmni.png) ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texDish.png) ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texOmniDish.png)
 :   This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links.
