@@ -426,6 +426,12 @@ namespace RemoteTech
                 if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > MaxQ 
                     && GetShieldedStateFromFAR() == false)
                 {
+                    // Express flight clock in stockalike formatting
+                    string timestamp = RTUtil.FormatTimestamp (FlightLogger.met_years, FlightLogger.met_days, 
+                                           FlightLogger.met_hours, FlightLogger.met_mins, FlightLogger.met_secs);
+
+                    FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.", 
+                        timestamp, part.partInfo.title));
                     MaxQ = -1.0f;
                     part.decouple(0.0f);
                 }
