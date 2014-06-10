@@ -384,52 +384,67 @@ namespace RemoteTech
             Events["EventTarget"].guiName = RTUtil.TargetName(Target);
         }
 
-        private bool GetShieldedStateFromFAR()
+        /// <summary>
+        /// Returns the FAR module managing aerodynamics for this part, if one exists
+        /// </summary>
+        /// 
+        /// <returns>
+        /// If FAR is installed and the antenna has a FAR module, returns a reference to that module. Otherwise, 
+        /// returns null. Behavior is undefined if the antenna has more than one FAR module.
+        /// </returns>
+        /// 
+        /// <postcondition>Return value is an instance of <c>ferram4.FARBaseAerodynamics</c></postcondition>
+        private PartModule GetFARModule()
         {
-            // Check if this part is shielded by fairings/cargobays according to FAR's information...
-            PartModule FARPartModule = null;
-            if (part.Modules.Contains("FARBasicDragModel"))
-            {
-                    FARPartModule = part.Modules["FARBasicDragModel"];
+            if (part.Modules.Contains("FARBasicDragModel")) {
+                return part.Modules["FARBasicDragModel"];
+            } else if (part.Modules.Contains ("FARWingAerodynamicModel")) {
+                return part.Modules["FARWingAerodynamicModel"];
+            } else {
+                return null;
             }
-            else if (part.Modules.Contains("FARWingAerodynamicModel"))
-            {
-                    FARPartModule = part.Modules["FARWingAerodynamicModel"];
-            }
-            else if (part.Modules.Contains("FARPayloadFairingModule"))
-            {
-                    FARPartModule = part.Modules["FARPayloadFairingModule"];
-            }
-            
-            if(FARPartModule != null)
-            {
-                try
-                {
-                    FieldInfo fi = FARPartModule.GetType().GetField("isShielded");
-                    return (bool)(fi.GetValue(FARPartModule));
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("[DREC]: " + e.Message);
+        }
+
+        /// <summary>
+        /// Determines whether or not the antenna is shielded from aerodynamic forces
+        /// </summary>
+        /// <returns><c>true</c>, if the antenna is shielded by a supported mod, <c>false</c> otherwise.</returns>
+        private bool GetShieldedState()
+        {
+            PartModule FARPartModule = GetFARModule();
+
+            if (FARPartModule != null) {
+                try {
+                    FieldInfo fi = FARPartModule.GetType ().GetField ("isShielded");
+                    return (bool)(fi.GetValue (FARPartModule));
+                } catch (Exception e) {
+                    RTLog.Notify ("GetShieldedStateFromFAR: {0}", e);
                     return false;
                 }
-            }
-            else
+            } else {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the ram pressure experienced by the antenna.
+        /// </summary>
+        /// 
+        /// <returns>The pressure, in N/m^2.</returns>
+        /// 
+        /// <precondition><c>this.vessel</c> is not null</precondition>
+        private double GetDynamicPressure() {
+            return 0.5 * vessel.atmDensity * vessel.srf_velocity.sqrMagnitude;
         }
         
         private void HandleDynamicPressure()
         {
             if (vessel == null) return;
-            if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && mDeployFxModules.Any(a => a.GetScalar > 0.9f))
-            {
-                if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > MaxQ 
-                    && GetShieldedStateFromFAR() == false)
-                {
+            if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && mDeployFxModules.Any(a => a.GetScalar > 0.9f)) {
+                if (GetDynamicPressure() > MaxQ && GetShieldedState() == false) {
                     // Express flight clock in stockalike formatting
                     string timestamp = RTUtil.FormatTimestamp (FlightLogger.met_years, FlightLogger.met_days, 
                                            FlightLogger.met_hours, FlightLogger.met_mins, FlightLogger.met_secs);
-
                     FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.", 
                         timestamp, part.partInfo.title));
                     MaxQ = -1.0f;
