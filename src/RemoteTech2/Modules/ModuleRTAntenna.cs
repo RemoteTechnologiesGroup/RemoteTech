@@ -389,17 +389,20 @@ namespace RemoteTech
         /// </summary>
         /// 
         /// <returns>
-        /// If FAR is installed and the antenna has a FAR module, returns a reference to that module. Otherwise, 
-        /// returns null. Behavior is undefined if the antenna has more than one FAR module.
+        /// If FAR is installed and the antenna has a module of type <c>ferram4.FARBaseAerodynamics</c>, returns a 
+        /// reference to that module. Otherwise, returns null. Behavior is undefined if the antenna has more than 
+        /// one FARBaseAerodynamics module.
         /// </returns>
-        /// 
-        /// <postcondition>Return value is an instance of <c>ferram4.FARBaseAerodynamics</c></postcondition>
+        ///
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
         private PartModule GetFARModule()
         {
             if (part.Modules.Contains("FARBasicDragModel")) {
                 return part.Modules["FARBasicDragModel"];
             } else if (part.Modules.Contains ("FARWingAerodynamicModel")) {
                 return part.Modules["FARWingAerodynamicModel"];
+            } else if (part.Modules.Contains ("FARControlSys")) {
+                return part.Modules["FARControlSys"];
             } else {
                 return null;
             }
@@ -409,6 +412,8 @@ namespace RemoteTech
         /// Determines whether or not the antenna is shielded from aerodynamic forces
         /// </summary>
         /// <returns><c>true</c>, if the antenna is shielded by a supported mod, <c>false</c> otherwise.</returns>
+        ///
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
         private bool GetShieldedState()
         {
             PartModule FARPartModule = GetFARModule();
@@ -433,6 +438,8 @@ namespace RemoteTech
         /// <returns>The pressure, in N/m^2.</returns>
         /// 
         /// <precondition><c>this.vessel</c> is not null</precondition>
+        ///
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
         private double GetDynamicPressure() {
             return 0.5 * vessel.atmDensity * vessel.srf_velocity.sqrMagnitude;
         }
