@@ -394,6 +394,8 @@ namespace RemoteTech
         /// one FARBaseAerodynamics module.
         /// </returns>
         ///
+        /// <precondition><c>this.part</c> is not null</precondition>
+        ///
         /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
         private PartModule GetFARModule()
         {
@@ -413,6 +415,8 @@ namespace RemoteTech
         /// </summary>
         /// <returns><c>true</c>, if the antenna is shielded by a supported mod, <c>false</c> otherwise.</returns>
         ///
+        /// <precondition><c>this.part</c> is not null</precondition>
+        ///
         /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
         private bool GetShieldedState()
         {
@@ -423,7 +427,7 @@ namespace RemoteTech
                     FieldInfo fi = FARPartModule.GetType ().GetField ("isShielded");
                     return (bool)(fi.GetValue (FARPartModule));
                 } catch (Exception e) {
-                    RTLog.Notify ("GetShieldedStateFromFAR: {0}", e);
+                    RTLog.Notify ("GetShieldedState: {0}", e);
                     return false;
                 }
             } else {
