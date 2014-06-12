@@ -254,15 +254,14 @@ namespace kOS
 
         public static Vector3d GetTorque(Vessel vessel, float thrust)
         {
-            var CoM = vessel.findWorldCenterOfMass();
+            // Do everything in vessel coordinates
+            var CoM = vessel.findLocalCenterOfMass();
 
             // Don't assume any particular symmetry for the vessel
             float pitch = 0, roll = 0, yaw = 0;
 
             foreach (Part part in vessel.parts)
             {
-                var relCoM = part.Rigidbody.worldCenterOfMass - CoM;
-
                 foreach (PartModule module in part.Modules)
                 {
                     if (!module.isEnabled)
@@ -280,12 +279,16 @@ namespace kOS
                     {
                         ModuleRCS rcs = ((ModuleRCS)module);
 
-                        foreach (Transform thrustDir in rcs.thrusterTransforms) {
-                            // Shamelessly copied from MechJeb
-                            Vector3d thrusterThrust = vessel.GetTransform().TransformDirection(
-                                -thrustDir.up.normalized) * rcs.thrusterPower;
-                            Vector3d thrusterTorque = vessel.GetTransform().InverseTransformDirection(
-                                Vector3.Cross(relCoM, thrusterThrust));
+                        foreach (Transform thruster in rcs.thrusterTransforms) {
+                            // Avoids problems with part.Rigidbody.centerOfMass; should also give better 
+                            //  support for RCS units integrated into larger parts
+                            Vector3d thrusterOffset = vessel.GetTransform().InverseTransformPoint(
+                                thruster.position) - CoM;
+                            /* Code by sarbian, shamelessly copied from MechJeb */
+                            Vector3d thrusterThrust = vessel.GetTransform().InverseTransformDirection(
+                                -thruster.up.normalized) * rcs.thrusterPower;
+                            Vector3d thrusterTorque = Vector3.Cross(thrusterOffset, thrusterThrust);
+                            /* end sarbian's code */
 
                             // This overestimates the usable torque, but that doesn't change the final behavior much
                             pitch += (float)Math.Abs(thrusterTorque.x);
