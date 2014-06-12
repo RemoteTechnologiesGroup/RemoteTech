@@ -263,29 +263,23 @@ namespace kOS
             {
                 var relCoM = part.Rigidbody.worldCenterOfMass - CoM;
 
-                if (part is CommandPod)
-                {
-                    pitchYaw += Math.Abs(((CommandPod)part).rotPower);
-                    roll += Math.Abs(((CommandPod)part).rotPower);
-                }
-
-                if (part is RCSModule)
-                {
-                    float max = 0;
-                    foreach (float power in ((RCSModule)part).thrusterPowers)
-                    {
-                        max = Mathf.Max(max, power);
-                    }
-
-                    pitchYaw += max * relCoM.magnitude;
-                }
-
                 foreach (PartModule module in part.Modules)
                 {
                     if (module is ModuleReactionWheel)
                     {
                         pitchYaw += ((ModuleReactionWheel)module).PitchTorque;
                         roll += ((ModuleReactionWheel)module).RollTorque;
+                    }
+                    else if (module is ModuleRCS)
+                    {
+                        float max = 0;
+                        foreach (float power in ((ModuleRCS)module).thrustForces)
+                        {
+                            max = Mathf.Max(max, power);
+                        }
+
+                        // To-do: implement more cleanly in terms of ModuleRCS.GetLeverDistance()
+                        pitchYaw += max * relCoM.magnitude;
                     }
                 }
 
