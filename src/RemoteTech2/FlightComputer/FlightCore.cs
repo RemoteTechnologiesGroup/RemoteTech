@@ -256,8 +256,8 @@ namespace kOS
         {
             var CoM = vessel.findWorldCenterOfMass();
 
-            float pitchYaw = 0;
-            float roll = 0;
+            // Don't assume any particular symmetry for the vessel
+            float pitch = 0, roll = 0, yaw = 0;
 
             foreach (Part part in vessel.parts)
             {
@@ -265,28 +265,42 @@ namespace kOS
 
                 foreach (PartModule module in part.Modules)
                 {
-                    if (module is ModuleReactionWheel)
-                    {
-                        pitchYaw += ((ModuleReactionWheel)module).PitchTorque;
-                        roll += ((ModuleReactionWheel)module).RollTorque;
-                    }
-                    else if (module is ModuleRCS)
-                    {
-                        float max = 0;
-                        foreach (float power in ((ModuleRCS)module).thrustForces)
-                        {
-                            max = Mathf.Max(max, power);
-                        }
+                    if (!module.isEnabled)
+                        continue;
 
-                        // To-do: implement more cleanly in terms of ModuleRCS.GetLeverDistance()
-                        pitchYaw += max * relCoM.magnitude;
+                    if (module is ModuleReactionWheel 
+                        && ((ModuleReactionWheel)module).wheelState == ModuleReactionWheel.WheelState.Active)
+                    {
+                        pitch += ((ModuleReactionWheel)module).PitchTorque;
+                        roll  += ((ModuleReactionWheel)module).RollTorque;
+                        yaw   += ((ModuleReactionWheel)module).YawTorque;
+                    }
+                    // Is there a more direct way to see if RCS is enabled? module.isEnabled doesn't work...
+                    else if (module is ModuleRCS && vessel.ActionGroups[KSPActionGroup.RCS])
+                    {
+                        ModuleRCS rcs = ((ModuleRCS)module);
+
+                        foreach (Transform thrustDir in rcs.thrusterTransforms) {
+                            // Shamelessly copied from MechJeb
+                            Vector3d thrusterThrust = vessel.GetTransform().TransformDirection(
+                                -thrustDir.up.normalized) * rcs.thrusterPower;
+                            Vector3d thrusterTorque = vessel.GetTransform().InverseTransformDirection(
+                                Vector3.Cross(relCoM, thrusterThrust));
+
+                            // This overestimates the usable torque, but that doesn't change the final behavior much
+                            pitch += (float)Math.Abs(thrusterTorque.x);
+                            roll  += (float)Math.Abs(thrusterTorque.y);
+                            yaw   += (float)Math.Abs(thrusterTorque.z);
+                        }
                     }
                 }
 
-                pitchYaw += (float)GetThrustTorque(part, vessel) * thrust;
+                float gimbal = (float)GetThrustTorque (part, vessel) * thrust;
+                pitch += gimbal;
+                yaw   += gimbal;
             }
 
-            return new Vector3d(pitchYaw, roll, pitchYaw);
+            return new Vector3d(pitch, roll, yaw);
         }
 
         public static double GetThrustTorque(Part p, Vessel vessel)
