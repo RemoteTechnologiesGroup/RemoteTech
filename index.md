@@ -41,7 +41,7 @@ Signal Processors are any part that can receive commands over a working connecti
 <!--**Beware**: if you do not have a working connection, you cannot send **any** commands to an unmanned probe, including commands to activate its antennas!-->
 
 ###Command Stations
-For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. This Command Station can not process science, a connection to KSC will still be required for that. However, the Command Station allows you to work without the signal delay to Kerbin, which might otherwise climb up to several minutes. Command Stations require a special probe part and a minimum number of kerbals to operate. Consult your VAB technicians for more information.
+For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. This Command Station can not process science, a connection to KSC will still be required for that. However, the Command Station allows you to work without the signal delay to Kerbin, which might otherwise climb up to several minutes. Command Stations require a special probe part and a minimum number of kerbals on the same ship. Consult your VAB technicians for more information.
 
 ###Science Transmissions
 Transmitting science back to KSC now requires you have a working connection to KSC. Any other source of control, such as a crew pod or a working connection to a command station, does not count.

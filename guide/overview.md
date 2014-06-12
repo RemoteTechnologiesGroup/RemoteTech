@@ -73,11 +73,9 @@ The second condition is that *both* satellites must have an antenna that can rea
 
 ###Targeting
 
-The third, and most complex, condition applies only to dish antennas. To establish a link, a dish with sufficient range must be *targeted* at the other satellite, either directly or indirectly. If the other satellite is also trying to connect through a dish rather than an omnidirectional antenna, it must target the first satellite as well. There are three ways to target a satellite:
+The third, and most complex, condition applies only to dish antennas. To establish a link, a dish with sufficient range must be *targeted* at the other satellite, either directly or indirectly. If the other satellite is also trying to connect through a dish rather than an omnidirectional antenna, it must target the first satellite as well. There is no automatic targeting, as this would effectively make dishes act like omnidirectional antennas.
 
-{::comment}
-What's going on here? The kramdown manual says "The column number of the first non-space character which appears after a definition marker on the same line specifies the indentation that has to be used for the following lines of the definition.", but no style information gets applied!
-{:/comment}
+There are three ways to target a satellite:
 
 Direct Link
 :   {:#target-direct .para}If the dish's target is set to a specific satellite, or to KSC Mission Control, it will maintain a link to that target as long as the line of sight and range conditions are met. A dish in Direct Link mode cannot be used to make connections with anything other than its specific target. Direct link mode is recommended for situations where the other two modes won't work, because updating direct links as ships move around can be a lot of work.
