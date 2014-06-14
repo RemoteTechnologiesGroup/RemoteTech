@@ -72,6 +72,6 @@ RemoteTech includes seven new antennas.
 * The CommTech-1 and Reflectron GX-128 are long-range dishes designed for missions to the outer planets.
 
 ##Credits
-* The_Duck, for the precursor to this mod.
-* JDP, for RemoteTech 1.x.
-* -
+* RT1 Contributors: JDP, The_Duck, gresrun, Tosh, rkman, NovaSilisko, r4m0n, Alchemist, Kreuzung, Spaceghost, Tomato, BoJaN, Mortaq.
+* RT2 Contributors: JDP, Cilph, TaranisElsu, acc, Vrana, MedievalNerd, NathanKell, jdmj, kommit.
+* RT2 v1.4.0 and beyond is maintained by the Remote Technologies Group, a community effort to ensure the proliferation of unmanned vessels throughout the known Kerbalverse: Erendrake, Pezmc, Starstrider42, Peppie23, Warrenseymour
