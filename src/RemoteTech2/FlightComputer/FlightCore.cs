@@ -105,10 +105,16 @@ namespace RemoteTech
         public static double GetTotalThrust(Vessel v)
         {
             double thrust = 0.0;
+            // @todo: Is it possible to select ModuleEngines OR ModuleEnginesFX in a single iterator?
             foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>()))
             {
                 if (!pm.EngineIgnited) continue;
-                thrust += pm.maxThrust;
+                thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
+            }
+            foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>()))
+            {
+                if (!pm.EngineIgnited) continue;
+                thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
             }
             return thrust;
         }

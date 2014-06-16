@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using RemoteTech;
-using UnityEngine;
 
 namespace RemoteTech
 {
@@ -13,7 +10,9 @@ namespace RemoteTech
         {
             var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
-            return satellite.FlightComputer != null;
+            var hasFlightComputer = satellite.FlightComputer != null;
+            RTLog.Verbose("Flight: {0} HasFlightComputer: {1}", id, hasFlightComputer);
+            return hasFlightComputer;
         }
 
         public static void AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
@@ -24,6 +23,7 @@ namespace RemoteTech
             {
                 if (spu.FlightComputer == null) continue;
                 if (spu.FlightComputer.SanctionedPilots.Contains(autopilot)) continue;
+                RTLog.Verbose("Flight: {0} Adding Sanctioned Pilot", id);
                 spu.FlightComputer.SanctionedPilots.Add(autopilot);
             }
         }
@@ -35,6 +35,7 @@ namespace RemoteTech
             foreach (var spu in satellite.SignalProcessors)
             {
                 if (spu.FlightComputer == null) continue;
+                RTLog.Verbose("Flight: {0} Removing Sanctioned Pilot", id);
                 spu.FlightComputer.SanctionedPilots.Remove(autopilot);
             }
         }
@@ -42,41 +43,51 @@ namespace RemoteTech
         public static bool HasAnyConnection(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
-            return RTCore.Instance.Network[satellite].Any();
+            var hasConnection = RTCore.Instance.Network[satellite].Any();
+            RTLog.Verbose("Flight: {0} Has Connection: {1}", id, hasConnection);
+            return hasConnection;
         }
 
         public static bool HasConnectionToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
-            return RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+            var connectedToKerbin = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+            RTLog.Verbose("Flight: {0} Has Connection to Kerbin: {1}", id, connectedToKerbin);
+            return connectedToKerbin;
         }
 
         public static double GetShortestSignalDelay(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
             if (!RTCore.Instance.Network[satellite].Any()) return Double.PositiveInfinity;
-            return RTCore.Instance.Network[satellite].Min().Delay;
+            var shortestDelay = RTCore.Instance.Network[satellite].Min().Delay;
+            RTLog.Verbose("Flight: Shortest signal delay from {0} to {1}", id, shortestDelay);
+            return shortestDelay;
         }
 
         public static double GetSignalDelayToKSC(Guid id)
         {
             var satellite = RTCore.Instance.Satellites[id];
             if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return Double.PositiveInfinity;
-            return RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Delay;
+            var signalDelaytoKerbin = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Delay;
+            RTLog.Verbose("Connection from {0} to Kerbin Delay: {1}", id, signalDelaytoKerbin);
+            return signalDelaytoKerbin;
         }
 
         public static double GetSignalDelayToSatellite(Guid a, Guid b)
         {
-            var sat_a = RTCore.Instance.Satellites[a];
-            var sat_b = RTCore.Instance.Satellites[b];
-            if (sat_a == null || sat_b == null) return Double.PositiveInfinity;
+            var satelliteA = RTCore.Instance.Satellites[a];
+            var satelliteB = RTCore.Instance.Satellites[b];
+            if (satelliteA == null || satelliteB == null) return Double.PositiveInfinity;
 
             Func<ISatellite, IEnumerable<NetworkLink<ISatellite>>> neighbors = RTCore.Instance.Network.FindNeighbors;
             Func<ISatellite, NetworkLink<ISatellite>, double> cost = RangeModelExtensions.DistanceTo;
             Func<ISatellite, ISatellite, double> heuristic = RangeModelExtensions.DistanceTo;
 
-            var path = NetworkPathfinder.Solve(sat_a, sat_b, neighbors, cost, heuristic);
-            return path.Delay;
+            var path = NetworkPathfinder.Solve(satelliteA, satelliteB, neighbors, cost, heuristic);
+            var delayBetween = path.Delay;
+            RTLog.Verbose("Connection from {0} to {1} Delay: {2}", a, b, delayBetween);
+            return delayBetween;
         }
     }
 }

@@ -254,7 +254,7 @@ namespace RemoteTech
             if (!mFlightComputer.InputAllowed)
                 return;
             mAttitude = (state < 0) ? 0 : state;
-            if (mMode < 4)
+            if (mMode < 3)
             {
                 mMode = 4;
             }
@@ -321,7 +321,7 @@ namespace RemoteTech
         private void OnExecClick()
         {
             if (mFlightComputer.Vessel.patchedConicSolver == null || mFlightComputer.Vessel.patchedConicSolver.maneuverNodes.Count == 0) return;
-            var cmd = ManeuverCommand.WithNode(mFlightComputer.Vessel.patchedConicSolver.maneuverNodes[0]);
+            var cmd = ManeuverCommand.WithNode(mFlightComputer.Vessel.patchedConicSolver.maneuverNodes[0], mFlightComputer);
             if (cmd.TimeStamp < RTUtil.GameTime + mFlightComputer.Delay)
             {
                 RTUtil.ScreenMessage("[Flight Computer]: Signal delay is too high to execute this maneuver at the proper time.");
