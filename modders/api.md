@@ -10,3 +10,6 @@ navbar: false
 {: .alert .alert-danger}
 
 #RemoteTech Software API
+
+{% include toc.html %}
+

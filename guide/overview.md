@@ -71,6 +71,8 @@ The second condition is that *both* satellites must have an antenna that can rea
 
 **Example:** a probe with a Communotron 16 antenna (range 2500 km) and a probe with a CommTech-1 dish (350,000,000 km) are located 3000 km apart. Although the CommTech-1 is one of the most powerful dishes in RemoteTech, the two probes cannot link because the first probe can never link to anything more than 2500 km away -- unless, of course, it has a longer-range antenna in addition to the Communotron 16.
 
+Advanced players can choose to use the more complex root range model, enabled in the [RemoteTech settings](../../modders/settings/#alternative-rules).
+
 ###Targeting
 
 The third, and most complex, condition applies only to dish antennas. To establish a link, a dish with sufficient range must be *targeted* at the other satellite, either directly or indirectly. If the other satellite is also trying to connect through a dish rather than an omnidirectional antenna, it must target the first satellite as well. There is no automatic targeting, as this would effectively make dishes act like omnidirectional antennas.

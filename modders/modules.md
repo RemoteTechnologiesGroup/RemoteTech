@@ -10,3 +10,6 @@ navbar: false
 {: .alert .alert-danger}
 
 #Configuring Parts for RemoteTech
+
+{% include toc.html %}
+
