@@ -9,56 +9,57 @@ navbar: false
 **UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
-#RemoteTech Settings
+#RemoteTech Options
 
 {% include toc.html %}
 
-RemoteTech has several configurable options controlled from the file `RemoteTech2/RemoteTech_Settings.cfg`. This file is not included in the RemoteTech download, to keep players from overwriting their settings when they update to a new version. If you do not have a `RemoteTech_Settings.cfg` file, it will be automatically created with default settings when you start Kerbal Space Program.
+RemoteTech has several configurable options controlled from the file `RemoteTech2/RemoteTech_Settings.cfg`. This file is not included in the RemoteTech download, to keep players from overwriting their settings when they update to a new version. If you do not have a `RemoteTech_Settings.cfg` file, a new one will be automatically created with default settings when you start Kerbal Space Program.
 
 The settings are as follows:
 
-## Game Scale
+## World Scale
 
-`ConsumptionMultiplier` (default 1.0)
-: if set to a value other than 1, the energy consumption of all antennas will be increased or decreased by this factor. Does not affect energy consumption for science transmissions.
+`ConsumptionMultiplier` (default = 1.0)
+: If set to a value other than 1, the power consumption of all antennas will be increased or decreased by this factor. Does not affect energy consumption for science transmissions.
 
-`RangeMultiplier` (default 1.0)
-: if set to a value other than 1, the range of all antennas will be increased or decreased by this factor. Does not affect Mission Control range, set that separately.
+`RangeMultiplier` (default = 1.0)
+: If set to a value other than 1, the range of all antennas will be increased or decreased by this factor. Does not affect Mission Control range; change that separately.
 
-`SpeedOfLight` (default 3&nbsp;&times;&nbsp;10<sup>8</sup>)
-: the speed of light in meters per second. If `EnableSignalDelay` is set, the signal delay will equal the length of the communications path divided by this value. No effect if `EnableSignalDelay` is unset.
+`SpeedOfLight` (default = 3&nbsp;&times;&nbsp;10<sup>8</sup>)
+: The speed of light in meters per second. If `EnableSignalDelay` is set, the signal delay will equal the length of the communications path divided by this value. No effect if `EnableSignalDelay` is unset.
 
 ## Alternative Rules
 
-`EnableSignalDelay` (True | False) (default True)
-: if set, then all commands sent to RemoteTech-compatible probe cores will be delayed, depending on the distance to the probe and the `SpeedOfLight`. If unset, then all commands will be executed instantaneously, so long as there is a connection of any length between the probe and Mission Control.
+`EnableSignalDelay` (default = True)
+: If set, then all commands sent to RemoteTech-compatible probe cores will be delayed, depending on the distance to the probe and the `SpeedOfLight`. If unset, then all commands will be executed instantaneously, so long as there is a connection of any length between the probe and Mission Control.
 
-`RangeModelType` (Standard | Root) (default Standard)
-: this setting controls how the game determines whether two antennas are in range of each other. In the Standard model, the game works as described in the [Players' Guide](../../guide/overview/#range): a link is only possible if the distance between two ships is less than the *smaller* of the two antennas' ranges. In the Root model, the two antennas can communicate as long as they are within ![Min(r1, r2) + Sqrt(r1 r2)](rootmodel.png) of each other, where r<sub>1</sub> and r<sub>2</sub> are the ranges of the two antennas, up to a limit of 100 times the omni range or 1000 times the dish range, whichever is smallest. A table of effective ranges for all pairs of antennas is given in an [appendix](#appendix-root-range-model). Since this formula doubles the effective range of two identical antennas, it is recommended to use `RangeMultiplier = 0.5` with this mode to preserve part balance.
+`RangeModelType` (default = Standard)
+: This setting controls how the game determines whether two antennas are in range of each other. The options are:
 
-`MultipleAntennaMultiplier` (default 0.0)
-: this setting allows multiple omnidirectional antennas on the same craft act as a single, slightly larger antenna. The default value of 0.0 means that omni antennas do not boost each other; a value of 1.0 means that the effective range of the satellite equals the total range of all omni antennas on board. This option works with both the Standard and Root range models.
+    `Standard`
+    : The game works as described in the [Players' Guide](../../guide/overview/#range): a link is only possible if the distance between two ships is less than the *smaller* of the two antennas' ranges.
+
+    `Root`
+    : The two antennas can communicate as long as they are within ![Min(r1, r2) + Sqrt(r1 r2)](rootmodel.png) of each other, where r<sub>1</sub> and r<sub>2</sub> are the ranges of the two antennas, up to a limit of 100 times the omni range or 1000 times the dish range, whichever is smallest. A table of effective ranges for all pairs of antennas is given in an [appendix](#appendix-root-range-model). Since this formula doubles the effective range between two identical antennas, it is recommended to use `RangeMultiplier = 0.5` with this mode to preserve part balance.
+
+`MultipleAntennaMultiplier` (default = 0.0)
+: This setting allows multiple omnidirectional antennas on the same craft act as a single, slightly larger antenna. The default value of 0.0 means that omni antennas do not boost each other; a value of 1.0 means that the effective range of the satellite equals the total range of all omni antennas on board. The effective range scales linearly between these two extremes. This option works with both the Standard and Root range models.
 
 ## Visual Style
 
-`DishConnectionColor` (RGB&alpha; quadruplet) (default Amber, fully opaque)
-: the color in which links with at least one dish will be drawn on the map view and tracking station
+`DishConnectionColor` (RGB&alpha; quadruplet) (default = Amber, fully opaque)
+: The color in which links with at least one dish will be drawn on the map view and tracking station
 
-`OmniConnectionColor` (RGB&alpha; quadruplet) (default Brown-Grey, fully opaque)
-: the color in which links between two omni antennas will be drawn on the map view and tracking station
+`OmniConnectionColor` (RGB&alpha; quadruplet) (default = Brown-Grey, fully opaque)
+: The color in which links between two omni antennas will be drawn on the map view and tracking station
 
-`ActiveConnectionColor` (RGB&alpha; quadruplet) (default Electric Lime, fully opaque)
-: the color in which the working connection to mission control will be drawn on the map view and tracking station
+`ActiveConnectionColor` (RGB&alpha; quadruplet) (default = Electric Lime, fully opaque)
+: The color in which the working connection to mission control will be drawn on the map view and tracking station
 
 ## Miscellaneous
 
-`ThrottleTimeWarp` (True | False) (default True)
-: if set, the flight computer will automatically come out of time warp just before executing a queued command. If unset, the player is responsible for making sure the craft is not in time warp during scheduled actions.
-
-## Tracking Stations
-
-Under Construction
-{: .alert .alert-danger}
+`ThrottleTimeWarp` (default = True)
+: If set, the flight computer will automatically come out of time warp just before executing a queued command. If unset, the player is responsible for making sure the craft is not in time warp during scheduled actions.
 
 ##Appendix: Root Range Model
 
@@ -78,3 +79,28 @@ Reflectron KR-14   |    110M&nbsp;km   |  100M&nbsp;km   |    60M
 CommTech-1         |    360M&nbsp;km   |  350M&nbsp;km
 Reflectron GX-128  |    400M&nbsp;km
 {:.data .shadecol}
+
+# Ground Stations
+
+The `GroundStations` section of `RemoteTech2/RemoteTech_Settings.cfg` controls the number, range, and placement of satellite uplink stations. Each `STATION{}` block represents a station. By default, there is only one ground station, coinciding with the KSC Tracking Station.
+
+Each `STATION{}` block needs the following fields:
+
+`Guid`
+: A unique idenfier for the station.
+{: .alert-danger}
+
+`Name`
+: The name that shows up in the target selection menu.
+
+`Latitude`, `Longitude`
+: The position of the station on the planet's surface.
+
+`Height`
+: The station's altitude above sea level.
+
+`Body`
+: The internal ID number of the planet on which the station is located. You can find a list of ID numbers for stock Kerbal Space Program [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72). If you are playing with Real Solar System or other planet packs, edit this value with caution.
+
+`Antennas`
+: This block should contain a single `ANTENNA` block, which itself should contain a single `Omni` field. The value of the field is the antenna range in meters.
