@@ -71,7 +71,7 @@ RAD+        | Outward from orbit         | Outward from surface trajectory      
 RAD-        | Inward from orbit          | Inward from surface trajectory                    | Perpendicular to relative velocity, in orbital plane     | Perpendicular to target
 NRM+        | Up, out of orbital plane   | North (south) from eastward (westward) trajectory | Perpendicular to relative velocity, out of orbital plane | Perpendicular to target
 NRM-        | Down, out of orbital plane | South (north) from eastward (westward) trajectory | Perpendicular to relative velocity, out of orbital plane | Perpendicular to target
-{:.data .shadecol}
+{:.data .shadecol .sidehead}
 
 Clicking on a direction once it's already selected will revert to GRD+. Clicking on a reference frame once it's already selected will turn off the flight computer's attitude control.
 

@@ -78,7 +78,7 @@ Communotron 88-88  |     83M&nbsp;km   |   79M&nbsp;km   |    44M&nbsp;km   |   
 Reflectron KR-14   |    110M&nbsp;km   |  100M&nbsp;km   |    60M
 CommTech-1         |    360M&nbsp;km   |  350M&nbsp;km
 Reflectron GX-128  |    400M&nbsp;km
-{:.data .shadecol}
+{:.data .shadecol .sidehead}
 
 # Ground Stations
 
@@ -88,7 +88,6 @@ Each `STATION{}` block needs the following fields:
 
 `Guid`
 : A unique idenfier for the station.
-{: .alert-danger}
 
 `Name`
 : The name that shows up in the target selection menu.
