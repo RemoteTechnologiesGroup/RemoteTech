@@ -43,7 +43,7 @@ extra_css: tutorials
 
 ##Using the Flight Computer Effectively
 
-![](reentry/chute.png)
+![](reentry/thumbnail.png)
 
 ###[Kerbin Re-Entry](reentry/)
 

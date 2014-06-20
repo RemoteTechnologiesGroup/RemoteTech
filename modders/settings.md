@@ -37,7 +37,7 @@ The settings are as follows:
 : This setting controls how the game determines whether two antennas are in range of each other. The options are:
 
     `Standard`
-    : The game works as described in the [Players' Guide](../../guide/overview/#range): a link is only possible if the distance between two ships is less than the *smaller* of the two antennas' ranges.
+    : The game works as described in the [Player's Guide](../../guide/overview/#range): a link is only possible if the distance between two ships is less than the *smaller* of the two antennas' ranges.
 
     `Root`
     : The two antennas can communicate as long as they are within ![Min(r1, r2) + Sqrt(r1 r2)](rootmodel.png) of each other, where r<sub>1</sub> and r<sub>2</sub> are the ranges of the two antennas, up to a limit of 100 times the omni range or 1000 times the dish range, whichever is smallest. A table of effective ranges for all pairs of antennas is given in an [appendix](#appendix-root-range-model). Since this formula doubles the effective range between two identical antennas, it is recommended to use `RangeMultiplier = 0.5` with this mode to preserve part balance.
@@ -96,7 +96,7 @@ Each `STATION{}` block needs the following fields:
 : The position of the station on the planet's surface.
 
 `Height`
-: The station's altitude above sea level.
+: The station's altitude above sea level, in meters.
 
 `Body`
 : The internal ID number of the planet on which the station is located. You can find a list of ID numbers for stock Kerbal Space Program [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72). If you are playing with Real Solar System or other planet packs, edit this value with caution.

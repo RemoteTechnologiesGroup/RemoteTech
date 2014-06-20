@@ -19,7 +19,7 @@ img, :not(p)+h3:before {
     float: left;
     clear: left;
     margin: 10px;
-    margin-left: 100px;
+    margin-left: 70px;
 }
 
 h3 {

@@ -10,9 +10,11 @@ navbar: false
 
 {% include toc.html %}
 
-This tutorial covers how to create a three-satellite network using no antenna more powerful than the [Communotron 16](../../guide/parts/#communotron-16). Players who have access to more powerful antennas can feel free to include them in their satellite design, while leaving the Communotron 16 as the backbone of the constellation.
+This tutorial covers how to create a four-satellite network* using no antenna more powerful than the [Communotron 16](../../guide/parts/#communotron-16). Players who have access to more powerful antennas can feel free to include them in their satellite design, while leaving the Communotron 16 as the backbone of the constellation.
 
-The requirement that the satellites be connected by Communotron 16's forces the altitude of the satellites to be between 600&nbsp;km (below which the satellites are below each others' horizons) and 840&nbsp;km (above which the satellites are out of range of each other). We'll go with an altitude of 776.6&nbsp;km, which has a convenient orbital period of 1.5&nbsp;hours.
+*While it's possible to make a 3-satellite network with a few changes to these instructions, the orbit and synchronization requirements are too strict for it to be worth the trouble.
+
+The requirement that the satellites be connected by Communotron 16's forces the altitude of the satellites to be between 250&nbsp;km (below which the satellites are below each others' horizons) and 1160&nbsp;km (above which the satellites are out of range of each other). The closer you are to the middle of this range, the broader your tolerances on aligning your satellites. We'll go with an altitude of 776.6&nbsp;km, which in addition to being far from either end of the altitude range has a convenient orbital period of 1.5&nbsp;hours.
 
 <!-- The tutorial gives two methods for creating an omni network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers.-->
 
@@ -40,24 +42,22 @@ Begin by getting your satellite into an orbit with an apoapsis of 777&nbsp;km, t
 
 Circularize your orbit as usual. Your goal is to set your period as close to 1 hour 30 minutes as you can. As long as they're reasonably low, your eccentricity and inclination don't matter. The period, however, *does* matter: write down the exact value for later use.
 
-###Second Satellite
+###Remaining Satellites
 {: .spacer}
 
-![Image showing how the map view should look before the second satellite's transfer burn](single_2_align.png "A good transfer burn for the second of three satellites: apoapsis at KEO altitude, and 2384 km from the first satellite"){: .right}
+![Image showing how the map view should look before the second satellite's transfer burn](single_2_align.png "A good transfer burn for the second of three satellites: apoapsis at KEO altitude, and 1947 km from the first satellite"){: .right}
 
-The second satellite is the hardest of the three, because you need to synchronize it both with your first satellite and with Kerbin's rotation. Launch the satellite into low Kerbin orbit. Use the map view to select the first satellite as the target. Set a maneuver node that reaches an apoapsis of 777&nbsp;km; a rendezvous marker should appear, telling you how far your satellite will be from the target at apoapsis. Adjust the maneuver node's position until this distance is close to 2384&nbsp;km. It doesn't have to be exact, but it needs to be closer than 50&nbsp;km to the best value.
+The second and third satellites are the hardest, because you need to synchronize them both with your previous satellite(s) and with Kerbin's rotation. Launch each satellite into low Kerbin orbit. Use the map view to select the previous satellite in the network as the target. Set a maneuver node that reaches an apoapsis of 777&nbsp;km; a rendezvous marker should appear, telling you how far your satellite will be from the target at apoapsis. Adjust the maneuver node's position until this distance is close to 1947&nbsp;km. It doesn't have to be exact.
 
-You also need to make sure that either the marker representing your first satellite or the marker representing your second satellite will be over KSC, after allowing for Kerbin to rotate by roughly one sixth of a rotation -- otherwise, you will be out of contact during the circularization burn. If necessary, delay the maneuver node by one orbit by right-clicking on it, clicking on the blue button to the lower right, then right-clicking again. After advancing by one orbit, you will have to fine-tune the separation between the satellites again.
+You also need to make sure that either the marker representing your targeted satellite or the marker representing your current satellite will be over KSC, after allowing for Kerbin to rotate by roughly one sixth of a rotation -- otherwise, you may be out of contact during the circularization burn. If necessary, delay the maneuver node by one orbit by right-clicking on it, clicking on the blue button to the lower right, then right-clicking again. After advancing by one orbit, you will have to fine-tune the separation between the satellites again.
 
-If the maneuver node happens when you are out of sight of KSC, you will have to use the flight computer to handle the burn. Open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until the next time you have a connection; another advantage of delaying the maneuver by a full orbit). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. Once the satellite comes back over the horizon after the burn, you'll be able to control it directly again.
+If the maneuver node happens when you are out of contact with KSC, you will have to use the flight computer to handle the burn. Open the flight computer by clicking on the green calculator icon below the mission clock (if it's not green, you will have to wait until the next time you have a connection; another advantage of delaying the maneuver by a full orbit). Click "NODE" at the top of the window, then "EXEC" at the bottom. This will tell the computer to prepare for and execute the burn when the time comes. Once the satellite comes back over the horizon after the burn, you'll be able to control it directly again.
 
-![A finished 3-satellite constellation](single_final.png){: .left}
+![A finished 4-satellite constellation](single_final.png){: .left}
 
 Once your satellite reaches apoapsis, circularize your orbit. This time, your goal is to get **exactly** the same period as your first satellite (to within [high tolerances](#appendix-orbit-tolerances)). RCS can help with this, as can right-clicking on your engine and setting the throttle limiter to a very low value.
 
-###Third Satellite
-
-The third satellite is similar to the second, except you don't have to worry about synchronizing with KSC's rotation. If you set up the maneuver to reach apoapsis 2380&nbsp;km from either of the two satellites (on the side that does not yet have a satellite, of course), then you are guaranteed to have a working connection when you make the circularization burn.
+The fourth satellite is similar to the second and third, except you don't have to worry about synchronizing with KSC's rotation. If you set up the maneuver to reach apoapsis 1947&nbsp;km from the previous satellite, then you are guaranteed to have a working connection when you make the circularization burn.
 
 <div></div>{: .spacer}
 
@@ -65,11 +65,11 @@ The third satellite is similar to the second, except you don't have to worry abo
 
 The precision with which you need to match the periods of your KEO satellites depends on how much drift between satellites you're willing to tolerate:
 
-Period Error | Drift Rate             | Time to drift out of contact (6&deg;)
+Period Error | Drift Rate             | Time to drift out of contact (38&deg;)
 -------------|:----------------------:|:-------------------------:
-0.01 seconds | 0.00067&deg; per orbit | 1 Earth year 200 days (5 Kerbin years)
-0.1  seconds | 0.0067&deg; per orbit  | 60 Earth days (200 Kerbin days)
-1    seconds | 0.067&deg; per orbit   | 6 Earth days (20 Kerbin days)
+0.01 seconds | 0.00067&deg; per orbit | 10 Earth years (33 Kerbin years)
+0.1  seconds | 0.0067&deg; per orbit  | 360 Earth days (3 Kerbin years)
+1    seconds | 0.067&deg; per orbit   | 36 Earth days (140 Kerbin days)
 {: .data}
 
 #Optional Steps
