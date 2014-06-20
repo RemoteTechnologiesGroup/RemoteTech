@@ -49,7 +49,7 @@ namespace RemoteTech
         /// Contains the names of any events that should always be run, 
         /// regardless of connection status or signal delay
         /// </summary>
-        private static readonly List<String> eventWhiteList = new List<String>() {
+        private static readonly HashSet<String> eventWhiteList = new HashSet<String>() {
             "RenameVessel", "RenameAsteroidEvent"
         };
 
