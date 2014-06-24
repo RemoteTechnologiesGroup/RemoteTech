@@ -34,3 +34,8 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+
+// Use KSPAssembly to allow other DLLs to make this DLL a dependency in a
+// non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it
+// does not appear to have a hard requirement to match the assembly version.
+[assembly: KSPAssembly("RemoteTech2", 1, 4)]
