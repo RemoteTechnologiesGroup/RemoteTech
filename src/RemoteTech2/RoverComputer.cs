@@ -6,39 +6,42 @@ using UnityEngine;
 
 namespace RemoteTech
 {
-
     class PidController
     {
-        public /* private */ float mKp, mKd, mKi;
-        private float mOldVal, mOldTime, mOldD;
-        private float McMin, McMax;
-        private float[] mBuffer = null;
-        private int mPtr;
-        private float mSum;
-        private float mValue;
+        private float
+            mKp, mKd, mKi,
+            mOldVal,
+            mOldD,
+            McMin, McMax,
+            mSum,
+            mValue,
+            mErrScalar;
 
-        public PidController(float Kp, float Ki, float Kd,
-                              int integrationBuffer, float clampMin, float clampMax)
+        public PidController(float p, float i, float d, float clampMin, float clampMax)
         {
-            mKp = Kp;
-            mKi = Ki;
-            mKd = Kd;
+            mKp = p;
+            mKi = i;
+            mKd = d;
             McMin = clampMin;
             McMax = clampMax;
-            if (integrationBuffer >= 1)
-                mBuffer = new float[integrationBuffer];
+            mErrScalar = 0f;
+            Reset();
+        }
+
+        public PidController(float p, float i, float d, float clampMin, float clampMax, float errorScale)
+        {
+            mKp = p;
+            mKi = i;
+            mKd = d;
+            McMin = clampMin;
+            McMax = clampMax;
+            mErrScalar = errorScale;
             Reset();
         }
 
         public void Reset()
         {
-            mSum = 0;
-            mOldTime = -1;
-            mOldD = 0;
-            if (mBuffer != null)
-                for (int i = 0; i < mBuffer.Length; i++)
-                    mBuffer[i] = 0;
-            mPtr = 0;
+            mSum = mOldVal = mOldD = mValue = 0;
         }
 
         public void setClamp(float clampMin, float clampMax)
@@ -49,36 +52,23 @@ namespace RemoteTech
 
         public float Control(float v)
         {
-            if (Time.fixedTime > mOldTime)
-            {
-                if (mOldTime >= 0)
-                {
-                    mOldD = (v - mOldVal) / (Time.fixedTime - mOldTime);
+            mOldD = (v - mOldVal) / TimeWarp.deltaTime;
 
-                    float i = v / (Time.fixedTime - mOldTime);
-                    if (mBuffer != null)
-                    {
-                        mSum -= mBuffer[mPtr];
-                        mBuffer[mPtr] = i;
-                        mPtr++;
-                        if (mPtr >= mBuffer.Length)
-                            mPtr = 0;
-                    }
-                    mSum += i;
-                }
+            mSum += v / TimeWarp.deltaTime;
 
-                mOldTime = Time.fixedTime;
-                mOldVal = value;
-            }
+            mOldVal = value;
 
             mValue = mKp * v + mKi * mSum + mKd * mOldD;
 
+            mValue = Mathf.Clamp(mValue, McMin, McMax);
 
-            if (mValue > McMax)
-                mValue = McMax;
-            if (mValue < McMin)
-                mValue = McMin;
-
+            if (mErrScalar > 0)
+            {
+                float ErrorScale = Math.Abs(v) / mErrScalar;
+                if (ErrorScale > 1)
+                    ErrorScale = 1;
+                mValue *= ErrorScale;
+            }
 
             return mValue;
         }
@@ -105,17 +95,20 @@ namespace RemoteTech
             mRoverLon,
             mTargetLat,
             mTargetLon,
-            mKeepHDG;
+            brakeDist;
 
         private Quaternion mRoverRot;
 
         private Vector3 ForwardAxis;
 
+        public float Delta { get; private set; }
+        public float DeltaT { get; private set; }
+
         public RoverComputer(Vessel v)
         {
             mVessel = v;
-            mThrottlePID = new PidController(10f, 1e-5F, 1e-5F, 50, -1f, 1f);
-            mWheelPID = new PidController(10f, 1e-5F, 1e-5F, 50, -1f, 1f);
+            mThrottlePID = new PidController(10f, 1e-5F, 1e-5F, -1f, 1f);
+            mWheelPID = new PidController(10f, 1e-5F, 1e-5F, -1f, 1f, 5f);
         }
 
         private float RoverHDG
@@ -124,7 +117,11 @@ namespace RemoteTech
             {
                 Vector3d up = (mVessel.CoM - mVessel.mainBody.position).normalized;
                 Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
-                return RTUtil.GetHDG(mVessel.ReferenceTransform.TransformDirection(ForwardAxis), up, north);
+
+                if (ForwardAxis == Vector3.zero)
+                    return RTUtil.GetHDG(mVessel.srf_velocity.normalized, up, north);
+                else
+                    return RTUtil.GetHDG(mVessel.ReferenceTransform.TransformDirection(ForwardAxis), up, north);
             }
         }
 
@@ -160,17 +157,20 @@ namespace RemoteTech
             {
                 if (ForwardAxis == Vector3.zero)
                     return (float)mVessel.srf_velocity.magnitude;
-                return Vector3.Dot(mVessel.srf_velocity, mVessel.ReferenceTransform.TransformDirection(ForwardAxis));
+                else
+                    return Vector3.Dot(mVessel.srf_velocity, mVessel.ReferenceTransform.TransformDirection(ForwardAxis));
             }
         }
 
         public void InitMode(DriveCommand dc)
         {
-
             ForwardAxis = Vector3.zero;
             mRoverAlt = (float)mVessel.altitude;
             mRoverLat = (float)mVessel.latitude;
             mRoverLon = (float)mVessel.longitude;
+            Delta = 0;
+            DeltaT = 0;
+            brakeDist = 0;
 
             switch (dc.mode)
             {
@@ -179,7 +179,6 @@ namespace RemoteTech
                     break;
                 case DriveCommand.DriveMode.Distance:
                     mWheelPID.setClamp(-1, 1);
-                    mKeepHDG = RoverHDG;
                     break;
                 case DriveCommand.DriveMode.DistanceHeading:
                     mWheelPID.setClamp(-dc.steering, dc.steering);
@@ -199,11 +198,11 @@ namespace RemoteTech
         {
             if (dc != null)
             {
-                if (ForwardAxis == Vector3.zero && mVessel.srf_velocity.magnitude > 0.1)
+                if (mVessel.srf_velocity.magnitude > 0.5)
                 {
-                    float degForward = Vector3.Angle(mVessel.srf_velocity.normalized, mVessel.ReferenceTransform.forward);
-                    float degUp = Vector3.Angle(mVessel.srf_velocity.normalized, mVessel.ReferenceTransform.up);
-                    float degRight = Vector3.Angle(mVessel.srf_velocity.normalized, mVessel.ReferenceTransform.right);
+                    float degForward = Mathf.Abs(RTUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.forward)));
+                    float degUp = Mathf.Abs(RTUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.up)));
+                    float degRight = Mathf.Abs(RTUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.right)));
 
                     if (degForward < degUp && degForward < degRight)
                         ForwardAxis = Vector3.forward;
@@ -212,7 +211,6 @@ namespace RemoteTech
                     else
                         ForwardAxis = Vector3.up;
                 }
-
 
                 switch (dc.mode)
                 {
@@ -232,7 +230,9 @@ namespace RemoteTech
 
         private bool Turn(DriveCommand dc, FlightCtrlState fs)
         {
-            if (Math.Abs(Quaternion.Angle(mRoverRot, mVessel.ReferenceTransform.rotation)) < dc.target)
+            Delta = Math.Abs(Quaternion.Angle(mRoverRot, mVessel.ReferenceTransform.rotation));
+            DeltaT = Delta / mVessel.angularVelocity.magnitude;
+            if (Delta < dc.target)
             {
                 fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
                 fs.wheelSteer = dc.steering;
@@ -250,10 +250,12 @@ namespace RemoteTech
 
         private bool Distance(DriveCommand dc, FlightCtrlState fs)
         {
-            if (Vector3.Distance(RoverOrigPos, mVessel.CoM) < Math.Abs(dc.target))
+            float speed = RoverSpeed;
+            Delta = Math.Abs(dc.target) - Vector3.Distance(RoverOrigPos, mVessel.CoM);
+            DeltaT = Delta / Math.Abs(speed);
+            if (Delta > 0)
             {
-                fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
-                fs.wheelSteer = (dc.speed < 0 ? -1 : 1) * mWheelPID.Control(RTUtil.ClampDegrees180(RoverHDG - mKeepHDG));
+                fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed) - speed);
                 return false;
             }
             else
@@ -268,11 +270,14 @@ namespace RemoteTech
 
         private bool DistanceHeading(DriveCommand dc, FlightCtrlState fs)
         {
-            if (Vector3.Distance(RoverOrigPos, mVessel.CoM) < Math.Abs(dc.target))
+            float speed = RoverSpeed;
+            Delta = Math.Abs(dc.target) - Vector3.Distance(RoverOrigPos, mVessel.CoM);
+            DeltaT = Delta / speed;
+            if (Delta > 0)
             {
-                fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
+                fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed) - speed);
                 if (ForwardAxis != Vector3.zero)
-                    fs.wheelSteer = mWheelPID.Control(RTUtil.ClampDegrees180(RoverHDG - dc.target2));
+                    fs.wheelSteer = mWheelPID.Control(RTUtil.AngleBetween(RoverHDG, dc.target2));
                 return false;
             }
             else
@@ -285,25 +290,32 @@ namespace RemoteTech
             }
         }
 
-        private float BrakeSpeed(float speed, float actualSpeed, float distance)
+        private float BrakeSpeed(float speed, float actualSpeed)
         {
-            float time = distance / speed;
-            if (time > 5)
-                return speed;
-
-            return Math.Max(speed * time / 5, speed / 10);
+            if (brakeDist == 0)
+            {
+                if (DeltaT > actualSpeed / 2)
+                {
+                    return speed;
+                }
+                else
+                    brakeDist = Delta;
+            }
+            return Math.Max(Math.Min(speed, (float)Math.Sqrt(Delta / brakeDist) * speed), speed / 10);
         }
 
         private bool Coord(DriveCommand dc, FlightCtrlState fs)
         {
             float
-                dist = Vector3.Distance(mVessel.CoM, TargetPos),
-                deg = RTUtil.ClampDegrees180(RoverHDG - TargetHDG),
+                deg = RTUtil.AngleBetween(RoverHDG, TargetHDG),
                 speed = RoverSpeed;
 
-            if (dist > Math.Abs(deg) / 36)
+            Delta = Vector3.Distance(mVessel.CoM, TargetPos);
+            DeltaT = Delta / speed;
+
+            if (Delta > Math.Abs(deg) / 36)
             {
-                fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed, dist) - speed);
+                fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed) - speed);
                 if (ForwardAxis != Vector3.zero)
                     fs.wheelSteer = mWheelPID.Control(deg);
                 return false;

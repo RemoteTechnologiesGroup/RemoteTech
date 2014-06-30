@@ -120,6 +120,35 @@ namespace RemoteTech
             }
         }
 
+        public static String FormatDuration(double duration, string numFormat)
+        {
+            var time = TimeSpan.FromSeconds(duration);
+            var s = new StringBuilder();
+            if (time.TotalDays / DaysInAYear >= 1)
+            {
+                s.Append(Math.Floor(time.TotalDays / DaysInAYear).ToString(numFormat));
+                s.Append("y");
+            }
+            if (time.TotalDays % DaysInAYear >= 1)
+            {
+                s.Append(Math.Floor(time.TotalDays % DaysInAYear).ToString(numFormat));
+                s.Append("d");
+            }
+            if (time.Hours > 0)
+            {
+                s.Append(time.Hours.ToString(numFormat));
+                s.Append("h");
+            }
+            if (time.Minutes > 0)
+            {
+                s.Append(time.Minutes.ToString(numFormat));
+                s.Append("m");
+            }
+            s.Append((time.Seconds + time.Milliseconds / 1000.0f).ToString(numFormat));
+            s.Append("s");
+            return s.ToString();
+        }
+
         public static String FormatDuration(double duration)
         {
             var time = TimeSpan.FromSeconds(duration);
@@ -559,6 +588,23 @@ namespace RemoteTech
             angle = ClampDegrees360(angle);
             if (angle > 180)
                 angle -= 360;
+            return angle;
+        }
+
+        public static float AngleBetween(float AngleFrom, float AngleTo)
+        {
+            float angle = AngleFrom - AngleTo;
+            while (angle < -180) angle += 360;
+            while (angle > 180) angle -= 360;
+            return angle;
+        }
+
+        public static float ClampDegrees90(float angle)
+        {
+            if (angle > 90)
+                angle -= 180;
+            else if (angle < -90)
+                angle += 180;
             return angle;
         }
 

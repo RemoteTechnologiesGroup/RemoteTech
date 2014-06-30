@@ -20,14 +20,15 @@ namespace RemoteTech
         public float target2 { get; set; }
         public float speed { get; set; }
         public DriveMode mode { get; set; }
-
         private bool mAbort;
+        private RoverComputer mRoverComputer;
 
         public override void Abort() { mAbort = true; }
 
         public override bool Pop(FlightComputer f)
         {
-            f.mRoverComputer.InitMode(this);
+            mRoverComputer = f.mRoverComputer;
+            mRoverComputer.InitMode(this);
             return true;
         }
 
@@ -36,6 +37,7 @@ namespace RemoteTech
             if (mAbort)
             {
                 fcs.wheelThrottle = 0.0f;
+                f.Vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
                 return true;
             }
 
@@ -113,6 +115,14 @@ namespace RemoteTech
                         s.Append(new Vector2(target, target2).ToString("0.000"));
                         s.Append(" @ ");
                         s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
+                        if (mRoverComputer != null)
+                        {
+                            s.Append(" (");
+                            s.Append(RTUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(" ");
+                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT,"F0"));
+                            s.Append(")"); ;
+                        }
                         break;
                     case DriveMode.Distance:
                         s.Append("Drive: ");
@@ -122,6 +132,14 @@ namespace RemoteTech
                         else
                             s.Append(" backwards @");
                         s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
+                        if (mRoverComputer != null)
+                        {
+                            s.Append(" (");
+                            s.Append(RTUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(" ");
+                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT, "F0"));
+                            s.Append(")"); ;
+                        }
                         break;
                     case DriveMode.Turn:
                         s.Append("Turn: ");
@@ -131,7 +149,15 @@ namespace RemoteTech
                         else
                             s.Append("° left @");
                         s.Append(Math.Abs(steering).ToString("P"));
-                        s.Append(" steering");
+                        s.Append(" Steering");
+                        if (mRoverComputer != null)
+                        {
+                            s.Append(" (");
+                            s.Append(mRoverComputer.Delta.ToString("F2"));
+                            s.Append("° ");
+                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT, "F0"));
+                            s.Append(")");;
+                        }
                         break;
                     case DriveMode.DistanceHeading:
                         s.Append("Drive: ");
@@ -140,6 +166,14 @@ namespace RemoteTech
                         s.Append(target2.ToString("0"));
                         s.Append("° @ ");
                         s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
+                        if (mRoverComputer != null)
+                        {
+                            s.Append(" (");
+                            s.Append(RTUtil.FormatSI(mRoverComputer.Delta,"m"));
+                            s.Append(" ");
+                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT, "F0"));
+                            s.Append(")");
+                        }
                         break;
                     case DriveMode.Off:
                         s.Append("Turn rover computer off");
