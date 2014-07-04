@@ -13,6 +13,14 @@ extra_css: overview
 
 To play RemoteTech, not only must you manage the antennas on your current ship, selecting the right antenna(s) for the right situation, but you must also manage your overall communications network, ensuring that every craft has a link to Mission Control when it needs it.
 
+##Connection Status
+
+![IMAGE: new time quadrant, with connection status below the mission clock and the computer icon below it](compicon.png){: .left}
+
+RemoteTech adds two new displays below the mission clock in the upper left corner. The first is the connection status. "N/A" means the ship does not have a part with a [signal processor](../../#signal-processors). "Local Control" means that the ship has either a crewed pod or a [non-RemoteTech-compatible](../../modders/modules/) probe core, and you can control the ship with no delay as in the stock game. "Connected" or "D+" followed by a number means the ship has a working connection to Mission Control. The number after "D+" is the signal delay in seconds. "No connection" means you can't send commands at all.
+
+The second element is a colored calculator icon -- green for a [working connection](../../#connections), yellow for local control, and red otherwise. Clicking the icon with a working connection or no connection pulls up the [flight computer](../comp/) window. You can't use the flight computer if you do not have a signal processor on board.
+
 ![IMAGE: target selection window](targetselector.png){: .right}
 
 ##Antenna Configuration
