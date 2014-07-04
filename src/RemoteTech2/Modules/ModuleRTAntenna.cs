@@ -15,7 +15,10 @@ namespace RemoteTech
         public Guid Guid { get { return mRegisteredId; } }
         public bool Powered { get { return IsRTPowered; } }
         public bool Activated { get { return IsRTActive; } set { SetState(value); } }
-        public bool Animating { get { return mDeployFxModules.Any(fx => fx.GetScalar > 0.1f && fx.GetScalar < 0.9f); } }
+        public bool CanAnimate { get { return mDeployFxModules.Count > 0; } }
+        public bool AnimClosed { get { return mDeployFxModules.Any(fx => fx.GetScalar <= 0.1f                        ); } }
+        public bool Animating  { get { return mDeployFxModules.Any(fx => fx.GetScalar >  0.1f && fx.GetScalar <  0.9f); } }
+        public bool AnimOpen   { get { return mDeployFxModules.Any(fx =>                         fx.GetScalar >= 0.9f); } }
 
         public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
         public Guid Target
@@ -451,7 +454,7 @@ namespace RemoteTech
         private void HandleDynamicPressure()
         {
             if (vessel == null) return;
-            if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && mDeployFxModules.Any(a => a.GetScalar > 0.9f)) {
+            if (!vessel.HoldPhysics && this.AnimOpen && vessel.atmDensity > 0 && MaxQ > 0) {
                 if (GetDynamicPressure() > MaxQ && GetShieldedState() == false) {
                     // Express flight clock in stockalike formatting
                     string timestamp = RTUtil.FormatTimestamp (FlightLogger.met_years, FlightLogger.met_days, 
