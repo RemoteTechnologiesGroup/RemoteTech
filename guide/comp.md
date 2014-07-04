@@ -80,7 +80,7 @@ NODE
 :   This attempts to face the direction required for the next maneuver node.
 
 CUSTOM
-:   This attempts to keep the ship in a specific pitch, heading, and roll, as chosen by the options below the six direction buttons. If possible, set the desired pitch, heading, and roll before clicking CUSTOM, as otherwise the ship's desired pointing will update as you type. The exact fields are:
+:   This attempts to keep the ship in a specific pitch, heading, and roll, as chosen by the options below the six direction buttons. If possible, set the desired pitch, heading, and roll before clicking CUSTOM, as otherwise the ship's desired pointing will change unpredictably as you type. The angles for each field are defined as:
 
     * PIT: the pitch angle, in degrees. 0 means to point the nose level (which, in a high orbit, may still be well above the horizon), 90 means to point it straight up.
     * HDG: the angle relative to north, in degrees. 0 means to point north, 90 means to point east.
@@ -88,7 +88,7 @@ CUSTOM
 
 ###Executing Maneuver Nodes
 
-Pressing the "EXEC" button causes the ship to wait until it approaches a maneuver node, then slew to the maneuver position and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or toggle SAS to keep the ship pointed.
+Pressing the "EXEC" button causes the ship to wait until it approaches a maneuver node, then slew to the maneuver direction and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or toggle SAS to keep the ship pointed.
 
 Because node execution does not wait for the ship to face the node before turning on the engine, players are *strongly* encouraged to use a NODE attitude command well before executing a maneuver node. The management is not responsible for any burns that had the opposite of their intended effect.
 

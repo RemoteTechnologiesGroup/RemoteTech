@@ -13,7 +13,7 @@ extra_css: antennas
 
 ##Probe Cores
 
-All stock probe cores serve as [signal processors](../../#signal-processors). In addition, the [RC-L01 Remote Guidance Unit](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) can serve as a [command station](../../#command-stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and monitoring nearby probes. The crew can be anywhere on the ship; it does not have to be in a particular part. The RC-L01 still acts as a probe core, whether or not a crew is on board.
+All stock probe cores serve as [signal processors](../../#signal-processors). In addition, the [RC-L01 Remote Guidance Unit](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) can serve as a [command station](../../#command-stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and monitoring nearby probes. The crew can be anywhere on the ship; it does not have to be in a particular part. The RC-L01 still acts as a probe core and a signal processor, whether or not a crew is on board.
 
 After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wiki/Unmanned_Tech), all stock probe cores will receive a free, always-on, 3&nbsp;km omnidirectional antenna.
 

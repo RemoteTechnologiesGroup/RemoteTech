@@ -14,6 +14,7 @@ Can't generate this automatically at present
 
 <div class="toc" markdown="1">
 * [Playing RemoteTech](overview/)
+    * [Connection Status](overview/#connection-status)
     * [Antenna Configuration](overview/#antenna-configuration)
     * [The Map View](overview/#the-map-view)
     * [Connection Rules](overview/#connection-rules)

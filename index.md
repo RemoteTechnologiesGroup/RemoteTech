@@ -27,26 +27,28 @@ Using antennas, it is now possible to set up satellite networks to route your co
 Dishes are antennas that must be instructed what direction to point at. They do not need to be physically turned; you need merely select a target from a list. Dishes tend to be used for long range communication and come with a cone of vision (which is narrower for longer-range antennas). If the dish is pointed at a planet or moon, anything inside this cone can achieve a connection with the dish.
 
 ####Omnidirectionals
-Omni antennas radiate in every direction equally, and as such do not require you to target them at anything. A consequence is that they are limited to shorter ranges.
+Omni antennas radiate in every direction equally, and as such do not require you to target them at anything. However, they are limited to shorter ranges than dishes.
 
 ###Signal Delay
-To comply with Kerbal law, RemoteTech is required to delay your control input so that signaling does not exceed the 'speed of light' (pfft, what a silly law). If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file (which will be created once you start KSP).
+To comply with Kerbal law, RemoteTech is required to delay your control input so that signaling does not exceed the 'speed of light'. If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file (which will be created once you start KSP).
 
 ###Connections
-A 'working connection' is defined as a command center being able to send control input to its destination and back. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites [can transmit a signal](guide/overview/#connection-rules) to the other independently. You have a connection when there is a sequence of links between a command center and the destination.
+A 'working connection' is defined as a command center being able to send control input to its destination. Connections between neighbouring satellites are referred to as 'links'. To have a link between two satellites, it is required that *both* satellites [are set up to contact each other](guide/overview/#connection-rules). You have a connection when there is a sequence of links between a command center and the destination.
 
 ###Signal Processors
-Signal Processors are any part that can receive commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal-delay). Signal processors also include a *Flight Computer* that can be used to schedule actions ahead of time, for example to carry out basic tasks during a communications gap.
+Signal Processors are any part that can receive commands over a working connection, including all stock probe cores. You will only be able to control a signal processor as long as you have a working connection, and by default you will be subject to [signal delay](#signal-delay). Signal processors also include a [flight computer](guide/comp/) that can be used to schedule actions ahead of time, for example to carry out basic tasks during a communications gap.
 
 <!--**Beware**: if you do not have a working connection, you cannot send **any** commands to an unmanned probe, including commands to activate its antennas!-->
 
 ###Command Stations
-For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. This Command Station can not process science, a connection to KSC will still be required for that. However, the Command Station allows you to work without the signal delay to Kerbin, which might otherwise climb up to several minutes. Command Stations require a special probe part and a minimum number of kerbals on the same ship. Consult your VAB technicians for more information.
+For those extra long distance missions, it is possible to set up a team of Kerbals to act as a local command center. Setting up a command station is a major undertaking for situations where you *really* need real-time control of nearby probes. It is not something to be attempted lightly (literally).
+
+Command Stations allow you to work without the signal delay to Kerbin, which might otherwise climb up to several minutes. However, a Command Station cannot process science; a connection to KSC will still be required for that. Command Stations require a special probe part and a minimum number of kerbals on the same ship. Consult your VAB technicians for more information.
 
 ###Science Transmissions
 Transmitting science back to KSC now requires you have a working connection to KSC. Any other source of control, such as a crew pod or a working connection to a command station, does not count.
 
-##List of parts
+##Changes to Parts
 
 ###Modified stock parts
 
