@@ -254,45 +254,56 @@ namespace kOS
 
         public static Vector3d GetTorque(Vessel vessel, float thrust)
         {
-            var CoM = vessel.findWorldCenterOfMass();
+            // Do everything in vessel coordinates
+            var CoM = vessel.findLocalCenterOfMass();
 
-            float pitchYaw = 0;
-            float roll = 0;
+            // Don't assume any particular symmetry for the vessel
+            float pitch = 0, roll = 0, yaw = 0;
 
             foreach (Part part in vessel.parts)
             {
-                var relCoM = part.Rigidbody.worldCenterOfMass - CoM;
-
-                if (part is CommandPod)
-                {
-                    pitchYaw += Math.Abs(((CommandPod)part).rotPower);
-                    roll += Math.Abs(((CommandPod)part).rotPower);
-                }
-
-                if (part is RCSModule)
-                {
-                    float max = 0;
-                    foreach (float power in ((RCSModule)part).thrusterPowers)
-                    {
-                        max = Mathf.Max(max, power);
-                    }
-
-                    pitchYaw += max * relCoM.magnitude;
-                }
-
                 foreach (PartModule module in part.Modules)
                 {
-                    if (module is ModuleReactionWheel)
+                    if (!module.isEnabled)
+                        continue;
+
+                    if (module is ModuleReactionWheel 
+                        && ((ModuleReactionWheel)module).wheelState == ModuleReactionWheel.WheelState.Active)
                     {
-                        pitchYaw += ((ModuleReactionWheel)module).PitchTorque;
-                        roll += ((ModuleReactionWheel)module).RollTorque;
+                        pitch += ((ModuleReactionWheel)module).PitchTorque;
+                        roll  += ((ModuleReactionWheel)module).RollTorque;
+                        yaw   += ((ModuleReactionWheel)module).YawTorque;
+                    }
+                    // Is there a more direct way to see if RCS is enabled? module.isEnabled doesn't work...
+                    else if (module is ModuleRCS && vessel.ActionGroups[KSPActionGroup.RCS])
+                    {
+                        ModuleRCS rcs = ((ModuleRCS)module);
+
+                        foreach (Transform thruster in rcs.thrusterTransforms) {
+                            // Avoids problems with part.Rigidbody.centerOfMass; should also give better 
+                            //  support for RCS units integrated into larger parts
+                            Vector3d thrusterOffset = vessel.GetTransform().InverseTransformPoint(
+                                thruster.position) - CoM;
+                            /* Code by sarbian, shamelessly copied from MechJeb */
+                            Vector3d thrusterThrust = vessel.GetTransform().InverseTransformDirection(
+                                -thruster.up.normalized) * rcs.thrusterPower;
+                            Vector3d thrusterTorque = Vector3.Cross(thrusterOffset, thrusterThrust);
+                            /* end sarbian's code */
+
+                            // This overestimates the usable torque, but that doesn't change the final behavior much
+                            pitch += (float)Math.Abs(thrusterTorque.x);
+                            roll  += (float)Math.Abs(thrusterTorque.y);
+                            yaw   += (float)Math.Abs(thrusterTorque.z);
+                        }
                     }
                 }
 
-                pitchYaw += (float)GetThrustTorque(part, vessel) * thrust;
+                float gimbal = (float)GetThrustTorque (part, vessel) * thrust;
+                pitch += gimbal;
+                yaw   += gimbal;
             }
 
-            return new Vector3d(pitchYaw, roll, pitchYaw);
+            return new Vector3d(pitch, roll, yaw);
         }
 
         public static double GetThrustTorque(Part p, Vessel vessel)
