@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -43,6 +44,14 @@ namespace RemoteTech
             ParentDefect,
             NoConnection
         }
+
+        /// <summary>
+        /// Contains the names of any events that should always be run, 
+        /// regardless of connection status or signal delay
+        /// </summary>
+        private static readonly HashSet<String> eventWhiteList = new HashSet<String>() {
+            "RenameVessel", "RenameAsteroidEvent"
+        };
 
         private Guid mRegisteredId;
 
@@ -146,6 +155,10 @@ namespace RemoteTech
                 }
                 var vs = RTCore.Instance.Satellites[v];
                 if (vs == null || vs.HasLocalControl)
+                {
+                    e.Invoke();
+                }
+                else if (eventWhiteList.Contains(e.name))
                 {
                     e.Invoke();
                 }
