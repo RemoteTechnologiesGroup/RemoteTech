@@ -106,7 +106,7 @@ namespace RemoteTech
         public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target)
         {
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
-            kOS.SteeringHelper.SteerShipToward(target, fs, f.Vessel);
+            kOS.SteeringHelper.SteerShipToward(target, fs, f);
         }
 
         public static double GetTotalThrust(Vessel v)
@@ -126,39 +126,74 @@ namespace kOS
 {
     public static class SteeringHelper
     {
-        public static void KillRotation(FlightCtrlState c, Vessel vessel)
+        /// <summary>
+        /// Automatically guides the ship to face a desired orientation
+        /// </summary>
+        /// <param name="target">The desired orientation</param>
+        /// <param name="c">The FlightCtrlState for the current vessel.</param>
+        /// <param name="fc">The flight computer carrying out the slew</param>
+        public static void SteerShipToward(Quaternion target, FlightCtrlState c, RemoteTech.FlightComputer fc)
         {
-            var act = vessel.transform.InverseTransformDirection(vessel.rigidbody.angularVelocity).normalized;
+            // Add support for roll-less targets later -- Starstrider42
+            var fixedRoll = true;
+            var vessel = fc.Vessel;
+            var momentOfInertia = GetTrueMoI(vessel);
+            var vesselReference = vessel.GetTransform();
 
-            c.pitch = act.x;
-            c.roll = act.y;
-            c.yaw = act.z;
+            //---------------------------------------
+            // Copied almost verbatim from MechJeb master on June 27, 2014 -- Starstrider42
 
-            c.killRot = true;
-        }
-
-        public static void SteerShipToward(Quaternion target, FlightCtrlState c, Vessel vessel)
-        {
-            // I take no credit for this, this is a stripped down, rearranged version of MechJeb's attitude control system
-            var centerOfMass = vessel.findWorldCenterOfMass();
-            var momentOfInertia = vessel.findLocalMOI(centerOfMass);
-
-            var vesselR = vessel.transform.rotation;
-
-            Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vesselR) * target);
-
-            Vector3d deltaEuler = ReduceAngles(delta.eulerAngles);
-            deltaEuler.y *= -1;
+            Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vesselReference.rotation) * target);
 
             Vector3d torque = GetTorque(vessel, c.mainThrottle);
             Vector3d inertia = GetEffectiveInertia(vessel, torque);
 
-            Vector3d err = deltaEuler * Math.PI / 180.0F;
-            err += new Vector3d(inertia.x, inertia.z, inertia.y);
+            //err.Scale(SwapYZ(Vector3d.Scale(MoI, Inverse(torque))));
+            Vector3d normFactor = SwapYZ(Vector3d.Scale(momentOfInertia, Inverse(torque)));
 
-            Vector3d act = 120.0f * err;
+            // Find out the real shorter way to turn were we want to.
+            // Thanks to HoneyFox
 
-            float precision = Mathf.Clamp((float)torque.x * 20f / momentOfInertia.magnitude, 0.5f, 10f);
+            Vector3d tgtLocalUp = vesselReference.transform.rotation.Inverse() * target * Vector3d.forward;
+            Vector3d curLocalUp = Vector3d.up;
+
+            double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
+            var rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
+            rotDirection = rotDirection.normalized * turnAngle / 180.0f;
+
+            var err = new Vector3d(
+                -rotDirection.y * Math.PI,
+                rotDirection.x * Math.PI,
+                fixedRoll ?
+                    ((delta.eulerAngles.z > 180) ?
+                        (delta.eulerAngles.z - 360.0F) :
+                        delta.eulerAngles.z) * Math.PI / 180.0F
+                    : 0F
+            );
+
+            err += SwapYZ(inertia) / 2;
+            err = new Vector3d(Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
+                Math.Max(-Math.PI, Math.Min(Math.PI, err.y)),
+                Math.Max(-Math.PI, Math.Min(Math.PI, err.z)));
+            err.Scale(normFactor);
+
+            // angular velocity:
+            Vector3d omega;
+            omega.x = vessel.angularVelocity.x;
+            omega.y = vessel.angularVelocity.z; // y <=> z
+            omega.z = vessel.angularVelocity.y; // z <=> y
+            omega.Scale(normFactor);
+
+            Vector3d pidAction = fc.pid.Compute(err, omega);
+
+            // low pass filter, wf = 1/Tf:
+            Vector3d act = fc.lastAct + (pidAction - fc.lastAct) * (1 / ((fc.Tf / TimeWarp.fixedDeltaTime) + 1));
+            fc.lastAct = act;
+
+            // end MechJeb import
+            //---------------------------------------
+
+            float precision = Mathf.Clamp((float)(torque.x * 20f / momentOfInertia.magnitude), 0.5f, 10f);
             float driveLimit = Mathf.Clamp01((float)(err.magnitude * 380.0f / precision));
 
             act.x = Mathf.Clamp((float)act.x, -driveLimit, driveLimit);
@@ -175,29 +210,108 @@ namespace kOS
             return new Vector3d(input.x, input.z, input.y);
         }
 
-        public static Vector3d Pow(Vector3d v3d, float exponent)
+        public static Vector3d Pow(Vector3d vector, float exponent)
         {
-            return new Vector3d(Math.Pow(v3d.x, exponent), Math.Pow(v3d.y, exponent), Math.Pow(v3d.z, exponent));
+            return new Vector3d(Math.Pow(vector.x, exponent), Math.Pow(vector.y, exponent), Math.Pow(vector.z, exponent));
+        }
+
+        // Copied from MechJeb master on June 27, 2014
+        private class Matrix3x3
+        {
+            //row index, then column index
+            private readonly double[,] e = new double[3, 3];
+
+            public double this[int i, int j]
+            {
+                get { return e[i, j]; }
+                set { e[i, j] = value; }
+            }
+
+            public static Vector3d operator *(Matrix3x3 m, Vector3d v)
+            {
+                Vector3d ret = Vector3d.zero;
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        ret[i] += m.e[i, j] * v[j];
+                    }
+                }
+                return ret;
+            }
+        }
+
+        /// <summary>
+        /// Returns a more accurate moment of inertia than Vessel.findLocalMOI()
+        /// </summary>
+        // Copied from MechJeb master on June 27, 2014
+        // TODO: cache moment if inertia and update only when ship mass changes?
+        private static Vector3d GetTrueMoI(Vessel vessel)
+        {
+            var inertiaTensor = new Matrix3x3();
+            var centerOfMass = vessel.findWorldCenterOfMass();
+
+            foreach (Part p in vessel.parts)
+            {
+                if (p.Rigidbody == null) continue;
+
+                //Compute the contributions to the vessel inertia tensor due to the part inertia tensor
+                Vector3d principalMoments = p.Rigidbody.inertiaTensor;
+                Quaternion princAxesRot = Quaternion.Inverse(vessel.GetTransform().rotation) * p.transform.rotation * p.Rigidbody.inertiaTensorRotation;
+                Quaternion invPrincAxesRot = Quaternion.Inverse(princAxesRot);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    Vector3d iHat = Vector3d.zero;
+                    iHat[i] = 1;
+                    for (int j = 0; j < 3; j++)
+                    {
+                        Vector3d jHat = Vector3d.zero;
+                        jHat[j] = 1;
+                        inertiaTensor[i, j] += Vector3d.Dot(iHat, princAxesRot * Vector3d.Scale(principalMoments, invPrincAxesRot * jHat));
+                    }
+                }
+
+                //Compute the contributions to the vessel inertia tensor due to the part mass and position
+                double partMass = p.mass + p.GetResourceMass();
+                Vector3 partPosition = vessel.GetTransform().InverseTransformDirection(p.Rigidbody.worldCenterOfMass - centerOfMass);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    inertiaTensor[i, i] += partMass * partPosition.sqrMagnitude;
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        inertiaTensor[i, j] += -partMass * partPosition[i] * partPosition[j];
+                    }
+                }
+            }
+
+            return new Vector3d(inertiaTensor[0, 0], inertiaTensor[1, 1], inertiaTensor[2, 2]);
         }
 
         public static Vector3d GetEffectiveInertia(Vessel vessel, Vector3d torque)
         {
-            var centerOfMass = vessel.findWorldCenterOfMass();
-            var momentOfInertia = vessel.findLocalMOI(centerOfMass);
+            var momentOfInertia = GetTrueMoI(vessel);
             var angularVelocity = Quaternion.Inverse(vessel.transform.rotation) * vessel.rigidbody.angularVelocity;
             var angularMomentum = new Vector3d(angularVelocity.x * momentOfInertia.x, angularVelocity.y * momentOfInertia.y, angularVelocity.z * momentOfInertia.z);
 
-            var retVar = Vector3d.Scale
-            (
-                Sign(angularMomentum) * 2.0f,
-                Vector3d.Scale(Pow(angularMomentum, 2), Inverse(Vector3d.Scale(torque, momentOfInertia)))
-            );
-
-            retVar.y *= 10;
+            // Adapted from MechJeb master on June 27, 2014
+            var retVar = Vector3d.Scale(Sign(angularMomentum),
+                Vector3d.Scale(
+                    Vector3d.Scale(angularMomentum, angularMomentum),
+                    Inverse(Vector3d.Scale(torque, momentOfInertia))
+                ));
 
             return retVar;
         }
 
+        /// <summary>
+        /// Returns the torque the ship can exert around its center of mass
+        /// </summary>
+        /// <returns>The torque in N m, around the (pitch, roll, yaw) axes.</returns>
+        /// <param name="vessel">The ship whose torque should be measured.</param>
+        /// <param name="thrust">The ship's throttle setting, on a scale of 0 to 1.</param>
         public static Vector3d GetTorque(Vessel vessel, float thrust)
         {
             // Do everything in vessel coordinates
