@@ -36,7 +36,7 @@ Each dish has advantages and disadvantages, but the two most important features 
 
 Unless design decisions dictate a different solution, it is generally advisable to use the shortest range antenna that will suit your interplanetary network in order to guarantee as broad of coverage as possible. (Shorter dishes generally require less power, as well.) 
 
-: ***Example:**, while using the most powerful dish (Reflectron GX-128) for Moho, the width of the cone at Moho’s closest pass to Kerbin is only 637 km. This means that it will be unable to reliably connect to any satellites that orbit at an altitude higher than 68 km. However, the lower-range Communotron 88-88 with its 0.06° cone is able to provide reliable connection to satellites up to 3500 km altitude while still guaranteeing connections at all distances between Kerbin and Moho.*
+: * **Example:**, while using the most powerful dish (Reflectron GX-128) for Moho, the width of the cone at Moho’s closest pass to Kerbin is only 637 km. This means that it will be unable to reliably connect to any satellites that orbit at an altitude higher than 68 km. However, the lower-range Communotron 88-88 with its 0.06° cone is able to provide reliable connection to satellites up to 3500 km altitude while still guaranteeing connections at all distances between Kerbin and Moho.*
 
 This problem can be mitigated by pointing the dish at a specific satellite rather than a planet or moon, but this limits the usefulness of the antenna as a method to connect to many vessels at a particular destination.
 
