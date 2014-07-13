@@ -13,13 +13,13 @@ navbar: false
 
 This tutorial is geared toward players who have connected to Low Kerbin Orbit and have made one or more connections to the Mun and Minmus, and now want to create stable, reliable networks at interplanetary distances. The same relay system that works for Kerbin’s moons can work outside Kerbin’s sphere of influence, but the distance and equipment needed change significantly.
 
-##Dish range and cone of influence
+##Dish Range and Cone of Influence
 
 This guide will refer to the Comms DTS-1 (45 Mm) and Reflectron KR-7 (90 Mm) as “short-range dishes”, because these operate only within Kerbin’s sphere of influence and are designed for connection to Mun and Minmus. The Communotron 88-88 and all later dishes are “long-range dishes” designed to reach out between planets.
 
 Each dish has advantages and disadvantages, but the two most important features are the dish’s **range** and **cone of influence**.
 
-* **Range:** the dish must have a long enough range to cross the distance to the target planet or moon. See the table below for minimum antennas needed. Some antennas will provide partial coverage (the Reflectron KR-14 will connect to Jool during most of the year, for example), but this is not advised unless your interplanetary missions are accurately timed.
+* **Range:** the dish must have a long enough range to cross the distance to the target planet or moon. See the table below for minimum antennas needed. Some antennas will provide partial coverage (the Reflectron KR-14 will connect to Jool during most of the year, for example), but this is not advised unless your interplanetary missions are carefully scheduled to avoid range blackouts.
 
 | Target | Maximum Separation | Minimum Antenna Needed |
 |:--------:|:-------:|:--------:|
@@ -36,7 +36,7 @@ Each dish has advantages and disadvantages, but the two most important features 
 
 Unless design decisions dictate a different solution, it is generally advisable to use the shortest range antenna that will suit your interplanetary network in order to guarantee as broad of coverage as possible. (Shorter dishes generally require less power, as well.) 
 
-*Example: while using the most powerful dish (Reflectron GX-128) for Moho, the width of the cone at Moho’s closest pass to Kerbin is only 637 km. This means that it will be unable to reliably connect to any satellites that orbit at an altitude higher than 68 km. However, the lower-range Communotron 88-88 with its 0.06° cone is able to provide reliable connection to satellites up to 3500 km altitude while still guaranteeing connections at all distances between Kerbin and Moho.*
+: ***Example:**, while using the most powerful dish (Reflectron GX-128) for Moho, the width of the cone at Moho’s closest pass to Kerbin is only 637 km. This means that it will be unable to reliably connect to any satellites that orbit at an altitude higher than 68 km. However, the lower-range Communotron 88-88 with its 0.06° cone is able to provide reliable connection to satellites up to 3500 km altitude while still guaranteeing connections at all distances between Kerbin and Moho.*
 
 This problem can be mitigated by pointing the dish at a specific satellite rather than a planet or moon, but this limits the usefulness of the antenna as a method to connect to many vessels at a particular destination.
 
@@ -54,27 +54,27 @@ This example of an interplanetary network is a commonly used due to its small nu
 
 ##Other Considerations and Pitfalls
 
-1. Minimize line-of-sight blackout periods.
+* **Minimize line-of-sight blackout periods.**
 
 Every step in the chain is vulnerable to blackouts, and any break in the chain will black out the entire link. Ensure that blackout periods are minimized by providing redundant coverage or placing long-range relays into highly eccentric orbits.
 
-2. Minimize power blackout periods.
+* **Minimize power blackout periods.**
 
 Be sure to account for power concerns for all satellites. Use the power calculator [available here](https://docs.google.com/spreadsheet/ccc?key=0AkXf-77s6gmFdEdVeGFqX0xobTczYkhEaEVrVTdWV3c) if you’re not sure how much solar and battery power your satellite will need.
 
-3. Orbits’ relative positions will change throughout the year.
+* **Orbits’ relative positions will change throughout the year**
 
 Setting a satellite into a polar circular orbit so that it always faces Kerbin is fine, except that throughout the course of a year, that orbit’s orientation relative to Kerbin will change as the planet orbits the sun. During some periods of the year, the orbit will black out on every orbit as it passes behind the planet. Avoid this by setting up highly eccentric orbits, which will black out infrequently and briefly.
 
-4. Avoid using Active Vessel as a target.
+* **Avoid using Active Vessel as a target.**
 
-The use of Active Vessel as a target of any dish antenna can potentially cause confusion as detailed [[here]]. In all cases of dish antennas, using explicit connections rather than Active Vessel connections dramatically reduces network troubleshooting issues.
+The use of Active Vessel as a target of any dish antenna can potentially cause confusion. In all cases of dish antennas, using explicit connections rather than Active Vessel connections dramatically reduces network troubleshooting issues. More detail regarding the Active Vessel troubleshooting issue is available [here](http://remotetechnologiesgroup.github.io/RemoteTech/guide/overview/#target-active).
 
-5. Beware of time delay.
+* **Beware of time delay.**
 
 Interplanetary probes experience a very significant (several minutes or more) time delay unless local control is provided by a [RC-L01](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) as a [Command Station](http://remotetechnologiesgroup.github.io/RemoteTech/#command-stations). Commands can be queued up to be executed during blackout periods, but the execution of extremely long burns to insert into orbit is very unpredictable, and interplanetary atmospheric aerobraking is very difficult, bordering on impossible.
 
-Inserting into orbit after an interplanetary intercept should be done with regular engines rather than nuclear engines, if at all possible; this reduces the time required for an insertion burn and minimizes the risk of an orbit that fails to insert or de-orbits into the planet, with no time to correct due to time delay.
+Inserting into orbit after an interplanetary intercept may be done with regular engines rather than nuclear or ion engines, if at all possible; this reduces the time required for an insertion burn and minimizes the risk of an orbit that fails to insert or de-orbits into the planet, with no time to correct due to time delay. While very long burns can be done using the flight computer, be prepared for inaccuracies or problems due to time delay that may be difficult to fix.
 
 Without a local source of control via RC-L01, attempting to land a probe at interplanetary distances is not recommended, as the time delay makes such a landing virtually impossible.
 
