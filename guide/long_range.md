@@ -36,7 +36,7 @@ Each dish has advantages and disadvantages, but the two most important features 
 
 Unless design decisions dictate a different solution, it is generally advisable to use the shortest range antenna that will suit your interplanetary network in order to guarantee as broad of coverage as possible. (Shorter dishes generally require less power, as well.) 
 
-: ***Example:**, while using the most powerful dish (Reflectron GX-128) for Moho, the width of the cone at Moho’s closest pass to Kerbin is only 637 km. This means that it will be unable to reliably connect to any satellites that orbit at an altitude higher than 68 km. However, the lower-range Communotron 88-88 with its 0.06° cone is able to provide reliable connection to satellites up to 3500 km altitude while still guaranteeing connections at all distances between Kerbin and Moho.*
+*Example: while using the most powerful dish (Reflectron GX-128) for Moho, the width of the cone at Moho’s closest pass to Kerbin is only 637 km. This means that it will be unable to reliably connect to any satellites that orbit at an altitude higher than 68 km. However, the lower-range Communotron 88-88 with its 0.06° cone is able to provide reliable connection to satellites up to 3500 km altitude while still guaranteeing connections at all distances between Kerbin and Moho.*
 
 This problem can be mitigated by pointing the dish at a specific satellite rather than a planet or moon, but this limits the usefulness of the antenna as a method to connect to many vessels at a particular destination.
 
@@ -83,3 +83,6 @@ Without a local source of control via RC-L01, attempting to land a probe at inte
 Jool is an interesting case for interplanetary networks, and it is advisable to attempt other connections prior to tackling the gas giant’s multiple moon system. With Jool’s radius of 6 Mm, setting up a low-orbit omnidirectional relay is impractical, and with Pol’s apoapsis of 210 Mm, the short-range dishes can’t guarantee coverage to all of Jool’s moons. In addition, the CommTech-1’s cone of influence of 0.006° provides coverage diameter of 10.8 Gm at Jool’s closest point to Kerbin, making blanket coverage of all moons with a single dish impossible.
 
 Any moon can get a fairly reliable connection using the method outlined above by utilizing a separate connection for each moon, but the pinnacle of RemoteTech 2 mastery is setting up a single relay to Jool, and relaying that connection to all of Jool’s moons using a Joolian satellite system. That exercise is left to the user.
+
+
+###Appendix A: Calculating Orbital
