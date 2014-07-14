@@ -111,12 +111,17 @@ namespace RemoteTech
 
         public static double GetTotalThrust(Vessel v)
         {
-            var thrust = v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>())
-                        .Where(pm => pm.EngineIgnited)
-                        .Sum(pm => (double)pm.maxThrust * (pm.thrustPercentage / 100));
-            thrust += v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>())
-                        .Where(pm => pm.EngineIgnited)
-                        .Sum(pm => (double)pm.maxThrust * (pm.thrustPercentage / 100));
+            double thrust = 0.0;
+            foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>()))
+            {
+                if (!pm.EngineIgnited) continue;
+                thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
+            }
+            foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>()))
+            {
+                if (!pm.EngineIgnited) continue;
+                thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
+            }
             return thrust;
         }
     }
