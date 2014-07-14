@@ -454,7 +454,7 @@ namespace RemoteTech
         private void HandleDynamicPressure()
         {
             if (vessel == null) return;
-            if (!vessel.HoldPhysics && this.AnimOpen && vessel.atmDensity > 0 && MaxQ > 0) {
+            if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && (!this.CanAnimate || this.AnimOpen)) {
                 if (GetDynamicPressure() > MaxQ && GetShieldedState() == false) {
                     // Express flight clock in stockalike formatting
                     string timestamp = RTUtil.FormatTimestamp (FlightLogger.met_years, FlightLogger.met_days, 
