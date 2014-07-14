@@ -183,10 +183,7 @@ namespace kOS
             err.Scale(normFactor);
 
             // angular velocity:
-            Vector3d omega;
-            omega.x = vessel.angularVelocity.x;
-            omega.y = vessel.angularVelocity.z; // y <=> z
-            omega.z = vessel.angularVelocity.y; // z <=> y
+            Vector3d omega = SwapYZ(vessel.angularVelocity);
             omega.Scale(normFactor);
 
             Vector3d pidAction = fc.pid.Compute(err, omega);
