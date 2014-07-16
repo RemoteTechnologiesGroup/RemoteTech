@@ -369,34 +369,14 @@ namespace kOS
 
         public static double GetThrustTorque(Part p, Vessel vessel)
         {
-            var centerOfMass = vessel.CoM;
-
-            if (p.State == PartStates.ACTIVE)
-            {
-                if (p is LiquidEngine)
-                {
-                    if (((LiquidEngine)p).thrustVectoringCapable)
-                    {
-                        return Math.Sin(Math.Abs(((LiquidEngine)p).gimbalRange) * Math.PI / 180) * ((LiquidEngine)p).maxThrust * (p.Rigidbody.worldCenterOfMass - centerOfMass).magnitude;
-                    }
-                }
-                else if (p is LiquidFuelEngine)
-                {
-                    if (((LiquidFuelEngine)p).thrustVectoringCapable)
-                    {
-                        return Math.Sin(Math.Abs(((LiquidFuelEngine)p).gimbalRange) * Math.PI / 180) * ((LiquidFuelEngine)p).maxThrust * (p.Rigidbody.worldCenterOfMass - centerOfMass).magnitude;
-                    }
-                }
-                else if (p is AtmosphericEngine)
-                {
-                    if (((AtmosphericEngine)p).thrustVectoringCapable)
-                    {
-                        return Math.Sin(Math.Abs(((AtmosphericEngine)p).gimbalRange) * Math.PI / 180) * ((AtmosphericEngine)p).maximumEnginePower * ((AtmosphericEngine)p).totalEfficiency * (p.Rigidbody.worldCenterOfMass - centerOfMass).magnitude;
-                    }
-                }
+            var result = 0.0;
+            foreach (ModuleGimbal gimbal in p.Modules.OfType<ModuleGimbal>()) {
+                ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
+                if (!engine.EngineIgnited) continue;
+                var gimbalRadians = Math.Sin(Math.Abs(gimbal.gimbalRange) * Math.PI / 180);
+                result = gimbalRadians * engine.maxThrust * (p.Rigidbody.worldCenterOfMass - vessel.CoM).magnitude;
             }
-
-            return 0;
+            return result;
         }
 
         private static Vector3d ReduceAngles(Vector3d input)
@@ -410,7 +390,13 @@ namespace kOS
 
         public static Vector3d Inverse(Vector3d input)
         {
-            return new Vector3d(1 / input.x, 1 / input.y, 1 / input.z);
+            if (input.x == 0 || input.y == 0 || input.z == 0) {
+                RemoteTech.RTLog.Verbose("Avoiding division by zero in kOS::SteeringHelper::Inverse(): {0}", input);
+            }
+            return new Vector3d(
+                input.x == 0 ? 0 : 1 / input.x,
+                input.y == 0 ? 0 : 1 / input.y,
+                input.z == 0 ? 0 : 1 / input.z);
         }
 
         public static Vector3d Sign(Vector3d vector)
