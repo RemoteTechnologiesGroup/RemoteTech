@@ -1,0 +1,25 @@
+language: objective-c # force osx machines
+
+os:
+ - osx
+
+env:
+  global:
+   - secure: Q4UfP54tnvoioOnoQElnkUQMd4qQ/2dLLkhnSz35MiwUrraxqrixdh22EWsTmcqD8ntjPI4tt3P9N6On9+qn8D+qYpt+zX5otikfgvXdKCxGJj+q1Nv0rWq6b0P5QGo61vXFV1cH4EOONBDyAq0IbmtjtEISBhQaefFdzaAAk/Y=
+   - secure: J/M1/WIRgP4GssMr9HS9k7Wr9XUqlo0S+olIVWvr8eY8jxxVbx+ONZbkkjKey2BvC1BRVtRXpbBe+YcPLYe7V1jG5mmm3Lc1B/x5WC54q4KKfoV53m+ARAtaHFYrJY2h4O+GLaysQoCwCG/tAt0GhJmgJgy9IojH4ojJjDOGHCE=
+before_install:
+ - date -u
+ - uname -a
+ - export BUILDTAG=`git describe --abbrev=0 --tags`
+ - env | sort | grep -v ZIPPASSWORD | grep -v GITHUB_TOKEN
+
+install:
+ - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then echo "Should only be on OSX"; exit 1; fi
+ - ./CI/travis.osx.install.deps.sh # it appears TRAVIS_OS_NAME is unset often, assume we're OSX if not linux
+
+script:
+ - ./build.remotetech2.sh
+
+# Custom deploy
+after_success:
+ - ./CI/github.build.deploy.sh

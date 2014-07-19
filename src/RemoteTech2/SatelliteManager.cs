@@ -109,8 +109,9 @@ namespace RemoteTech
             Guid key = vessel.protoVessel.vesselID;
             RTLog.Notify("SatelliteManager: RegisterProto({0}, {1})", vessel.vesselName, key);
             // Return if there are still signal processors loaded.
-            if (mLoadedSpuCache.ContainsKey(vessel.id))
-                return;
+            if (mLoadedSpuCache.ContainsKey(vessel.id)) {
+                mLoadedSpuCache.Remove(vessel.id);
+            }
 
             ISignalProcessor spu = vessel.GetSignalProcessor();
             if (spu != null)
