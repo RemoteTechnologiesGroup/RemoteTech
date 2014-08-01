@@ -9,10 +9,11 @@ namespace RemoteTech
     {
         public double TimeStamp { get; set; }
         public virtual double ExtraDelay { get; set; }
+        public virtual double Delay { get { return Math.Max(TimeStamp - RTUtil.GameTime, 0); } }
         public virtual String Description {
             get
             {
-                double delay = Math.Max(TimeStamp - RTUtil.GameTime, 0);
+                double delay = this.Delay;
                 if (delay > 0 || ExtraDelay > 0)
                 {
                     var extra = ExtraDelay > 0 ? String.Format("{0} + {1}", RTUtil.FormatDuration(delay), RTUtil.FormatDuration(ExtraDelay)) 

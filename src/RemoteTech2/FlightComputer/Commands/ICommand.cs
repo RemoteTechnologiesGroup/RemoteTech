@@ -9,6 +9,7 @@ namespace RemoteTech
     {
         double TimeStamp { get; set; }
         double ExtraDelay { get; set; }
+        double Delay { get; }
         String Description { get; }
         int Priority { get; }
 

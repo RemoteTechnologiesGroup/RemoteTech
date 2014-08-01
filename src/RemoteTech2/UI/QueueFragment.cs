@@ -75,7 +75,7 @@ namespace RemoteTech
         {
             if (Event.current.Equals(Event.KeyboardEvent("return")) && GUI.GetNameOfFocusedControl() == "xd")
             {
-                mFlightComputer.TotalDelay = Delay;
+                RTCore.Instance.StartCoroutine(onClickAddExtraDelay());
             }
             GUILayout.BeginVertical();
             {
@@ -101,7 +101,12 @@ namespace RemoteTech
                             {
                                 GUILayout.Label(c.Description);
                                 GUILayout.FlexibleSpace();
-                                RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                GUILayout.BeginVertical();
+                                {
+                                    RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                    RTUtil.Button(new GUIContent("v", string.Format("Set the signal delay right after this - Current: {0}", RTUtil.FormatDuration(c.Delay + c.ExtraDelay))), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelayFromQueuedCommand(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                }
+                                GUILayout.EndVertical();
                             }
                             GUILayout.EndHorizontal();
                         }
@@ -115,11 +120,26 @@ namespace RemoteTech
                     GUILayout.Label(new GUIContent("Delay (+ signal): " + RTUtil.FormatDuration(mFlightComputer.TotalDelay), "Total delay including signal delay."));
                     GUILayout.FlexibleSpace();
                     GUI.SetNextControlName("xd");
-                    RTUtil.TextField(ref mExtraDelay, GUILayout.Width(50));
+                    RTUtil.TextField(ref mExtraDelay, GUILayout.Width(45));
+                    RTUtil.Button(new GUIContent(">", "Add extra signal delay - Example: 125, 125s, 5m20s, 1d6h20m10s"), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelay()), GUILayout.Width(21), GUILayout.Height(21));
                 }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
+        }
+
+        public IEnumerator onClickAddExtraDelay()
+        {
+            yield return null;
+            mFlightComputer.TotalDelay = Delay;
+        }
+
+        public IEnumerator onClickAddExtraDelayFromQueuedCommand(ICommand c)
+        {
+            yield return null;
+
+            mExtraDelay = RTUtil.FormatDuration(c.Delay + c.ExtraDelay);
+            RTCore.Instance.StartCoroutine(onClickAddExtraDelay());
         }
 
         public IEnumerator OnClickCancel(ICommand c)
