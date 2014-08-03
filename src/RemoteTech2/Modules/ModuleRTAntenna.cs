@@ -341,7 +341,7 @@ namespace RemoteTech
             if (!IsRTActive) return State.Off;
 
             ModuleResource request = new ModuleResource();
-            float resourceRequest = Consumption * (TimeWarp.fixedDeltaTime / TimeWarp.CurrentRate);
+            float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
             if (resourceAmount < resourceRequest * 0.9) return State.NoResources;
             
