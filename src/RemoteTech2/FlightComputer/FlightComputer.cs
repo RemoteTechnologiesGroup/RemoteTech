@@ -227,7 +227,6 @@ namespace RemoteTech
 
                 foreach (var dc in mCommandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime).ToList())
                 {
-                    Debug.Log(dc.Description);
                     if (dc.ExtraDelay > 0)
                     {
                         dc.ExtraDelay -= SignalProcessor.Powered ? TimeWarp.deltaTime : 0.0;
