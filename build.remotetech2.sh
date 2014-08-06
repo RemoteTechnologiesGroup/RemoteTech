@@ -14,7 +14,7 @@ then
 
    if [[ ! -f dlls.zip ]]; then
       echo "Need to get dependency .dll's"
-      wget -O dlls.zip "https://www.dropbox.com/s/kyv25p3qn166nzp/dlls.zip?dl=1"
+      wget -O dlls.zip "https://www.dropbox.com/s/wshdpqe9qd8vgsx/dlls.zip?dl=1"
    fi
    
    if [ -z "$ZIPPASSWORD" ]; then
