@@ -80,8 +80,17 @@ namespace RemoteTech
                 int packets = Mathf.CeilToInt(science_data.dataAmount / PacketSize);
                 if (ResearchAndDevelopment.Instance != null)
                 {
-                    commStream = new RnDCommsStream(subject, science_data.dataAmount, PacketInterval, 
-                        science_data.transmitValue, ResearchAndDevelopment.Instance);
+                    // pre calculate the time interval - fix for x64 systems
+                    // workaround for issue #136
+                    float time1 = Time.time;
+                    yield return new WaitForSeconds(PacketInterval);
+                    // get the delta time
+                    float x64PacketInterval = (Time.time - time1);
+
+                    RTLog.Notify("Changing RnDCommsStream timeout from {0} to {1}", PacketInterval, x64PacketInterval);
+
+                    commStream = new RnDCommsStream(subject, science_data.dataAmount, x64PacketInterval,
+                                            science_data.transmitValue, ResearchAndDevelopment.Instance);
                 }
                 //StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
                 float power = 0;
