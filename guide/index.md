@@ -26,5 +26,11 @@ Can't generate this automatically at present
     * [Probe Cores](parts/#probe-cores)
     * [Omnidirectional Antennas](parts/#omnidirectional-antennas)
     * [Dish Antennas](parts/#dish-antennas)
+* [RemoteTech Options](settings/)
+    * [World Scale](settings/#world-scale)
+    * [Alternative Rules](settings/#alternative-rules)
+    * [Visual Style](settings/#visual-style)
+    * [Miscellaneous](settings/#miscellaneous)
+    * [Appendix: Root Range Model](settings/#appendix-root-range-model)
 {: #markdown-toc}
 </div>

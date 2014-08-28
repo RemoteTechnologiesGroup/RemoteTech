@@ -12,14 +12,14 @@ navbar: false
 
 This tutorial covers the basics of launching a standalone satellite in RemoteTech. It assumes you have not yet established a comsat network, so that the only connection of interest is a direct link between the satellite and the Kerbal Space Center (KSC).
 
-To play this tutorial, you should already know how to launch non-RemoteTech rockets, including basic rocket design, staging, and using maneuver nodes in the map view. If you are launching with solar panels, you should already know how to deploy them. By the end, you should understand:
+To play this tutorial, you should already know how to launch non-RemoteTech rockets, including basic rocket design, staging, and using maneuver nodes. If you are launching with solar panels, you should already know how to deploy them. By the end, you should understand:
 
 * how to keep control of unmanned rockets from liftoff to orbit
-* how to plan missions around your limited line of sight to KSC.
+* how to plan pre-network missions around your limited line of sight to KSC.
 
 ##Requirements
 
-You must have researched [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control), which unlocks the Stayputnik probe core and the [Reflectron DP-10](../../guide/parts/#reflectron-dp-10) omnidirectional antenna.
+You must have researched [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control), which unlocks the Stayputnik probe core and the [Reflectron DP-10](../../guide/parts/#reflectron-dp-10) omnidirectional antenna. Researching [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Electrics), which unlocks solar panels, is recommended but not required.
 
 This tutorial does not require any mods other than RemoteTech.
 
@@ -36,7 +36,7 @@ At low tech levels you have access to only three antennas: the [Communotron 16](
 
 The DP-10 is unique among RemoteTech antennas in that it is automatically switched on at mission start, so you don't need to do any fine-tuning on the pad.
 
-Your launch trajectory is important. Were fuel efficiency your only concern, you would want a long, flat launch path to build up speed, and some mods (particularly Ferram Aerospace Research) encourage this. Unfortunately, a path like that means you won't reach orbit until you are out of sight of Mission Control, and therefore out of contact. There are two ways to avoid this, depending on your play style: a steep launch path or using the flight computer. A steep launch requires fewer RemoteTech-specific skills, while the flight computer gives you the freedom to build and launch your rocket how you like.
+Your launch trajectory is important. Were fuel efficiency your only concern, you would want a long, flat launch path to build up speed, and some mods (particularly Ferram Aerospace Research) encourage this. Unfortunately, a path like that means you won't reach orbit until you are out of sight of Mission Control, and therefore out of contact. There are two ways to avoid this, depending on your play style: following a steep launch path or using the flight computer. A steep launch requires fewer RemoteTech-specific skills but is less efficient (and may lead to a broken rocket while playing FAR), while the flight computer gives you the freedom to build and launch your rocket how you like but requires you to pick up more advanced skills right away.
 
 ###Method 1: Steep Ascent
 
@@ -76,7 +76,7 @@ The DP-10's main disadvantage is its 500 km range. If your satellite will never 
 
 For missions to high orbits (or just for practice before you send up a full-fledged comsat), you may wish to include one of the other antennas in your design. If you have another antenna, you can move the DP-10 from the satellite to the launcher's upper stage, so you can discard it once it's served its purpose.
 
-If you have the Comms DTS-M1, right-click on it while on the launchpad, then click the button marked "No Target". In the window that opens, select "Mission Control" to make that the antenna's target. Do *not* activate the antenna yet, or it will break off as your rocket builds up speed. Setting the target now will give you one less thing to worry about in the hectic minute before orbital insertion.
+If you have the Comms DTS-M1, right-click on it while on the launchpad, then click the button marked "No Target". In the window that opens, select "Mission Control" to make it the antenna's target. Do *not* activate the antenna yet, or it will break off as your rocket builds up speed. Setting the target now will give you one less thing to worry about in the hectic minute before orbital insertion.
 
 If you have an antenna other than the DP-10, you will need to activate it in flight. You can do this either by right-clicking on the antenna and clicking "activate", or by binding it to an action group in the VAB. All RemoteTech antennas are safe to use above 35 km, so you should be able to deploy the antenna while still in line of sight to KSC. An alternate strategy is to bind the antenna to an action group together with the satellite's solar panels, and trigger the group to deploy everything once you leave the atmosphere.
 
