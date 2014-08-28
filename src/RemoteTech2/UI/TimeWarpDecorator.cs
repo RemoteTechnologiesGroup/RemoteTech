@@ -134,25 +134,32 @@ namespace RemoteTech
             if (mTimewarpObject == null)
                 return;
 
-            float scale = ScreenSafeUI.VerticalRatio * 900.0f / Screen.height;
+
             Vector2 screenCoord = ScreenSafeUI.referenceCam.WorldToScreenPoint(mTimewarpObject.timeQuadrantTab.transform.position);
-            Rect screenPos = new Rect(9.0f / scale, Screen.height - screenCoord.y + 26.0f / scale, 50.0f / scale, 20.0f / scale);
-            
+            float scale = ScreenSafeUI.VerticalRatio * 900.0f / Screen.height;
+
+            float topLeftTotimeQuadrant = Screen.height - screenCoord.y;
+            float texBackgroundHeight = mTexBackground.height * 0.7f / scale;
+            float texBackgroundWidth = (mTimewarpObject.timeQuadrantTab.renderer.material.mainTexture.width * 0.8111f) / scale;
+
+
+            Rect delaytextPosition = new Rect(9.0f / scale, topLeftTotimeQuadrant + texBackgroundHeight - 1, 50.0f / scale, 20.0f / scale);
+                        
             // calc the position under the timewarp object
             Rect pos = new Rect(mTimewarpObject.transform.position.x,
-                    Screen.height - screenCoord.y + 18.5f,
-                    (mTimewarpObject.timeQuadrantTab.renderer.material.mainTexture.width - 39.3f) / scale, (mTexBackground.height * 0.7f) / scale);
+                                topLeftTotimeQuadrant + texBackgroundHeight - 3.0f,
+                                texBackgroundWidth, texBackgroundHeight);
 
             // draw the image
             GUI.DrawTexture(pos, mTexBackground);
             // draw the delay-text
-            GUI.Label(screenPos, DisplayText, mTextStyle);
+            GUI.Label(delaytextPosition, DisplayText, mTextStyle);
 
-            // draw the flightcomputer button to the right
-            screenPos.width = 21.0f / scale;
-            screenPos.x += 128 / scale;
+            // draw the flightcomputer button to the right relativ to the delaytext position
+            delaytextPosition.width = 21.0f / scale;
+            delaytextPosition.x += 128 / scale;
 
-            if (GUI.Button(screenPos, "", ButtonStyle))
+            if (GUI.Button(delaytextPosition, "", ButtonStyle))
             {
                 var satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
                 if (satellite == null || satellite.SignalProcessor.FlightComputer == null) return;
