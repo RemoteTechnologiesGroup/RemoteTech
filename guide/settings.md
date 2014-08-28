@@ -35,8 +35,8 @@ The settings are as follows:
 
 `RangeModelType` (default = Standard)
 : This setting controls how the game determines whether two antennas are in range of each other. The options are:
-<!-- Markdown suddenly doesn't support nested lists, WTF? -->
 <dl>
+<!-- Markdown suddenly doesn't support nested lists, WTF? -->
 <dt><code>Standard</code></dt>
 <dd>The game works as described in the [Player's Guide](../../guide/overview/#range): a link is only possible if the distance between two ships is less than the *smaller* of the two antennas' ranges.</dd>
 
