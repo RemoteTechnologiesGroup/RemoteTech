@@ -64,6 +64,16 @@ namespace RemoteTech
         public IEnumerable<ICommand> ActiveCommands { get { return mActiveCommands.Values; } }
         public IEnumerable<ICommand> QueuedCommands { get { return mCommandQueue; } }
 
+        // Flight controller parameters from MechJeb, copied from master on June 27, 2014
+        public PIDControllerV2 pid { get; private set; }
+        public Vector3d lastAct { get; set; }
+        public double Tf = 0.3;
+        public double TfMin = 0.1;
+        public double TfMax = 0.5;
+        public double kpFactor = 3;
+        public double kiFactor = 6;
+        public double kdFactor = 0.5;
+
         private readonly SortedDictionary<int, ICommand> mActiveCommands = new SortedDictionary<int, ICommand>();
         private readonly List<ICommand> mCommandQueue = new List<ICommand>();
         private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlQueue = new PriorityQueue<DelayedFlightCtrlState>();
@@ -79,6 +89,9 @@ namespace RemoteTech
             SignalProcessor = s;
             Vessel = s.Vessel;
             SanctionedPilots = new List<Action<FlightCtrlState>>();
+            pid = new PIDControllerV2(0, 0, 0, 1, -1);
+            initPIDParameters();
+            lastAct = Vector3d.zero;
 
             var target = TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget);
             mActiveCommands[target.Priority] = target;
@@ -146,6 +159,9 @@ namespace RemoteTech
             }
             Vessel.OnFlyByWire = OnFlyByWirePre + Vessel.OnFlyByWire + OnFlyByWirePost;
 
+            // Update proportional controller for changes in ship state
+            updatePIDParameters();
+
             // Send updates for Target / Maneuver
             TargetCommand last = null;
             if (FlightGlobals.fetch.VesselTarget != DelayedTarget &&
@@ -211,7 +227,6 @@ namespace RemoteTech
 
                 foreach (var dc in mCommandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime).ToList())
                 {
-                    Debug.Log(dc.Description);
                     if (dc.ExtraDelay > 0)
                     {
                         dc.ExtraDelay -= SignalProcessor.Powered ? TimeWarp.deltaTime : 0.0;
@@ -262,6 +277,36 @@ namespace RemoteTech
             {
                 pilot.Invoke(fcs);
             }
+        }
+
+        public void initPIDParameters()
+        {
+            pid.Kd = kdFactor / Tf;
+            pid.Kp = pid.Kd / (kpFactor * Math.Sqrt(2) * Tf);
+            pid.Ki = pid.Kp / (kiFactor * Math.Sqrt(2) * Tf);
+            pid.intAccum = Vector3.ClampMagnitude(pid.intAccum, 5);
+        }
+
+        // Calculations of Tf are not safe during FlightComputer constructor
+        // Probably because the ship is only half-initialized...
+        public void updatePIDParameters()
+        {
+            if (Vessel != null) {
+                Vector3d torque = kOS.SteeringHelper.GetTorque (Vessel, 
+                    Vessel.ctrlState != null ? Vessel.ctrlState.mainThrottle : 0.0f);
+                var CoM = Vessel.findWorldCenterOfMass ();
+                var MoI = Vessel.findLocalMOI (CoM);
+
+                Vector3d ratio = new Vector3d (
+                                 torque.x != 0 ? MoI.x / torque.x : 0,
+                                 torque.y != 0 ? MoI.y / torque.y : 0,
+                                 torque.z != 0 ? MoI.z / torque.z : 0
+                             );
+
+                Tf = Mathf.Clamp ((float)ratio.magnitude / 20f, 2 * TimeWarp.fixedDeltaTime, 1f);
+                Tf = Mathf.Clamp ((float)Tf, (float)TfMin, (float)TfMax);
+            }
+            initPIDParameters();
         }
     }
 }
