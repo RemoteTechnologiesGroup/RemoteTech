@@ -140,10 +140,10 @@ namespace kOS
         public static void SteerShipToward(Quaternion target, FlightCtrlState c, RemoteTech.FlightComputer fc)
         {
             // Add support for roll-less targets later -- Starstrider42
-            var fixedRoll = true;
-            var vessel = fc.Vessel;
-            var momentOfInertia = GetTrueMoI(vessel);
-            var vesselReference = vessel.GetTransform();
+            bool fixedRoll = true;
+            Vessel vessel = fc.Vessel;
+            Vector3d momentOfInertia = GetTrueMoI(vessel);
+            Transform vesselReference = vessel.GetTransform();
 
             //---------------------------------------
             // Copied almost verbatim from MechJeb master on June 27, 2014 -- Starstrider42
@@ -151,10 +151,14 @@ namespace kOS
             Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vesselReference.rotation) * target);
 
             Vector3d torque = GetTorque(vessel, c.mainThrottle);
-            Vector3d inertia = GetEffectiveInertia(vessel, torque);
+            Vector3d spinMargin = GetStoppingAngle(vessel, torque);
 
-            //err.Scale(SwapYZ(Vector3d.Scale(MoI, Inverse(torque))));
-            Vector3d normFactor = SwapYZ(Vector3d.Scale(momentOfInertia, Inverse(torque)));
+            // Allow for zero torque around some but not all axes
+            Vector3d normFactor;
+            normFactor.x = (torque.x != 0 ? momentOfInertia.x / torque.x : 0.0);
+            normFactor.y = (torque.y != 0 ? momentOfInertia.y / torque.y : 0.0);
+            normFactor.z = (torque.z != 0 ? momentOfInertia.z / torque.z : 0.0);
+            normFactor = SwapYZ(normFactor);
 
             // Find out the real shorter way to turn were we want to.
             // Thanks to HoneyFox
@@ -176,7 +180,7 @@ namespace kOS
                     : 0F
             );
 
-            err += SwapYZ(inertia) / 2;
+            err += SwapYZ(spinMargin);
             err = new Vector3d(Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.y)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.z)));
@@ -292,20 +296,27 @@ namespace kOS
             return new Vector3d(inertiaTensor[0, 0], inertiaTensor[1, 1], inertiaTensor[2, 2]);
         }
 
-        public static Vector3d GetEffectiveInertia(Vessel vessel, Vector3d torque)
+        /// <summary>
+        /// Calculates how far a ship can rotate before its rotation stops.
+        /// </summary>
+        /// <returns>A vector equal to the stopping angle, in radians, around the (pitch, roll, yaw) axes. 
+        /// If it is impossible to stop the ship along one axis, returns 0 for that axis.</returns>
+        /// <param name="vessel">The ship whose rotation needs to be stopped.</param>
+        /// <param name="torque">The torque that can be applied to the ship.</param>
+        public static Vector3d GetStoppingAngle(Vessel vessel, Vector3d torque)
         {
             var momentOfInertia = GetTrueMoI(vessel);
             var angularVelocity = Quaternion.Inverse(vessel.transform.rotation) * vessel.rigidbody.angularVelocity;
-            var angularMomentum = new Vector3d(angularVelocity.x * momentOfInertia.x, angularVelocity.y * momentOfInertia.y, angularVelocity.z * momentOfInertia.z);
+            var angularMomentum = Vector3d.Scale(angularVelocity, momentOfInertia);
 
             // Adapted from MechJeb master on June 27, 2014
-            var retVar = Vector3d.Scale(Sign(angularMomentum),
-                Vector3d.Scale(
-                    Vector3d.Scale(angularMomentum, angularMomentum),
-                    Inverse(Vector3d.Scale(torque, momentOfInertia))
-                ));
+            Vector3d retVar;
+            retVar.x = (torque.x != 0.0 ? angularMomentum.x*angularMomentum.x / (torque.x*momentOfInertia.x) : 0.0);
+            retVar.y = (torque.y != 0.0 ? angularMomentum.y*angularMomentum.y / (torque.y*momentOfInertia.y) : 0.0);
+            retVar.z = (torque.z != 0.0 ? angularMomentum.z*angularMomentum.z / (torque.z*momentOfInertia.z) : 0.0);
+            retVar.Scale(Sign(angularMomentum));
 
-            return retVar;
+            return retVar / 2;
         }
 
         /// <summary>
@@ -360,9 +371,9 @@ namespace kOS
                 }
 
                 Vector3d gimbal = GetThrustTorque(part, vessel) * thrust;
-                pitch += gimbal[0];
-                roll  += gimbal[1];
-                yaw   += gimbal[2];
+                pitch += gimbal.x;
+                roll  += gimbal.y;
+                yaw   += gimbal.z;
             }
 
             return new Vector3d(pitch, roll, yaw);
@@ -423,17 +434,6 @@ namespace kOS
                       (input.y > 180f) ? (input.y - 360f) : input.y,
                       (input.z > 180f) ? (input.z - 360f) : input.z
                   );
-        }
-
-        public static Vector3d Inverse(Vector3d input)
-        {
-            if (input.x == 0 || input.y == 0 || input.z == 0) {
-                RemoteTech.RTLog.Verbose("Avoiding division by zero in kOS::SteeringHelper::Inverse(): {0}", input);
-            }
-            return new Vector3d(
-                input.x == 0 ? 0 : 1 / input.x,
-                input.y == 0 ? 0 : 1 / input.y,
-                input.z == 0 ? 0 : 1 / input.z);
         }
 
         public static Vector3d Sign(Vector3d vector)
