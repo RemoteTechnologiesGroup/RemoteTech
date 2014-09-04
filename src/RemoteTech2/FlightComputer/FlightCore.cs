@@ -320,7 +320,7 @@ namespace kOS
             var centerOfMass = vessel.findLocalCenterOfMass();
 
             // Don't assume any particular symmetry for the vessel
-            float pitch = 0, roll = 0, yaw = 0;
+            double pitch = 0, roll = 0, yaw = 0;
 
             foreach (Part part in vessel.parts)
             {
@@ -359,24 +359,61 @@ namespace kOS
                     }
                 }
 
-                float gimbal = (float)GetThrustTorque(part, vessel) * thrust;
-                pitch += gimbal;
-                yaw += gimbal;
+                Vector3d gimbal = GetThrustTorque(part, vessel) * thrust;
+                pitch += gimbal[0];
+                roll  += gimbal[1];
+                yaw   += gimbal[2];
             }
 
             return new Vector3d(pitch, roll, yaw);
         }
 
-        public static double GetThrustTorque(Part p, Vessel vessel)
+        /// <summary>
+        /// Returns the maximum torque the ship can exert by gimbaling its engines while at full throttle
+        /// </summary>
+        /// <returns>The torque in N m, around the (pitch, roll, yaw) axes.</returns>
+        /// <param name="p">The part providing the torque. Need not be an engine.</param>
+        /// <param name="vessel">The vessel to which the torque is applied.</param>
+        public static Vector3d GetThrustTorque(Part p, Vessel vessel)
         {
-            var result = 0.0;
+            double result = 0.0;
             foreach (ModuleGimbal gimbal in p.Modules.OfType<ModuleGimbal>()) {
-                ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
-                if (!engine.EngineIgnited) continue;
-                var gimbalRadians = Math.Sin(Math.Abs(gimbal.gimbalRange) * Math.PI / 180);
-                result = gimbalRadians * engine.maxThrust * (p.Rigidbody.worldCenterOfMass - vessel.CoM).magnitude;
+                if (gimbal.gimbalLock)
+                    continue;
+
+                // Standardize treatment of ModuleEngines and ModuleEnginesFX; 
+                //      IEngineStatus doesn't have the needed fields
+                double maxThrust = 0.0;
+                // Assume exactly one module of EITHER type ModuleEngines or ModuleEnginesFX exists in `p`
+                bool engineFound = false;
+                {
+                    ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
+                    if (engine != null) {
+                        if (!engine.isOperational)
+                            continue;
+                        engineFound = true;
+                        maxThrust = engine.maxThrust;
+                    }
+                }
+                {
+                    ModuleEnginesFX engine = p.Modules.OfType<ModuleEnginesFX>().FirstOrDefault();
+                    if (engine != null) {
+                        if (!engine.isOperational)
+                            continue;
+                        engineFound = true;
+                        maxThrust = engine.maxThrust;
+                    }
+                }
+                // Dummy ModuleGimbal, does nothing
+                if (!engineFound)
+                    continue;
+
+                double gimbalRadians = Math.Sin(Math.Abs(gimbal.gimbalRange) * Math.PI / 180);
+                result = gimbalRadians * maxThrust * (p.Rigidbody.worldCenterOfMass - vessel.CoM).magnitude;
             }
-            return result;
+
+            // Better to overestimate roll torque than to underestimate it... calculate properly later
+            return new Vector3d(result, result, result);
         }
 
         private static Vector3d ReduceAngles(Vector3d input)
