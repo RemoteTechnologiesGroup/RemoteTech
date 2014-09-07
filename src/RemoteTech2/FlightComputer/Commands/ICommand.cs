@@ -9,7 +9,10 @@ namespace RemoteTech
     {
         double TimeStamp { get; set; }
         double ExtraDelay { get; set; }
+        // The command description displayed in the flight computer
         String Description { get; }
+        // An abbreviated version of the description for inline inclusion in messages
+        String ShortName { get; }
         int Priority { get; }
 
         bool Pop(FlightComputer f);

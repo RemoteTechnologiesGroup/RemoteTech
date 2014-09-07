@@ -81,6 +81,13 @@ namespace RemoteTech
         {
             get
             {
+                return ShortName + Environment.NewLine + base.Description;
+            }
+        }
+        public override string ShortName
+        {
+            get
+            {
                 String res = "";
                 switch (Mode)
                 {
@@ -97,7 +104,7 @@ namespace RemoteTech
                         res = String.Format(FormatMode[Mode], FormatReference[Frame], FormatAttitude[Attitude]);
                         break;
                 }
-                return res + Environment.NewLine + base.Description;
+                return res;
             }
         }
 
