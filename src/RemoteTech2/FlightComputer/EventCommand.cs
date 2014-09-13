@@ -17,6 +17,13 @@ namespace RemoteTech
                        BaseEvent.GUIName + Environment.NewLine + base.Description;
             }
         }
+        public override string ShortName
+        {
+            get
+            {
+                return BaseEvent.GUIName;
+            }
+        }
          
         public override bool Pop(FlightComputer f)
         {
