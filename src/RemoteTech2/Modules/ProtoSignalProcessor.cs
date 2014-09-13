@@ -24,8 +24,17 @@ namespace RemoteTech
         {
             mVessel = v;
             Powered = ppms.GetBool("IsRTPowered");
-            IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= 6;
-            RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})", Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
+
+            try {
+                IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= ppms.GetInt("RTCommandMinCrew");
+                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3})", 
+                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, ppms.GetInt("RTCommandMinCrew"));
+            } catch (ArgumentException) {
+                // I'm assuming this would get thrown by ppms.GetInt()... do the other functions have an exception spec?
+                IsCommandStation = false;
+                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})", 
+                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
+            }
         }
 
         public override String ToString()
