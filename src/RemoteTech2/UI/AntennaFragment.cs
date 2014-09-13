@@ -186,6 +186,8 @@ namespace RemoteTech
             foreach (ISatellite s in RTCore.Instance.Network)
             {
                 if (s.Guid == Antenna.Guid) continue;
+                if (s.isVessel && s.getType == VesselType.Debris) continue;
+
                 Entry current = new Entry()
                 {
                     Text = s.Name,

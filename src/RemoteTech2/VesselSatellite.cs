@@ -56,6 +56,14 @@ namespace RemoteTech
             }
         }
 
+        public bool isVessel { get { return true; } }
+
+        public VesselType getType {
+            get {
+                return SignalProcessor.Vessel.vesselType;
+            }
+        }
+
         public IEnumerable<IAntenna> Antennas
         {
             get { return RTCore.Instance.Antennas[this]; }
