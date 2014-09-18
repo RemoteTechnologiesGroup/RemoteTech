@@ -58,9 +58,9 @@ namespace RemoteTech
 
         public bool isVessel { get { return true; } }
 
-        public VesselType getType {
+        public Vessel parentVessel {
             get {
-                return SignalProcessor.Vessel.vesselType;
+                return SignalProcessor.Vessel;
             }
         }
 

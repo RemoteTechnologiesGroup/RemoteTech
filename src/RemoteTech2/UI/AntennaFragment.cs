@@ -186,7 +186,13 @@ namespace RemoteTech
             foreach (ISatellite s in RTCore.Instance.Network)
             {
                 if (s.Guid == Antenna.Guid) continue;
-                if (s.isVessel && s.getType == VesselType.Debris) continue;
+
+                if (s.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(s.parentVessel)) {
+                    #if DEBUG
+                    RTLog.Notify("Filtered out satellite {0}.", s.Name);
+                    #endif
+                    continue;
+                }
 
                 Entry current = new Entry()
                 {

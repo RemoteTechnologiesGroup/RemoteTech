@@ -21,10 +21,10 @@ namespace RemoteTech
         /// <value><c>true</c> if satellite is vessel or asteroid; otherwise (e.g. a ground station), <c>false</c>.</value>
         bool isVessel { get; }
         /// <summary>
-        /// Gets the type of the vessel, if one exists. Undefined behavior if <c>!isVessel</c>.
+        /// The vessel hosting the ISatellite, if one exists.
         /// </summary>
-        /// <value>The type of the vessel corresponding to this ISatellite.</value>
-        VesselType getType { get; }
+        /// <value>The vessel corresponding to this ISatellite. Returns null if !isVessel.</value>
+        Vessel parentVessel { get; }
 
         IEnumerable<IAntenna> Antennas { get; }
 
