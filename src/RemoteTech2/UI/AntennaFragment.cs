@@ -197,6 +197,8 @@ namespace RemoteTech
             };
             mRootEntry.SubEntries.Add(mSelection);
 
+            if (Antenna == null) return;
+
             var activeVesselEntry = new Entry()
             {
                 Text = "Active Vessel",
@@ -205,7 +207,7 @@ namespace RemoteTech
                 Depth = 0,
             };
             mRootEntry.SubEntries.Add(activeVesselEntry);
-            if (Antenna != null && Antenna.Target == activeVesselEntry.Guid)
+            if (Antenna.Target == activeVesselEntry.Guid)
             {
                 mSelection = activeVesselEntry;
             }
@@ -238,7 +240,7 @@ namespace RemoteTech
                     mRootEntry.SubEntries.Add(current);
                 }
 
-                if (Antenna != null && cb.Key == Antenna.Target)
+                if (cb.Key == Antenna.Target)
                 {
                     mSelection = current;
                 }
