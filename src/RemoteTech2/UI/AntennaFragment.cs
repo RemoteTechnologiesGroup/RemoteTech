@@ -26,12 +26,18 @@ namespace RemoteTech
 
         public IAntenna Antenna { 
             get { return mAntenna; }
-            set { if (mAntenna != value) { mAntenna = value; Refresh(); } }
+            set { if (mAntenna != value) { mAntenna = value; RefreshPlanets(); Refresh(); } }
         }
         private IAntenna mAntenna;
         private Vector2 mScrollPosition = Vector2.zero;
+        /// <summary>The tree of (real or virtual) targets displayed in this fragment.</summary>
+        /// <invariant>No Entry object appears in the tree pointed to by mRootEntry more than once.</invariant>
         private Entry mRootEntry = new Entry();
+        /// <summary>The Entry corresponding to the currently selected target, if any.</summary>
         private Entry mSelection;
+        /// <summary>The Entries corresponding to loaded celestial bodies.</summary>
+        private Dictionary<CelestialBody, Entry> mEntries;      // Current planet list
+        private int refreshCounter = 0;
 
         public AntennaFragment(IAntenna antenna)
         {
@@ -39,6 +45,7 @@ namespace RemoteTech
             RTCore.Instance.Satellites.OnRegister += Refresh;
             RTCore.Instance.Satellites.OnUnregister += Refresh;
             RTCore.Instance.Antennas.OnUnregister += Refresh;
+            RefreshPlanets();
             Refresh();
         }
 
@@ -54,6 +61,16 @@ namespace RemoteTech
 
         public void Draw()
         {
+            // Allow update for non-triggering changes (e.g., changing map view filters or changing a vessel's type)
+            // This is the best way I could find to do periodic refreshes; 
+            //  RTCore.Instance.InvokeRepeating() would require a search for instances 
+            //  of AntennaFragment, and would keep running after all target windows 
+            //  closed. Replace with something less clunky later! -- Starstrider42
+            if (++refreshCounter >= 100) {
+                Refresh();
+                refreshCounter = 0;
+            }
+
             mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
             {
                 Color pushColor = GUI.backgroundColor;
@@ -107,10 +124,68 @@ namespace RemoteTech
         }
 
         public void Refresh(IAntenna sat) { if (sat == Antenna) { Antenna = null; } }
+        /// <summary>Rebuilds list of target vessels</summary>
+        /// <description>Rebuilds the list of target vessels, preserving the rest of the target list state. Does 
+        ///     not alter planets or special targets, call RefreshPlanets() for that.</description>
+        /// <param name="sat">The satellite whose status has just changed.</param>
         public void Refresh(ISatellite sat) { Refresh(); }
+        /// <summary>Rebuilds list of target vessels</summary>
+        /// <description>Rebuilds the list of target vessels, preserving the rest of the target list state. Does 
+        ///     not alter planets or special targets, call RefreshPlanets() for that.</description>
         public void Refresh()
         {
-            Dictionary<CelestialBody, Entry> mEntries = new Dictionary<CelestialBody, Entry>();
+            // Clear the satellites
+            RemoveVessels(mRootEntry);
+
+            if (Antenna == null) return;
+
+            // Add the satellites
+            foreach (ISatellite s in RTCore.Instance.Network)
+            {
+                if (s.Guid == Antenna.Guid) continue;
+
+                if (s.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(s.parentVessel)) {
+                    continue;
+                }
+
+                Entry current = new Entry()
+                {
+                    Text = s.Name,
+                    Guid = s.Guid,
+                    Color = Color.white,
+                };
+                mEntries[s.Body].SubEntries.Add(current);
+
+                if (s.Guid == Antenna.Target)
+                {
+                    mSelection = current;
+                }
+            }
+
+            // Set a local depth variable so we can refer to it when rendering.
+            Stack<Entry> dfs = new Stack<Entry>();
+            foreach (Entry child in mRootEntry.SubEntries)
+            {
+                child.Depth = 0;
+                dfs.Push(child);
+            }
+            while (dfs.Count > 0)
+            {
+                Entry current = dfs.Pop();
+                foreach (Entry child in current.SubEntries)
+                {
+                    child.Depth = current.Depth + 1;
+                    dfs.Push(child);
+                }
+            }
+        }
+
+        /// <summary>Full refresh of target list</summary>
+        /// <description>Rebuilds the list of target buttons from scratch, including special targets and 
+        /// planets. Does not build vessel list, call Refresh() for that.</description>
+        /// <remarks>Calling this function wipes all information about which submenus were open or closed.</remarks>
+        private void RefreshPlanets() {
+            mEntries = new Dictionary<CelestialBody, Entry>();
 
             mRootEntry = new Entry();
             mSelection = new Entry()
@@ -122,8 +197,6 @@ namespace RemoteTech
             };
             mRootEntry.SubEntries.Add(mSelection);
 
-            if (Antenna == null) return;
-
             var activeVesselEntry = new Entry()
             {
                 Text = "Active Vessel",
@@ -132,11 +205,10 @@ namespace RemoteTech
                 Depth = 0,
             };
             mRootEntry.SubEntries.Add(activeVesselEntry);
-            if (Antenna.Target == activeVesselEntry.Guid)
+            if (Antenna != null && Antenna.Target == activeVesselEntry.Guid)
             {
                 mSelection = activeVesselEntry;
             }
-
 
             // Add the planets
             foreach (var cb in RTCore.Instance.Network.Planets)
@@ -166,7 +238,7 @@ namespace RemoteTech
                     mRootEntry.SubEntries.Add(current);
                 }
 
-                if (cb.Key == Antenna.Target)
+                if (Antenna != null && cb.Key == Antenna.Target)
                 {
                     mSelection = current;
                 }
@@ -176,54 +248,33 @@ namespace RemoteTech
             foreach (var entryPair in mEntries)
             {
                 entryPair.Value.SubEntries.Sort((b, a) =>
-                {
-                    return RTCore.Instance.Network.Planets[a.Guid].orbit.semiMajorAxis.CompareTo(
-                           RTCore.Instance.Network.Planets[b.Guid].orbit.semiMajorAxis);
-                });
+                    {
+                        return RTCore.Instance.Network.Planets[a.Guid].orbit.semiMajorAxis.CompareTo(
+                            RTCore.Instance.Network.Planets[b.Guid].orbit.semiMajorAxis);
+                    });
             }
-
-            // Add the satellites.
-            foreach (ISatellite s in RTCore.Instance.Network)
-            {
-                if (s.Guid == Antenna.Guid) continue;
-
-                if (s.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(s.parentVessel)) {
-                    #if DEBUG
-                    RTLog.Notify("Filtered out satellite {0}.", s.Name);
-                    #endif
-                    continue;
-                }
-
-                Entry current = new Entry()
-                {
-                    Text = s.Name,
-                    Guid = s.Guid,
-                    Color = Color.white,
-                };
-                mEntries[s.Body].SubEntries.Add(current);
-
-                if (s.Guid == Antenna.Target)
-                {
-                    mSelection = current;
-                }
-            }
-
-            // Set a local depth variable so we can refer to it when rendering.
             mRootEntry.SubEntries.Reverse();
-            Stack<Entry> dfs = new Stack<Entry>();
-            foreach (Entry child in mRootEntry.SubEntries)
-            {
-                child.Depth = 0;
-                dfs.Push(child);
-            }
-            while (dfs.Count > 0)
-            {
-                Entry current = dfs.Pop();
-                foreach (Entry child in current.SubEntries)
-                {
-                    child.Depth = current.Depth + 1;
-                    dfs.Push(child);
+        }
+
+        /// <summary>Removes all buttons representing specific vessels, while preserving celestial bodies 
+        ///     and special targets</summary>
+        /// <param name="root">The top of the tree from which to remove vessels.</param>
+        private void RemoveVessels(Entry root) {
+            List<Entry> vesselList = new List<Entry>();
+
+            foreach (Entry subentry in root.SubEntries) {
+                // Is it a vessel?
+                if (subentry.Guid != Guid.Empty && subentry.Guid != NetworkManager.ActiveVesselGuid 
+                    && !mEntries.ContainsValue(subentry)) {
+                    // List<T> iterator is invalidated by modifications, so do all deletions later
+                    vesselList.Add(subentry);
+                } else {
+                    RemoveVessels(subentry);
                 }
+            }
+            // Do deletions without relying on an iterator for root.SubEntries
+            foreach (Entry vessel in vesselList) {
+                root.SubEntries.Remove(vessel);
             }
         }
     }
