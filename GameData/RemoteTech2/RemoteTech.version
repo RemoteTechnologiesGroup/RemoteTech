@@ -1,16 +1,16 @@
 {
 	"NAME": "RemoteTech",
 	"URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/RemoteTech.version",
-	"DOWNLOAD": "https://github.com/RemoteTechnologiesGroup/RemoteTech/releases/latest",
-	"_comment": "Use old-style format to keep compatibility with KSP-AVC Utility 0.3.",
-	"VERSION": {
-		"MAJOR": 1,
-		"MINOR": 4,
-		"PATCH": 1
+	"CHANGE_LOG_URL": "", 
+	"GITHUB":
+	{
+		"_comment": "GitHub support requires build tags that include a #.#.# string",
+		"USERNAME": "RemoteTechnologiesGroup",
+		"REPOSITORY": "RemoteTech",
+		"ALLOW_PRE_RELEASE": false
 	},
-	"KSP_VERSION": {
-		"MAJOR": 0,
-		"MINOR": 24,
-		"PATCH": 2
-	}
+	"VERSION": "1.4.1",
+	"KSP_VERSION": "0.24.2",
+	"KSP_VERSION_MIN": "0.24.0",
+	"KSP_VERSION_MAX": "0.24.2"
 }
