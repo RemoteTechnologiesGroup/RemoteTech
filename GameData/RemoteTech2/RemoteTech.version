@@ -1,7 +1,7 @@
 {
 	"NAME": "RemoteTech",
 	"URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/RemoteTech.version",
-	"CHANGE_LOG_URL": "", 
+	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/CHANGES.md", 
 	"GITHUB":
 	{
 		"_comment": "GitHub support requires build tags that include a #.#.# string",
