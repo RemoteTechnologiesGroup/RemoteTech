@@ -54,7 +54,7 @@ Transmitting science back to KSC now requires you have a working connection to K
 
 * All stock probe cores now have [signal processor capability](#signal-processors) so that they are affected by the communications network they are connected to.
 
-* The three stock antennas have been modified to make them fit the rules of RemoteTech: the Communotron 16 is now the basic [omnidirectional antenna](#omnidirectionals), the Comms DTS-M1 a short-range [dish](#dishes), and the Communotron 88-88 a medium-range dish.
+* The three stock antennas have been modified to make them fit the rules of RemoteTech: the Communotron 16 is now the basic [omnidirectional antenna](#omnidirectionals), the Comms DTS-M1 a short-range [dish](#dishes), and the Communotron 88-88 a long-range dish.
 
 * The Launch Stability Enhancer now acts as a land line for the rocket, allowing the player to send pre-launch commands regardless of whether any antennas are active.
 
@@ -70,7 +70,7 @@ RemoteTech includes seven new antennas.
 
 * The Reflectron DP-10 is a short-range omnidirectional antenna intended for launch and landing.
 * The CommTech EXP-VR-2T and Communotron 32 are enhanced omnidirectional antennas.
-* The Reflectron KR-7 and KR-14 are short- and medium-range dishes, respectively.
+* The Reflectron KR-7 and KR-14 are short- and long-range dishes, respectively.
 * The CommTech-1 and Reflectron GX-128 are long-range dishes designed for missions to the outer planets.
 
 ##Credits

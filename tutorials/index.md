@@ -39,7 +39,11 @@ extra_css: tutorials
 
 ###["Realistic" Keosynchronous Relay](keo/)
 
-###Trans-Munar and Interplanetary Relay Networks
+![](long_range/thumbnail.png)
+
+###[Interplanetary Relay Networks](long_range/)
+
+###Active Vessel Do's and Don'ts
 
 ##Using the Flight Computer Effectively
 
