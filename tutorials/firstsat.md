@@ -23,6 +23,14 @@ You must have researched [Flight Control](http://wiki.kerbalspaceprogram.com/wik
 
 This tutorial does not require any mods other than RemoteTech.
 
+##Overview
+
+To control a probe or satellite from the ground, you need a reliable communications link over which to send commands to mission control. In a mature space program, a network of commsats will help you relay transmissions in any direction, but you don't have that luxury at the start of the game. So how do you launch and control the very satellites that are supposed to help you do the controlling?
+
+In order to have remote control of a vessel, it must have a communications link with Kerbal Space Center. To establish this link, you require an antenna that has the range to reach it and no obstructions between them. Launching a satellite into orbit means it will, sooner or later, end up on the far side of the planet. Given the nature of orbits, this wouldn't be too much of a problem since the satellite would come back around again, except that on that first crucial launch, you need control to circularize your orbit. Otherwise you risk launching nothing but a future fireworks display for the citizens on the far side of Kerbin.
+
+Fortunately, getting into a stable orbit before you lose control doesn't demand any precision computing. It's just a matter of being careful...
+
 ![A satellite must have an antenna, a probe core, and a power supply](design.png "Basic satellite design"){: .left}
 
 ##Satellite Design
@@ -36,7 +44,7 @@ At low tech levels you have access to only three antennas: the [Communotron 16](
 
 The DP-10 is unique among RemoteTech antennas in that it is automatically switched on at mission start, so you don't need to do any fine-tuning on the pad.
 
-Your launch trajectory is important. Were fuel efficiency your only concern, you would want a long, flat launch path to build up speed, and some mods (particularly Ferram Aerospace Research) encourage this. Unfortunately, a path like that means you won't reach orbit until you are out of sight of Mission Control, and therefore out of contact. There are two ways to avoid this, depending on your play style: following a steep launch path or using the flight computer. A steep launch requires fewer RemoteTech-specific skills but is less efficient (and may lead to a broken rocket while playing FAR), while the flight computer gives you the freedom to build and launch your rocket how you like but requires you to pick up more advanced skills right away.
+Your launch trajectory is important. Were fuel efficiency your only concern, you would want a long, flat launch path to build up speed, and some mods (particularly Ferram Aerospace Research) encourage this. Unfortunately, a path like that means you won't reach orbit until you are out of sight of Mission Control, and therefore out of contact. There are two ways to avoid this, depending on your play style: [following a steep launch path](#method-1-steep-ascent) or [using the flight computer](#method-2-flight-computer). A steep launch requires fewer RemoteTech-specific skills but is less efficient (and may lead to a broken rocket while playing FAR), while the flight computer gives you the freedom to build and launch your rocket how you like but requires you to pick up more advanced skills right away.
 
 ###Method 1: Steep Ascent
 
@@ -49,7 +57,7 @@ Left: A comlink-friendly ascent path.
 Right: The position of a satellite in an 80&nbsp;km orbit just before it loses line of sight with KSC.
 {:.caption}
 
-If you have solar panels, deploy them as soon as you are out of the atmosphere, even if it's a night launch. That way, you won't have to worry about running out of power while halfway around Kerbin. Communication links only work while the satellite has power, so if you fail to deploy the panels before the satellite goes out of contact, you might not be able to recover it.
+If you have solar panels, deploy them as soon as you are out of the atmosphere, even if it's a night launch. That way, you won't have to worry about running out of power while halfway around Kerbin. Communication links only work while the satellite has power, so if you fail to deploy the panels before the satellite goes out of contact, you might not be able to recover it one orbit from now.
 
 ![IMAGE: Flight computer panel after queuing everything](comp_preburn.png){: .left}
 

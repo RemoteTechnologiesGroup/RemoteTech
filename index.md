@@ -29,6 +29,8 @@ Dishes are antennas that must be instructed what direction to point at. They do 
 ####Omnidirectionals
 Omni antennas radiate in every direction equally, and as such do not require you to target them at anything. However, they are limited to shorter ranges than dishes.
 
+The Kerbal Space Center has multiple dish antennas that can be pointed to different targets, making it behave like an omnidirectional antenna with a range of 75 Mm. If you want to send probes beyond Kerbin's sphere of influence, you *must* invest in some communications satellites with long-range antennas.
+
 ###Signal Delay
 To comply with Kerbal law, RemoteTech is required to delay your control input so that signaling does not exceed the 'speed of light'. If you are aware of the consequences of breaking the law (or like being a rebel), you are free to turn this off in the settings file (which will be created once you start KSP).
 
