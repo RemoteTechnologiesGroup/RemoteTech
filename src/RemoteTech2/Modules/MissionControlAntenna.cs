@@ -17,7 +17,7 @@ namespace RemoteTech
         bool IAntenna.CanTarget { get { return false; } }
         Guid IAntenna.Target { get { return Guid.Empty; } set { return; } }
         float IAntenna.Dish { get { return 0.0f; } }
-        double IAntenna.Radians { get { return 1.0; } }
+        double IAntenna.CosAngle { get { return 1.0; } }
 
         public void OnConnectionRefresh() { }
 

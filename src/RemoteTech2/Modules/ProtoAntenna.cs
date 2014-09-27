@@ -35,7 +35,7 @@ namespace RemoteTech
         }
 
         public float Dish { get; private set; }
-        public double Radians { get; private set; }
+        public double CosAngle { get; private set; }
         public float Omni { get; private set; }
 
         private readonly ProtoPartSnapshot mProtoPart;
@@ -64,7 +64,7 @@ namespace RemoteTech
             float temp_float;
             bool temp_bool;
             Dish = Single.TryParse(n.GetValue("RTDishRange"), out temp_float) ? temp_float : 0.0f;
-            Radians = Double.TryParse(n.GetValue("RTDishRadians"), out temp_double) ? temp_double : 0.0;
+            CosAngle = Double.TryParse(n.GetValue("RTDishCosAngle"), out temp_double) ? temp_double : 0.0;
             Omni = Single.TryParse(n.GetValue("RTOmniRange"), out temp_float) ? temp_float : 0.0f;
             Powered = Boolean.TryParse(n.GetValue("IsRTPowered"), out temp_bool) ? temp_bool : false;
             Activated = Boolean.TryParse(n.GetValue("IsRTActive"), out temp_bool) ? temp_bool : false;
@@ -79,7 +79,7 @@ namespace RemoteTech
             Omni = omni;
             Dish = 0;
             Target = Guid.Empty;
-            Radians = 1.0f;
+            CosAngle = 1.0f;
             Activated = true;
             Powered = true;
         }
@@ -96,7 +96,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("ProtoAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, Radians: {5})", Name, Guid, Dish, Omni, Target, Radians);
+            return String.Format("ProtoAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, CosAngle: {5})", Name, Guid, Dish, Omni, Target, CosAngle);
         }
     }
 }

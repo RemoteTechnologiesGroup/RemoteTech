@@ -120,6 +120,7 @@
     <Compile Include="UI\SatelliteFragment.cs" />
     <Compile Include="UI\TimeWarpDecorator.cs" />
     <Compile Include="VesselSatellite.cs" />
+    <Compile Include="NetworkFeedback.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
