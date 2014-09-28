@@ -238,6 +238,7 @@ namespace RemoteTech
             {
                 antenna.Parent = this;
             }
+            this.mGuid = new Guid(this.Guid);
         }
 
         public override String ToString()
