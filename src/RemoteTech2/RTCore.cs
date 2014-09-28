@@ -60,13 +60,13 @@ namespace RemoteTech
             var vs = Satellites[FlightGlobals.ActiveVessel];
             if (vs != null)
             {
+                GetLocks();
                 if (vs.HasLocalControl)
                 {
                     ReleaseLocks();
                 }
                 else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
                 {
-                    GetLocks();
                     foreach (KSPActionGroup ag in GetActivatedGroup())
                     {
                         vs.FlightComputer.Enqueue(ActionGroupCommand.WithGroup(ag));
