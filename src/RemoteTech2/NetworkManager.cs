@@ -217,7 +217,7 @@ namespace RemoteTech
         bool ISatellite.Powered { get { return true; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
-        Guid ISatellite.Guid { get { return mGuid; } }
+        Guid ISatellite.Guid { get { return new Guid(this.Guid); } }
         Vector3d ISatellite.Position { get { return FlightGlobals.Bodies[Body].GetWorldSurfacePosition(Latitude, Longitude, Height); } }
         bool ISatellite.IsCommandStation { get { return true; } }
         bool ISatellite.HasLocalControl { get { return false; } }
@@ -225,16 +225,13 @@ namespace RemoteTech
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
-
-        private Guid mGuid;
-
+        
         void IPersistenceLoad.PersistenceLoad()
         {
             foreach (var antenna in Antennas)
             {
                 antenna.Parent = this;
             }
-            mGuid = new Guid(Guid);
         }
 
         public override String ToString()
