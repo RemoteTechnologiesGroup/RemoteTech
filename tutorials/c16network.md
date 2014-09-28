@@ -15,19 +15,25 @@ This tutorial covers how to create a four-satellite network* using no antenna mo
 *While it's possible to make a 3-satellite network with a few changes to these instructions, the orbit and synchronization requirements are too strict for it to be worth the trouble.
 {:.footnote}
 
-To play this tutorial, you should know how to design rockets to specific performance (i.e., delta-V) requirements, how to change orbits, how to select rendezvous targets in the map view, and [how to launch satellites in RemoteTech](../firstsat/). By the end, you should understand:
+To play this tutorial, you should know how to design rockets to specific performance (i.e., delta-V) requirements, how to change orbits, how to carry out a rendezvous using the map view, and [how to launch satellites in RemoteTech](../firstsat/). By the end, you should understand:
 
 * how to use the first satellite in a network to coordinate placement of the others
 * how to place satellites a predetermined distance apart along an orbit
-* how to use the flight computer to execute orbit-changing burns in network blind spots
+* how to use the flight computer to execute burns in network blind spots
 
 <!-- The tutorial gives two methods for creating an omni network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers.-->
+
+##Overview
+
+One of the first steps in playing with RemoteTech is creating a network of communications satellites. While you can carry out [low-orbit missions](../firstsat/) without any infrastructure, as you get farther and farther from Kerbin it will become increasingly difficult to get a direct connection to Mission Control. A well-designed network is one that lets you communicate from anywhere you want to go (which, in the early game, will be Kerbin's sphere of influence) and that doesn't require a lot of fine-tuning once you've set it up. 
+
+Fortunately, you can build such a network with no more equipment than a Stayputnik probe core, an OX-STAT solar panel, and a Communotron 16 (well, and maybe some rockets and such).
 
 ##Requirements
 
 For technology requirements, see the [General Satellite Design tutorial](../comsats/).
 
-This tutorial assumes you have at least one mod that gives you orbital periods in-game. In order of decreasing precision, the best choices are Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb.
+This tutorial assumes you have at least one mod that gives you orbital periods in-game. In order of decreasing precision, the best choices are Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb. The screenshots all use Kerbal Engineer, since that's the mod I'm most familiar with.
 
 ###Orbit Selection
 

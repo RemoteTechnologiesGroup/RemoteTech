@@ -13,13 +13,13 @@ The `GroundStations` section of `RemoteTech2/RemoteTech_Settings.cfg` (which wil
 Each `STATION{}` block needs the following fields:
 
 `Guid`
-: A unique idenfier for the station.
+: A unique idenfier for the station. **Must** be unique, or your network will exhibit undefined behavior.
 
 `Name`
 : The name that shows up in the target selection menu.
 
 `Latitude`, `Longitude`
-: The position of the station on the planet's surface.
+: The position of the station on the planet's surface in degrees north and degrees east, respectively.
 
 `Height`
 : The station's altitude above sea level, in meters.

@@ -39,6 +39,8 @@ extra_css: tutorials
 
 ###["Realistic" Keosynchronous Relay](keo/)
 
+##Long-Range Communications
+
 ![](long_range/thumbnail.png)
 
 ###[Interplanetary Relay Networks](long_range/)
@@ -46,6 +48,8 @@ extra_css: tutorials
 ###Active Vessel Do's and Don'ts
 
 ##Using the Flight Computer Effectively
+
+###Planetary Orbital Insertion
 
 ![](reentry/thumbnail.png)
 
