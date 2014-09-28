@@ -217,15 +217,21 @@ namespace RemoteTech
         bool ISatellite.Powered { get { return true; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
-        Guid ISatellite.Guid { get { return new Guid(this.Guid); } }
+        Guid ISatellite.Guid { get { return this.mGuid; } }
         Vector3d ISatellite.Position { get { return FlightGlobals.Bodies[Body].GetWorldSurfacePosition(Latitude, Longitude, Height); } }
         bool ISatellite.IsCommandStation { get { return true; } }
         bool ISatellite.HasLocalControl { get { return false; } }
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
+        private Guid mGuid;
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
-        
+
+        public MissionControlSatellite()
+        {
+            this.mGuid = new Guid(this.Guid);
+        }
+
         void IPersistenceLoad.PersistenceLoad()
         {
             foreach (var antenna in Antennas)
