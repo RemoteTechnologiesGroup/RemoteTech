@@ -62,7 +62,9 @@ Transmitting science back to KSC now requires you have a working connection to K
 
 ###Modified third-party mod parts
 
-* The MechJeb AR202 can act as a signal processor, just like the stock probe cores.
+* All B9 and FASA probe cores can act as signal processors, just like the stock probe cores.
+* FASA antennas can act as short- to medium- range antennas (the longest is the Apollo SM Dish, with a range of 35,000 km).
+* The MechJeb AR202 can act as a signal processor.
 
 Neither other third-party probe cores, nor any third-party antennas, are supported at this time.
 
