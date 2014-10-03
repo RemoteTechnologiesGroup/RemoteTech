@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\$(MSBuildToolsVersion)\MSBuild.ExtensionPack.tasks" />
@@ -121,7 +121,36 @@
     <Compile Include="UI\TimeWarpDecorator.cs" />
     <Compile Include="VesselSatellite.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\mark.png" />
+    <EmbeddedResource Include="Resources\texAll.png" />
+    <EmbeddedResource Include="Resources\texBackground.png" />
+    <EmbeddedResource Include="Resources\texButton.png" />
+    <EmbeddedResource Include="Resources\texButtonGray.png" />
+    <EmbeddedResource Include="Resources\texButtonGreen.png" />
+    <EmbeddedResource Include="Resources\texButtonRed.png" />
+    <EmbeddedResource Include="Resources\texButtonYellow.png" />
+    <EmbeddedResource Include="Resources\texDish.png" />
+    <EmbeddedResource Include="Resources\texEmpty.png" />
+    <EmbeddedResource Include="Resources\texFlightGreen.png" />
+    <EmbeddedResource Include="Resources\texFlightGreenDown.png" />
+    <EmbeddedResource Include="Resources\texFlightGreenOver.png" />
+    <EmbeddedResource Include="Resources\texFlightRed.png" />
+    <EmbeddedResource Include="Resources\texFlightRedDown.png" />
+    <EmbeddedResource Include="Resources\texFlightRedOver.png" />
+    <EmbeddedResource Include="Resources\texFlightYellow.png" />
+    <EmbeddedResource Include="Resources\texFlightYellowDown.png" />
+    <EmbeddedResource Include="Resources\texFlightYellowOver.png" />
+    <EmbeddedResource Include="Resources\texKnowledgeActive.png" />
+    <EmbeddedResource Include="Resources\texKnowledgeHover.png" />
+    <EmbeddedResource Include="Resources\texKnowledgeNormal.png" />
+    <EmbeddedResource Include="Resources\texOmni.png" />
+    <EmbeddedResource Include="Resources\texOmniDish.png" />
+    <EmbeddedResource Include="Resources\texPath.png" />
+    <EmbeddedResource Include="Resources\texPlanet.png" />
+    <EmbeddedResource Include="Resources\texSatellite.png" />
+    <EmbeddedResource Include="Resources\TimeQuadrantFcStatus.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
   </Target>
