@@ -11,8 +11,9 @@ namespace RemoteTech
 
         public override string Description
         {
-            get { return "Toggle " + ActionGroup + Environment.NewLine + base.Description; }
+            get { return ShortName + Environment.NewLine + base.Description; }
         }
+        public override string ShortName { get { return "Toggle " + ActionGroup; } }
 
         public override bool Pop(FlightComputer f)
         {

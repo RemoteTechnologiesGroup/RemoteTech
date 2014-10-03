@@ -15,9 +15,10 @@ namespace RemoteTech
         {
             get
             {
-                return ("Target: " + (Target != null ? Target.GetName() : "None")) + Environment.NewLine + base.Description;
+                return ShortName + Environment.NewLine + base.Description;
             }
         }
+        public override string ShortName { get { return "Target: " + (Target != null ? Target.GetName() : "None"); } }
 
         public override bool Pop(FlightComputer f)
         {
