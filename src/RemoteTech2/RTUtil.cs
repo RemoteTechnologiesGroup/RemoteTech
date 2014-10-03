@@ -343,9 +343,8 @@ namespace RemoteTech
                 byte[] imageStream = new byte[resStream.Length];
                 resStream.Read(imageStream, 0, (int)resStream.Length);
                 // apply the image stream to a new Texture2D object
-                texture = new Texture2D(4, 4);
+                texture = new Texture2D(4, 4, TextureFormat.ARGB32, false);
                 texture.LoadImage(imageStream);
-                texture.Apply();
 
                 imageStream = null;
                 resStream.Close();
