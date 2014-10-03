@@ -27,7 +27,7 @@ The second element is a colored calculator icon -- green for a [working connecti
 
 With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Activate" (or "Deactivate"). Antennas can also be activated or deactivated using action groups, or preset by right-clicking on them in the VAB. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate your last antenna at your peril!
 
-Omnidirectional antennas will automatically [connect](#connection-rules) to any antenna they can as soon as they are activated. Dish antennas must also be given a target. Targets may be selected before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "No Target". This will pull up a window listing all planets and moons, as well as everything around them with an antenna. You may select a planet or moon to use [Cone Mode](#target-cone), a ship or "Mission Control" for a [Direct Link](#target-direct), or [Active Vessel](#target-active) to always target the ship you are flying. To create a link, the other ship must be using an omni antenna or must target your ship as well.
+Omnidirectional antennas will automatically [connect](#connection-rules) to any antenna they can as soon as they are activated. Dish antennas must also be given a target. Targets may be selected before or after the dish is activated. To set a target, right-click on the antenna and click the button marked "No Target". This will pull up a window listing all planets and moons, as well as vessels around them with at least one antenna. You may select a planet or moon to use [Cone Mode](#target-cone), a ship or "Mission Control" for a [Direct Link](#target-direct), or [Active Vessel](#target-active) to always target the ship you are flying. To create a link, the other ship must be using an omni antenna or must target your ship as well.
 
 You do not need to place your satellite in any special orientation to use a dish antenna. As long as the targets are set correctly, the dish will connect, even if it is "really" facing the other way!
 
@@ -40,16 +40,16 @@ RemoteTech adds an overlay to the map view to display the state of your communic
 
 ![IMAGE: map view, with each type of overlay (active, cones, omni, dish, command center) labeled](rtmapview.png){:.right}
 
-![IMAGE: First button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texPath.png)
+![IMAGE: First button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech2/Resources/texPath.png)
 :   This button will highlight the links used in the working connection (if any) as a green line.
 
-![IMAGE: Second button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texPlanet.png)
+![IMAGE: Second button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech2/Resources/texPlanet.png)
 :   This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships far off the edge of the screen will not be shown.
 
-![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texOmni.png) ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texDish.png) ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texOmniDish.png)
+![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech2/Resources/texOmni.png) ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech2/Resources/texDish.png) ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech2/Resources/texOmniDish.png)
 :   This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links.
 
-![IMAGE: Fourth button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech2/Textures/texButtonGreen.png)
+![IMAGE: Fourth button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech2/Resources/texButtonGreen.png)
 :   This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are deactivated. Clicking on any dish in the list will pull up the target selection window for that dish.
 {: .indentedlist}
 
