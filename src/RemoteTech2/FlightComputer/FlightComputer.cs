@@ -209,8 +209,9 @@ namespace RemoteTech
             }
 
             // Commands
-            if (SignalProcessor.Powered && mCommandQueue.Count > 0)
+            if (mCommandQueue.Count > 0)
             {
+                // Can come out of time warp even if ship unpowered; workaround for KSP 0.24 power consumption bug
                 if (RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 1.0f)
                 {
                     var time = TimeWarp.deltaTime;
@@ -227,13 +228,23 @@ namespace RemoteTech
 
                 foreach (var dc in mCommandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime).ToList())
                 {
+                    // Use time decrement instead of comparing scheduled time, in case we later want to 
+                    //      reinstate event clocks stopping under certain conditions
                     if (dc.ExtraDelay > 0)
                     {
-                        dc.ExtraDelay -= SignalProcessor.Powered ? TimeWarp.deltaTime : 0.0;
+                        dc.ExtraDelay -= TimeWarp.deltaTime;
                     }
                     else
                     {
-                        if (dc.Pop(this)) mActiveCommands[dc.Priority] = dc;
+                        if (SignalProcessor.Powered) {
+                            // Note: depending on implementation, dc.Pop() may execute the event
+                            if (dc.Pop(this)) mActiveCommands [dc.Priority] = dc;
+                        } else {
+                            string message = String.Format ("[Flight Computer]: Out of power, cannot run \"{0}\" on schedule.", dc.ShortName);
+                            ScreenMessages.PostScreenMessage(new ScreenMessage(
+                                message, 4.0f, ScreenMessageStyle.UPPER_LEFT
+                            ), true);
+                        }
                         mCommandQueue.Remove(dc);
                     }
                 }

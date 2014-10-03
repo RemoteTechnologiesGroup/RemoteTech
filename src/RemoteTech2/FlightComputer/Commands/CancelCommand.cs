@@ -11,6 +11,7 @@ namespace RemoteTech
         public ICommand Command { get; set; }
 
         public override string Description { get { return "Cancelling a command." + Environment.NewLine + base.Description; } }
+        public override string ShortName { get { return "Cancel command"; } }
 
         public override bool Pop(FlightComputer f)
         {
