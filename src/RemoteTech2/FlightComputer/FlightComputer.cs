@@ -59,6 +59,7 @@ namespace RemoteTech
         public ManeuverNode DelayedManeuver { get; set; }
         public ITargetable DelayedTarget { get; set; }
         public Vessel Vessel { get; private set; }
+        public RoverComputer mRoverComputer { get; private set; }
         public ISignalProcessor SignalProcessor { get; private set; }
         public List<Action<FlightCtrlState>> SanctionedPilots { get; private set; }
         public IEnumerable<ICommand> ActiveCommands { get { return mActiveCommands.Values; } }
@@ -97,6 +98,8 @@ namespace RemoteTech
             mActiveCommands[target.Priority] = target;
             var attitude = AttitudeCommand.Off();
             mActiveCommands[attitude.Priority] = attitude;
+
+            mRoverComputer = new RoverComputer(Vessel);
         }
 
         public void Dispose()
