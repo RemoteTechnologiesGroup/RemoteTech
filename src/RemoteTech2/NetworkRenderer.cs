@@ -8,11 +8,12 @@ namespace RemoteTech
     [Flags]
     public enum MapFilter
     {
-        None = 0,
-        Omni = 1,
-        Dish = 2,
-        Planet = 4,
-        Path = 8
+        None   = 0,
+        Omni   = 1,
+        Dish   = 2,
+        Sphere = 4,
+        Cone   = 8,
+        Path   = 16
     }
 
     public class NetworkRenderer : MonoBehaviour
@@ -34,10 +35,11 @@ namespace RemoteTech
         private List<NetworkLine> mLines = new List<NetworkLine>();
         private List<NetworkCone> mCones = new List<NetworkCone>();
 
-        public bool ShowOmni { get { return (Filter & MapFilter.Omni) == MapFilter.Omni; } }
-        public bool ShowDish { get { return (Filter & MapFilter.Dish) == MapFilter.Dish; } }
-        public bool ShowPath { get { return (Filter & MapFilter.Path) == MapFilter.Path; } }
-        public bool ShowPlanet { get { return (Filter & MapFilter.Planet) == MapFilter.Planet; } }
+        public bool ShowOmni  { get { return (Filter & MapFilter.Omni)   == MapFilter.Omni; } }
+        public bool ShowDish  { get { return (Filter & MapFilter.Dish)   == MapFilter.Dish; } }
+        public bool ShowPath  { get { return (Filter & MapFilter.Path)   == MapFilter.Path; } }
+        public bool ShowRange { get { return (Filter & MapFilter.Sphere) == MapFilter.Sphere; } }
+        public bool ShowCone  { get { return (Filter & MapFilter.Cone)   == MapFilter.Cone; } }
 
         static NetworkRenderer()
         {
@@ -85,7 +87,7 @@ namespace RemoteTech
 
         private void UpdateNetworkCones()
         {
-            var antennas = (ShowPlanet ? RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
+            var antennas = (ShowCone ? RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
                                                                                        && RTCore.Instance.Network.Planets.ContainsKey(a.Target))
                                        : Enumerable.Empty<IAntenna>()).ToList();
             int oldLength = mCones.Count;
@@ -108,7 +110,7 @@ namespace RemoteTech
                 mCones[i].Antenna = antennas[i];
                 mCones[i].Planet = RTCore.Instance.Network.Planets[antennas[i].Target];
                 mCones[i].Color = Color.gray;
-                mCones[i].Active = ShowPlanet;
+                mCones[i].Active = ShowCone;
             }
         }
 

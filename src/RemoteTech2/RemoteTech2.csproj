@@ -150,6 +150,10 @@
     <EmbeddedResource Include="Resources\texPlanet.png" />
     <EmbeddedResource Include="Resources\texSatellite.png" />
     <EmbeddedResource Include="Resources\TimeQuadrantFcStatus.png" />
+    <EmbeddedResource Include="Resources\texNoCone.png" />
+    <EmbeddedResource Include="Resources\texNoOmniDish.png" />
+    <EmbeddedResource Include="Resources\texNoPath.png" />
+    <EmbeddedResource Include="Resources\texCone.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
