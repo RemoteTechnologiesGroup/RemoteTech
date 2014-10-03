@@ -22,5 +22,6 @@ When writing new code for RemoteTech, please follow the following steps:
 * Read the titles of open issues and pull requests, to see if somebody's already thought of your idea. If the issue has somebody assigned (see the rightmost column of the page), it's already being taken care of. Otherwise, assign yourself and/or add a comment saying you'll do it.
 * Fork RemoteTech2 and do any code updates.
 * What happens next depends on what the new code does:
-    - If your code fixes a bug in RemoteTech, create a pull request to the `master` branch (this should be the default). One of the Remote Technologies Group members (*another* member, if you are one yourself) will review the code and merge it.
-    - If your code adds a new feature in RemoteTech, create a pull request to the branch of the next release (e.g., `1.7.0`; if no such branch exists, please contact us). One of the Remote Technologies Group members will merge it; if you yourself are a member, please wait one week to give others a chance to give feedback.
+    - If your code fixes a bug in RemoteTech, create a pull request to the `master` branch (this should be the default).
+    - If your code adds a new feature in RemoteTech, create a pull request to the branch of the next release (e.g., `1.7.0`; if no such branch exists, please contact us).
+* One of the Remote Technologies Group members will merge the pull request; if you yourself are a member, please wait one week to give others a chance to give feedback.
