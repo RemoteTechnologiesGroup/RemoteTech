@@ -1,5 +1,6 @@
 ﻿using System;
 using KSP.IO;
+using System.IO;
 using System.Diagnostics;
 using System.Reflection;
 using System.Collections;
@@ -327,16 +328,33 @@ namespace RemoteTech
 
         public static void LoadImage(out Texture2D texture, String fileName)
         {
-            fileName = fileName.Split('.')[0];
-            String path = "RemoteTech2/Textures/" + fileName;
-            RTLog.Notify("LoadImage({0})", path);
-            texture = GameDatabase.Instance.GetTexture(path, false);
-            if (texture == null)
-            {
+            try 
+	        {
+		        Assembly myAssembly = Assembly.GetExecutingAssembly();
+                Stream resStream = myAssembly.GetManifestResourceStream("RemoteTech.Resources." + fileName);
+
+                if (resStream.Length <= 0) {
+                    RTLog.Notify("LoadImageFromRessource({0}) failed", fileName);
+                    throw new Exception("No ImageRessource found");
+                }
+
+                RTLog.Notify("LoadImageFromRessource({0}) success", fileName);
+                // create a byte array from the stream ressource
+                byte[] imageStream = new byte[resStream.Length];
+                resStream.Read(imageStream, 0, (int)resStream.Length);
+                // apply the image stream to a new Texture2D object
+                texture = new Texture2D(4, 4, TextureFormat.ARGB32, false);
+                texture.LoadImage(imageStream);
+
+                imageStream = null;
+                resStream.Close();
+	        }
+	        catch (Exception)
+	        {
                 texture = new Texture2D(32, 32);
                 texture.SetPixels32(Enumerable.Repeat((Color32) Color.magenta, 32 * 32).ToArray());
                 texture.Apply();
-            }
+	        }
         }
 
         public static IEnumerable<Transform> FindTransformsWithCollider(Transform input)

@@ -22,6 +22,7 @@ namespace RemoteTech
                 return "";
             }
         }
+        public abstract String ShortName { get; }
         public virtual int Priority { get { return 255; } }
 
         // true: move to active.

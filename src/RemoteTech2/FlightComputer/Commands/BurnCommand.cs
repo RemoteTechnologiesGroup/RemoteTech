@@ -16,8 +16,17 @@ namespace RemoteTech
         {
             get
             {
-                return String.Format("Burn {0}, {1}", Throttle.ToString("P2"), Duration > 0 ? RTUtil.FormatDuration(Duration) : (DeltaV.ToString("F2") + "m/s")) + Environment.NewLine + base.Description;
+                return String.Format("Burn {0}, {1}", Throttle.ToString("P2"), burnLength()) + Environment.NewLine + base.Description;
             }
+        }
+        public override string ShortName 
+        { 
+            get { 
+                return String.Format("Execute burn for {0}", burnLength()); 
+            } 
+        }
+        private string burnLength() {
+            return Duration > 0 ? RTUtil.FormatDuration(Duration) : (DeltaV.ToString("F2") + "m/s");
         }
 
         private bool mAbort;

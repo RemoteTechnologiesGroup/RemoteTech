@@ -32,6 +32,7 @@ namespace RemoteTech
                     return "Execute planned maneuver" + Environment.NewLine + base.Description;
             }
         }
+        public override string ShortName { get { return "Execute maneuver node"; } }
 
         public override bool Pop(FlightComputer f)
         {
