@@ -150,6 +150,24 @@ namespace RemoteTech
             return s.ToString();
         }
 
+        /// <summary>
+        /// Generates a string for use in flight log entries
+        /// </summary>
+        /// <returns>A string in the same format as used by stock flight log events</returns>
+        /// <param name="years">The number of full years the mission has lasted</param>
+        /// <param name="days">The number of additional days the mission has lasted</param>
+        /// <param name="hours">The number of additional hours the mission has lasted</param>
+        /// <param name="minutes">The number of additional minutes the mission has lasted</param>
+        /// <param name="seconds">The number of additional seconds the mission has lasted</param>
+        /// 
+        /// <precondition>All numerical arguments non-negative</precondition>
+        /// 
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
+        public static String FormatTimestamp(int years, int days, int hours, int minutes, int seconds)
+        {
+            return String.Format("{0:D2}:{1:D2}:{2:D2}", hours, minutes, seconds);
+        }
+
         public static String FormatConsumption(double consumption)
         {
             return consumption.ToString("F2") + " charge/s";

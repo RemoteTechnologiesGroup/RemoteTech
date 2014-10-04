@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using UnityEngine;
 
 namespace RemoteTech
@@ -14,7 +15,10 @@ namespace RemoteTech
         public Guid Guid { get { return mRegisteredId; } }
         public bool Powered { get { return IsRTPowered; } }
         public bool Activated { get { return IsRTActive; } set { SetState(value); } }
-        public bool Animating { get { return mDeployFxModules.Any(fx => fx.GetScalar > 0.1f && fx.GetScalar < 0.9f); } }
+        public bool CanAnimate { get { return mDeployFxModules.Count > 0; } }
+        public bool AnimClosed { get { return mDeployFxModules.Any(fx => fx.GetScalar <= 0.1f                        ); } }
+        public bool Animating  { get { return mDeployFxModules.Any(fx => fx.GetScalar >  0.1f && fx.GetScalar <  0.9f); } }
+        public bool AnimOpen   { get { return mDeployFxModules.Any(fx =>                         fx.GetScalar >= 0.9f); } }
 
         public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
         public Guid Target
@@ -383,13 +387,80 @@ namespace RemoteTech
             Events["EventTarget"].guiName = RTUtil.TargetName(Target);
         }
 
+        /// <summary>
+        /// Returns the FAR module managing aerodynamics for this part, if one exists
+        /// </summary>
+        /// 
+        /// <returns>
+        /// If FAR is installed and the antenna has a module of type <c>ferram4.FARBaseAerodynamics</c>, returns a 
+        /// reference to that module. Otherwise, returns null. Behavior is undefined if the antenna has more than 
+        /// one FARBaseAerodynamics module.
+        /// </returns>
+        ///
+        /// <precondition><c>this.part</c> is not null</precondition>
+        ///
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
+        private PartModule GetFARModule()
+        {
+            if (part.Modules.Contains("FARBasicDragModel")) {
+                return part.Modules["FARBasicDragModel"];
+            } else if (part.Modules.Contains ("FARWingAerodynamicModel")) {
+                return part.Modules["FARWingAerodynamicModel"];
+            } else if (part.Modules.Contains ("FARControlSys")) {
+                return part.Modules["FARControlSys"];
+            } else {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether or not the antenna is shielded from aerodynamic forces
+        /// </summary>
+        /// <returns><c>true</c>, if the antenna is shielded by a supported mod, <c>false</c> otherwise.</returns>
+        ///
+        /// <precondition><c>this.part</c> is not null</precondition>
+        ///
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
+        private bool GetShieldedState()
+        {
+            PartModule FARPartModule = GetFARModule();
+
+            if (FARPartModule != null) {
+                try {
+                    FieldInfo fi = FARPartModule.GetType ().GetField ("isShielded");
+                    return (bool)(fi.GetValue (FARPartModule));
+                } catch (Exception e) {
+                    RTLog.Notify ("GetShieldedState: {0}", e);
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the ram pressure experienced by the antenna.
+        /// </summary>
+        /// 
+        /// <returns>The pressure, in N/m^2.</returns>
+        /// 
+        /// <precondition><c>this.vessel</c> is not null</precondition>
+        ///
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
+        private double GetDynamicPressure() {
+            return 0.5 * vessel.atmDensity * vessel.srf_velocity.sqrMagnitude;
+        }
+        
         private void HandleDynamicPressure()
         {
             if (vessel == null) return;
-            if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && mDeployFxModules.Any(a => a.GetScalar > 0.9f))
-            {
-                if (vessel.srf_velocity.sqrMagnitude * vessel.atmDensity / 2 > MaxQ)
-                {
+            if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && (!this.CanAnimate || this.AnimOpen)) {
+                if (GetDynamicPressure() > MaxQ && GetShieldedState() == false) {
+                    // Express flight clock in stockalike formatting
+                    string timestamp = RTUtil.FormatTimestamp (FlightLogger.met_years, FlightLogger.met_days, 
+                                           FlightLogger.met_hours, FlightLogger.met_mins, FlightLogger.met_secs);
+                    FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.", 
+                        timestamp, part.partInfo.title));
                     MaxQ = -1.0f;
                     part.decouple(0.0f);
                 }
