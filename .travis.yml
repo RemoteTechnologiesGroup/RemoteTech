@@ -18,7 +18,7 @@ install:
  - ./CI/travis.osx.install.deps.sh # it appears TRAVIS_OS_NAME is unset often, assume we're OSX if not linux
 
 script:
- - ./build.remotetech2.sh
+ - ./build.remotetech.sh
 
 # Custom deploy
 after_success:
