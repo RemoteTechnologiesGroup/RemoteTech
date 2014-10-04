@@ -38,7 +38,7 @@ namespace RemoteTech
         public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
 
         private static String File { 
-            get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech2/RemoteTech_Settings.cfg"; }
+            get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/RemoteTech_Settings.cfg"; }
         }
 
         public void Save()

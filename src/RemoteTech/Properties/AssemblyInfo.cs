@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RemoteTech2")]
+[assembly: AssemblyTitle("RemoteTech")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RemoteTech2")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyProduct("RemoteTech")]
+[assembly: AssemblyCopyright("Copyright ©  2013-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -38,4 +38,4 @@ using System.Runtime.InteropServices;
 // Use KSPAssembly to allow other DLLs to make this DLL a dependency in a
 // non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it
 // does not appear to have a hard requirement to match the assembly version.
-[assembly: KSPAssembly("RemoteTech2", 1, 4)]
+[assembly: KSPAssembly("RemoteTech", 1, 4)]
