@@ -32,6 +32,7 @@ namespace RemoteTech
         private Vector2 mScrollPosition = Vector2.zero;
         private Entry mRootEntry = new Entry();
         private Entry mSelection;
+        public TargetInfoPopup mTargetInfoPopup;
 
         public AntennaFragment(IAntenna antenna)
         {
@@ -54,6 +55,11 @@ namespace RemoteTech
 
         public void Draw()
         {
+            if (this.mTargetInfoPopup != null)
+            {
+                this.mTargetInfoPopup.Hide();
+            }
+
             mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
             Color pushCtColor = GUI.contentColor;
             Color pushBgColor = GUI.backgroundColor;
@@ -96,6 +102,17 @@ namespace RemoteTech
                                 mSelection = current;
                                 Antenna.Target = mSelection.Guid;
                             });
+
+                        // Mouse is over the last button
+                        if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) && this.mTargetInfoPopup != null)
+                        {
+                            this.mTargetInfoPopup.Show();
+                            this.mTargetInfoPopup.setYPositionToMouse();
+                            this.mTargetInfoPopup.setPositionToRight();
+                            // change the popup x position to this element relativ to the parent position
+                            //this.mTargetInfoPopup.changePosition(GUILayoutUtility.GetLastRect().x + GUILayoutUtility.GetLastRect().width + 50,0);
+                            this.mTargetInfoPopup.setTarget(current.Text);
+                        }
 
                     }
                     GUILayout.EndHorizontal();

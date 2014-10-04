@@ -28,6 +28,7 @@ namespace RemoteTech
         private double mLastTime;
         private double mTooltipTimer;
         private readonly Guid mGuid;
+        public Vector2 mMousePos;
         public static Dictionary<Guid, AbstractWindow> Windows = new Dictionary<Guid, AbstractWindow>();
 
         static AbstractWindow()
@@ -86,6 +87,8 @@ namespace RemoteTech
                 Position.width = 0;
                 Position.height = 0;
             }
+
+            this.mMousePos = Event.current.mousePosition;
             Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
             if (Title != null)
             {
