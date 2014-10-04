@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SRCDIR=src/RemoteTech2
+SRCDIR=src/RemoteTech
 
 if [ ! -f "$SRCDIR/Assembly-CSharp-firstpass.dll" ] \
    || [ ! -f "$SRCDIR/Assembly-CSharp.dll" ] \
@@ -23,14 +23,14 @@ then
           exit 1;
       else
           echo "Password required to decrypt the zip";
-          unzip dlls.zip -d src/RemoteTech2/ # this will prompt for a password
+          unzip dlls.zip -d src/RemoteTech/ # this will prompt for a password
       fi
    else
-      unzip -P "$ZIPPASSWORD" dlls.zip -d src/RemoteTech2/
+      unzip -P "$ZIPPASSWORD" dlls.zip -d src/RemoteTech/
    fi
    
    rm -f dlls.zip
 fi
 
-cd src/RemoteTech2 && xbuild
+cd src/RemoteTech && xbuild
 
