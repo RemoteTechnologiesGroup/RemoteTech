@@ -12,6 +12,38 @@ namespace RemoteTech
         /// <summary>Can't boost the range of a dish antenna by more than this factor, no matter what.</summary>
         public const double DishClamp = 1000.0;
 
+        /// <summary>Finds the maximum range between an antenna and a specific target.</summary>
+        /// <returns>The maximum distance at which the two spacecraft could communicate.</returns>
+        /// <param name="ant_a">The antenna attempting to target.</param>
+        /// <param name="sat_a">The satellite on which <paramref name="ant_a"/> is mounted.</param>
+        /// <param name="sat_b">The satellite being targeted by <paramref name="ant_a"/>.</param>
+        /// <param name="rangeFunc">A function that computes the maximum range between two 
+        /// satellites, given their individual ranges.</param>
+        public static double GetContextRange(IAntenna ant_a, ISatellite sat_a, ISatellite sat_b, 
+            Func<double, double, double> rangeFunc) {
+            // Which antennas on the other craft are capable of communication?
+            IEnumerable<IAntenna> omni_a = getOmnis(sat_a);
+            IEnumerable<IAntenna> omni_b = getOmnis(sat_b);
+            IEnumerable<IAntenna> dish_b = getDishesThatSee(sat_b, sat_a);
+
+            // Pick the best range for each case
+            double max_omni_a = omni_a.Any() ? omni_a.Max(a => a.Omni) : 0.0;
+            double max_omni_b = omni_b.Any() ? omni_b.Max(b => b.Omni) : 0.0;
+            double max_dish_b = dish_b.Any() ? dish_b.Max(b => b.Dish) : 0.0;
+
+            double bonus_a = getMultipleAntennaBonus(omni_a, max_omni_a);
+            double bonus_b = getMultipleAntennaBonus(omni_b, max_omni_b);
+
+            // What is the range?
+            // Note: IAntenna.Omni and IAntenna.Dish are zero for antennas of the other type
+            double max_omni = Math.Max(checkRange(rangeFunc, ant_a.Omni + bonus_a, OmniClamp, max_omni_b + bonus_b, OmniClamp),
+                                       checkRange(rangeFunc, ant_a.Omni + bonus_a, OmniClamp, max_dish_b          , DishClamp));
+            double max_dish = Math.Max(checkRange(rangeFunc, ant_a.Dish          , DishClamp, max_omni_b + bonus_b, OmniClamp), 
+                                       checkRange(rangeFunc, ant_a.Dish          , DishClamp, max_dish_b          , DishClamp));
+
+            return Math.Max(max_omni, max_dish);
+        }
+
         /// <summary>Constructs a link between two satellites, if one is possible.</summary>
         /// <returns>The new link, or null if the two satellites cannot connect.</returns>
         /// <param name="rangeFunc">A function that computes the maximum range between two 
@@ -19,34 +51,20 @@ namespace RemoteTech
         public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b, 
             Func<double, double, double> rangeFunc) {
             // Which antennas on either craft are capable of communication?
-            IEnumerable<IAntenna> omni_a = sat_a.Antennas.Where(a => a.Omni > 0);
-            IEnumerable<IAntenna> omni_b = sat_b.Antennas.Where(b => b.Omni > 0);
-            IEnumerable<IAntenna> dish_a = sat_a.Antennas.Where(a => a.Dish > 0 
-                && (a.IsTargetingDirectly(sat_b) || a.IsTargetingActiveVessel(sat_b) || a.IsTargetingPlanet(sat_b, sat_a)));
-            IEnumerable<IAntenna> dish_b = sat_b.Antennas.Where(b => b.Dish > 0 
-                && (b.IsTargetingDirectly(sat_a) || b.IsTargetingActiveVessel(sat_a) || b.IsTargetingPlanet(sat_a, sat_b)));
+            IEnumerable<IAntenna> omni_a = getOmnis(sat_a);
+            IEnumerable<IAntenna> omni_b = getOmnis(sat_b);
+            IEnumerable<IAntenna> dish_a = getDishesThatSee(sat_a, sat_b);
+            IEnumerable<IAntenna> dish_b = getDishesThatSee(sat_b, sat_a);
 
             // Pick the best range for each case
             double max_omni_a = omni_a.Any() ? omni_a.Max(a => a.Omni) : 0.0;
             double max_omni_b = omni_b.Any() ? omni_b.Max(b => b.Omni) : 0.0;
             double max_dish_a = dish_a.Any() ? dish_a.Max(a => a.Dish) : 0.0;
             double max_dish_b = dish_b.Any() ? dish_b.Max(b => b.Dish) : 0.0;
-            double bonus_a = 0.0;
-            double bonus_b = 0.0;
 
-            // Boost omni ranges
-            if (RTSettings.Instance.MultipleAntennaMultiplier > 0.0)
-            {
-                double sum_omni_a = omni_a.Sum(a => a.Omni);
-                double sum_omni_b = omni_b.Sum(b => b.Omni);
+            double bonus_a = getMultipleAntennaBonus(omni_a, max_omni_a);
+            double bonus_b = getMultipleAntennaBonus(omni_b, max_omni_b);
 
-                bonus_a = (sum_omni_a - max_omni_a) * RTSettings.Instance.MultipleAntennaMultiplier;
-                bonus_b = (sum_omni_b - max_omni_b) * RTSettings.Instance.MultipleAntennaMultiplier;
-            }
-
-            // Pick the best range on each vessel
-            double max_a = Math.Max(max_omni_a + bonus_a, max_dish_a);
-            double max_b = Math.Max(max_omni_b + bonus_b, max_dish_b);
             double distance = sat_a.DistanceTo(sat_b);
 
             // Which antennas are in range?
@@ -54,16 +72,17 @@ namespace RemoteTech
                    checkRange(rangeFunc, a.Omni + bonus_a, OmniClamp, max_omni_b + bonus_b, OmniClamp) >= distance
                 || checkRange(rangeFunc, a.Omni + bonus_a, OmniClamp, max_dish_b          , DishClamp) >= distance);
             dish_a = dish_a.Where(a => 
-                   checkRange(rangeFunc, a.Dish, DishClamp, max_omni_b + bonus_b, OmniClamp) >= distance 
-                || checkRange(rangeFunc, a.Dish, DishClamp, max_dish_b          , DishClamp) >= distance);
+                   checkRange(rangeFunc, a.Dish          , DishClamp, max_omni_b + bonus_b, OmniClamp) >= distance 
+                || checkRange(rangeFunc, a.Dish          , DishClamp, max_dish_b          , DishClamp) >= distance);
             omni_b = omni_b.Where(b => 
                    checkRange(rangeFunc, b.Omni + bonus_b, OmniClamp, max_omni_a + bonus_a, OmniClamp) >= distance
                 || checkRange(rangeFunc, b.Omni + bonus_b, OmniClamp, max_dish_a          , DishClamp) >= distance);
             dish_b = dish_b.Where(b => 
-                   checkRange(rangeFunc, b.Dish, DishClamp, max_omni_a + bonus_a, OmniClamp) >= distance 
-                || checkRange(rangeFunc, b.Dish, DishClamp, max_dish_a          , DishClamp) >= distance);
+                   checkRange(rangeFunc, b.Dish          , DishClamp, max_omni_a + bonus_a, OmniClamp) >= distance 
+                || checkRange(rangeFunc, b.Dish          , DishClamp, max_dish_a          , DishClamp) >= distance);
 
-            // Pick an antenna, pick any antenna...
+            // BUG: there's no guarantee that `conn_a` and `conn_b` can connect to each 
+            //  other, except in RangeModelStandard
             IAntenna conn_a = omni_a.Concat(dish_a).FirstOrDefault();
             IAntenna conn_b = omni_b.Concat(dish_b).FirstOrDefault();
 
@@ -89,6 +108,36 @@ namespace RemoteTech
                 double range1, double clamp1, 
                 double range2, double clamp2) {
             return Math.Min(Math.Min(rangeFunc.Invoke(range1, range2), range1*clamp1), range2*clamp2);
+        }
+
+        /// <summary>Returns the bonus from having multiple antennas</summary>
+        /// <returns>The boost to all omni antenna ranges, if MultipleAntennaMultiplier is enabled;
+        /// otherwise zero.</returns>
+        private static double getMultipleAntennaBonus(IEnumerable<IAntenna> omniList, double max_omni) {
+            if (RTSettings.Instance.MultipleAntennaMultiplier > 0.0) {
+                double total = omniList.Sum(a => a.Omni);
+                return (total - max_omni) * RTSettings.Instance.MultipleAntennaMultiplier;
+            } else {
+                return 0.0;
+            }
+        }
+
+        /// <summary>Returns all omnidirectional antennas on a satellite.</summary>
+        /// <returns>A possibly empty collection of omnis.</returns>
+        private static IEnumerable<IAntenna> getOmnis(ISatellite sat)
+        {
+            return sat.Antennas.Where(a => a.Omni > 0);
+        }
+
+        /// <summary>Returns all dishes on a satellite that are pointed, directly or indirectly, 
+        /// at a particular target.</summary>
+        /// <returns>A possibly empty collection of dishes.</returns>
+        /// <param name="sat">The satellite whose dishes are being queried.</param>
+        /// <param name="target">The target to be contacted.</param>
+        private static IEnumerable<IAntenna> getDishesThatSee(ISatellite sat, ISatellite target)
+        {
+            return sat.Antennas.Where(a => a.Dish > 0 
+                && (a.IsTargetingDirectly(target) || a.IsTargetingActiveVessel(target) || a.IsTargetingPlanet(target, sat)));
         }
     }
 }
