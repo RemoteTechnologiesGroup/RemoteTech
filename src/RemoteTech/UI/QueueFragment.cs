@@ -16,15 +16,7 @@ namespace RemoteTech
 
         private double Delay
         {
-            get
-            {
-                TimeSpan delay;
-                if (!RTUtil.TryParseDuration(mExtraDelay, out delay))
-                {
-                    delay = new TimeSpan();
-                }
-                return Math.Max(delay.TotalSeconds, 0);
-            }
+            get { return RTUtil.TryParseDuration(mExtraDelay); }
             set { mExtraDelay = value.ToString(); }
         }
 
