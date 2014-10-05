@@ -102,7 +102,7 @@ namespace RemoteTech
                 paths.Add(NetworkPathfinder.Solve(start, root, FindNeighbors, RangeModelExtensions.DistanceTo, RangeModelExtensions.DistanceTo));
             }
             mConnectionCache[start] = paths.Where(p => p.Exists).ToList();
-            mConnectionCache[start].Sort((a, b) => a.Delay.CompareTo(b.Delay));
+            mConnectionCache[start].Sort((a, b) => a.Length.CompareTo(b.Length));
             start.OnConnectionRefresh(this[start]);
         }
 
