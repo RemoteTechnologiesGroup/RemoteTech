@@ -36,7 +36,7 @@ namespace RemoteTech
         }
 
         public float Dish { get { return IsRTBroken ? 0.0f : ((IsRTActive && IsRTPowered) ? Mode1DishRange : Mode0DishRange) * RangeMultiplier; } }
-        public double Radians { get { return RTDishRadians; } }
+        public double CosAngle { get { return RTDishCosAngle; } }
         public float Omni { get { return IsRTBroken ? 0.0f : ((IsRTActive && IsRTPowered) ? Mode1OmniRange : Mode0OmniRange) * RangeMultiplier; } }
         public float Consumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost * ConsumptionMultiplier : 0.0f; } }
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
@@ -90,7 +90,7 @@ namespace RemoteTech
             IsRTBroken = false;
 
         [KSPField(isPersistant = true)]
-        public double RTDishRadians = 1.0f;
+        public double RTDishCosAngle = 1.0;
 
         [KSPField(isPersistant = true)]
         public float
@@ -236,9 +236,15 @@ namespace RemoteTech
                     Target = Guid.Empty;
                 }
             }
+            // Have RTDishRadians as a fallback to avoid corrupting save games
+            if (node.HasValue("RTDishRadians"))
+            {
+                double temp_double;
+                RTDishCosAngle = Double.TryParse(node.GetValue("RTDishRadians"), out temp_double) ? temp_double : 1.0;
+            }
             if (node.HasValue("DishAngle"))
             {
-                RTDishRadians = Math.Cos(DishAngle / 2 * Math.PI / 180);
+                RTDishCosAngle = Math.Cos(DishAngle / 2 * Math.PI / 180);
             }
             if (node.HasValue("DeployFxModules"))
             {
@@ -543,7 +549,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("ModuleRTAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, Radians: {5})", Name, mRegisteredId, Dish, Omni, Target, Radians);
+            return String.Format("ModuleRTAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, Radians: {5})", Name, mRegisteredId, Dish, Omni, Target, 2.0*Math.Acos(CosAngle));
         }
     }
 }
