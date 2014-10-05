@@ -83,12 +83,26 @@ img.right {
 	clear: both;
 }
 
+/* Default definition list style is confusing and ugly */
+dd {
+	margin-left: 40px;
+}
+
+/* Default code list style makes it look like an error */
+code {
+	color: black;
+	background-color: #f5f5f5
+}
+
 /* Default table style makes them illegible */
 table.data td, table.data th {
 	padding: 3px;
 }
 table.data th {
 	text-align: center;
+}
+table.data th, table.sidehead td:first-child {
+	font-weight: bold;
 }
 table.data tbody tr:nth-child(2n) {
 	background-color: rgb(240,240,240);

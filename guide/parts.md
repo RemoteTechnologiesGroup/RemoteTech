@@ -13,9 +13,9 @@ extra_css: antennas
 
 ##Probe Cores
 
-All stock probe cores serve as [signal processors](../../#signal-processors). In addition, the [RC-L01 Remote Guidance Unit](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) can serve as a [command station](../../#command-stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and monitoring nearby probes.
+All stock, B9, and FASA probe cores serve as [signal processors](../../#signal-processors). In addition, the [RC-L01 Remote Guidance Unit](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) can serve as a [command station](../../#command-stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and monitoring nearby probes. The crew can be anywhere on the ship; it does not have to be in a particular part. The RC-L01 still acts as a probe core and a signal processor, whether or not a crew is on board.
 
-After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wiki/Unmanned_Tech), all stock probe cores will receive a free, always-on, 3&nbsp;km omnidirectional antenna.
+After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wiki/Unmanned_Tech), all supported probe cores will receive a free, always-on, 3&nbsp;km omnidirectional antenna.
 
 The probe cores are otherwise unchanged from their [stock versions](http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods).
 
@@ -127,7 +127,7 @@ The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
+Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
 Cost                | 150
@@ -163,12 +163,12 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 ![Picture of Communotron 32](antenna_com32.png)
 
-The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past keosynchonous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active, nearly as much as the low-end dishes.
+The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past keosynchronous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active, nearly as much as the low-end dishes.
 {:.blurb}
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
+Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | Ionic Protonic Electronics
 Cost                | 150
@@ -215,7 +215,8 @@ Antenna           | Cost | Mass            | Drag | Cone | Range          | Powe
 [Reflectron GX-128](#reflectron-gx-128) | 800  | 0.5&nbsp;tons   | 0.2  | 0.005&deg; | 400M&nbsp;km   | 2.8&nbsp;e/s  | 
 {:.data}
 
-<!--All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.-->
+**Warning:** the Reflectron SS-5 and Reflectron LL-5 are legacy parts included for backward compatibility. Do not use these parts in new spacecraft, as they will be removed in an upcoming release of RemoteTech.
+{: .alert}
 
 ###Comms DTS-M1
 
@@ -233,7 +234,7 @@ VAB Category        | Science Parts
 Manufacturer        | Ionic Symphonic Protonic Electronics
 Cost                | 100
 Mass                | 0.03 tons
-Dimensions          | 1&times;0.75  m
+Dimensions          | 1 &times; 0.75  m
 Drag                | 0.2
 Comlink power       | 0.82 charge/s
 Science power       | 50 charge/s
@@ -357,7 +358,7 @@ The Reflectron KR-14 is an intermediate-range interplanetary antenna. It can eas
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Large_Electrics)
+Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 100
@@ -400,7 +401,7 @@ For players using Planet Factory, the CommTech-1 can reach Inaccessable and Sent
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Specialized_Electrics)
+Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
 Cost                | 800
@@ -436,12 +437,12 @@ Cone covers keosynchronous orbit at | 66,000,000 km
 
 ![Picture of GX-128](antenna_gx128.png)
 
-The Reflecton-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
+The Reflectron-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
 {:.blurb}
 
 |Basic Properties
 --------------------|-------------------
-Tech to Unlock      | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Advanced_Science_Tech)
+Tech to Unlock      | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Advanced_Science_Tech)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
 Cost                | 800

@@ -1,8 +1,9 @@
 ﻿<html>
 <head>
 	<meta charset="utf-8">
-	<link href="{{ site.baseurl }}/stylesheets/main.css" rel="stylesheet">
 	<link href="{{ site.baseurl }}/stylesheets/bootstrap.min.css" rel="stylesheet">
+	<!-- Please do not let default formatting override specific styles -->
+	<link href="{{ site.baseurl }}/stylesheets/main.css" rel="stylesheet">
 	{% if page.custom_css %}
 		<link href="{{ site.baseurl }}/stylesheets/{{ page.extra_css }}.css" rel="stylesheet">
 	{% endif %}

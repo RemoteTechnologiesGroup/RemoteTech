@@ -2,6 +2,8 @@
 title: Tutorials
 layout: content
 navbar: true
+custom_css: true
+extra_css: tutorials
 ---
 
 {% include banner.html %}
@@ -13,33 +15,43 @@ navbar: true
 
 {% include toc.html %}
 
-##[Launching Your First Satellite](firstsat/)
+##Getting Started
+
+![](firstsat/ascent_path.png)
+
+###[Launching Your First Satellite](firstsat/)
 
 ##Setting Up Satellite Constellations
 
-###General Satellite Design Tips
+![](comsats/thumbnail.png)
 
-Requires familiarity with target groups
-{: .alert .alert-danger}
-
-###["Realistic" Keosynchronous Relay](keo/)
-
-###Medium-Altitude Omni Network
+###[General Satellite Design Tips](comsats/)
 
 ###Kessler Network
 
-Need Rokker's permission to use: http://forum.kerbalspaceprogram.com/threads/56399-0-23-RemoteTech-2-v1-3-3-Late-Christmas-Edition?p=889932&viewfull=1#post889932
+![](c16network/single_final.png)
+
+###[Medium-Altitude Omni Network](c16network/)
 
 ###Cloverleaf Network
 
-Need Sandworm's permission to use: http://forum.kerbalspaceprogram.com/threads/56399-0-23-RemoteTech-2-v1-3-3-Late-Christmas-Edition?p=782970#post782970
+![](keo/multi_final.png)
 
-###Trans-Munar and Interplanetary Relay Networks
+###["Realistic" Keosynchronous Relay](keo/)
 
-Requires familiarity with target groups
-{: .alert .alert-danger}
+##Long-Range Communications
+
+![](long_range/thumbnail.png)
+
+###[Interplanetary Relay Networks](long_range/)
+
+###Active Vessel Do's and Don'ts
 
 ##Using the Flight Computer Effectively
+
+###Planetary Orbital Insertion
+
+![](reentry/thumbnail.png)
 
 ###[Kerbin Re-Entry](reentry/)
 

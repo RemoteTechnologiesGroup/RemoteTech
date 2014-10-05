@@ -10,28 +10,49 @@ navbar: false
 
 {% include toc.html %}
 
-This tutorial covers how to launch three or four equally spaced satellites into keosynchronous equatorial orbit (KEO). It assumes you have no pre-existing satellite network. This network is recommended for players interested in role-playing or in a challenge. Since, in RemoteTech, dishes can be pointed and signals rerouted instantaneously, there is no in-game advantage to keeping communications satellites stationary, and a lower orbit is both easier to achieve and better for interplanetary communications.
+This tutorial covers how to launch three or four equally spaced satellites into keosynchronous equatorial orbit (KEO). It assumes you have no pre-existing satellite network. This network is recommended for players interested in role-playing or in a challenge. Since, in RemoteTech, dishes can be pointed and signals rerouted instantaneously, there is no in-game advantage to keeping communications satellites stationary, and a lower orbit is both [easier to achieve](../c16network/) and better for interplanetary communications.
 
-The tutorial gives two methods for creating a KEO network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers.
+To play this tutorial, you should know how to design rockets to specific performance (i.e., delta-V) requirements, how to change orbits, and [how to launch satellites in RemoteTech](../firstsat/). By the end, you should understand:
+
+* how to use the first satellite in a network to coordinate placement of the others
+* how to place satellites a predetermined distance apart along an orbit
+* how to use the flight computer to execute burns in network blind spots
+
+The tutorial gives two methods for creating a KEO network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious and familiarity with KSP's rendezvous-planning system. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers. Many thanks to Elan for the idea!
+
+##Overview
+
+One of the first steps in playing with RemoteTech is creating a network of communications satellites. While you can carry out [low-orbit missions](../firstsat/) without any infrastructure, as you get farther and farther from Kerbin it will become increasingly difficult to get a direct connection to Mission Control. A well-designed network is one that lets you communicate from anywhere you want to go (which, in the early game, will be Kerbin's sphere of influence) and that doesn't require a lot of fine-tuning once you've set it up. 
+
+While more difficult to set up than an [omni-based network](../c16network/), a keosynchronous equatorial orbit (KEO) requires less precise satellite positioning, because its longer orbital period means satellites take longer to drift out of formation. It won't be hands-free until you have access to the Communotron 32, which can reach keostationary altitudes from low kerbin orbit, so it might be more appropriate for sandbox or late career games. However, once you *do* have the Communotron 32 on your vessels, the keosynchronous orbit gives you automatic coverage in a larger region of space than a low-altitude network.
+
+But perhaps the best reason to build a keosynchronous network is because, as of Kerbal Space Program 0.24, you can get *paid* for launching synchronous satellites.
 
 ##Requirements
 
-For part requirements, see the [General Satellite Design tutorial](#).
+For technology requirements, see the [General Satellite Design tutorial](../comsats/).
 
-This tutorial assumes you have at least one mod that gives you orbital periods in-game. In order of decreasing precision, the best choices are Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb.
+This tutorial assumes you have at least one mod that gives you orbital periods in-game. In order of decreasing precision, the best choices are Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb. The screenshots all use Kerbal Engineer, since that's the mod I'm most familiar with.
 
 ###Satellite Design
 
+In terms of the payload guidelines from the [General Satellite Design tutorial](../comsats/), we need antennas for communication with the surface and with each satellite's siblings.
+
+Communicating with Kerbin's surface and low Kerbin orbit
+: KEO is located 2869&nbsp;km above the surface, or 3469&nbsp;km from Kerbin's center. The farthest point on Kerbin's surface from any satellite will be 3420&nbsp;km away, near the poles. Therefore, the best antennas for this role are the [Communotron&nbsp;32](../../guide/parts/#communotron-32) or the [Comms DTS-M1](../../guide/parts/#comms-dts-m1).
+
+Communicating with siblings
+: KEO satellites in an equilateral triangle formation will be located 6008&nbsp;km apart, requiring the use of the Comms DTS-M1 to maintain contact. KEO satellites in a square formation will be only 4906&nbsp;km apart, allowing the Communotron&nbsp;32 to fill this role.
+
+You may also want to add additional antennas for communicating with specific planets or with specific relay satellites.
+
+In keosynchronous orbit, a satellite will experience up to 1200&nbsp;seconds of darkness. Make sure you have enough battery power!
+
 Ensure your satellite has an option for making very low-thrust burns (either RCS or a light engine).
-
-In addition to any antennas pointed at moons, planets, or vessel groups, you will need antennas for the following two roles:
-
-* Communicating with Kerbin's surface and low Kerbin orbit: KEO is located 2869&nbsp;km above the surface, or 3469&nbsp;km from Kerbin's center. The farthest point on Kerbin's surface from any satellite will be 3420&nbsp;km away, near the poles. Therefore, the best antennas for this role are the [Communotron&nbsp;32](../../guide/parts/#communotron-32) or the [Comms DTS-M1](../../guide/parts/#comms-dts-m1).
-* Communicating with the satellites' siblings: KEO satellites in an equilateral triangle formation will be located 6008&nbsp;km apart, requiring the use of the Comms DTS-M1 to maintain contact. KEO satellites in a square formation will be only 4906&nbsp;km apart, allowing the Communotron&nbsp;32 to fill this role if you have the necessary technology.
 
 ##Method 1: Separate Launches
 
-Use a rocket with at least 5615 m/s of delta-V.
+This method requires a rocket with at least 5615 m/s of delta-V to both reach and circularize at keostationary altitudes.
 
 ![Set antenna targets from the map view by clicking the lower right icon, then choosing a dish, followed by its target](single_1_setup.png "Setting up targets"){: .right}
 
@@ -39,7 +60,7 @@ Use a rocket with at least 5615 m/s of delta-V.
 
 Begin by launching your satellite into low Kerbin orbit. If you are using the Comms DTS-M1 as your Kerbin communication antenna, target it at Mission Control (not Kerbin) to maintain contact whenever your satellite is above the horizon.
 
-You now need to schedule a maneuver node for the KEO transfer orbit. You want to set your apoapsis at about 2870&nbsp;km (it doesn't have to be exact), and schedule the maneuver node so that you reach apoapsis while the satellite has a line of sight to the Kerbal Space Center (KSC). The transfer (from an 80&nbsp;km starting orbit) will take 1 hour 23 minutes, so you want to account for Kerbin (and KSC) rotating by 83&deg; in the time it takes you to reach apoapsis. The best position for your first satellite is 60&deg; away from KSC's longitude (for a 3-satellite network) or 45&deg; away from KSC (for a 4-satellite network). So the best place to put the maneuver node is:
+You now need to schedule a maneuver node for the KEO transfer orbit. You want to set your apoapsis at about 2870&nbsp;km (it doesn't have to be exact), and schedule the maneuver node so that you reach apoapsis while the satellite has a line of sight to the Kerbal Space Center (KSC). The transfer (from an 80&nbsp;km starting orbit) will take 1 hour 23 minutes, so you want to account for Kerbin (and KSC) rotating by 83&deg; in the time it takes you to reach apoapsis. The best position for your first satellite is 60&deg; away from KSC's longitude (for a 3-satellite network) or 45&deg; away from KSC (for a 4-satellite network), so that two satellites can contact KSC directly. So the best place to put the maneuver node is:
 
 Network Size | 1st Satellite East of KSC | 1st Satellite West of KSC
 -------------|:-------------------------:|:-------------------------:
@@ -58,14 +79,14 @@ If you don't have a pre-existing satellite network, three of the four possible b
 
 Once you are approaching apoapsis (and are in contact with KSC, thanks to your careful maneuver timing), circularize your orbit as usual. Your goal is to set your period as close to 6 Earth hours (1 Kerbin day) as you can . It does not matter if your orbit is perfectly circular; it does not matter if your orbit is perfectly uninclined. **The orbital period is what makes a keosynchronous orbit work.** Write down your exact final period for later use.
 
-Once you've achieved your final orbit, you're done. If you're using a dish antenna to contact the KSC, switch its target to Kerbin. This will let the remaining satellites in the network benefit from your first satellite's superior coverage.
+Once you've achieved your final orbit, you're done. If you're using a dish antenna to contact the KSC, switch its target to Kerbin to use cone mode. This will let the remaining satellites in the network benefit from your first satellite's superior coverage.
 
 ###Remaining Satellites
 {: .spacer}
 
 ![Image showing how the map view should look before the second satellite's transfer burn](single_2_align.png "A good transfer burn for the second of three satellites: apoapsis at KEO altitude, and 6000 km from the first satellite"){: .right}
 
-Fortunately, the first satellite was the hardest, because now you can use Kerbal Space Program's built-in tools to place your remaining satellites. Launch each satellite into low Kerbin orbit as before. Set up all your satellite's sibling connections while in low Kerbin orbit, making sure to have the previous satellites point a dish at your new satellite as well. This will let you keep in touch with your new satellite for a much larger portion of its orbit than if it relied on a direct line to KSC.
+Fortunately, the first satellite was the hardest, because now you can use Kerbal Space Program's built-in tools to place your remaining satellites. Launch each satellite into low Kerbin orbit as before. While in low orbit, make sure your new satellite has a dish pointed at the previous satellite in the network, and vice versa. This will let you keep in touch with your new satellite for a much larger portion of its orbit than if it relied on a direct line to KSC.
 
 Use the map view to select the previous satellite in the network as the target. Set a maneuver node that reaches an apoapsis of 2870&nbsp;km; a rendezvous marker should appear, telling you how far your satellite will be from the target at apoapsis. Adjust the maneuver node's position until this distance is close to 6008&nbsp;km (for a 3-satellite network) or 4906&nbsp;km (for a 4-satellite network). If the maneuver node is in one of your network's blind spots, use the flight computer to handle the burn.
 
@@ -81,23 +102,23 @@ Once you are happy with your orbit, double-check that all dishes have the target
 
 ##Method 2: Single Launcher
 
-For this method, you want to stack all your satellites on top of your rocket, with a stack separator (NOT a decoupler) between each. Configure your staging so that the satellites are released from top to bottom.
+For this method, you want to stack all your satellites on top of your rocket, with a stack separator (NOT a decoupler, unless you want it permanently attached to one of your satellites) between each. Configure your staging so that the satellites are released from top to bottom.
 
-Use a rocket with at least 5400 m/s of delta-V, not including any fuel in the satellites. Make sure each satellite has at least 435 m/s.
+Use a rocket with at least 5400 m/s of delta-V, not including any fuel in the satellites, for reaching a transfer orbit. Make sure each satellite has at least 435 m/s for circularizing into keosynchronous equatorial orbit (KEO).
 
 ###Transfer orbit 1
 
-Begin by launching into an elliptical orbit with an apoapsis of 2870&nbsp;km (it doesn't have to be exact). If you are using the [Comms DTS-M1](../../guide/parts/#comms-dts-m1) as your Kerbin communication antenna, target the Kerbin antenna on each of the satellites at Mission Control (not Kerbin) to maintain contact whenever your satellite is above the horizon.
+Begin by launching into an elliptical orbit with an apoapsis of 2870&nbsp;km (it doesn't have to be exact). If you are using the [Comms DTS-M1](../../guide/parts/#comms-dts-m1) as your Kerbin communication antenna, target an antenna on *each* of the satellites at Mission Control (not Kerbin) to maintain contact whenever your satellite is above the horizon. Setting up the antennas while coasting upward means less chances for a costly mistake when you start detaching satellites.
 
 ![A screenshot of a good position to drop the first satellite](multi_1_align.png){: .left}
 
 Wait until the rocket approaches apoapsis while in line of sight from KSC. A position directly over KSC will make for a less robust network; a good position would be 40-80&deg; away (for a 3-satellite network) or 10-80&deg; away (for a 4-satellite network), because these positions give two satellites in the network direct lines of sight to KSC.
 
-Once you are approaching apoapsis, deploy whatever antennas you need for your first satellite and your rocket to be able to maintain contact with KSC *independently*, then release the satellite and switch to it. 
+Once you are approaching apoapsis, double check that your first satellite and your rocket can maintain contact with KSC *independently*, then release the satellite and switch to it. 
 
 Once your satellite reaches apoapsis, circularize its orbit using its built-in engine. Your goal is to set your period as close to 6 Earth hours (1 Kerbin day) as you can. It does not matter if your orbit is perfectly circular; it does not matter if your orbit is perfectly uninclined. **The orbital period is what makes a keosynchronous orbit work.** Write down your exact final period for later use.
 
-Once you've achieved your final orbit, all that's left is setting up the antennas. If you're using a dish antenna to contact the KSC, switch its target to Kerbin. This will let the rocket and the remaining satellites benefit from your first satellite's superior coverage.
+Once you've achieved your final orbit, all that's left is setting up the antennas. If you're using a dish antenna to contact the KSC, switch its target to Kerbin. This will let the rocket and the remaining satellites benefit from your first satellite's superior coverage. Also point one of your dishes to the launch rocket, since it includes the next satellite in the chain.
 
 ![An example of a transfer orbit](multi_xfer.png "A 4.5-hour transfer orbit immediately after releasing the first satellite"){: .left}
 
@@ -117,7 +138,7 @@ Before releasing the satellite:
 Immediately after releasing the satellite:
 
 * The rocket should point a dish at the satellite that was just released. The dish that was pointing at the previous satellite may be used, although this may temporarily break the rocket's connection to Mission Control.
-* The previous satellite should retarget the dish pointing at the rocket to the satellite that was just released.
+* The previous satellite should retarget the dish that was pointing at the rocket to the satellite that was just released.
 * The satellite just released should point an unused dish at the rocket.
 * The satellite should retarget its Mission Control dish to point to Kerbin.
 
@@ -148,7 +169,10 @@ Period Error | Drift Rate             | Time to drift 20&deg;
 
 It is nearly impossible to give two satellites exactly the same orbital period, because the period will change whenever the satellite rotates (for example, to keep facing the sun over the course of the year). For the last word in satellite synchronization, you may wish to edit your save file. Some RemoteTech players see this as essential to get around game engine limitations, others see it as cheating. You will have to decide for yourself.
 
-Once you've synched up your satellites in-game as best you can, exit the game and open saves/&lt;Your Game Name&gt;/persistent.sfs in any text editor. Search for the name of your first satellite, ignoring any debris entries, then find a block a few lines down that looks like this:
+WARNING: editing the save file may corrupt the save if you are not careful. Make a copy of your save game before proceeding.
+{:.alert .alert-danger}
+
+Once you've synced up your satellites in-game as best you can, exit the game and open `saves/<Your Game Name>/persistent.sfs` in any text editor. Search for the name of your first satellite, ignoring any debris entries, then find a block a few lines down that looks like this:
 
     ORBIT
     {
