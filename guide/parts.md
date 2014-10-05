@@ -28,10 +28,10 @@ km
 
 Part                | Cost | Mass            | Drag | Range          | Power Drain   | Notes
 :-------------------|-----:|:----------------|------|---------------:|:--------------|:------
-[Reflectron DP-10](#reflectron-dp-10) | 80   | 0.005&nbsp;tons | 0.2  |    500&nbsp;km | 0.01&nbsp;e/s | Activated on mission start. Not damaged by atmospheric flight
-[Communotron 16](#communotron-16) | 150  | 0.005&nbsp;tons | 0.2  |   2500&nbsp;km | 0.13&nbsp;e/s | 
-[CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 550  | 0.02&nbsp;tons  | 0.0  |   3000&nbsp;km | 0.18&nbsp;e/s | 
-[Communotron 32](#communotron-32) | 150  | 0.01&nbsp;tons  | 0.2  |   5000&nbsp;km | 0.6&nbsp;e/s  | 
+[Reflectron DP-10](#reflectron-dp-10) | 60   | 0.005&nbsp;tons | 0.2  |    500&nbsp;km | 0.01&nbsp;e/s | Activated on mission start. Not damaged by atmospheric flight
+[Communotron 16](#communotron-16) | 300  | 0.005&nbsp;tons | 0.2  |   2500&nbsp;km | 0.13&nbsp;e/s | 
+[CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 400  | 0.02&nbsp;tons  | 0.0  |   3000&nbsp;km | 0.18&nbsp;e/s | 
+[Communotron 32](#communotron-32) | 600  | 0.01&nbsp;tons  | 0.2  |   5000&nbsp;km | 0.6&nbsp;e/s  | 
 KSC Mission Control |      |                 |      | 75,000&nbsp;km |               | Command Station
 {:.data}
 
@@ -51,7 +51,7 @@ The Reflectron DP-10 is a lightweight omnidirectional antenna. Its omnidirection
 Tech to Unlock      | [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
-Cost                | 80
+Cost                | 60
 Mass                | 0.005 tons
 Length              | 1.375 m
 Drag                | 0.2
@@ -89,7 +89,7 @@ As in the stock game, the Communotron 16 is the starting omnidirectional antenna
 Tech to Unlock      | [None](http://wiki.kerbalspaceprogram.com/wiki/Start)
 VAB Category        | Science Parts
 Manufacturer        | Ionic Protonic Electronics
-Cost                | 150
+Cost                | 300
 Mass                | 0.005 tons
 Length              | 1.5 m
 Drag                | 0.2
@@ -130,7 +130,7 @@ The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It
 Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
-Cost                | 150
+Cost                | 400
 Mass                | 0.005 tons
 Length              | 2 m
 Drag                | 0.2
@@ -171,7 +171,7 @@ The Communotron 32 is the most powerful omnidirectional antenna available in Rem
 Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | Ionic Protonic Electronics
-Cost                | 150
+Cost                | 600
 Mass                | 0.01 tons
 Length              | 3 m
 Drag                | 0.2
@@ -207,12 +207,12 @@ km
 
 Antenna           | Cost | Mass            | Drag | Cone | Range          | Power Drain   | Notes
 :-----------------|-----:|:----------------|------|:-----------|---------------:|:--------------|:------
-[Comms DTS-M1](#comms-dts-m1) | 100  | 0.03&nbsp;tons  | 0.2  | 45&deg;    | 50,000&nbsp;km | 0.82&nbsp;e/s | 
-[Reflectron KR-7](#reflectron-kr-7) | 100  | 0.5&nbsp;tons   | 0.2  | 25&deg;    | 90,000&nbsp;km | 0.82&nbsp;e/s | Not damaged by atmospheric flight
-[Communotron 88-88](#communotron-88-88) | 900  | 0.025&nbsp;tons | 0.2  | 0.06&deg;  | 40M&nbsp;km    | 0.93&nbsp;e/s | 
-[Reflectron KR-14](#reflectron-kr-14) | 100  | 1.0&nbsp;tons   | 0.2  | 0.04&deg;  | 60M&nbsp;km    | 0.93&nbsp;e/s | Not damaged by atmospheric flight
-[CommTech-1](#commtech-1) | 800  | 1.0&nbsp;tons   | 0.2  | 0.006&deg; | 350M&nbsp;km   | 2.6&nbsp;e/s  | Not damaged by atmospheric flight
-[Reflectron GX-128](#reflectron-gx-128) | 800  | 0.5&nbsp;tons   | 0.2  | 0.005&deg; | 400M&nbsp;km   | 2.8&nbsp;e/s  | 
+[Comms DTS-M1](#comms-dts-m1) | 600  | 0.03&nbsp;tons  | 0.2  | 45&deg;    | 50,000&nbsp;km | 0.82&nbsp;e/s | 
+[Reflectron KR-7](#reflectron-kr-7) | 800  | 0.5&nbsp;tons   | 0.2  | 25&deg;    | 90,000&nbsp;km | 0.82&nbsp;e/s | Not damaged by atmospheric flight
+[Communotron 88-88](#communotron-88-88) | 1100  | 0.025&nbsp;tons | 0.2  | 0.06&deg;  | 40M&nbsp;km    | 0.93&nbsp;e/s | 
+[Reflectron KR-14](#reflectron-kr-14) | 2000  | 1.0&nbsp;tons   | 0.2  | 0.04&deg;  | 60M&nbsp;km    | 0.93&nbsp;e/s | Not damaged by atmospheric flight
+[CommTech-1](#commtech-1) | 9500  | 1.0&nbsp;tons   | 0.2  | 0.006&deg; | 350M&nbsp;km   | 2.6&nbsp;e/s  | Not damaged by atmospheric flight
+[Reflectron GX-128](#reflectron-gx-128) | 11000  | 0.5&nbsp;tons   | 0.2  | 0.005&deg; | 400M&nbsp;km   | 2.8&nbsp;e/s  | 
 {:.data}
 
 **Warning:** the Reflectron SS-5 and Reflectron LL-5 are legacy parts included for backward compatibility. Do not use these parts in new spacecraft, as they will be removed in an upcoming release of RemoteTech.
@@ -232,7 +232,7 @@ The Comms DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone
 Tech to Unlock      | [Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Science_Tech)
 VAB Category        | Science Parts
 Manufacturer        | Ionic Symphonic Protonic Electronics
-Cost                | 100
+Cost                | 600
 Mass                | 0.03 tons
 Dimensions          | 1 &times; 0.75  m
 Drag                | 0.2
@@ -276,7 +276,7 @@ The Reflectron KR-7 is the second short-range antenna available from RemoteTech.
 Tech to Unlock      | [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Electrics)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
-Cost                | 100
+Cost                | 800
 Mass                | 0.5 tons
 Diameter            | 1.375 m
 Drag                | 0.2
@@ -361,7 +361,7 @@ The Reflectron KR-14 is an intermediate-range interplanetary antenna. It can eas
 Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
-Cost                | 100
+Cost                | 2200
 Mass                | 1.0 tons
 Diameter            | 2.75 m
 Drag                | 0.2
@@ -404,7 +404,7 @@ For players using Planet Factory, the CommTech-1 can reach Inaccessable and Sent
 Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
 VAB Category        | Science Parts
 Manufacturer        | AIES Aerospace
-Cost                | 800
+Cost                | 9500
 Mass                | 1.0 tons
 Diameter            | 3.5 m
 Drag                | 0.2
@@ -445,7 +445,7 @@ The Reflectron-GX-128 is the longest-range antenna available in RemoteTech. Whil
 Tech to Unlock      | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Advanced_Science_Tech)
 VAB Category        | Science Parts
 Manufacturer        | Parabolic Industries
-Cost                | 800
+Cost                | 11000
 Mass                | 0.5 tons
 Diameter            | 6.5 m
 Drag                | 0.2
