@@ -21,7 +21,6 @@ namespace RemoteTech
         [KSPField(guiName = "Comms", guiActive = true)]
         public String GUI_Status = "";
 
-        private ModuleRTAntenna mParent;
         private bool mBusy;
         private List<ScienceData> mQueue = new List<ScienceData>();
 
@@ -34,7 +33,6 @@ namespace RemoteTech
             }
 
             var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
-            mParent = antennas.Count > 0 ? antennas[0] : null;
             GUI_Status = "Idle";
         }
 

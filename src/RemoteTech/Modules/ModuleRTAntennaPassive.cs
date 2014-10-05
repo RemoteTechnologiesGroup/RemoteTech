@@ -63,8 +63,8 @@ namespace RemoteTech
         public Guid RTAntennaTarget = Guid.Empty;
 
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
-        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
-        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
+//        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
+//        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
 

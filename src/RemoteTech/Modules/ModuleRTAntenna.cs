@@ -153,7 +153,6 @@ namespace RemoteTech
 
         public virtual void SetState(bool state)
         {
-            bool prev_state = IsRTActive;
             IsRTActive = state && !IsRTBroken;
             Events["EventOpen"].guiActive = Events["EventOpen"].active = 
             Events["EventEditorOpen"].guiActiveEditor = 
@@ -350,7 +349,6 @@ namespace RemoteTech
 
             if (!IsRTActive) return State.Off;
 
-            ModuleResource request = new ModuleResource();
             float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
             if (resourceAmount < resourceRequest * 0.9) return State.NoResources;

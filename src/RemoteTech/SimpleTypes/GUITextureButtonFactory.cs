@@ -32,11 +32,6 @@ namespace RemoteTech
         private static GUIStyle CreateFromTextures(Texture2D texNormal, Texture2D texHover,
                                                    Texture2D texActive, Texture2D texFocus)
         {
-            GUIStyleState normal = new GUIStyleState()
-            {
-                background = texNormal,
-                textColor = Color.white,
-            };
             return new GUIStyle()
             {
                 name = texNormal.name,
