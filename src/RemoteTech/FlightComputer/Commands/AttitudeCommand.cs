@@ -17,6 +17,7 @@ namespace RemoteTech
 
     public enum FlightAttitude
     {
+        Null,
         Prograde,
         Retrograde,
         NormalPlus,
