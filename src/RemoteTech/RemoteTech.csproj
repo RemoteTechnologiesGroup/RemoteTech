@@ -103,6 +103,7 @@
     <Compile Include="SimpleTypes\NetworkRoute.cs" />
     <Compile Include="SimpleTypes\PriorityQueue.cs" />
     <Compile Include="SimpleTypes\NetworkLink.cs" />
+    <Compile Include="SimpleTypes\TimeStringConverter.cs" />
     <Compile Include="UI\AbstractWindow.cs" />
     <Compile Include="UI\AntennaFragment.cs" />
     <Compile Include="UI\AntennaWindow.cs" />
@@ -119,7 +120,6 @@
     <Compile Include="UI\QueueFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
     <Compile Include="UI\TimeWarpDecorator.cs" />
-    <Compile Include="Utils\TimeStringConverter.cs" />
     <Compile Include="VesselSatellite.cs" />
   </ItemGroup>
   <ItemGroup>

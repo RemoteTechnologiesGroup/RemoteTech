@@ -18,9 +18,10 @@ namespace RemoteTech
         /// </summary>
         public EarthTimeStringConverter()
         {
-            this.SecondsPerDay = 86400;
-            this.SecondsPerHour = 3600;
-            this.SecondsPerMinute = 60;
+            this.SecondsPerYear = 31536000; // = 365d
+            this.SecondsPerDay = 86400;     // = 24h
+            this.SecondsPerHour = 3600;     // = 60m
+            this.SecondsPerMinute = 60;     // = 60s
         }
     }
 
@@ -36,9 +37,10 @@ namespace RemoteTech
         /// </summary>
         public KerbinTimeStringConverter()
         {
-            this.SecondsPerDay = 21600;
-            this.SecondsPerHour = 3600;
-            this.SecondsPerMinute = 60;
+            this.SecondsPerYear = 9201600;  // = 426d
+            this.SecondsPerDay = 21600;     // = 6h
+            this.SecondsPerHour = 3600;     // = 60m
+            this.SecondsPerMinute = 60;     // = 60s
         }
     }
 
@@ -49,13 +51,9 @@ namespace RemoteTech
     abstract class TimeStringConverter
     {
         /// <summary>
-        /// Constant value for the days per year
-        /// </summary>
-        public const int DAYS_PER_YEAR = 365;
-        /// <summary>
         /// Get the seconds for one year
         /// </summary>
-        protected uint SecondsPerYear { get { return TimeStringConverter.DAYS_PER_YEAR * this.SecondsPerDay; } }
+        protected uint SecondsPerYear;
         /// <summary>
         /// Get the seconds for one day
         /// </summary>
