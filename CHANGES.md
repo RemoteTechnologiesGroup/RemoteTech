@@ -1,3 +1,40 @@
+Version 1.5.0
+========================================
+Release date TBD
+
+**WARNING:** this release changes the mod's folder and DLL names from `RemoteTech2` to `RemoteTech`. You must delete the old `RemoteTech2` directory before installing this version. We take **NO RESPONSIBILITY** for any bugs that may happen from having both `RemoteTech` and `RemoteTech2` in your `GameData` folder.
+
+Features:
+--------------------
+
+* The mod has officially been renamed from RemoteTech 2 to RemoteTech. Ignore the warning above at your own peril.
+* Vessel lists in antenna targeting window and in map view can now be customized using the map view filters (thanks to monstah for the suggestion!)
+* If you use FAR or NEAR, you can now protect antennas from breaking by putting them inside a fairing.
+* The number of crew needed to both operate a command station and fly a ship can now be configured on a part-by-part basis.
+* B9 and FASA parts now officially supported.
+* The 3 km omni upgrade to probe cores now appears in the tech tree.
+* Module Manager patches now support MM2 features, including `:BEFORE`, `:FOR`, and `:AFTER` patch ordering.
+* Updated KSP-AVC support, including more flexible KSP version requirements. Can now use KSP-AVC to download release notes in-game.
+
+Rule Changes:
+--------------------
+
+* Flight computer clocks will keep running even if the vessel runs out of power (though you still need power to actually *do* anything). This is a workaround for a KSP bug that causes energy consumption to be overestimated at maximum time warp.
+
+Bug Fixes:
+--------------------
+
+* Icons in map view easier to understand.
+* Research will now be completely transmitted in 64-bit KSP.
+* Pointing a dish at Mission Control from a fresh RemoteTech install will no longer corrupt saves.
+* Ships will no longer have signal delay many times larger than they should.
+* Flight computer will now take engine gimbaling into account when slewing.
+* KSP should no longer crash when running the flight computer on a ship with no rotation torque.
+* RemoteTech modules will no longer be added twice to the same part.
+* If a ship is loaded while out of contact and uncontrollable, you will no longer be able to toggle controls or action groups.
+* RemoteTech config files will no longer appear to be on one line when opened in a text editor that only recognizes Windows line endings.
+* Nonstandard RemoteTech installations will no longer cause missing (a.k.a. "pink") textures.
+
 Version 1.4.1
 ========================================
 Released August 28, 2014
