@@ -20,7 +20,8 @@ namespace RemoteTech
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                 foreach (VesselSatellite sat in RTCore.Instance.Satellites)
                 {
-                    if (sat.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(sat.parentVessel)) {
+                    if ((sat.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(sat.parentVessel)) || FlightGlobals.ActiveVessel == sat.parentVessel)
+                    {
                         continue;
                     }
 
@@ -31,24 +32,23 @@ namespace RemoteTech
                         if (mSelection != null)
                         {
                             MapObject newTarget = PlanetariumCamera.fetch.targets.FirstOrDefault(t => t != null && t.gameObject.name == sat.Name);
-                            if (newTarget == null)
-                            {
-                                Vessel vessel = sat.SignalProcessor.Vessel;
-                                ScaledMovement scaledMovement = new GameObject().AddComponent<ScaledMovement>();
-                                scaledMovement.tgtRef = vessel.transform;
-                                scaledMovement.name = sat.Name;
-                                scaledMovement.transform.parent = ScaledSpace.Instance.transform;
-                                scaledMovement.vessel = vessel;
-                                scaledMovement.type = MapObject.MapObjectType.VESSEL;
-                                newTarget = scaledMovement;
-                                PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
-                                PlanetariumCamera.fetch.targets.Remove(newTarget);
-                            }
-                            else
-                            {
-                                PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
-                            }
-                            
+                            Vessel vessel = sat.SignalProcessor.Vessel;
+                            ScaledMovement scaledMovement = new GameObject().AddComponent<ScaledMovement>();
+                            scaledMovement.tgtRef = vessel.transform;
+                            scaledMovement.name = sat.Name;
+                            scaledMovement.transform.parent = ScaledSpace.Instance.transform;
+                            scaledMovement.vessel = vessel;
+                            scaledMovement.type = MapObject.MapObjectType.VESSEL;
+                            newTarget = scaledMovement;
+
+                            var success = PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
+                            PlanetariumCamera.fetch.targets.Remove(newTarget);
+                            PlanetariumCamera.fetch.target = PlanetariumCamera.fetch.initialTarget;
+                        }
+                        else
+                        {
+                            // go back to the active vessel
+                            PlanetariumCamera.fetch.SetTarget("ActiveVesselScaled");
                         }
                     });
                 }
@@ -56,6 +56,12 @@ namespace RemoteTech
                 GUI.contentColor = pushColor;
             }
             GUILayout.EndScrollView();
+        }
+
+        public void resetSelection()
+        {
+            // reset the selection set before
+            mSelection = null;
         }
     }
 }
