@@ -31,7 +31,6 @@ namespace RemoteTech
                         mSelection = (s > 0) ? sat : null;
                         if (mSelection != null)
                         {
-                            MapObject newTarget = PlanetariumCamera.fetch.targets.FirstOrDefault(t => t != null && t.gameObject.name == sat.Name);
                             Vessel vessel = sat.SignalProcessor.Vessel;
                             ScaledMovement scaledMovement = new GameObject().AddComponent<ScaledMovement>();
                             scaledMovement.tgtRef = vessel.transform;
@@ -39,16 +38,15 @@ namespace RemoteTech
                             scaledMovement.transform.parent = ScaledSpace.Instance.transform;
                             scaledMovement.vessel = vessel;
                             scaledMovement.type = MapObject.MapObjectType.VESSEL;
-                            newTarget = scaledMovement;
 
-                            var success = PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(newTarget));
-                            PlanetariumCamera.fetch.targets.Remove(newTarget);
-                            PlanetariumCamera.fetch.target = PlanetariumCamera.fetch.initialTarget;
+                            var success = PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(scaledMovement));
+                            PlanetariumCamera.fetch.targets.Remove(scaledMovement);
+                            this.resetTarget();
                         }
                         else
                         {
                             // go back to the active vessel
-                            PlanetariumCamera.fetch.SetTarget("ActiveVesselScaled");
+                            PlanetariumCamera.fetch.SetTarget(this.resetTarget());
                         }
                     });
                 }
@@ -58,10 +56,34 @@ namespace RemoteTech
             GUILayout.EndScrollView();
         }
 
+        /// <summary>
+        /// This method resets the current selected state button on the FocusFragment.
+        /// Should be called by enter map view.
+        /// </summary>
         public void resetSelection()
         {
             // reset the selection set before
             mSelection = null;
+        }
+
+        /// <summary>
+        /// Reset the current target object on the PlanetariumCamera to the Active vessel
+        /// or if there is no active vessel (tracking station), back to Kerbin
+        /// </summary>
+        /// <returns>Found target as MapObject. Can be the active vessel or kerbin</returns>
+        public MapObject resetTarget()
+        {
+            // try to get the active vessel
+            int target_id = PlanetariumCamera.fetch.GetTargetIndex("ActiveVesselScaled");
+            if (target_id == -1)
+            {
+                // there is no active vessel, go to target kerbin
+                target_id = PlanetariumCamera.fetch.GetTargetIndex("Kerbin");
+            }
+
+            MapObject activeVesselObj = PlanetariumCamera.fetch.GetTarget(target_id);
+            PlanetariumCamera.fetch.target = activeVesselObj;
+            return activeVesselObj;
         }
     }
 }
