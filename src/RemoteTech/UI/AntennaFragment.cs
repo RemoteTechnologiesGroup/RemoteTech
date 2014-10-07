@@ -79,8 +79,10 @@ namespace RemoteTech
             }
             
             mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
-            Color pushCtColor = GUI.contentColor;
-            Color pushBgColor = GUI.backgroundColor;
+            Color pushColor = GUI.backgroundColor;
+            // starstriders changes
+            //Color pushCtColor = GUI.contentColor;
+            //Color pushBgColor = GUI.backgroundColor;
             TextAnchor pushAlign = GUI.skin.button.alignment;
             try {
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
@@ -95,13 +97,14 @@ namespace RemoteTech
                     Entry current = dfs.Pop();
                     GUI.backgroundColor = current.Color;
 
-                    string diagnosis;
-                    KeyValuePair<string, Color> temp = NetworkFeedback.tryConnection(Antenna, current.Guid);
-                    diagnosis = temp.Key;
-                    if (diagnosis.Length > 0) {
-                        diagnosis = " (" + diagnosis + ")";
-                    }
-                    GUI.contentColor = temp.Value;
+                    // starstriders changes
+                    //string diagnosis;
+                    //KeyValuePair<string, Color> temp = NetworkFeedback.tryConnection(Antenna, current.Guid);
+                    //diagnosis = temp.Key;
+                    //if (diagnosis.Length > 0) {
+                    //    diagnosis = " (" + diagnosis + ")";
+                    //}
+                    //GUI.contentColor = temp.Value;
 
                     GUILayout.BeginHorizontal();
                     {
@@ -114,7 +117,9 @@ namespace RemoteTech
                                     current.Expanded = !current.Expanded;
                                 }, GUILayout.Width(24));
                         }
-                        RTUtil.StateButton(current.Text + diagnosis, mSelection == current ? 1 : 0, 1,
+                        // starstriders changes
+                        // RTUtil.StateButton(current.Text + diagnosis, mSelection == current ? 1 : 0, 1,
+                        RTUtil.StateButton(current.Text, mSelection == current ? 1 : 0, 1,
                             (s) =>
                             {
                                 mSelection = current;
@@ -147,8 +152,10 @@ namespace RemoteTech
             } finally {
                 GUILayout.EndScrollView();
                 GUI.skin.button.alignment = pushAlign;
-                GUI.backgroundColor = pushBgColor;
-                GUI.contentColor = pushCtColor;
+                GUI.backgroundColor = pushColor;
+                // starstriders changes
+                //GUI.backgroundColor = pushBgColor;
+                //GUI.contentColor = pushCtColor;
             }
         }
 
