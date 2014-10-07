@@ -35,13 +35,11 @@ namespace RemoteTech
         private Entry mRootEntry = new Entry();
         /// <summary>The Entry corresponding to the currently selected target, if any.</summary>
         private Entry mSelection;
-<<<<<<< HEAD:src/RemoteTech2/UI/AntennaFragment.cs
         public TargetInfoPopup mTargetInfoPopup;
-=======
+
         /// <summary>The Entries corresponding to loaded celestial bodies.</summary>
         private Dictionary<CelestialBody, Entry> mEntries;      // Current planet list
         private int refreshCounter = 0;
->>>>>>> origin/master-dev:src/RemoteTech/UI/AntennaFragment.cs
 
         public AntennaFragment(IAntenna antenna)
         {
@@ -65,9 +63,6 @@ namespace RemoteTech
 
         public void Draw()
         {
-<<<<<<< HEAD:src/RemoteTech2/UI/AntennaFragment.cs
-            if (this.mTargetInfoPopup != null)
-=======
             // Allow update for non-triggering changes (e.g., changing map view filters or changing a vessel's type)
             // This is the best way I could find to do periodic refreshes; 
             //  RTCore.Instance.InvokeRepeating() would require a search for instances 
@@ -78,12 +73,11 @@ namespace RemoteTech
                 refreshCounter = 0;
             }
 
-            mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
->>>>>>> origin/master-dev:src/RemoteTech/UI/AntennaFragment.cs
+            if (this.mTargetInfoPopup != null)
             {
                 this.mTargetInfoPopup.Hide();
             }
-
+            
             mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
             Color pushCtColor = GUI.contentColor;
             Color pushBgColor = GUI.backgroundColor;
