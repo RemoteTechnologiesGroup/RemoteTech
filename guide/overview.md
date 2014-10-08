@@ -43,7 +43,7 @@ RemoteTech adds an overlay to the map view to display the state of your communic
 ![IMAGE: First button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texPath.png)
 :   This button will highlight the links used in the working connection (if any) as a green line.
 
-![IMAGE: Second button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texPlanet.png)
+![IMAGE: Second button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texCone.png)
 :   This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships far off the edge of the screen will not be shown.
 
 ![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texOmniDish.png)
