@@ -156,7 +156,7 @@ $RECYCLE.BIN/
 .DS_Store
 
 # Ignore dependencies and builds
-src/RemoteTech2/*.dll
+src/RemoteTech/*.dll
 *.zip
-GameData/RemoteTech2/Plugins/RemoteTech2.dll
+GameData/RemoteTech/Plugins/RemoteTech.dll
 GameData/build.txt
