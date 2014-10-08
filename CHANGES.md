@@ -1,6 +1,6 @@
 Version 1.5.0
 ========================================
-Release date TBD
+Released October 7, 2014
 
 **WARNING:** this release changes the mod's folder and DLL names from `RemoteTech2` to `RemoteTech`. You must delete the old `RemoteTech2` directory before installing this version. We take **NO RESPONSIBILITY** for any bugs that may happen from having both `RemoteTech` and `RemoteTech2` in your `GameData` folder.
 
