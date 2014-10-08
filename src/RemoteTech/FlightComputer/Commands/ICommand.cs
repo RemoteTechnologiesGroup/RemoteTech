@@ -9,11 +9,8 @@ namespace RemoteTech
     {
         double TimeStamp { get; set; }
         double ExtraDelay { get; set; }
-<<<<<<< HEAD:src/RemoteTech2/FlightComputer/Commands/ICommand.cs
         double Delay { get; }
-=======
         // The command description displayed in the flight computer
->>>>>>> origin/master:src/RemoteTech/FlightComputer/Commands/ICommand.cs
         String Description { get; }
         // An abbreviated version of the description for inline inclusion in messages
         String ShortName { get; }
