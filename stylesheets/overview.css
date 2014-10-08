@@ -6,7 +6,7 @@
 
 /** Make the icon-labeled list easier to read */
 dl.indentedlist dd {
-    margin-left: 100px;
+/*    margin-left: 100px;*/
 }
 dl.indentedlist dt {
     float: left;
