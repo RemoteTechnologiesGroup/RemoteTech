@@ -7,6 +7,7 @@ Release date TBD
 Features:
 --------------------
 
+* Compatible with KSP 0.25.
 * The mod has officially been renamed from RemoteTech 2 to RemoteTech. Ignore the warning above at your own peril.
 * Vessel lists in antenna targeting window and in map view can now be customized using the map view filters (thanks to monstah for the suggestion!)
 * If you use FAR or NEAR, you can now protect antennas from breaking by putting them inside a fairing.
