@@ -8,7 +8,7 @@ navbar: false
 
 # Adding Ground Stations
 
-The `GroundStations` section of `RemoteTech2/RemoteTech_Settings.cfg` (which will be created when you start KSP) controls the number, range, and placement of satellite uplink stations. Each `STATION{}` block represents a station. By default, there is only one ground station, coinciding with the KSC Tracking Station.
+The `GroundStations` section of `RemoteTech/RemoteTech_Settings.cfg` (which will be created when you start KSP) controls the number, range, and placement of satellite uplink stations. Each `STATION{}` block represents a station. By default, there is only one ground station, coinciding with the KSC Tracking Station.
 
 Each `STATION{}` block needs the following fields:
 

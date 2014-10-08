@@ -13,7 +13,7 @@ navbar: false
 
 {% include toc.html %}
 
-RemoteTech has several configurable options controlled from the file `RemoteTech2/RemoteTech_Settings.cfg`. This file is not included in the RemoteTech download, to keep players from overwriting their settings when they update to a new version. If you do not have a `RemoteTech_Settings.cfg` file, a new one will be automatically created with default settings when you start Kerbal Space Program.
+RemoteTech has several configurable options controlled from the file `RemoteTech/RemoteTech_Settings.cfg`. This file is not included in the RemoteTech download, to keep players from overwriting their settings when they update to a new version. If you do not have a `RemoteTech_Settings.cfg` file, a new one will be automatically created with default settings when you start Kerbal Space Program.
 
 The settings are as follows:
 
