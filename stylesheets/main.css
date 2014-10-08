@@ -101,6 +101,9 @@ table.data td, table.data th {
 table.data th {
 	text-align: center;
 }
+table.data th, table.sidehead td:first-child {
+	font-weight: bold;
+}
 table.data tbody tr:nth-child(2n) {
 	background-color: rgb(240,240,240);
 }
