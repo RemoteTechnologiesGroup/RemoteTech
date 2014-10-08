@@ -11,4 +11,4 @@ RemoteTech allows you to construct vast relay networks of communication satellit
 
 A [detailed manual](http://remotetechnologiesgroup.github.io/RemoteTech) is available on-line.
 
-Questions? Try the [KSP forum thread](http://forum.kerbalspaceprogram.com/threads/56399).
+Questions? Try the [KSP forum thread](http://forum.kerbalspaceprogram.com/threads/83305).
