@@ -9,6 +9,7 @@ namespace RemoteTech
         private static class Texture
         {
             public static readonly Texture2D Background;
+            public static readonly Texture2D BackgroundLeft;
             public static readonly Texture2D NoPath;
             public static readonly Texture2D Path;
             public static readonly Texture2D NoOmniDish;
@@ -21,6 +22,7 @@ namespace RemoteTech
             static Texture()
             {
                 RTUtil.LoadImage(out Background, "texBackground.png");
+                RTUtil.LoadImage(out BackgroundLeft, "texBackground_left.png");
                 RTUtil.LoadImage(out NoPath, "texNoPath.png");
                 RTUtil.LoadImage(out Path, "texPath.png");
                 RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish.png");
@@ -53,12 +55,21 @@ namespace RemoteTech
         private SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
         private AntennaFragment mAntennaFragment = new AntennaFragment(null);
         private bool mEnabled;
+        private bool onTrackingStation { get { return (HighLogic.LoadedScene == GameScenes.TRACKSTATION); } }
 
         private Rect Position
         {
             get
             {
-                return new Rect(Screen.width - Texture.Background.width,
+                int posX = Screen.width - Texture.Background.width;
+
+                // mirror to the left side on the tracking station
+                if (this.onTrackingStation)
+                {
+                    posX = 200;
+                }
+
+                return new Rect(posX,
                                 Screen.height - Texture.Background.height,
                                 Texture.Background.width,
                                 Texture.Background.height);
@@ -71,7 +82,15 @@ namespace RemoteTech
             {
                 var width = 350;
                 var height = 350;
-                return new Rect(Screen.width - width,
+                var posX = Screen.width - width;
+
+                // mirror to the left side on the tracking station
+                if (this.onTrackingStation)
+                {
+                    posX = 200;
+                }
+
+                return new Rect(posX,
                                 Screen.height - height,
                                 width,
                                 height);
@@ -85,7 +104,15 @@ namespace RemoteTech
                 var positionSatellite = PositionSatellite;
                 var width = 350;
                 var height = 350;
-                return new Rect(PositionSatellite.x - width,
+                var posX = PositionSatellite.x - width;
+
+                // mirror to the left side on the tracking station
+                if (this.onTrackingStation)
+                {
+                    posX = PositionSatellite.x + PositionSatellite.width;
+                }
+
+                return new Rect(posX,
                                 Screen.height - height,
                                 width,
                                 height);
@@ -212,20 +239,42 @@ namespace RemoteTech
                 GUILayout.EndArea();
             }
 
+            
+            // Switch the background from map view to tracking station
+            Texture2D backgroundImage = Texture.Background;
+            if(this.onTrackingStation)
+            {
+                backgroundImage = Texture.BackgroundLeft;
+            }
+
             // Draw Toolbar
-            GUILayout.BeginArea(Position, Texture.Background);
+            GUILayout.BeginArea(Position, backgroundImage);
             {
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.FlexibleSpace();
-                    if (GUILayout.Button(TextureComButton, Style.Button))
-                        OnClickCompath();
-                    if (GUILayout.Button(TextureReachButton, Style.Button))
-                        OnClickReach();
-                    if (GUILayout.Button(TextureTypeButton, Style.Button))
-                        OnClickType();
-                    if (GUILayout.Button("", StyleStatusButton))
-                        OnClickStatus();
+                    if (this.onTrackingStation)
+                    {
+                        if (GUILayout.Button("", StyleStatusButton))
+                            OnClickStatus();
+                        if (GUILayout.Button(TextureTypeButton, Style.Button))
+                            OnClickType();
+                        if (GUILayout.Button(TextureReachButton, Style.Button))
+                            OnClickReach();
+                        if (GUILayout.Button(TextureComButton, Style.Button))
+                            OnClickCompath();
+                    }
+                    else
+                    {
+                        GUILayout.FlexibleSpace();
+                        if (GUILayout.Button(TextureComButton, Style.Button))
+                            OnClickCompath();
+                        if (GUILayout.Button(TextureReachButton, Style.Button))
+                            OnClickReach();
+                        if (GUILayout.Button(TextureTypeButton, Style.Button))
+                            OnClickType();
+                        if (GUILayout.Button("", StyleStatusButton))
+                            OnClickStatus();
+                    }
                 }
                 GUILayout.EndHorizontal();
             }
