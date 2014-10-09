@@ -70,6 +70,7 @@ namespace RemoteTech
         public void OnEnterMapView()
         {
             RTCore.Instance.OnGuiUpdate += Draw;
+            mFocus.resetSelection();
         }
 
         public void OnExitMapView()
