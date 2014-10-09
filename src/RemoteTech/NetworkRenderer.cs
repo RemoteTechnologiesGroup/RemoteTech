@@ -13,6 +13,8 @@ namespace RemoteTech
         Dish   = 2,
         Sphere = 4,
         Cone   = 8,
+        Planet = 8,     // For backward compatibility with RemoteTech 1.4 and earlier
+                        // Cone should be first, so that it's the one that appears in settings file
         Path   = 16
     }
 
