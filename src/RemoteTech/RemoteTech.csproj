@@ -99,6 +99,7 @@
     <Compile Include="SimpleTypes\NetworkRoute.cs" />
     <Compile Include="SimpleTypes\PriorityQueue.cs" />
     <Compile Include="SimpleTypes\NetworkLink.cs" />
+    <Compile Include="SimpleTypes\TimeStringConverter.cs" />
     <Compile Include="UI\AbstractWindow.cs" />
     <Compile Include="UI\AntennaFragment.cs" />
     <Compile Include="UI\AntennaWindow.cs" />

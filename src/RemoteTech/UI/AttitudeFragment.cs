@@ -49,15 +49,7 @@ namespace RemoteTech
 
         private double Duration
         {
-            get
-            {
-                TimeSpan duration;
-                if (!RTUtil.TryParseDuration(mDuration, out duration))
-                {
-                    duration = new TimeSpan();
-                }
-                return duration.TotalSeconds;
-            }
+            get { return RTUtil.TryParseDuration(mDuration); }
             set { mDuration = RTUtil.FormatDuration(value); }
         }
 
