@@ -1,3 +1,18 @@
+Version 1.5.1
+========================================
+Released October 9, 2014
+
+**WARNING:** the 1.5 release changes the mod's folder and DLL names from `RemoteTech2` to `RemoteTech`. If you are upgrading from 1.4, you must delete the old `RemoteTech2` directory before installing this version. We take **NO RESPONSIBILITY** for any bugs that may happen from having both `RemoteTech` and `RemoteTech2` in your `GameData` folder.
+
+Bug Fixes:
+--------------------
+* Can now read settings files from RemoteTech 1.4 or earlier.
+* Map view will no longer crash when centering on different vessels.
+* FASA antennas won't crash when transmitting science.
+* FASA launch clamps now provide a communications line, just like stock clamps.
+* Flight computer now uses Kerbin or Earth days, as appropriate.
+* Tech tree node for integrated omni antenna now displays correctly.
+
 Version 1.5.0
 ========================================
 Released October 7, 2014
