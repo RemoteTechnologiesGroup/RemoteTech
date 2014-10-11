@@ -82,7 +82,8 @@ namespace RemoteTech
         /// seconds for this string. If no matching string was found with the
         /// "DurationRegex" we'll try to parse the given duration string as seconds.
         /// </summary>
-        /// <param name="duration">time string like "1d 2m 3s". Possible values: 0y 0d 0h 0m 0s</param>
+        /// <param name="duration">time string like "1d 2m 3s" or "500" (as seconds).
+        ///                        Possible suffixes: y,d,h,m and s</param>
         /// <returns>Given time string converted in seconds</returns>
         public Double parseString(String duration)
         {
