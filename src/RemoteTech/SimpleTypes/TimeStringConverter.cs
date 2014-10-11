@@ -80,7 +80,7 @@ namespace RemoteTech
         /// <summary>
         /// This method will parse a time string like "1d 2m 3s" and returns the
         /// seconds for this string. If no matching string was found with the
-        /// "DurationRegex" the return value will be 0.
+        /// "DurationRegex" we'll try to parse the given duration string as seconds.
         /// </summary>
         /// <param name="duration">time string like "1d 2m 3s". Possible values: 0y 0d 0h 0m 0s</param>
         /// <returns>Given time string converted in seconds</returns>
@@ -110,6 +110,16 @@ namespace RemoteTech
                 if (match.Groups["years"].Success)
                 {
                     timeInSeconds += Double.Parse(match.Groups["years"].Value) * this.SecondsPerYear;
+                }
+            }
+
+            // if we've no matches, try parsing the string as seconds
+            if (timeInSeconds == 0)
+            {
+                double tmpTimeinSeconds = 0.0;
+                if (Double.TryParse(duration, out tmpTimeinSeconds))
+                {
+                    timeInSeconds = tmpTimeinSeconds;
                 }
             }
 
