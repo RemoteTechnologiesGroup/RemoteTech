@@ -44,7 +44,9 @@ namespace RemoteTech
                     break;
 
                 case ReferenceFrame.TargetVelocity:
-                    if (f.DelayedTarget is Vessel)
+                    // Want vessels and part modules, but PartModule does not directly inherit from ITargetable
+                    // Can't foresee all third-party modules that use ITargetable
+                    if (f.DelayedTarget != null && !(f.DelayedTarget is CelestialBody))
                     {
                         forward = v.GetObtVelocity() - f.DelayedTarget.GetObtVelocity();
                         up = (v.mainBody.position - v.CoM);
@@ -57,7 +59,7 @@ namespace RemoteTech
                     break;
 
                 case ReferenceFrame.TargetParallel:
-                    if (f.DelayedTarget is Vessel)
+                    if (f.DelayedTarget != null && !(f.DelayedTarget is CelestialBody))
                     {
                         forward = f.DelayedTarget.GetTransform().position - v.CoM;
                         up = (v.mainBody.position - v.CoM);
