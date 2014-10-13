@@ -44,8 +44,9 @@ namespace RemoteTech
                     break;
 
                 case ReferenceFrame.TargetVelocity:
-                    // Want vessels and part modules, but PartModule does not directly inherit from ITargetable
-                    // Can't foresee all third-party modules that use ITargetable
+                    // f.DelayedTarget may be any ITargetable, including a planet
+                    // Velocity matching only makes sense for vessels and part modules
+                    // Can test for Vessel but not PartModule, so instead test that it's not the third case (CelestialBody)
                     if (f.DelayedTarget != null && !(f.DelayedTarget is CelestialBody))
                     {
                         forward = v.GetObtVelocity() - f.DelayedTarget.GetObtVelocity();
