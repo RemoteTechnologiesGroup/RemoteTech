@@ -7,22 +7,23 @@ namespace RemoteTech
 {
     public class NetworkRoute<T> : IComparable<NetworkRoute<T>>
     {
-        public const float SIGNAL_SPEED = 3.0e8f;
-
         public T Goal { get { return Exists ? Links[Links.Count - 1].Target : default(T); } }
         public T Start { get; private set; }
         public bool Exists { get { return Links.Count > 0; } }
 
-        public double Delay { get; private set; }
+        public double Length { get; private set; }
+        public double Delay { get { return RTSettings.Instance.EnableSignalDelay 
+                    ? Length / RTSettings.Instance.SpeedOfLight 
+                    : 0.0; } }
         public List<NetworkLink<T>> Links { get; private set; }
 
-        public NetworkRoute(T start, List<NetworkLink<T>> links, double cost)
+        public NetworkRoute(T start, List<NetworkLink<T>> links, double dist)
         {
             if (start == null) throw new ArgumentNullException("start");
             if (links == null) links = new List<NetworkLink<T>>();
             Start = start;
             Links = links;
-            Delay = RTSettings.Instance.EnableSignalDelay ? cost / RTSettings.Instance.SpeedOfLight : 0.0;
+            Length = dist;
         }
 
         public bool Contains(BidirectionalEdge<T> edge)
@@ -40,14 +41,14 @@ namespace RemoteTech
 
         public int CompareTo(NetworkRoute<T> other)
         {
-            return Delay.CompareTo(other.Delay);
+            return Length.CompareTo(other.Length);
         }
 
         public override string ToString()
         {
-            return String.Format("NetworkRoute(Route: {{0}}, Delay: {1})", 
+            return String.Format("NetworkRoute(Route: {{0}}, Length: {1})", 
                 String.Join("→", Links.Select(t => t.ToString()).ToArray()),
-                Delay.ToString("F2") + "s");
+                Length.ToString("F2") + "m");
         }
     }
 

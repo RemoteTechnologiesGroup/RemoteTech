@@ -68,7 +68,7 @@ namespace RemoteTech
 
         public static float Format360To180(float degrees)
         {
-            if (degrees > 360)
+            if (degrees > 180)
             {
                 return degrees - 360;
             }

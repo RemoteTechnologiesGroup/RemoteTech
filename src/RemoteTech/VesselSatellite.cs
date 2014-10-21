@@ -86,7 +86,6 @@ namespace RemoteTech
             } 
         }
 
-        private CachedField<ISignalProcessor> mSignalProcessor;
         private CachedField<bool> mLocalControl;
 
         public VesselSatellite(List<ISignalProcessor> parts)
