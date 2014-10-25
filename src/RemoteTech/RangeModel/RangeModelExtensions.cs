@@ -32,14 +32,31 @@ namespace RemoteTech
                 && activeVessel != null && target.Guid == activeVessel.id;
         }
 
-        public static bool IsTargetingPlanet(this IAntenna a, ISatellite sat_b, ISatellite sat_a)
+        /// <summary>Determines if an antenna can connect to a target indirectly, using a cone.</summary>
+        /// <returns><c>true</c> if <paramref name="target"/> lies within the cone of <paramref name="dish"/>; 
+        /// otherwise, <c>false</c>.</returns>
+        /// <param name="dish">The antenna being queried.</param>
+        /// <param name="target">The satellite being tested for being the antenna target.</param>
+        /// <param name="antennaSat">The satellite containing <paramref name="dish"/>.</param>
+        /// 
+        /// <exceptsafe>The program state is unchanged in the event of an exception.</exceptsafe>
+        public static bool IsInFieldOfView(this IAntenna dish, ISatellite target, ISatellite antennaSat)
         {
-            var planets = RTCore.Instance.Network.Planets;
-            if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
-            var dir_cb = (planets[a.Target].position - sat_a.Position);
-            var dir_b = (sat_b.Position - sat_a.Position);
-            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= a.CosAngle) return true;
-            return false;
+            if (dish.Target == Guid.Empty) {
+                return false;
+            }
+
+            try {
+                Vector3d coneCenter = getPositionFromGuid(dish.Target);
+
+                Vector3d dirToConeCenter = (coneCenter      - antennaSat.Position);
+                Vector3d dirToTarget     = (target.Position - antennaSat.Position);
+
+                return (Vector3d.Dot(dirToConeCenter.normalized, dirToTarget.normalized) >= dish.CosAngle);
+            } catch (ArgumentException e) {
+                RTLog.Notify("Unexpected dish target: {0}", e);
+                return false;
+            }
         }
 
         /// <summary>Finds the distance between two ISatellites</summary>
@@ -83,6 +100,30 @@ namespace RemoteTech
                 if (lateralOffset.magnitude < referenceBody.Radius - minHeight) return false;
             }
             return true;
+        }
+
+        /// <summary>Gets the position of a RemoteTech target from its id</summary>
+        /// <returns>The absolute position.</returns>
+        /// <param name="targetable">The id of the satellite or celestial body whose position is 
+        /// desired. May be the active vessel Guid.</param>
+        /// 
+        /// <exception cref="ArgumentException">Thrown if <paramref name="targetable"/> is neither 
+        /// a satellite nor a celestial body.</exception>
+        /// 
+        /// <exceptsafe>The program state is unchanged in the event of an exception.</exceptsafe>
+        private static Vector3d getPositionFromGuid(Guid targetable)
+        {
+            ISatellite targetSat = RTCore.Instance.Network[targetable];
+            if (targetSat != null) {
+                return targetSat.Position;
+            }
+
+            Dictionary<Guid, CelestialBody> planets = RTCore.Instance.Network.Planets;
+            if (planets.ContainsKey(targetable)) {
+                return planets[targetable].position;
+            }
+
+            throw new System.ArgumentException("Guid is neither a satellite nor a celestial body: ", "targetable");
         }
     }
 }

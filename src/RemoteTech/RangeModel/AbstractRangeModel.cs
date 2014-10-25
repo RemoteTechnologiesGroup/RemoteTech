@@ -141,7 +141,7 @@ namespace RemoteTech
         private static IEnumerable<IAntenna> getDishesThatSee(ISatellite sat, ISatellite target)
         {
             return sat.Antennas.Where(a => a.Dish > 0 
-                && (a.IsTargetingDirectly(target) || a.IsTargetingActiveVessel(target) || a.IsTargetingPlanet(target, sat)));
+                && (a.IsTargetingDirectly(target) || a.IsTargetingActiveVessel(target) || a.IsInFieldOfView(target, sat)));
         }
     }
 }
