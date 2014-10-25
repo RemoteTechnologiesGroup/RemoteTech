@@ -89,9 +89,10 @@ namespace RemoteTech
 
         private void UpdateNetworkCones()
         {
-            var antennas = (ShowCone ? RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
-                                                                                       && RTCore.Instance.Network.Planets.ContainsKey(a.Target))
-                                       : Enumerable.Empty<IAntenna>()).ToList();
+            var antennas = (ShowCone ? RTCore.Instance.Antennas.Where(
+                                        a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null 
+                                        && a.Target != Guid.Empty)
+                                     : Enumerable.Empty<IAntenna>()).ToList();
             int oldLength = mCones.Count;
             int newLength = antennas.Count;
 
@@ -110,7 +111,7 @@ namespace RemoteTech
                 mCones[i].Material = MapView.fetch.orbitLinesMaterial;
                 mCones[i].LineWidth = 2.0f;
                 mCones[i].Antenna = antennas[i];
-                mCones[i].Planet = RTCore.Instance.Network.Planets[antennas[i].Target];
+                mCones[i].Center = RangeModelExtensions.getPositionFromGuid(antennas[i].Target);
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
             }
