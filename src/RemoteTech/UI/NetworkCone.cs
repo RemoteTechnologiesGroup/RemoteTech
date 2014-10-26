@@ -74,7 +74,7 @@ namespace RemoteTech
             CelestialBody refFrame = (MapView.MapCamera.target.vessel != null 
                 ? MapView.MapCamera.target.vessel.mainBody
                 : MapView.MapCamera.target.celestialBody);
-            Vector3 up = refFrame.transform.up;
+            Vector3 up = (refFrame != null ? refFrame.transform.up : Vector3.up);
 
             Vector3 space = Vector3.Cross(planetPos - antennaPos, up).normalized 
                 * Vector3.Distance(antennaPos, planetPos) 
