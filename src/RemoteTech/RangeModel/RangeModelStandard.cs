@@ -19,8 +19,8 @@ namespace RemoteTech
         /// <param name="antenna">The antenna attempting to target.</param>
         /// <param name="target">The satellite being targeted by <paramref name="antenna"/>.</param>
         /// <param name="antennaSat">The satellite on which <paramref name="antenna"/> is mounted.</param>
-        public static double GetContextRange(IAntenna antenna, ISatellite target, ISatellite antennaSat) {
-            return AbstractRangeModel.GetContextRange(antenna, target, antennaSat, MaxDistance);
+        public static double GetRangeInContext(IAntenna antenna, ISatellite target, ISatellite antennaSat) {
+            return AbstractRangeModel.GetRangeInContext(antenna, target, antennaSat, MaxDistance);
         }
 
         /// <summary>Constructs a link between two satellites, if one is possible.</summary>

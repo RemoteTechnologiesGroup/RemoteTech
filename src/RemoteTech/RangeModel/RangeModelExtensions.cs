@@ -47,7 +47,7 @@ namespace RemoteTech
             }
 
             try {
-                Vector3d coneCenter = getPositionFromGuid(dish.Target);
+                Vector3d coneCenter = GetPositionFromGuid(dish.Target);
 
                 Vector3d dirToConeCenter = (coneCenter      - antennaSat.Position);
                 Vector3d dirToTarget     = (target.Position - antennaSat.Position);
@@ -111,7 +111,7 @@ namespace RemoteTech
         /// a satellite nor a celestial body.</exception>
         /// 
         /// <exceptsafe>The program state is unchanged in the event of an exception.</exceptsafe>
-        internal static Vector3d getPositionFromGuid(Guid targetable)
+        internal static Vector3d GetPositionFromGuid(Guid targetable)
         {
             ISatellite targetSat = RTCore.Instance.Network[targetable];
             if (targetSat != null) {

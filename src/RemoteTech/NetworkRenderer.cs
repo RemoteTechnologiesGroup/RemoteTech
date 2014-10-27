@@ -111,7 +111,7 @@ namespace RemoteTech
                 mCones[i].Material = MapView.fetch.orbitLinesMaterial;
                 mCones[i].LineWidth = 2.0f;
                 mCones[i].Antenna = antennas[i];
-                mCones[i].Center = RangeModelExtensions.getPositionFromGuid(antennas[i].Target);
+                mCones[i].Center = RangeModelExtensions.GetPositionFromGuid(antennas[i].Target);
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
             }

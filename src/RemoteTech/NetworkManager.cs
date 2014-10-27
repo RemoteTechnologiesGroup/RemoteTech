@@ -32,11 +32,14 @@ namespace RemoteTech
         {
             get
             {
-                return RTCore.Instance.Satellites[guid] ??
-                    (guid == ActiveVesselGuid ? RTCore.Instance.Satellites[
-                        FlightGlobals.ActiveVessel == null && HighLogic.LoadedScene == GameScenes.TRACKSTATION 
-                            ? MapView.MapCamera.target.vessel : FlightGlobals.ActiveVessel] : null) ??
-                       (GroundStations.ContainsKey(guid) ? GroundStations[guid] : null);
+                Vessel activeVessel = (FlightGlobals.ActiveVessel == null && HighLogic.LoadedScene == GameScenes.TRACKSTATION 
+                    ? MapView.MapCamera.target.vessel : FlightGlobals.ActiveVessel);
+
+                ISatellite vesselSatellite = RTCore.Instance.Satellites[guid];
+                ISatellite activeSatellite = (guid == ActiveVesselGuid ? RTCore.Instance.Satellites[activeVessel] : null);
+                ISatellite groundSatellite = (GroundStations.ContainsKey(guid) ? GroundStations[guid] : null);
+
+                return vesselSatellite ?? activeSatellite ?? groundSatellite;
             }
         }
 
