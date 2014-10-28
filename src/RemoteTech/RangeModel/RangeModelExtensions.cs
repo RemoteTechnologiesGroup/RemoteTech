@@ -47,7 +47,7 @@ namespace RemoteTech
             }
 
             try {
-                Vector3d coneCenter = GetPositionFromGuid(dish.Target);
+                Vector3d coneCenter = RTCore.Instance.Network.GetPositionFromGuid(dish.Target);
 
                 Vector3d dirToConeCenter = (coneCenter      - antennaSat.Position);
                 Vector3d dirToTarget     = (target.Position - antennaSat.Position);
@@ -100,30 +100,6 @@ namespace RemoteTech
                 if (lateralOffset.magnitude < referenceBody.Radius - minHeight) return false;
             }
             return true;
-        }
-
-        /// <summary>Gets the position of a RemoteTech target from its id</summary>
-        /// <returns>The absolute position.</returns>
-        /// <param name="targetable">The id of the satellite or celestial body whose position is 
-        /// desired. May be the active vessel Guid.</param>
-        /// 
-        /// <exception cref="ArgumentException">Thrown if <paramref name="targetable"/> is neither 
-        /// a satellite nor a celestial body.</exception>
-        /// 
-        /// <exceptsafe>The program state is unchanged in the event of an exception.</exceptsafe>
-        internal static Vector3d GetPositionFromGuid(Guid targetable)
-        {
-            ISatellite targetSat = RTCore.Instance.Network[targetable];
-            if (targetSat != null) {
-                return targetSat.Position;
-            }
-
-            Dictionary<Guid, CelestialBody> planets = RTCore.Instance.Network.Planets;
-            if (planets.ContainsKey(targetable)) {
-                return planets[targetable].position;
-            }
-
-            throw new System.ArgumentException("Guid is neither a satellite nor a celestial body: ", "targetable");
         }
     }
 }
