@@ -13,7 +13,7 @@ The `GroundStations` section of `RemoteTech/RemoteTech_Settings.cfg` (which will
 Each `STATION{}` block needs the following fields:
 
 `Guid`
-: A unique idenfier for the station. **Must** be unique, or your network will exhibit undefined behavior.
+: A unique idenfier for the station. **Must** be unique, or your network will exhibit undefined behavior. If you need a way to generate new guids, try [random.org](http://www.random.org/cgi-bin/randbyte?nbytes=16&format=h).
 
 `Name`
 : The name that shows up in the target selection menu.

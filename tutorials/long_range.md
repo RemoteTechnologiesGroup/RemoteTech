@@ -63,7 +63,7 @@ Every step in the chain is vulnerable to blackouts, and any break in the chain w
 
 ###Minimize power blackout periods.
 
-Be sure to account for power concerns for all satellites. Use the power calculator [available here](https://docs.google.com/spreadsheet/ccc?key=0AkXf-77s6gmFdEdVeGFqX0xobTczYkhEaEVrVTdWV3c) if you’re not sure how much solar and battery power your satellite will need.
+Be sure to account for power concerns for all satellites. Use the power calculator [available here](https://docs.google.com/spreadsheet/ccc?key=0AkXf-77s6gmFdEdVeGFqX0xobTczYkhEaEVrVTdWV3c) (or in [OpenOffice/LibreOffice format](http://www.mediafire.com/view/63tyil19qwo417r/KSP_Battery_Calculator_LibreOffice_fix.ods) if the Google link doesn't work) if you’re not sure how much solar and battery power your satellite will need.
 
 ###Orbits’ relative positions will change throughout the year
 

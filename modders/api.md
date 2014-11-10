@@ -30,7 +30,7 @@ This function tests whether a vessel has a flight computer on board.
 
 True if `id` is the id of a known vessel with a flight computer; false otherwise. In particular, returns false if `id` is not a vessel.
 
-**Exceptions**
+**Exception Guarantee**
 
 Does not throw exceptions.
 
@@ -47,7 +47,7 @@ This function tests whether a vessel can recieve commands from a ground station 
 
 True if `id` is the id of a known vessel with a working connection; false otherwise. In particular, returns false if `id` is not a vessel.
 
-**Exceptions**
+**Exception Guarantee**
 
 Does not throw exceptions.
 
@@ -64,7 +64,7 @@ This function tests whether a vessel can transmit science data to a ground stati
 
 True if `id` is the id of a known vessel with a working connection to a ground station; false otherwise. In particular, returns false if `id` is not a vessel, or if the vessel designated by `id` can connect only to a vessel command station.
 
-**Exceptions**
+**Exception Guarantee**
 
 Does not throw exceptions.
 
@@ -79,11 +79,11 @@ This function measures the signal delay experienced by a vessel when sending com
 
 **Return Value**
 
-If [`HasAnyConnection(id)`](#bool-apihasanyconnectionguid-id), the number of seconds of signal delay introduced. Otherwise (including nonexistent vessels), returns positive infinity.
+The number of seconds of signal delay introduced.
 
-**Exceptions**
+**Exception Guarantee**
 
-Does not throw exceptions.
+Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
 ###`double API.GetSignalDelayToKSC(Guid id)`
 
@@ -96,11 +96,11 @@ This function measures the signal delay experienced by a vessel were commands to
 
 **Return Value**
 
-If [`HasConnectionToKSC(id)`](#bool-apihasconnectiontokscguid-id), the number of seconds of signal delay introduced. Otherwise (including nonexistent vessels), returns positive infinity.
+The number of seconds of signal delay introduced.
 
-**Exceptions**
+**Exception Guarantee**
 
-Does not throw exceptions.
+Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
 ###`double API.GetSignalDelayToSatellite(Guid a, Guid b)`
 
@@ -113,11 +113,11 @@ This function measures the signal delay between two arbitrary vessels or ground 
 
 **Return Value**
 
-If a connection is possible between the two vessels or ground stations, the number of seconds of signal delay introduced. Otherwise (including if one of the Guids is neither a vessel nor a ground station), returns positive infinity.
+The number of seconds of signal delay introduced.
 
-**Exceptions**
+**Exception Guarantee**
 
-Does not throw exceptions.
+Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
 ##Autopilot Support
 
@@ -139,11 +139,9 @@ This function allows an external function to bypass signal delay and apply contr
 
 All flight computers on board vessel `id` will allow `autopilot` real-time control of the vessel. `autopilot` will be run *after* RemoteTech's flight computer has made its own changes to a vessel's controls.
 
-No effect if `id` is not a vessel.
+**Exception Guarantee**
 
-**Exceptions**
-
-Does not throw exceptions.
+Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
 ###`void API.RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)`
 
@@ -163,9 +161,6 @@ This function revokes the signal delay bypass granted by [`AddSanctionedPilot()`
 
 No flight computer on board vessel `id` will allow `autopilot` real-time control of the vessel.
 
-No effect if `id` is not a vessel.
+**Exception Guarantee**
 
-**Exceptions**
-
-Does not throw exceptions.
-
+Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
