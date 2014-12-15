@@ -72,7 +72,7 @@ namespace RemoteTech
             var planet_pos = ScaledSpace.LocalToScaledSpace(cb.position);
 
             var up = cb.transform.up;
-            var space = Vector3.Cross(planet_pos - antenna_pos, up).normalized * Vector3.Distance(antenna_pos, planet_pos) * (float)Math.Tan(Math.Acos(a.Radians));
+            var space = Vector3.Cross(planet_pos - antenna_pos, up).normalized * Vector3.Distance(antenna_pos, planet_pos) * (float)Math.Tan(Math.Acos(a.CosAngle));
             var end1 = antenna_pos + (planet_pos + space - antenna_pos).normalized * Math.Min(a.Dish / ScaledSpace.ScaleFactor, Vector3.Distance(antenna_pos, planet_pos));
             var end2 = antenna_pos + (planet_pos - space - antenna_pos).normalized * Math.Min(a.Dish / ScaledSpace.ScaleFactor, Vector3.Distance(antenna_pos, planet_pos));
 

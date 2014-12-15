@@ -117,6 +117,7 @@
     <Compile Include="UI\SatelliteFragment.cs" />
     <Compile Include="UI\TimeWarpDecorator.cs" />
     <Compile Include="VesselSatellite.cs" />
+    <Compile Include="RangeModel\AbstractRangeModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\mark.png" />

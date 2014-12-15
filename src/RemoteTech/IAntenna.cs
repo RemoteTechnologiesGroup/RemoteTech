@@ -11,7 +11,7 @@ namespace RemoteTech
         bool CanTarget { get; }
         Guid Target { get; set; }
         float Dish { get; }
-        double Radians { get; }
+        double CosAngle { get; }
         float Omni { get; }
         float Consumption { get; }
 
