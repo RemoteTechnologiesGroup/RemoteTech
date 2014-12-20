@@ -208,15 +208,13 @@ namespace RemoteTech
         }
 
         /// <summary>Gets the position of a RemoteTech target from its id</summary>
-        /// <returns>The absolute position.</returns>
+        /// <returns>The absolute position or null if <paramref name="targetable"/> is neither 
+        /// a satellite nor a celestial body.</returns>
         /// <param name="targetable">The id of the satellite or celestial body whose position is 
-        /// desired. May be the active vessel Guid.</param>
-        /// 
-        /// <exception cref="System.ArgumentException">Thrown if <paramref name="targetable"/> is neither 
-        /// a satellite nor a celestial body.</exception>
+        ///     desired. May be the active vessel Guid.</param>
         /// 
         /// <exceptsafe>The program state is unchanged in the event of an exception.</exceptsafe>
-        internal Vector3d GetPositionFromGuid(Guid targetable)
+        internal Vector3d? GetPositionFromGuid(Guid targetable)
         {
             ISatellite targetSat = this[targetable];
             if (targetSat != null) {
@@ -227,7 +225,7 @@ namespace RemoteTech
                 return Planets[targetable].position;
             }
 
-            throw new ArgumentException("Guid is neither a satellite nor a celestial body: ", "targetable");
+            return null;
         }
     }
 
