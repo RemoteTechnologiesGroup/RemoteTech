@@ -5,7 +5,6 @@ Released December 21, 2014
 Bug Fixes:
 --------------------
 * Compatible with KSP 0.90.
-* Added test save for remotetech contributors
 * Flight computer now holds the orientation to non-root target part
 * Some minor bugfixes
 
