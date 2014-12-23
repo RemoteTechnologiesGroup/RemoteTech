@@ -18,8 +18,6 @@ namespace RemoteTech
     {
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
 
-        public const int DaysInAYear = 365;
-
         public static readonly String[]
             DistanceUnits = { "", "k", "M", "G", "T" },
             ClassDescripts = {  "Short-Planetary (SP)",
@@ -28,50 +26,21 @@ namespace RemoteTech
                                 "Short-Interplanetary (SI)",
                                 "Medium-Interplanetary (MI)",
                                 "Long-Interplanetary (LI)"};
-
-        private static readonly Regex mDurationRegex = new Regex(
-            String.Format("{0}?{1}?{2}?{3}?{4}?", 
-                @"(?:(?<seconds>\d*\.?\d+)\s*s[a-z]*[,\s]*)",
-                @"(?:(?<minutes>\d*\.?\d+)\s*m[a-z]*[,\s]*)",
-                @"(?:(?<hours>\d*\.?\d+)\s*h[a-z]*[,\s]*)",
-                @"(?:(?<days>\d*\.?\d+)\s*d[a-z]*[,\s]*)",
-                @"(?:(?<years>\d*\.?\d+)\s*y[a-z]*[,\s]*)"));
-
-        public static bool TryParseDuration(String duration, out TimeSpan time)
+        
+        public static double TryParseDuration(String duration)
         {
-            time = new TimeSpan();
-            MatchCollection matches = mDurationRegex.Matches(duration);
-            foreach (Match match in matches)
+            TimeStringConverter time;
+
+            if (GameSettings.KERBIN_TIME == true)
             {
-                if (match.Groups["seconds"].Success)
-                {
-                    time += TimeSpan.FromSeconds(Double.Parse(match.Groups["seconds"].Value));
-                }
-                if (match.Groups["minutes"].Success)
-                {
-                    time += TimeSpan.FromMinutes(Double.Parse(match.Groups["minutes"].Value));
-                }
-                if (match.Groups["hours"].Success)
-                {
-                    time += TimeSpan.FromHours(Double.Parse(match.Groups["hours"].Value));
-                }
-                if (match.Groups["days"].Success)
-                {
-                    time += TimeSpan.FromDays(Double.Parse(match.Groups["days"].Value));
-                }
-                if (match.Groups["years"].Success)
-                {
-                    time += TimeSpan.FromDays(Double.Parse(match.Groups["years"].Value) * DaysInAYear);
-                }
+                time = new KerbinTimeStringConverter();
             }
-            if (time.TotalSeconds == 0)
+            else
             {
-                double parsedDouble;
-                bool result = Double.TryParse(duration, out parsedDouble);
-                time = TimeSpan.FromSeconds(result ? parsedDouble : 0);
-                return result;
+                time = new EarthTimeStringConverter();
             }
-            return true;
+
+            return time.parseString(duration);
         }
 
         public static void ScreenMessage(String msg)
@@ -99,7 +68,7 @@ namespace RemoteTech
 
         public static float Format360To180(float degrees)
         {
-            if (degrees > 360)
+            if (degrees > 180)
             {
                 return degrees - 360;
             }
@@ -121,33 +90,25 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <returns></returns>
         public static String FormatDuration(double duration)
         {
-            var time = TimeSpan.FromSeconds(duration);
-            var s = new StringBuilder();
-            if (time.TotalDays / DaysInAYear >= 1)
+            TimeStringConverter time;
+
+            if (GameSettings.KERBIN_TIME == true)
             {
-                s.Append(Math.Floor(time.TotalDays / DaysInAYear));
-                s.Append("y");
+                time = new KerbinTimeStringConverter();
             }
-            if (time.TotalDays % DaysInAYear >= 1)
+            else
             {
-                s.Append(Math.Floor(time.TotalDays % DaysInAYear));
-                s.Append("d");
+                time = new EarthTimeStringConverter();
             }
-            if (time.Hours > 0)
-            {
-                s.Append(time.Hours);
-                s.Append("h");
-            }
-            if (time.Minutes > 0)
-            {
-                s.Append(time.Minutes);
-                s.Append("m");
-            }
-            s.Append((time.Seconds + time.Milliseconds / 1000.0f).ToString("F2"));
-            s.Append("s");
-            return s.ToString();
+
+            return time.parseDouble(duration);
         }
 
         /// <summary>

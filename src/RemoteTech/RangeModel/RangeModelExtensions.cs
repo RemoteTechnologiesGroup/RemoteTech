@@ -29,7 +29,7 @@ namespace RemoteTech
             if (!planets.ContainsKey(a.Target) || sat_b.Body != planets[a.Target]) return false;
             var dir_cb = (planets[a.Target].position - sat_a.Position);
             var dir_b = (sat_b.Position - sat_a.Position);
-            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= a.Radians) return true;
+            if (Vector3d.Dot(dir_cb.normalized, dir_b.normalized) >= a.CosAngle) return true;
             return false;
         }
 

@@ -55,7 +55,7 @@ namespace RemoteTech
                 {
                     if (RTSettings.Instance.EnableSignalDelay)
                     {
-                        return "D+ " + vs.Connections[0].Delay.ToString("F6") + "s";
+                        return "D+ " + vs.Connections[0].Delay.ToString("F3") + "s";
                     }
                     else
                     {

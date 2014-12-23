@@ -20,7 +20,7 @@ namespace RemoteTech
         public Guid Target { get { return Guid.Empty; } set { return; } }
 
         public float Dish { get { return -1.0f; } }
-        public double Radians { get { return 1.0f; } }
+        public double CosAngle { get { return 1.0f; } }
         public float Omni { get { return Activated ? OmniRange * RangeMultiplier : 0.0f; } }
         public float Consumption { get { return 0.0f; } }
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
@@ -52,7 +52,7 @@ namespace RemoteTech
             IsRTBroken = false;
 
         [KSPField(isPersistant = true)]
-        public double RTDishRadians = 1.0f;
+        public double RTDishCosAngle = 1.0f;
 
         [KSPField(isPersistant = true)]
         public float
@@ -63,8 +63,8 @@ namespace RemoteTech
         public Guid RTAntennaTarget = Guid.Empty;
 
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
-        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
-        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
+//        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
+//        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
 

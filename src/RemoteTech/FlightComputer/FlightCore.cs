@@ -44,7 +44,10 @@ namespace RemoteTech
                     break;
 
                 case ReferenceFrame.TargetVelocity:
-                    if (f.DelayedTarget is Vessel)
+                    // f.DelayedTarget may be any ITargetable, including a planet
+                    // Velocity matching only makes sense for vessels and part modules
+                    // Can test for Vessel but not PartModule, so instead test that it's not the third case (CelestialBody)
+                    if (f.DelayedTarget != null && !(f.DelayedTarget is CelestialBody))
                     {
                         forward = v.GetObtVelocity() - f.DelayedTarget.GetObtVelocity();
                         up = (v.mainBody.position - v.CoM);
@@ -57,7 +60,7 @@ namespace RemoteTech
                     break;
 
                 case ReferenceFrame.TargetParallel:
-                    if (f.DelayedTarget is Vessel)
+                    if (f.DelayedTarget != null && !(f.DelayedTarget is CelestialBody))
                     {
                         forward = f.DelayedTarget.GetTransform().position - v.CoM;
                         up = (v.mainBody.position - v.CoM);
