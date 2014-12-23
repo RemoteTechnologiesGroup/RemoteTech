@@ -1,3 +1,13 @@
+Version 1.5.2
+========================================
+Released December 21, 2014
+
+Bug Fixes:
+--------------------
+* Compatible with KSP 0.90.
+* Flight computer now holds the orientation to non-root target part
+* Some minor bugfixes
+
 Version 1.5.1
 ========================================
 Released October 9, 2014
