@@ -134,7 +134,7 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Get the total thrust of all activated, not flamed engines.
+        /// Get the total thrust of all activated, not flamed out engines.
         /// </summary>
         /// <param name="v">Current vessel</param>
         /// <returns>Total thrust in kN</returns>
@@ -144,6 +144,7 @@ namespace RemoteTech
 
             foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>()))
             {
+                // Notice: flameout is only true if you try to perform with this engine not before
                 if (!pm.EngineIgnited || pm.flameout) continue;
                 // check for the needed propellant before changing the total thrust
                 if (!FlightCore.hasPropellant(pm.propellants)) continue;
@@ -152,6 +153,7 @@ namespace RemoteTech
 
             foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>()))
             {
+                // Notice: flameout is only true if you try to perform with this engine not before
                 if (!pm.EngineIgnited || pm.flameout) continue;
                 // check for the needed propellant before changing the total thrust
                 if (!FlightCore.hasPropellant(pm.propellants)) continue;
