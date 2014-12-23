@@ -23,7 +23,7 @@ namespace RemoteTech
         public override void Show()
         {
             mAntennaFragment = mAntennaFragment ?? new AntennaFragment(mSetAntenna);
-            mAntennaFragment.mTargetInfoPopup = new TargetInfoPopup(this);
+            mAntennaFragment.mTargetInfoPopup = new TargetInfoPopup(this, WindowAlign.Floating);
             GameEvents.onVesselChange.Add(OnVesselChange);
             base.Show();
         }

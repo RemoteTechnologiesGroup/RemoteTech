@@ -89,6 +89,7 @@ namespace RemoteTech
         /// <param name="antenna">The antenna attempting to make a connection.</param>
         /// <param name="target">The Guid to which it is trying to connect.</param>
         public static KeyValuePair<string, UnityEngine.Color> tryConnection(IAntenna antenna, Guid target) {
+            String status = "ok";
             // What kind of target?
             if (RTCore.Instance != null && RTCore.Instance.Network != null &&
                     target != Guid.Empty && target != NetworkManager.ActiveVesselGuid) {
@@ -104,17 +105,17 @@ namespace RemoteTech
                 ISatellite targetSat = RTCore.Instance.Network[target];
                 if (targetSat != null) {
                     if (!RangeModelExtensions.HasLineOfSightWith(mySat, targetSat)) {
-                        conditions.Add("No LOS");
+                        status = "No line of sight";
                         error = true;
                     }
 
                     double dist    = RangeModelExtensions.DistanceTo(mySat, targetSat);
                     // Only standard model supported for now, RangeModel isn't designed for this problem
                     double maxDist = Math.Max(antenna.Omni, antenna.Dish);
-                    conditions.Add(String.Format("{0}/{1}", 
-                        RTUtil.FormatSI(dist, "m"), 
-                        RTUtil.FormatSI(maxDist, "m")));
+                    conditions.Add("Current distance:" + RTUtil.FormatSI(dist, "m"));
+                    conditions.Add("Antenna range:" + RTUtil.FormatSI(maxDist, "m"));
                     if (dist > maxDist) {
+                        status = "Target not in range";
                         error = true;
                     }
                 }
@@ -127,22 +128,21 @@ namespace RemoteTech
                     int numTargets = countInCone(antenna, target);
                     
                     if (spread < 2.0 * targetPlanet.Radius) {
-                        conditions.Add("Small Cone");
+                        // WHAT does this info?
+                        // conditions.Add("Small Cone");
                         warning = true;
                     }
 
+                    conditions.Add("Current distance:"+RTUtil.FormatSI(dist, "m"));
+                    conditions.Add("Antenna range:" + RTUtil.FormatSI(maxDist, "m"));
+
                     if (dist <= maxDist) {
-                        conditions.Add(String.Format("{0}/{1} ({2} beam covers {3} targets)", 
-                            RTUtil.FormatSI(dist, "m"), 
-                            RTUtil.FormatSI(maxDist, "m"),
+                        conditions.Add(String.Format("Info:{0} beam covers {1} targets)",
                             RTUtil.FormatSI(spread, "m"),
                             numTargets
                         ));
                     } else {
-                        conditions.Add(String.Format("{0}/{1}", 
-                            RTUtil.FormatSI(dist, "m"), 
-                            RTUtil.FormatSI(maxDist, "m")
-                        ));
+                        status = "Target not in range";
                         error = true;
                     }
                     if (numTargets <= 0) {
@@ -150,6 +150,8 @@ namespace RemoteTech
                     }
 
                 } catch (KeyNotFoundException) {}
+
+                conditions.Add("Status:" + status);
 
                 return new KeyValuePair<string, UnityEngine.Color>(
                     String.Join("; ", conditions.ToArray()), 

@@ -8,7 +8,7 @@ namespace RemoteTech
 {
     public class AntennaFragment : IFragment, IDisposable
     {
-        private class Entry
+        public class Entry
         {
             public String Text { get; set; }
             public Guid Guid { get; set; }
@@ -127,14 +127,10 @@ namespace RemoteTech
                             });
 
                         // Mouse is over the last button
-                        if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) && this.mTargetInfoPopup != null)
+                        if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) && this.mTargetInfoPopup != null && !this.mTargetInfoPopup.Enabled)
                         {
+                            this.mTargetInfoPopup.setTarget(current, Antenna);
                             this.mTargetInfoPopup.Show();
-                            this.mTargetInfoPopup.setYPositionToMouse();
-                            this.mTargetInfoPopup.setPositionToRight();
-                            // change the popup x position to this element relativ to the parent position
-                            //this.mTargetInfoPopup.changePosition(GUILayoutUtility.GetLastRect().x + GUILayoutUtility.GetLastRect().width + 50,0);
-                            this.mTargetInfoPopup.setTarget(current.Text);
                         }
 
                     }

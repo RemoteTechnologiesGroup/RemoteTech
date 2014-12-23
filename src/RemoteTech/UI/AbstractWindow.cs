@@ -30,6 +30,9 @@ namespace RemoteTech
         private readonly Guid mGuid;
         public Vector2 mMousePos;
         public static Dictionary<Guid, AbstractWindow> Windows = new Dictionary<Guid, AbstractWindow>();
+        public float mInitialWidth;
+        public float mInitialHeight;
+        public bool Shown;
 
         static AbstractWindow()
         {
@@ -42,6 +45,8 @@ namespace RemoteTech
             Title = title;
             Alignment = align;
             Position = position;
+            mInitialHeight = position.height + 15;
+            mInitialWidth = position.width + 15;
         }
 
         public Rect RequestPosition() { return Position; }
@@ -56,14 +61,12 @@ namespace RemoteTech
             }
             Windows[mGuid] = this;
             Enabled = true;
-            EZGUIPointerDisablePatcher.Register(RequestPosition);
         }
 
         public virtual void Hide()
         {
             Windows.Remove(mGuid);
             Enabled = false;
-            EZGUIPointerDisablePatcher.Unregister(RequestPosition);
         }
 
         private void WindowPre(int uid)
