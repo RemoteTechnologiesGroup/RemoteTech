@@ -35,7 +35,16 @@ namespace RemoteTech
         private Entry mRootEntry = new Entry();
         /// <summary>The Entry corresponding to the currently selected target, if any.</summary>
         private Entry mSelection;
-        public TargetInfoPopup mTargetInfoPopup;
+        /// <summary>The Entry corresponding to the currently selected target, if any.</summary>
+        private Entry mCurrentMouseOverEntry = null;
+        /// <summary>Callback trigger for mouse over a list entry</summary>
+        public Action onMouseOverListEntry = delegate { };
+        /// <summary>Callback trigger for mouse out of a list entry</summary>
+        public Action onMouseOutListEntry = delegate { };
+        /// <summary>Current entry of the mouse</summary>
+        public Entry mouseOverEntry { get { return mCurrentMouseOverEntry; } private set { mCurrentMouseOverEntry = value; } }
+        /// <summary>Flag to trigger the onMouseover event</summary>
+        public bool triggerMouseOverListEntry = false;
 
         /// <summary>The Entries corresponding to loaded celestial bodies.</summary>
         private Dictionary<CelestialBody, Entry> mEntries;      // Current planet list
@@ -53,6 +62,8 @@ namespace RemoteTech
 
         public void Dispose()
         {
+            triggerMouseOverListEntry = false;
+
             if (RTCore.Instance != null)
             {
                 RTCore.Instance.Satellites.OnRegister -= Refresh;
@@ -73,11 +84,6 @@ namespace RemoteTech
                 refreshCounter = 0;
             }
 
-            if (this.mTargetInfoPopup != null)
-            {
-                this.mTargetInfoPopup.Hide();
-            }
-            
             mScrollPosition = GUILayout.BeginScrollView(mScrollPosition);
             Color pushColor = GUI.backgroundColor;
             // starstriders changes
@@ -92,20 +98,15 @@ namespace RemoteTech
                 {
                     dfs.Push(child);
                 }
+
+                // Set the inital mouseover to the selected entry
+                mouseOverEntry = mSelection;
+                
                 while (dfs.Count > 0)
                 {
                     Entry current = dfs.Pop();
                     GUI.backgroundColor = current.Color;
-
-                    // starstriders changes
-                    //string diagnosis;
-                    //KeyValuePair<string, Color> temp = NetworkFeedback.tryConnection(Antenna, current.Guid);
-                    //diagnosis = temp.Key;
-                    //if (diagnosis.Length > 0) {
-                    //    diagnosis = " (" + diagnosis + ")";
-                    //}
-                    //GUI.contentColor = temp.Value;
-
+                    
                     GUILayout.BeginHorizontal();
                     {
                         GUILayout.Space(current.Depth * (GUI.skin.button.margin.left + 24));
@@ -117,8 +118,7 @@ namespace RemoteTech
                                     current.Expanded = !current.Expanded;
                                 }, GUILayout.Width(24));
                         }
-                        // starstriders changes
-                        // RTUtil.StateButton(current.Text + diagnosis, mSelection == current ? 1 : 0, 1,
+
                         RTUtil.StateButton(current.Text, mSelection == current ? 1 : 0, 1,
                             (s) =>
                             {
@@ -126,11 +126,16 @@ namespace RemoteTech
                                 Antenna.Target = mSelection.Guid;
                             });
 
-                        // Mouse is over the last button
-                        if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) && this.mTargetInfoPopup != null && !this.mTargetInfoPopup.Enabled)
+                        // Mouse is over the button
+                        if (GUILayoutUtility.GetLastRect().Contains(Event.current.mousePosition) && triggerMouseOverListEntry)
                         {
-                            this.mTargetInfoPopup.setTarget(current, Antenna);
-                            this.mTargetInfoPopup.Show();
+                            // reset current entry
+                            mouseOverEntry = null;
+                            if (current.Text.ToLower() != "active vessel" && current.Text.ToLower() != "no target")
+                            {
+                                mouseOverEntry = current;
+                            }
+                            onMouseOverListEntry.Invoke();
                         }
 
                     }
@@ -149,9 +154,6 @@ namespace RemoteTech
                 GUILayout.EndScrollView();
                 GUI.skin.button.alignment = pushAlign;
                 GUI.backgroundColor = pushColor;
-                // starstriders changes
-                //GUI.backgroundColor = pushBgColor;
-                //GUI.contentColor = pushCtColor;
             }
         }
 

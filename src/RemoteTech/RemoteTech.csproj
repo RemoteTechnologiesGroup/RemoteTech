@@ -114,7 +114,8 @@
     <Compile Include="UI\NetworkLine.cs" />
     <Compile Include="UI\QueueFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
-    <Compile Include="UI\TargetInfoPopup.cs" />
+    <Compile Include="UI\TargetInfoFragment.cs" />
+    <Compile Include="UI\TargetInfoWindow.cs" />
     <Compile Include="UI\TimeWarpDecorator.cs" />
     <Compile Include="VesselSatellite.cs" />
     <Compile Include="NetworkFeedback.cs" />
