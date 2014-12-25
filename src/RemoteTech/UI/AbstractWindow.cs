@@ -29,6 +29,12 @@ namespace RemoteTech
         private double mTooltipTimer;
         private readonly Guid mGuid;
         public static Dictionary<Guid, AbstractWindow> Windows = new Dictionary<Guid, AbstractWindow>();
+        /// <summary>The initial width of this window</summary>
+        public float mInitialWidth;
+        /// <summary>The initial height of this window</summary>
+        public float mInitialHeight;
+        /// <summary>Callback trigger for the change in the posistion</summary>
+        public Action onPositionChanged = delegate { };
 
         static AbstractWindow()
         {
@@ -41,6 +47,8 @@ namespace RemoteTech
             Title = title;
             Alignment = align;
             Position = position;
+            mInitialHeight = position.height + 15;
+            mInitialWidth = position.width + 15;
         }
 
         public Rect RequestPosition() { return Position; }
@@ -55,14 +63,12 @@ namespace RemoteTech
             }
             Windows[mGuid] = this;
             Enabled = true;
-            EZGUIPointerDisablePatcher.Register(RequestPosition);
         }
 
         public virtual void Hide()
         {
             Windows.Remove(mGuid);
             Enabled = false;
-            EZGUIPointerDisablePatcher.Unregister(RequestPosition);
         }
 
         private void WindowPre(int uid)
@@ -86,7 +92,17 @@ namespace RemoteTech
                 Position.width = 0;
                 Position.height = 0;
             }
+
+            Rect tmpPosition = Position;
             Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
+            
+            // Position of the window changed?
+            if (!tmpPosition.Equals(Position))
+            {
+                // trigger the onPositionChanged callbacks
+                onPositionChanged.Invoke();
+            }
+
             if (Title != null)
             {
                 if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
