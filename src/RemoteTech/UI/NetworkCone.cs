@@ -8,7 +8,7 @@ namespace RemoteTech
 {
     public class NetworkCone : MonoBehaviour
     {
-        public CelestialBody Planet
+        public Vector3d Center
         {
             set
             {
@@ -64,41 +64,49 @@ namespace RemoteTech
             Material = new Material("Shader \"Vertex Colors/Alpha\" {Category{Tags {\"Queue\"=\"Transparent\" \"IgnoreProjector\"=\"True\" \"RenderType\"=\"Transparent\"}SubShader {Cull Off ZWrite On Blend SrcAlpha OneMinusSrcAlpha Pass {BindChannels {Bind \"Color\", color Bind \"Vertex\", vertex}}}}}");
         }
 
-        private void UpdateMesh(CelestialBody cb, IAntenna a)
+        private void UpdateMesh(Vector3d center, IAntenna dish)
         {
             var camera = MapView.MapCamera.camera;
 
-            var antenna_pos = ScaledSpace.LocalToScaledSpace(RTCore.Instance.Network[a.Guid].Position);
-            var planet_pos = ScaledSpace.LocalToScaledSpace(cb.position);
+            Vector3d antennaPos = ScaledSpace.LocalToScaledSpace(RTCore.Instance.Network[dish.Guid].Position);
+            Vector3d planetPos = ScaledSpace.LocalToScaledSpace(center);
 
-            var up = cb.transform.up;
-            var space = Vector3.Cross(planet_pos - antenna_pos, up).normalized * Vector3.Distance(antenna_pos, planet_pos) * (float)Math.Tan(Math.Acos(a.CosAngle));
-            var end1 = antenna_pos + (planet_pos + space - antenna_pos).normalized * Math.Min(a.Dish / ScaledSpace.ScaleFactor, Vector3.Distance(antenna_pos, planet_pos));
-            var end2 = antenna_pos + (planet_pos - space - antenna_pos).normalized * Math.Min(a.Dish / ScaledSpace.ScaleFactor, Vector3.Distance(antenna_pos, planet_pos));
+            CelestialBody refFrame = (MapView.MapCamera.target.vessel != null 
+                ? MapView.MapCamera.target.vessel.mainBody
+                : MapView.MapCamera.target.celestialBody);
+            Vector3 up = (refFrame != null ? refFrame.transform.up : Vector3.up);
+
+            Vector3 space = Vector3.Cross(planetPos - antennaPos, up).normalized 
+                * Vector3.Distance(antennaPos, planetPos) 
+                * (float)Math.Tan(Math.Acos(dish.CosAngle));
+            Vector3d end1 = antennaPos + (planetPos + space - antennaPos).normalized 
+                * Math.Min(dish.Dish / ScaledSpace.ScaleFactor, Vector3.Distance(antennaPos, planetPos));
+            Vector3d end2 = antennaPos + (planetPos - space - antennaPos).normalized 
+                * Math.Min(dish.Dish / ScaledSpace.ScaleFactor, Vector3.Distance(antennaPos, planetPos));
 
 
-            var line_start = camera.WorldToScreenPoint(antenna_pos);
-            var line_end1 = camera.WorldToScreenPoint(end1);
-            var line_end2 = camera.WorldToScreenPoint(end2);
-            var segment1 = new Vector3(line_end1.y - line_start.y, line_start.x - line_end1.x, 0).normalized * (LineWidth / 2);
-            var segment2 = new Vector3(line_end2.y - line_start.y, line_start.x - line_end2.x, 0).normalized * (LineWidth / 2);
+            Vector3 lineStart = camera.WorldToScreenPoint(antennaPos);
+            Vector3 lineEnd1 = camera.WorldToScreenPoint(end1);
+            Vector3 lineEnd2 = camera.WorldToScreenPoint(end2);
+            var segment1 = new Vector3(lineEnd1.y - lineStart.y, lineStart.x - lineEnd1.x, 0).normalized * (LineWidth / 2);
+            var segment2 = new Vector3(lineEnd2.y - lineStart.y, lineStart.x - lineEnd2.x, 0).normalized * (LineWidth / 2);
 
             if (!MapView.Draw3DLines)
             {
-                var dist = Screen.height / 2;
-                line_start.z = line_start.z > 0 ? dist : -dist;
-                line_end1.z = line_end1.z > 0 ? dist : -dist;
-                line_end2.z = line_end2.z > 0 ? dist : -dist;
+                int dist = Screen.height / 2;
+                lineStart.z = lineStart.z > 0 ? dist : -dist;
+                lineEnd1.z = lineEnd1.z > 0 ? dist : -dist;
+                lineEnd2.z = lineEnd2.z > 0 ? dist : -dist;
             }
 
-            mPoints2D[0] = (line_start - segment1);
-            mPoints2D[1] = (line_start + segment1);
-            mPoints2D[2] = (line_end1 - segment1);
-            mPoints2D[3] = (line_end1 + segment1);
-            mPoints2D[4] = (line_start - segment2);
-            mPoints2D[5] = (line_start + segment2);
-            mPoints2D[6] = (line_end2 - segment2);
-            mPoints2D[7] = (line_end2 + segment2);
+            mPoints2D[0] = (lineStart - segment1);
+            mPoints2D[1] = (lineStart + segment1);
+            mPoints2D[2] = (lineEnd1 - segment1);
+            mPoints2D[3] = (lineEnd1 + segment1);
+            mPoints2D[4] = (lineStart - segment2);
+            mPoints2D[5] = (lineStart + segment2);
+            mPoints2D[6] = (lineEnd2 - segment2);
+            mPoints2D[7] = (lineEnd2 + segment2);
 
             for (int i = 0; i < 8; i++)
             {

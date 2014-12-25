@@ -32,9 +32,14 @@ namespace RemoteTech
         {
             get
             {
-                return RTCore.Instance.Satellites[guid] ??
-                       ((guid == ActiveVesselGuid) ? RTCore.Instance.Satellites[FlightGlobals.ActiveVessel] : null) ??
-                       (GroundStations.ContainsKey(guid) ? GroundStations[guid] : null);
+                Vessel activeVessel = (FlightGlobals.ActiveVessel == null && HighLogic.LoadedScene == GameScenes.TRACKSTATION 
+                    ? MapView.MapCamera.target.vessel : FlightGlobals.ActiveVessel);
+
+                ISatellite vesselSatellite = RTCore.Instance.Satellites[guid];
+                ISatellite activeSatellite = (guid == ActiveVesselGuid ? RTCore.Instance.Satellites[activeVessel] : null);
+                ISatellite groundSatellite = (GroundStations.ContainsKey(guid) ? GroundStations[guid] : null);
+
+                return vesselSatellite ?? activeSatellite ?? groundSatellite;
             }
         }
 
@@ -200,6 +205,29 @@ namespace RemoteTech
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        /// <summary>Gets the position of a RemoteTech target from its id</summary>
+        /// <returns>The absolute position.</returns>
+        /// <param name="targetable">The id of the satellite or celestial body whose position is 
+        /// desired. May be the active vessel Guid.</param>
+        /// 
+        /// <exception cref="System.ArgumentException">Thrown if <paramref name="targetable"/> is neither 
+        /// a satellite nor a celestial body.</exception>
+        /// 
+        /// <exceptsafe>The program state is unchanged in the event of an exception.</exceptsafe>
+        internal Vector3d GetPositionFromGuid(Guid targetable)
+        {
+            ISatellite targetSat = this[targetable];
+            if (targetSat != null) {
+                return targetSat.Position;
+            }
+
+            if (Planets.ContainsKey(targetable)) {
+                return Planets[targetable].position;
+            }
+
+            throw new ArgumentException("Guid is neither a satellite nor a celestial body: ", "targetable");
         }
     }
 
