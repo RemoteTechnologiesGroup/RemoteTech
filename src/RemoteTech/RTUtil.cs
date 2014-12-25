@@ -95,7 +95,7 @@ namespace RemoteTech
         /// </summary>
         /// <param name="duration"></param>
         /// <returns></returns>
-        public static String FormatDuration(double duration)
+        public static String FormatDuration(double duration, bool withMicroSecs = true)
         {
             TimeStringConverter time;
 
@@ -108,7 +108,7 @@ namespace RemoteTech
                 time = new EarthTimeStringConverter();
             }
 
-            return time.parseDouble(duration);
+            return time.parseDouble(duration, withMicroSecs);
         }
 
         /// <summary>

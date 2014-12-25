@@ -96,7 +96,7 @@ namespace RemoteTech
                                 GUILayout.BeginVertical();
                                 {
                                     RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
-                                    RTUtil.Button(new GUIContent("v", string.Format("Set the signal delay right after this - Current: {0}", RTUtil.FormatDuration(c.Delay + c.ExtraDelay))), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelayFromQueuedCommand(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                    RTUtil.Button(new GUIContent("v", string.Format("Set the signal delay right after this - Current: {0}", RTUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false))), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelayFromQueuedCommand(c)), GUILayout.Width(21), GUILayout.Height(21));
                                 }
                                 GUILayout.EndVertical();
                             }
@@ -130,8 +130,24 @@ namespace RemoteTech
         {
             yield return null;
 
-            mExtraDelay = RTUtil.FormatDuration(c.Delay + c.ExtraDelay);
+            mExtraDelay = RTUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false);
             RTCore.Instance.StartCoroutine(onClickAddExtraDelay());
+        }
+
+        /// <summary>
+        /// Get the burn time from the ManeuverCommand or BurnCommand
+        /// </summary>
+        /// <param name="c">Current ocmmand</param>
+        /// <returns>Max burn time</returns>
+        public double getBurnTime(ICommand c)
+        {
+            if (c is ManeuverCommand || c is BurnCommand)
+            {
+                double burnTime = (c is ManeuverCommand) ? ((ManeuverCommand)c).getMaxBurnTime(mFlightComputer) : ((BurnCommand)c).getMaxBurnTime(mFlightComputer);
+
+                return burnTime;
+            }
+            return 0;
         }
 
         public IEnumerator OnClickCancel(ICommand c)
