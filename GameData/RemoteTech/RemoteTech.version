@@ -4,6 +4,7 @@
 	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/CHANGES.md", 
 	"GITHUB":
 	{
+		"_comment": "GitHub support requires build tags that include a #.#.# string",
 		"USERNAME": "RemoteTechnologiesGroup",
 		"REPOSITORY": "RemoteTech",
 		"ALLOW_PRE_RELEASE": false
