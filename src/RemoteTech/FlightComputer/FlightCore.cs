@@ -113,7 +113,7 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Checks the needed propellant of an engine
+        /// Checks the needed propellant of an engine. Its always true if infinite fuel is activ
         /// </summary>
         /// <param name="propellants">Propellant for an engine</param>
         /// <returns>True if there are enough propellant to perform</returns>
