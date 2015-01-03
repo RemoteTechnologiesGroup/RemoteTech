@@ -38,5 +38,48 @@ namespace RemoteTech
         {
             return TimeStamp.CompareTo(dc.TimeStamp);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="fc"></param>
+        public virtual void Save(ConfigNode n, FlightComputer fc)
+        {
+            ConfigNode save = new ConfigNode(this.GetType().Name);
+            try
+            {
+                ConfigNode.CreateConfigFromObject(this, 0, save);
+            }
+            catch (Exception) {
+            }
+
+            save.AddValue("TimeStamp", TimeStamp);
+            save.AddValue("ExtraDelay", ExtraDelay);
+            n.AddNode(save);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="fc"></param>
+        public virtual void Load(ConfigNode n, FlightComputer fc)
+        {
+            // nothing
+            if (n.HasValue("TimeStamp"))
+            {
+                TimeStamp = double.Parse(n.GetValue("TimeStamp"));
+            }
+            if (n.HasValue("ExtraDelay"))
+            {
+                ExtraDelay = double.Parse(n.GetValue("ExtraDelay"));
+            }
+        }
+
+        protected ConfigNode getCommandConfigNode(ConfigNode n)
+        {
+            return n.GetNode(this.GetType().Name);
+        }
     }
 }

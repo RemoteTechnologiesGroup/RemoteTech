@@ -397,5 +397,52 @@ namespace RemoteTech
                 return false;
             }
         }
+
+        
+        /// <summary>
+        /// TODO: kommentare schreiben
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="fc"></param>
+        /// <returns></returns>
+        public static ICommand LoadCommand(ConfigNode n, FlightComputer fc)
+        {
+            ICommand command = null;
+
+            switch (n.name)
+            {
+                case "AttitudeCommand":
+                {
+                    command = new AttitudeCommand();
+                    break;
+                }
+                case "ActionGroupCommand":
+                {
+                    command = new ActionGroupCommand();
+                    break;
+                }
+                case "BurnCommand":
+                {
+                    command = new BurnCommand();
+                    break;
+                }
+                case "ManeuverCommand":
+                {
+                    command = new ManeuverCommand();
+                    break;
+                }
+                // TODO: Cancel und TargetCommand fehlen noch
+            }
+
+            if (command != null)
+            {
+                ConfigNode.LoadObjectFromConfig(command, n);
+                // additional loadings
+                command.Load(n, fc);
+            }
+
+            return command;
+        }
+
     }
 }

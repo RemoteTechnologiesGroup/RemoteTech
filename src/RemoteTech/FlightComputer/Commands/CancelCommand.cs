@@ -8,7 +8,8 @@ namespace RemoteTech
     public class CancelCommand : AbstractCommand
     {
         public override double ExtraDelay { get { return base.ExtraDelay; } set { return; } }
-        public ICommand Command { get; set; }
+        [Persistent]
+        public ICommand Command;
 
         public override string Description { get { return "Cancelling a command." + Environment.NewLine + base.Description; } }
         public override string ShortName { get { return "Cancel command"; } }

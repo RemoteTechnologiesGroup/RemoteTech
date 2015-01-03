@@ -7,7 +7,8 @@ namespace RemoteTech
 {
     public class EventCommand : AbstractCommand
     {
-        public BaseEvent BaseEvent { get; private set; }
+        [Persistent]
+        public BaseEvent BaseEvent;
 
         public override String Description
         {
