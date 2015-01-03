@@ -81,6 +81,18 @@ namespace RemoteTech
             return true;
         }
 
+        /// <summary>
+        /// Returns the total time for this burn in seconds
+        /// </summary>
+        /// <param name="f">Flightcomputer for the current vessel</param>
+        /// <returns>max burn time</returns>
+        public double getMaxBurnTime(FlightComputer f)
+        {
+            if (Node == null) return 0;
+
+            return Node.DeltaV.magnitude / (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
+        }
+
         public static ManeuverCommand WithNode(ManeuverNode node, FlightComputer f)
         {
             double thrust = FlightCore.GetTotalThrust(f.Vessel);

@@ -62,6 +62,18 @@ namespace RemoteTech
             return false;
         }
 
+        /// <summary>
+        /// Returns the total time for this burn in seconds
+        /// </summary>
+        /// <param name="f">Flightcomputer for the current vessel</param>
+        /// <returns>max burn time</returns>
+        public double getMaxBurnTime(FlightComputer f)
+        {
+            if (Duration > 0) return Duration;
+
+            return DeltaV / (Throttle * FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
+        }
+
         public override void Abort() { mAbort = true; }
 
         public static BurnCommand Off()

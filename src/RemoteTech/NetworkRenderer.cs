@@ -78,9 +78,9 @@ namespace RemoteTech
             {
                 foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations.Values))
                 {
-                    var world_pos = ScaledSpace.LocalToScaledSpace(s.Position);
-                    if (MapView.MapCamera.transform.InverseTransformPoint(world_pos).z < 0f) continue;
-                    Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(world_pos);
+                    var worldPos = ScaledSpace.LocalToScaledSpace(s.Position);
+                    if (MapView.MapCamera.transform.InverseTransformPoint(worldPos).z < 0f) continue;
+                    Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(worldPos);
                     Rect screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
                     Graphics.DrawTexture(screenRect, mTexMark, 0, 0, 0, 0);
                 }
@@ -89,9 +89,10 @@ namespace RemoteTech
 
         private void UpdateNetworkCones()
         {
-            var antennas = (ShowCone ? RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
-                                                                                       && RTCore.Instance.Network.Planets.ContainsKey(a.Target))
-                                       : Enumerable.Empty<IAntenna>()).ToList();
+            List<IAntenna> antennas = (ShowCone ? RTCore.Instance.Antennas.Where(
+                                        ant => ant.Powered && ant.CanTarget && RTCore.Instance.Satellites[ant.Guid] != null 
+                                        && ant.Target != Guid.Empty)
+                                     : Enumerable.Empty<IAntenna>()).ToList();
             int oldLength = mCones.Count;
             int newLength = antennas.Count;
 
@@ -110,7 +111,7 @@ namespace RemoteTech
                 mCones[i].Material = MapView.fetch.orbitLinesMaterial;
                 mCones[i].LineWidth = 2.0f;
                 mCones[i].Antenna = antennas[i];
-                mCones[i].Planet = RTCore.Instance.Network.Planets[antennas[i].Target];
+                mCones[i].Center = RTCore.Instance.Network.GetPositionFromGuid(antennas[i].Target);
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
             }

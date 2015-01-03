@@ -131,8 +131,9 @@ namespace RemoteTech
         /// This method will parse a time as seconds and returns the time string of this.
         /// </summary>
         /// <param name="duration">Time as seconds</param>
+        /// <param name="withMicroSecs">[optional] Add the microsecs to the time string, default true</param>
         /// <returns>Given time as seconds converted to a time string like "1d 2m 3s"</returns>
-        public String parseDouble(Double duration)
+        public String parseDouble(Double duration, bool withMicroSecs = true)
         {
             Double time = duration;
             StringBuilder s = new StringBuilder();
@@ -153,8 +154,15 @@ namespace RemoteTech
             if (time >= this.SecondsPerMinute)
                 time = this.calcFromSecondsToSring(time, s, this.SecondsPerMinute, "m");
 
-            // kill the micro seconds
-            s.Append(time.ToString("F2"));
+
+            if (withMicroSecs)
+            {
+                s.Append(time.ToString("F2"));
+            }
+            else
+            {
+                s.Append(time.ToString("F0"));
+            }
             s.Append("s");
 
             return s.ToString();
