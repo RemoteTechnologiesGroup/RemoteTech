@@ -33,7 +33,6 @@ namespace RemoteTech
         {
             get
             {
-                return 120;
                 var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
                 if (satellite != null && satellite.HasLocalControl) return 0.0;
                 var connection = RTCore.Instance.Network[satellite];
