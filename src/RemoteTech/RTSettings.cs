@@ -34,35 +34,95 @@ namespace RemoteTech
         [Persistent] public Color OmniConnectionColor = XKCDColors.BrownGrey;
         [Persistent] public Color ActiveConnectionColor = XKCDColors.ElectricLime;
 
-        [Persistent(collectionIndex="STATION")] 
+        [Persistent(collectionIndex="STATION")]
         public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
+        /// <summary>
+        /// Backup config node
+        /// </summary>
+        private ConfigNode backupNode;
 
-        private static String File { 
+
+        private static String File
+        {
             get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/RemoteTech_Settings.cfg"; }
         }
 
+        /// <summary>
+        /// Saves the current RTSettings object to the RemoteTech_Settings.cfg
+        /// </summary>
         public void Save()
         {
             try
             {
+                ConfigNode details = new ConfigNode("RemoteTechSettings");
+                ConfigNode.CreateConfigFromObject(this, 0, details);
                 ConfigNode save = new ConfigNode();
-                ConfigNode.CreateConfigFromObject(this, 0, save);
+                save.AddNode(details);
                 save.Save(File);
             }
             catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message); }
         }
 
+        /// <summary>
+        /// Stores the MapFilter Value for overriding with third party settings
+        /// </summary>
+        public void backupFields()
+        {
+            backupNode = new ConfigNode();
+            backupNode.AddValue("MapFilter", MapFilter);
+            backupNode.AddValue("ActiveVesselGuid", ActiveVesselGuid);
+        }
+
+        /// <summary>
+        /// Restores the backuped values
+        /// </summary>
+        public void restoreBackups()
+        {
+            if (backupNode != null)
+            {
+                // restore backups
+                ConfigNode.LoadObjectFromConfig(this, backupNode);
+            }
+        }
+
         public static Settings Load()
         {
-            ConfigNode load = ConfigNode.Load(File);
+            // Create a new settings object
             Settings settings = new Settings();
+            // try to load from the base settings.cfg
+            ConfigNode load = ConfigNode.Load(File);
+
             if (load == null)
             {
+                // write new base file to the rt folder
                 settings.Save();
-                return settings;
             }
-            ConfigNode.LoadObjectFromConfig(settings, load);
-            
+            else
+            {
+                // old or new format?
+                if (load.HasNode("RemoteTechSettings"))
+                {
+                    load = load.GetNode("RemoteTechSettings");
+                }
+                RTLog.Notify("Load base settings into object with {0}", load);
+                // load basic file
+                ConfigNode.LoadObjectFromConfig(settings, load);
+            }
+
+            // Prefer to load from GameDatabase, to allow easier user customization
+            UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            foreach (UrlDir.UrlConfig curSet in configList)
+            {
+                // only third party files
+                if (!curSet.url.Equals("RemoteTech/RemoteTech_Settings/RemoteTechSettings"))
+                {
+                    RTLog.Notify("Override RTSettings with configs from {0}", curSet.url);
+                    settings.backupFields();
+                    ConfigNode.LoadObjectFromConfig(settings, curSet.config);
+                    settings.restoreBackups();
+                }
+            }
+
             return settings;
         }
     }
