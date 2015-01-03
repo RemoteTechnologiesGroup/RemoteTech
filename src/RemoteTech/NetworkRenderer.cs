@@ -78,13 +78,38 @@ namespace RemoteTech
             {
                 foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations.Values))
                 {
+                    bool showOnMapview = true;
                     var worldPos = ScaledSpace.LocalToScaledSpace(s.Position);
                     if (MapView.MapCamera.transform.InverseTransformPoint(worldPos).z < 0f) continue;
                     Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(worldPos);
                     Rect screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
-                    Graphics.DrawTexture(screenRect, mTexMark, 0, 0, 0, 0);
+
+                    if (s is MissionControlSatellite && RTSettings.Instance.HideGroundStationsBehindBody)
+                    {
+                        CelestialBody Kerbin = FlightGlobals.Bodies.Find(body => body.name == "Kerbin");
+                        // Hide the current ISatellite if it is behind its body
+                        if (IsOccluded(s.Position, Kerbin))
+                            showOnMapview = false;
+                    }
+
+                    if (showOnMapview)
+                    {
+                        Graphics.DrawTexture(screenRect, mTexMark, 0, 0, 0, 0);
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks whether the location is behind the body
+        /// Orginal code by regex from https://github.com/NathanKell/RealSolarSystem/blob/master/Source/KSCSwitcher.cs
+        /// </summary>
+        private bool IsOccluded(Vector3d loc, CelestialBody body)
+        {
+            Vector3d camPos = ScaledSpace.ScaledToLocalSpace(PlanetariumCamera.Camera.transform.position);
+
+            if (Vector3d.Angle(camPos - loc, body.position - loc) > 90) { return false; }
+            return true;
         }
 
         private void UpdateNetworkCones()
