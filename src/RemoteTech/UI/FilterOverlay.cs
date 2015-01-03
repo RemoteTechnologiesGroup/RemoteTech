@@ -54,6 +54,7 @@ namespace RemoteTech
 
         private SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
         private AntennaFragment mAntennaFragment = new AntennaFragment(null);
+        private TargetInfoWindow mTargetInfos;
         private bool mEnabled;
         private bool onTrackingStation { get { return (HighLogic.LoadedScene == GameScenes.TRACKSTATION); } }
 
@@ -179,10 +180,26 @@ namespace RemoteTech
             GameEvents.onPlanetariumTargetChanged.Add(OnChangeTarget);
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
+            /// Add the on mouse over event
+            mAntennaFragment.onMouseOverListEntry += showTargetInfo;
+            
+            WindowAlign targetInfoAlign = WindowAlign.TopLeft;
+            if (this.onTrackingStation)
+            {
+                // switch to the other side if we are at the trackingStation
+                targetInfoAlign = WindowAlign.TopRight;
+            }
+
+            /// Create a new Targetinfo window with a fixed position to the antenna fragment
+            mTargetInfos = new TargetInfoWindow(PositionAntenna, targetInfoAlign);
+            
         }
 
         public void Dispose()
         {
+            /// Remove the on mouse over event
+            mAntennaFragment.onMouseOverListEntry -= showTargetInfo;
+
             GameEvents.onPlanetariumTargetChanged.Remove(OnChangeTarget);
             MapView.OnEnterMapView -= OnEnterMapView;
             MapView.OnExitMapView -= OnExitMapView;
@@ -214,6 +231,24 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// Mouse over callback forced by the mAntennaFragment
+        /// </summary>
+        public void showTargetInfo()
+        {
+            if (mAntennaFragment.mouseOverEntry != null)
+            {
+                // set the current selected target to the targetwindow
+                mTargetInfos.setTarget(mAntennaFragment.mouseOverEntry, mAntennaFragment.Antenna);
+                mTargetInfos.Show();
+            }
+            else
+            {
+                // hide if we do not have any selection
+                mTargetInfos.Hide();
+            }
+        }
+
         public void Draw()
         {
             GUI.depth = 0;
@@ -229,9 +264,16 @@ namespace RemoteTech
                 GUILayout.EndArea();
             }
 
+            // Hide the targetInfoWindow if we don't have a selected antenna
+            if (mAntennaFragment.Antenna == null)
+            {
+                mTargetInfos.Hide();
+            }
+
             // Draw Antenna Selector
             if (mEnabled && mSatelliteFragment.Satellite != null && mAntennaFragment.Antenna != null)
             {
+                mAntennaFragment.triggerMouseOverListEntry = PositionAntenna.Contains(Event.current.mousePosition);
                 GUILayout.BeginArea(PositionAntenna, AbstractWindow.Frame);
                 {
                     mAntennaFragment.Draw();
