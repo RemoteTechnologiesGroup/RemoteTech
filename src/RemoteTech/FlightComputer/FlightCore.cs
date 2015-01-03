@@ -112,19 +112,56 @@ namespace RemoteTech
             kOS.SteeringHelper.SteerShipToward(target, fs, f);
         }
 
+        /// <summary>
+        /// Checks the needed propellant of an engine. Its always true if infinite fuel is activ
+        /// </summary>
+        /// <param name="propellants">Propellant for an engine</param>
+        /// <returns>True if there are enough propellant to perform</returns>
+        public static bool hasPropellant(System.Collections.Generic.List<Propellant> propellants)
+        {
+            if (CheatOptions.InfiniteFuel) return true;
+
+            foreach (var props in propellants)
+            {
+                var total = props.totalResourceCapacity;
+                var require = props.currentRequirement;
+                // check the total capacity and the required amount of proppelant
+                if (total <= 0 || require > total)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Get the total thrust of all activated, not flamed out engines.
+        /// </summary>
+        /// <param name="v">Current vessel</param>
+        /// <returns>Total thrust in kN</returns>
         public static double GetTotalThrust(Vessel v)
         {
             double thrust = 0.0;
+
             foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>()))
             {
-                if (!pm.EngineIgnited) continue;
+                // Notice: flameout is only true if you try to perform with this engine not before
+                if (!pm.EngineIgnited || pm.flameout) continue;
+                // check for the needed propellant before changing the total thrust
+                if (!FlightCore.hasPropellant(pm.propellants)) continue;
                 thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
             }
+
             foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>()))
             {
-                if (!pm.EngineIgnited) continue;
+                // Notice: flameout is only true if you try to perform with this engine not before
+                if (!pm.EngineIgnited || pm.flameout) continue;
+                // check for the needed propellant before changing the total thrust
+                if (!FlightCore.hasPropellant(pm.propellants)) continue;
                 thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
             }
+
             return thrust;
         }
     }
