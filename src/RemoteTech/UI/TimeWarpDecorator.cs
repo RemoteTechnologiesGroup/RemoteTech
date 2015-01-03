@@ -55,7 +55,7 @@ namespace RemoteTech
                 {
                     if (RTSettings.Instance.EnableSignalDelay)
                     {
-                        return "D+ " + vs.Connections[0].Delay.ToString("F3") + "s";
+                        return "D+ " + vs.Connections[0].Delay.ToString("F5") + "s";
                     }
                     else
                     {
@@ -143,7 +143,7 @@ namespace RemoteTech
             float texBackgroundWidth = (mTimewarpObject.timeQuadrantTab.renderer.material.mainTexture.width * 0.8111f) / scale;
 
 
-            Rect delaytextPosition = new Rect(9.0f / scale, topLeftTotimeQuadrant + texBackgroundHeight - 1, 50.0f / scale, 20.0f / scale);
+            Rect delaytextPosition = new Rect(12.0f / scale, topLeftTotimeQuadrant + texBackgroundHeight - 1, 50.0f / scale, 20.0f / scale);
                         
             // calc the position under the timewarp object
             Rect pos = new Rect(mTimewarpObject.transform.position.x,
@@ -157,7 +157,7 @@ namespace RemoteTech
 
             // draw the flightcomputer button to the right relativ to the delaytext position
             delaytextPosition.width = 21.0f / scale;
-            delaytextPosition.x += 128 / scale;
+            delaytextPosition.x += 125 / scale;
 
             if (GUI.Button(delaytextPosition, "", ButtonStyle))
             {
