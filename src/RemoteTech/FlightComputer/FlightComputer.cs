@@ -128,6 +128,7 @@ namespace RemoteTech
             if (pos < 0)
             {
                 mCommandQueue.Insert(~pos, cmd);
+                orderCommandList();
             }
         }
 
@@ -310,6 +311,26 @@ namespace RemoteTech
                 Tf = Mathf.Clamp ((float)Tf, (float)TfMin, (float)TfMax);
             }
             initPIDParameters();
+        }
+
+        /// <summary>
+        /// Orders the mCommand queue to be chronological
+        /// </summary>
+        public void orderCommandList()
+        {
+            if (mCommandQueue.Count <= 0) return;
+
+            List<ICommand> backupList = mCommandQueue;
+            // sort the backup queue
+            backupList = backupList.OrderBy(s => (s.TimeStamp + s.ExtraDelay)).ToList();
+            // clear the old queue
+            mCommandQueue.Clear();
+
+            // add the sorted queue
+            foreach(var command in backupList)
+            {
+                mCommandQueue.Add(command);
+            }
         }
 
         /// <summary>
