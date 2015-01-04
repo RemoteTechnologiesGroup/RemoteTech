@@ -9,7 +9,7 @@ namespace RemoteTech
 {
     public class FlightComputer : IDisposable
     {
-        private ConfigNode afterUnpackingLoad = null;
+        private ConfigNode fcLoadedConfigs = null;
         public enum State
         {
             Normal = 0,
@@ -58,6 +58,7 @@ namespace RemoteTech
 
         public double TotalDelay { get; set; }
         public ITargetable DelayedTarget { get; set; }
+        public TargetCommand lastTarget = null;
         public Vessel Vessel { get; private set; }
         public ISignalProcessor SignalProcessor { get; private set; }
         public List<Action<FlightCtrlState>> SanctionedPilots { get; private set; }
@@ -90,8 +91,6 @@ namespace RemoteTech
             initPIDParameters();
             lastAct = Vector3d.zero;
 
-            var target = TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget);
-            mActiveCommands[target.Priority] = target;
             var attitude = AttitudeCommand.Off();
             mActiveCommands[attitude.Priority] = attitude;
         }
@@ -146,8 +145,21 @@ namespace RemoteTech
 
         public void OnFixedUpdate()
         {
+            // only handle onFixedUpdate if the ship is unpacked
+            if (Vessel.packed)
+                return;
+
             if (Vessel == null)
                 Vessel = SignalProcessor.Vessel;
+
+            // Do we have a config?
+            if (fcLoadedConfigs != null)
+            {
+                // than load
+                load(fcLoadedConfigs);
+                fcLoadedConfigs = null;
+            }
+
             // Re-attach periodically
             Vessel.OnFlyByWire -= OnFlyByWirePre;
             Vessel.OnFlyByWire -= OnFlyByWirePost;
@@ -158,19 +170,11 @@ namespace RemoteTech
             }
             Vessel.OnFlyByWire = OnFlyByWirePre + Vessel.OnFlyByWire + OnFlyByWirePost;
 
-            if (!Vessel.packed && afterUnpackingLoad != null)
-            {
-                this.load(afterUnpackingLoad);
-                afterUnpackingLoad = null;
-            }
-
             // Update proportional controller for changes in ship state
             updatePIDParameters();
 
-            // Send updates for Target / Maneuver
-            TargetCommand last = null;
-            if (FlightGlobals.fetch.VesselTarget != DelayedTarget &&
-                ((mCommandQueue.FindLastIndex(c => (last = c as TargetCommand) != null)) == -1 || last.Target != FlightGlobals.fetch.VesselTarget))
+            // Send updates for Target
+            if (FlightGlobals.fetch.VesselTarget != DelayedTarget && (mCommandQueue.FindLastIndex(c => (lastTarget = c as TargetCommand) != null)) == -1)
             {
                 Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
             }
@@ -322,7 +326,7 @@ namespace RemoteTech
             if (Vessel.packed)
             {
                 RTLog.Notify("Save flightconfig after unpacking");
-                afterUnpackingLoad = n;
+                fcLoadedConfigs = n;
                 return;
             }
 
@@ -343,7 +347,10 @@ namespace RemoteTech
                 {
                     ICommand cmd = RTUtil.LoadCommand(cmdNode, this);
                     if (cmd != null)
+                    {
                         mActiveCommands[cmd.Priority] = cmd;
+                        cmd.Pop(this);
+                    }
                 }
             }
 

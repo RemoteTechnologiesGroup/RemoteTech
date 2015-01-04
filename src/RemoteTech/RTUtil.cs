@@ -431,7 +431,17 @@ namespace RemoteTech
                     command = new ManeuverCommand();
                     break;
                 }
-                // TODO: Cancel und TargetCommand fehlen noch
+                case "CancelCommand":
+                {
+                    command = new CancelCommand();
+                    break;
+                }
+                case "TargetCommand":
+                {
+                    command = new TargetCommand();
+                    break;
+                }
+                // TODO: TargetCommand fehlen noch
             }
 
             if (command != null)
