@@ -18,7 +18,7 @@ namespace RemoteTech
         public FlightComputer FlightComputer { get { return null; } }
         public bool IsMaster { get { return true; } }
 
-		public const int DEFAULT_COMMAND_MINIMUM_CREW = 6;
+        public const int DEFAULT_COMMAND_MINIMUM_CREW = 6;
         private readonly Vessel mVessel;
 
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v)
@@ -26,7 +26,7 @@ namespace RemoteTech
             mVessel = v;
             Powered = ppms.GetBool("IsRTPowered");
 
-			int commandMinCrew = DEFAULT_COMMAND_MINIMUM_CREW;
+	    int commandMinCrew = DEFAULT_COMMAND_MINIMUM_CREW;
 			
             try {
                 commandMinCrew = ppms.GetInt("RTCommandMinCrew");
@@ -37,7 +37,7 @@ namespace RemoteTech
                 RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/6 [Default]", 
                     Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
             }
-			IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= commandMinCrew;
+            IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= commandMinCrew;
         }
 
         public override String ToString()
