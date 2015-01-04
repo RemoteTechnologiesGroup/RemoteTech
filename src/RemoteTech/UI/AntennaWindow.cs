@@ -17,6 +17,7 @@ namespace RemoteTech
         public AntennaWindow(IAntenna antenna)
             : base(Guid, "Antenna Configuration", new Rect(100, 100, 300, 500), WindowAlign.Floating)
         {
+            mSavePosition = true;
             mSetAntenna = antenna;
             mTargetInfos = new TargetInfoWindow(this, WindowAlign.Floating);
         }
