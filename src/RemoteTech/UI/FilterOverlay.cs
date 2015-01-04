@@ -56,6 +56,7 @@ namespace RemoteTech
         private AntennaFragment mAntennaFragment = new AntennaFragment(null);
         private TargetInfoWindow mTargetInfos;
         private bool mEnabled;
+        private bool mShowOverlay = true;
         private bool onTrackingStation { get { return (HighLogic.LoadedScene == GameScenes.TRACKSTATION); } }
 
         private Rect Position
@@ -175,9 +176,21 @@ namespace RemoteTech
             }
         }
 
+        private void OnHideUI()
+        {
+            mShowOverlay = false;
+        }
+
+        private void OnShowUI()
+        {
+            mShowOverlay = true;
+        }
+
         public FilterOverlay()
         {
             GameEvents.onPlanetariumTargetChanged.Add(OnChangeTarget);
+            GameEvents.onHideUI.Add(OnHideUI);
+            GameEvents.onShowUI.Add(OnShowUI);
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
             /// Add the on mouse over event
@@ -201,6 +214,8 @@ namespace RemoteTech
             mAntennaFragment.onMouseOverListEntry -= showTargetInfo;
 
             GameEvents.onPlanetariumTargetChanged.Remove(OnChangeTarget);
+            GameEvents.onHideUI.Remove(OnHideUI);
+            GameEvents.onShowUI.Remove(OnShowUI);
             MapView.OnEnterMapView -= OnEnterMapView;
             MapView.OnExitMapView -= OnExitMapView;
             mSatelliteFragment.Dispose();
@@ -251,6 +266,7 @@ namespace RemoteTech
 
         public void Draw()
         {
+            if (!mShowOverlay) return;
             GUI.depth = 0;
             GUI.skin = HighLogic.Skin;
 
