@@ -24,6 +24,7 @@ namespace RemoteTech
         public bool Enabled = false;
         public static GUIStyle Frame = new GUIStyle(HighLogic.Skin.window);
         public const double TooltipDelay = 0.5;
+        protected bool mSavePosition = false;
 
         private double mLastTime;
         private double mTooltipTimer;
@@ -35,6 +36,7 @@ namespace RemoteTech
         public float mInitialHeight;
         /// <summary>Callback trigger for the change in the posistion</summary>
         public Action onPositionChanged = delegate { };
+        private Rect tmpPosition;
 
         static AbstractWindow()
         {
@@ -47,6 +49,7 @@ namespace RemoteTech
             Title = title;
             Alignment = align;
             Position = position;
+            tmpPosition = Position;
             mInitialHeight = position.height + 15;
             mInitialWidth = position.width + 15;
 
@@ -60,6 +63,18 @@ namespace RemoteTech
         {
             if (Enabled)
                 return;
+
+            if(mSavePosition)
+            {
+                onPositionChanged += storePosition;
+
+                // read the saved position
+                if (RTSettings.Instance.savedWindowPositions.ContainsKey(this.GetType().ToString()))
+                {
+                    Position = RTSettings.Instance.savedWindowPositions[this.GetType().ToString()];
+                }
+            }
+
             if (Windows.ContainsKey(mGuid))
             {
                 Windows[mGuid].Hide();
@@ -82,6 +97,10 @@ namespace RemoteTech
         {
             Windows.Remove(mGuid);
             Enabled = false;
+            if (mSavePosition)
+            {
+                onPositionChanged -= storePosition;
+            }
             GameEvents.onHideUI.Remove(OnHideUI);
             GameEvents.onShowUI.Remove(OnShowUI);
         }
@@ -109,16 +128,8 @@ namespace RemoteTech
                 Position.height = 0;
             }
 
-            Rect tmpPosition = Position;
             Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
             
-            // Position of the window changed?
-            if (!tmpPosition.Equals(Position))
-            {
-                // trigger the onPositionChanged callbacks
-                onPositionChanged.Invoke();
-            }
-
             if (Title != null)
             {
                 if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
@@ -168,7 +179,23 @@ namespace RemoteTech
                     mTooltipTimer = 0.0;
                 }
                 mLastTime = Time.time;
+
+                // Position of the window changed?
+                if (!tmpPosition.Equals(Position))
+                {
+                    RTLog.Notify("TmpPosition: {0}", tmpPosition);
+                    RTLog.Notify("Position: {0}", Position);
+                    // trigger the onPositionChanged callbacks
+                    onPositionChanged.Invoke();
+                    tmpPosition = Position;
+                }
             }
+        }
+
+        private void storePosition()
+        {
+            RTSettings.Instance.savedWindowPositions.Remove(this.GetType().ToString());
+            RTSettings.Instance.savedWindowPositions.Add(this.GetType().ToString(), Position);
         }
     }
 }
