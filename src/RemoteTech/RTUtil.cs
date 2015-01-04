@@ -441,6 +441,11 @@ namespace RemoteTech
                     command = new TargetCommand();
                     break;
                 }
+                case "EventCommand":
+                {
+                    command = new EventCommand();
+                    break;
+                }
                 // TODO: TargetCommand fehlen noch
             }
 

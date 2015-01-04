@@ -164,6 +164,7 @@ namespace RemoteTech
                     e.Invoke();
                     return;
                 }
+                
                 var vs = RTCore.Instance.Satellites[v];
                 if (vs == null || vs.HasLocalControl)
                 {
