@@ -49,6 +49,9 @@ namespace RemoteTech
             Position = position;
             mInitialHeight = position.height + 15;
             mInitialWidth = position.width + 15;
+
+            GameEvents.onHideUI.Add(OnHideUI);
+            GameEvents.onShowUI.Add(OnShowUI);
         }
 
         public Rect RequestPosition() { return Position; }
@@ -65,10 +68,22 @@ namespace RemoteTech
             Enabled = true;
         }
 
+        private void OnHideUI()
+        {
+            Enabled = false;
+        }
+
+        private void OnShowUI()
+        {
+            Enabled = true;
+        }
+
         public virtual void Hide()
         {
             Windows.Remove(mGuid);
             Enabled = false;
+            GameEvents.onHideUI.Remove(OnHideUI);
+            GameEvents.onShowUI.Remove(OnShowUI);
         }
 
         private void WindowPre(int uid)
@@ -87,6 +102,7 @@ namespace RemoteTech
 
         public virtual void Draw()
         {
+            if (!Enabled) return;
             if (Event.current.type == EventType.Layout)
             {
                 Position.width = 0;
