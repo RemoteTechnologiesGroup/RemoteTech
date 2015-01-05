@@ -31,9 +31,6 @@ namespace RemoteTech
                     break;
 
                 case ReferenceFrame.Maneuver:
-                    // TODO: Hier sollte aus der queue nach dem nächsten Maneuver gesucht werden
-                    // und dessen Burn vektor benutzt werden. Da wir aber aktuell eh immer nur das
-                    // erste Meneuver nehmen, kann das vorerst so bleiben
                     if (f.Vessel.patchedConicSolver.maneuverNodes.Count != 0)
                     {
                         forward = f.Vessel.patchedConicSolver.maneuverNodes[0].GetBurnVector(v.orbit);

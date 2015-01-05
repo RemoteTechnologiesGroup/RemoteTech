@@ -334,9 +334,9 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// 
+        /// Restores the flightcomputer from the persistant
         /// </summary>
-        /// <param name="n"></param>
+        /// <param name="n">Node with the informations for the flightcomputer</param>
         public void load(ConfigNode n)
         {
             RTLog.Notify("Loading Flightcomputer from persistant!");
@@ -344,6 +344,7 @@ namespace RemoteTech
             if (!n.HasNode("FlightComputer"))
                 return;
 
+            // Wait while we are packed and store the current configNode
             if (Vessel.packed)
             {
                 RTLog.Notify("Save flightconfig after unpacking");
@@ -351,22 +352,25 @@ namespace RemoteTech
                 return;
             }
 
+            // Load the current vessel from signalprocessor if we've no on the flightcomputer
             if (Vessel == null)
                 Vessel = SignalProcessor.Vessel;
 
+            // Read Flightcomputer informations
             ConfigNode FlightNode = n.GetNode("FlightComputer");
             TotalDelay = double.Parse(FlightNode.GetValue("TotalDelay"));
-
             ConfigNode ActiveCommands = FlightNode.GetNode("ActiveCommands");
             ConfigNode Commands = FlightNode.GetNode("Commands");
-            
+
+            // Read active commands
             if (ActiveCommands.HasNode())
             {
                 if (mActiveCommands.Count > 0)
                     mActiveCommands.Clear();
                 foreach (ConfigNode cmdNode in ActiveCommands.nodes)
                 {
-                    ICommand cmd = RTUtil.LoadCommand(cmdNode, this);
+                    ICommand cmd = AbstractCommand.LoadCommand(cmdNode, this);
+                    
                     if (cmd != null)
                     {
                         mActiveCommands[cmd.Priority] = cmd;
@@ -375,47 +379,51 @@ namespace RemoteTech
                 }
             }
 
+            // Read queued commands
             if (Commands.HasNode())
             {
                 int qCounter = 0;
 
+                // clear the current list
                 if (mCommandQueue.Count > 0)
                     mCommandQueue.Clear();
 
                 RTLog.Notify("Loading queued commands from persistant ...");
                 foreach (ConfigNode cmdNode in Commands.nodes)
                 {
-                    ICommand cmd = RTUtil.LoadCommand(cmdNode, this);
+                    ICommand cmd = AbstractCommand.LoadCommand(cmdNode, this);
 
                     if (cmd != null)
                     {
-                        // Wenn der Delay = 0 ist, dann sind wir immer über dem normalen Delay.
+                        // if delay = 0 we're ready for the extraDelay
                         if (cmd.Delay == 0)
                         {
                             if (cmd is ManeuverCommand)
                             {
-                                // TODO: Brauchen hier einen besseren Text!
+                                // TODO: Need better text
                                 RTUtil.ScreenMessage("You missed the maneuver burn!");
                                 continue;
                             }
 
+                            // if extraDelay is set, we've to calculate the elapsed time
+                            // and set the new extradelay based on the current time
                             if (cmd.ExtraDelay > 0)
                             {
                                 cmd.ExtraDelay = cmd.TimeStamp  + cmd.ExtraDelay - RTUtil.GameTime;
                                 cmd.TimeStamp = RTUtil.GameTime;
+
+                                // Are we ready to handle the command ?
                                 if (cmd.ExtraDelay <= 0)
                                 {
-                                    // TODO: Wenn es sich um ein Burn/Maneuver Command handelt und wir über der Zeit sind, dann eine
-                                    // Meldung ausgeben das dieser Command "vorbei" ist. Alle anderen Commands sollten ohne Probleme
-                                    // rei um ausgeführt werden. Z.b. Solar öffnen, Antennen deployen etc...
                                     if (cmd is BurnCommand)
                                     {
-                                        // TODO: Brauchen hier einen besseren Text!
+                                        // TODO: Need better text
                                         RTUtil.ScreenMessage("You missed the burn command!");
                                         continue;
                                     }
                                     else
                                     {
+                                        // change the extra delay to x/100
                                         cmd.ExtraDelay = (qCounter) / 100;
                                     }
                                 }
@@ -428,9 +436,9 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// 
+        /// Saves all values for the flightcomputer to the persistant
         /// </summary>
-        /// <param name="n"></param>
+        /// <param name="n">Node to save in</param>
         public void Save(ConfigNode n)
         {
             if (n.HasNode("FlightComputer"))
@@ -454,6 +462,5 @@ namespace RemoteTech
 
             n.AddNode(FlightNode);
         }
-
     }
 }

@@ -76,10 +76,37 @@ namespace RemoteTech
                 ExtraDelay = double.Parse(n.GetValue("ExtraDelay"));
             }
         }
-
-        protected ConfigNode getCommandConfigNode(ConfigNode n)
+        
+        /// <summary>
+        /// Load and creates a command after saving a command. Returns null if no object
+        /// has been loaded.
+        /// </summary>
+        /// <param name="n">Node with the command infos</param>
+        /// <param name="fc">Current flightcomputer</param>
+        public static ICommand LoadCommand(ConfigNode n, FlightComputer fc)
         {
-            return n.GetNode(this.GetType().Name);
+            ICommand command = null;
+
+            // switch the different commands
+            switch (n.name)
+            {
+                case "AttitudeCommand":     { command = new AttitudeCommand(); break; }
+                case "ActionGroupCommand":  { command = new ActionGroupCommand(); break; }
+                case "BurnCommand":         { command = new BurnCommand(); break; }
+                case "ManeuverCommand":     { command = new ManeuverCommand(); break; }
+                case "CancelCommand":       { command = new CancelCommand(); break; }
+                case "TargetCommand":       { command = new TargetCommand(); break; }
+                case "EventCommand":        { command = new EventCommand(); break; }
+            }
+
+            if (command != null)
+            {
+                ConfigNode.LoadObjectFromConfig(command, n);
+                // additional loadings
+                command.Load(n, fc);
+            }
+
+            return command;
         }
     }
 }
