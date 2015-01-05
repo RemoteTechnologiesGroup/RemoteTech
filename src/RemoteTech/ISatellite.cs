@@ -11,6 +11,7 @@ namespace RemoteTech
         Guid Guid { get; }
         Vector3d Position { get; }
         CelestialBody Body { get; }
+        Color MarkColor { get; }
 
         bool Powered { get; }
         bool IsCommandStation { get; }
