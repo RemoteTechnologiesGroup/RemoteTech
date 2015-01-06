@@ -94,7 +94,12 @@ namespace RemoteTech
 
                     if (showOnMapview)
                     {
-                        Graphics.DrawTexture(screenRect, mTexMark, 0, 0, 0, 0);
+                        Color pushColor = GUI.color;
+                        // tint the white mark.png into the defined color
+                        GUI.color = s.MarkColor;
+                        // draw the mark.png
+                        GUI.DrawTexture(screenRect, mTexMark, ScaleMode.ScaleToFit, true);
+                        GUI.color = pushColor;
                     }
                 }
             }

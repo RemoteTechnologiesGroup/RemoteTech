@@ -28,6 +28,11 @@ namespace RemoteTech
             get { return SignalProcessor.Body; }
         }
 
+        public Color MarkColor
+        {
+            get { return new Color(0.996078f, 0, 0, 1); }
+        }
+
         public List<ISignalProcessor> SignalProcessors { get; set; }
 
         public bool Powered { 
