@@ -8,10 +8,12 @@ namespace RemoteTech
 {
     public class ManeuverCommand : AbstractCommand
     {
-        public ManeuverNode Node { get; set; }
-        public double OriginalDelta { get; set; }
-        public double RemainingTime { get; set; }
-        public double RemainingDelta { get; set; }
+        // Index id of this maneuver node from patchedConicSolver.maneuverNodes list
+        [Persistent] public int NodeIndex;
+        public double OriginalDelta;
+        public double RemainingTime;
+        public double RemainingDelta;
+        public ManeuverNode Node;
         public bool EngineActivated { get; set; }
         public override int Priority { get { return 0; } }
 
@@ -93,9 +95,10 @@ namespace RemoteTech
             return Node.DeltaV.magnitude / (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
         }
 
-        public static ManeuverCommand WithNode(ManeuverNode node, FlightComputer f)
+        public static ManeuverCommand WithNode(int nodeIndex, FlightComputer f)
         {
             double thrust = FlightCore.GetTotalThrust(f.Vessel);
+            ManeuverNode node = f.Vessel.patchedConicSolver.maneuverNodes[nodeIndex];
             double advance = f.Delay;
 
             if (thrust > 0) {
@@ -104,19 +107,29 @@ namespace RemoteTech
 
             var newNode = new ManeuverCommand()
             {
-                Node = new ManeuverNode()
-                {
-                    DeltaV = node.DeltaV,
-                    patch = node.patch,
-                    solver = node.solver,
-                    scaledSpaceTarget = node.scaledSpaceTarget,
-                    nextPatch = node.nextPatch,
-                    UT = node.UT,
-                    nodeRotation = node.nodeRotation,
-                },
+                Node = node,
+                NodeIndex = nodeIndex,
                 TimeStamp = node.UT - advance,
             };
             return newNode;
+        }
+
+        /// <summary>
+        /// Find the maneuver node by the saved node id (index id of the meneuver list)
+        /// </summary>
+        /// <param name="n">Node with the command infos</param>
+        /// <param name="fc">Current flightcomputer</param>
+        public override void Load(ConfigNode n, FlightComputer fc)
+        {
+            base.Load(n,fc);
+            if(n.HasValue("NodeIndex"))
+            {
+                int nodeIndex = int.Parse(n.GetValue("NodeIndex"));
+                RTLog.Notify("Trying to get Maneuver {0}",nodeIndex);
+                // Set the ManeuverNode into this command
+                Node = fc.Vessel.patchedConicSolver.maneuverNodes[nodeIndex];
+                RTLog.Notify("Found Maneuver {0} with {1} dV", nodeIndex, Node.DeltaV);
+            }
         }
     }
 }

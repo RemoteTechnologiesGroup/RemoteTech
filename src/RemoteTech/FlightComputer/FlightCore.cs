@@ -31,9 +31,9 @@ namespace RemoteTech
                     break;
 
                 case ReferenceFrame.Maneuver:
-                    if (f.DelayedManeuver != null)
+                    if (f.Vessel.patchedConicSolver.maneuverNodes.Count != 0)
                     {
-                        forward = f.DelayedManeuver.GetBurnVector(v.orbit);
+                        forward = f.Vessel.patchedConicSolver.maneuverNodes[0].GetBurnVector(v.orbit);
                         up = (v.mainBody.position - v.CoM);
                     }
                     else

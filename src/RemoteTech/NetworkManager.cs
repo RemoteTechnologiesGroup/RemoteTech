@@ -240,6 +240,7 @@ namespace RemoteTech
         [Persistent] private double Longitude = -74.59484f;
         [Persistent] private double Height = 75.0f;
         [Persistent] private int Body = 1;
+        [Persistent] private Color MarkColor = new Color(0.996078f, 0, 0, 1);
         [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = new MissionControlAntenna[] { new MissionControlAntenna() };
 
         bool ISatellite.Powered { get { return true; } }
@@ -252,6 +253,7 @@ namespace RemoteTech
         bool ISatellite.isVessel { get { return false; } }
         Vessel ISatellite.parentVessel { get { return null; } }
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
+        Color ISatellite.MarkColor { get { return MarkColor; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
         private Guid mGuid;
 

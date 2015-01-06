@@ -9,6 +9,7 @@ namespace RemoteTech
 {
     public class FlightComputer : IDisposable
     {
+        private ConfigNode fcLoadedConfigs = null;
         public enum State
         {
             Normal = 0,
@@ -56,8 +57,8 @@ namespace RemoteTech
         }
 
         public double TotalDelay { get; set; }
-        public ManeuverNode DelayedManeuver { get; set; }
         public ITargetable DelayedTarget { get; set; }
+        public TargetCommand lastTarget = null;
         public Vessel Vessel { get; private set; }
         public ISignalProcessor SignalProcessor { get; private set; }
         public List<Action<FlightCtrlState>> SanctionedPilots { get; private set; }
@@ -77,10 +78,7 @@ namespace RemoteTech
         private readonly SortedDictionary<int, ICommand> mActiveCommands = new SortedDictionary<int, ICommand>();
         private readonly List<ICommand> mCommandQueue = new List<ICommand>();
         private readonly PriorityQueue<DelayedFlightCtrlState> mFlightCtrlQueue = new PriorityQueue<DelayedFlightCtrlState>();
-
-        // Oh .NET, why don't you have deque's?
-        private readonly LinkedList<DelayedManeuver> mManeuverQueue = new LinkedList<DelayedManeuver>();
-
+        
         private FlightComputerWindow mWindow;
         public FlightComputerWindow Window { get { if (mWindow != null) mWindow.Hide(); return mWindow = new FlightComputerWindow(this); } }
 
@@ -93,8 +91,6 @@ namespace RemoteTech
             initPIDParameters();
             lastAct = Vector3d.zero;
 
-            var target = TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget);
-            mActiveCommands[target.Priority] = target;
             var attitude = AttitudeCommand.Off();
             mActiveCommands[attitude.Priority] = attitude;
         }
@@ -132,6 +128,7 @@ namespace RemoteTech
             if (pos < 0)
             {
                 mCommandQueue.Insert(~pos, cmd);
+                orderCommandList();
             }
         }
 
@@ -149,6 +146,21 @@ namespace RemoteTech
 
         public void OnFixedUpdate()
         {
+            // only handle onFixedUpdate if the ship is unpacked
+            if (Vessel.packed)
+                return;
+
+            if (Vessel == null)
+                Vessel = SignalProcessor.Vessel;
+
+            // Do we have a config?
+            if (fcLoadedConfigs != null)
+            {
+                // than load
+                load(fcLoadedConfigs);
+                fcLoadedConfigs = null;
+            }
+
             // Re-attach periodically
             Vessel.OnFlyByWire -= OnFlyByWirePre;
             Vessel.OnFlyByWire -= OnFlyByWirePost;
@@ -162,23 +174,11 @@ namespace RemoteTech
             // Update proportional controller for changes in ship state
             updatePIDParameters();
 
-            // Send updates for Target / Maneuver
-            TargetCommand last = null;
-            if (FlightGlobals.fetch.VesselTarget != DelayedTarget &&
-                ((mCommandQueue.FindLastIndex(c => (last = c as TargetCommand) != null)) == -1 || last.Target != FlightGlobals.fetch.VesselTarget))
+            // Send updates for Target
+            if (FlightGlobals.fetch.VesselTarget != DelayedTarget && (mCommandQueue.FindLastIndex(c => (lastTarget = c as TargetCommand) != null)) == -1)
             {
                 Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
             }
-
-            if (Vessel.patchedConicSolver != null && Vessel.patchedConicSolver.maneuverNodes.Count > 0)
-            {
-                if ((DelayedManeuver == null || (Vessel.patchedConicSolver.maneuverNodes[0].DeltaV != DelayedManeuver.DeltaV)) &&
-                    (mManeuverQueue.Count == 0 || mManeuverQueue.Last.Value.Node.DeltaV != Vessel.patchedConicSolver.maneuverNodes[0].DeltaV))
-                {
-                    mManeuverQueue.AddLast(new DelayedManeuver(Vessel.patchedConicSolver.maneuverNodes[0]));
-                }
-            }
-
         }
 
         private void Enqueue(FlightCtrlState fs)
@@ -201,13 +201,6 @@ namespace RemoteTech
 
         private void PopCommand()
         {
-            // Maneuvers
-            while (mManeuverQueue.Count > 0 && mManeuverQueue.First.Value.TimeStamp <= RTUtil.GameTime)
-            {
-                DelayedManeuver = mManeuverQueue.First.Value.Node;
-                mManeuverQueue.RemoveFirst();
-            }
-
             // Commands
             if (mCommandQueue.Count > 0)
             {
@@ -318,6 +311,156 @@ namespace RemoteTech
                 Tf = Mathf.Clamp ((float)Tf, (float)TfMin, (float)TfMax);
             }
             initPIDParameters();
+        }
+
+        /// <summary>
+        /// Orders the mCommand queue to be chronological
+        /// </summary>
+        public void orderCommandList()
+        {
+            if (mCommandQueue.Count <= 0) return;
+
+            List<ICommand> backupList = mCommandQueue;
+            // sort the backup queue
+            backupList = backupList.OrderBy(s => (s.TimeStamp + s.ExtraDelay)).ToList();
+            // clear the old queue
+            mCommandQueue.Clear();
+
+            // add the sorted queue
+            foreach(var command in backupList)
+            {
+                mCommandQueue.Add(command);
+            }
+        }
+
+        /// <summary>
+        /// Restores the flightcomputer from the persistant
+        /// </summary>
+        /// <param name="n">Node with the informations for the flightcomputer</param>
+        public void load(ConfigNode n)
+        {
+            RTLog.Notify("Loading Flightcomputer from persistant!");
+
+            if (!n.HasNode("FlightComputer"))
+                return;
+
+            // Wait while we are packed and store the current configNode
+            if (Vessel.packed)
+            {
+                RTLog.Notify("Save flightconfig after unpacking");
+                fcLoadedConfigs = n;
+                return;
+            }
+
+            // Load the current vessel from signalprocessor if we've no on the flightcomputer
+            if (Vessel == null)
+                Vessel = SignalProcessor.Vessel;
+
+            // Read Flightcomputer informations
+            ConfigNode FlightNode = n.GetNode("FlightComputer");
+            TotalDelay = double.Parse(FlightNode.GetValue("TotalDelay"));
+            ConfigNode ActiveCommands = FlightNode.GetNode("ActiveCommands");
+            ConfigNode Commands = FlightNode.GetNode("Commands");
+
+            // Read active commands
+            if (ActiveCommands.HasNode())
+            {
+                if (mActiveCommands.Count > 0)
+                    mActiveCommands.Clear();
+                foreach (ConfigNode cmdNode in ActiveCommands.nodes)
+                {
+                    ICommand cmd = AbstractCommand.LoadCommand(cmdNode, this);
+                    
+                    if (cmd != null)
+                    {
+                        mActiveCommands[cmd.Priority] = cmd;
+                        cmd.Pop(this);
+                    }
+                }
+            }
+
+            // Read queued commands
+            if (Commands.HasNode())
+            {
+                int qCounter = 0;
+
+                // clear the current list
+                if (mCommandQueue.Count > 0)
+                    mCommandQueue.Clear();
+
+                RTLog.Notify("Loading queued commands from persistant ...");
+                foreach (ConfigNode cmdNode in Commands.nodes)
+                {
+                    ICommand cmd = AbstractCommand.LoadCommand(cmdNode, this);
+
+                    if (cmd != null)
+                    {
+                        // if delay = 0 we're ready for the extraDelay
+                        if (cmd.Delay == 0)
+                        {
+                            if (cmd is ManeuverCommand)
+                            {
+                                // TODO: Need better text
+                                RTUtil.ScreenMessage("You missed the maneuver burn!");
+                                continue;
+                            }
+
+                            // if extraDelay is set, we've to calculate the elapsed time
+                            // and set the new extradelay based on the current time
+                            if (cmd.ExtraDelay > 0)
+                            {
+                                cmd.ExtraDelay = cmd.TimeStamp  + cmd.ExtraDelay - RTUtil.GameTime;
+                                cmd.TimeStamp = RTUtil.GameTime;
+
+                                // Are we ready to handle the command ?
+                                if (cmd.ExtraDelay <= 0)
+                                {
+                                    if (cmd is BurnCommand)
+                                    {
+                                        // TODO: Need better text
+                                        RTUtil.ScreenMessage("You missed the burn command!");
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        // change the extra delay to x/100
+                                        cmd.ExtraDelay = (qCounter) / 100;
+                                    }
+                                }
+                            }
+                        }
+                        mCommandQueue.Add(cmd);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Saves all values for the flightcomputer to the persistant
+        /// </summary>
+        /// <param name="n">Node to save in</param>
+        public void Save(ConfigNode n)
+        {
+            if (n.HasNode("FlightComputer"))
+                n.RemoveNode("FlightComputer");
+
+            ConfigNode ActiveCommands = new ConfigNode("ActiveCommands");
+            ConfigNode Commands = new ConfigNode("Commands");
+            
+            foreach (KeyValuePair<int, ICommand> cmd in mActiveCommands)
+            {
+                cmd.Value.Save(ActiveCommands, this);
+            }
+
+            foreach (ICommand cmd in mCommandQueue)
+                cmd.Save(Commands, this);
+
+            ConfigNode FlightNode = new ConfigNode("FlightComputer");
+            FlightNode.AddValue("TotalDelay", TotalDelay);
+            FlightNode.AddNode(ActiveCommands);
+            FlightNode.AddNode(Commands);
+
+            n.AddNode(FlightNode);
         }
     }
 }
