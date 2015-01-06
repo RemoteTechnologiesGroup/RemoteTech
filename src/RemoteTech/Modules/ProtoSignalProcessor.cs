@@ -17,8 +17,6 @@ namespace RemoteTech
         public Vessel Vessel { get { return mVessel; } }
         public FlightComputer FlightComputer { get { return null; } }
         public bool IsMaster { get { return true; } }
-
-        public const int DEFAULT_COMMAND_MINIMUM_CREW = 6;
         private readonly Vessel mVessel;
 
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v)
@@ -26,7 +24,7 @@ namespace RemoteTech
             mVessel = v;
             Powered = ppms.GetBool("IsRTPowered");
 
-	    int commandMinCrew = DEFAULT_COMMAND_MINIMUM_CREW;
+	    int commandMinCrew = RTSettings.Instance.DefaultMinimumCrew;
 			
             try {
                 commandMinCrew = ppms.GetInt("RTCommandMinCrew");
@@ -35,7 +33,7 @@ namespace RemoteTech
             } catch (ArgumentException) {
                 // I'm assuming this would get thrown by ppms.GetInt()... do the other functions have an exception spec?
                 RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3} [Default]", 
-                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, DEFAULT_COMMAND_MINIMUM_CREW);
+                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, RTSettings.Instance.DefaultMinimumCrew);
             }
             IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= commandMinCrew;
         }
