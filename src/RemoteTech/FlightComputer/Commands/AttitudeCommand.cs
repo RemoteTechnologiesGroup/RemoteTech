@@ -71,16 +71,12 @@ namespace RemoteTech
             { ReferenceFrame.World,          "World" },
         };
 
-        [Persistent]
-        public FlightMode Mode;
-        [Persistent]
-        public FlightAttitude Attitude;
-        [Persistent]
-        public ReferenceFrame Frame;
-        [Persistent]
-        public Quaternion Orientation;
-        [Persistent]
-        public float Altitude;
+        [Persistent] public FlightMode Mode;
+        [Persistent] public FlightAttitude Attitude;
+        [Persistent] public ReferenceFrame Frame;
+        [Persistent] public Quaternion Orientation;
+        [Persistent] public float Altitude;
+
         public override int Priority { get { return 0; } }
 
         public override string Description

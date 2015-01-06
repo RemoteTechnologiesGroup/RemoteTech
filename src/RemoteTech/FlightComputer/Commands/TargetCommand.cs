@@ -7,10 +7,11 @@ namespace RemoteTech
 {
     public class TargetCommand : AbstractCommand
     {
-        [Persistent]
-        public String TargetId;
-        [Persistent]
-        public String TargetType;
+        /// Defines which target we have. Can be CelestialBody or Vessel
+        [Persistent] public String TargetType;
+        /// Target identifier, CelestialBody=Body-id or Vessel=GUID. Depends on TargetType
+        [Persistent] public String TargetId;
+
         public override double ExtraDelay { get { return 0.0; } set { return; } }
         public ITargetable Target { get; set; }
         public override int Priority { get { return 1; } }
@@ -28,6 +29,7 @@ namespace RemoteTech
         {
             f.DelayedTarget = Target;
             f.lastTarget = this;
+            // Switch the vessels target
             FlightGlobals.fetch.SetVesselTarget(Target);
 
             return true;
@@ -47,6 +49,12 @@ namespace RemoteTech
             };
         }
 
+        /// <summary>
+        /// Load the saved TargetCommand. Open a new ITargetable object by
+        /// the objects id.
+        /// </summary>
+        /// <param name="n">Node with the command infos</param>
+        /// <param name="fc">Current flightcomputer</param>
         public override void Load(ConfigNode n, FlightComputer fc)
         {
             base.Load(n, fc);
@@ -72,6 +80,12 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// Save the TargetCommand. By targeting a vessel we'll save the guid,
+        /// by a CelestialBody we save the bodys id.
+        /// </summary>
+        /// <param name="n">Node to save in</param>
+        /// <param name="fc">Current flightcomputer</param>
         public override void Save(ConfigNode n, FlightComputer fc)
         {
             if (Target != null)

@@ -40,19 +40,19 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// 
+        /// Save the basic informations for every command.
         /// </summary>
-        /// <param name="n"></param>
-        /// <param name="fc"></param>
+        /// <param name="n">Node to save in</param>
+        /// <param name="fc">Current flightcomputer</param>
         public virtual void Save(ConfigNode n, FlightComputer fc)
         {
             ConfigNode save = new ConfigNode(this.GetType().Name);
             try
             {
+                // try to serialize 'this'
                 ConfigNode.CreateConfigFromObject(this, 0, save);
             }
-            catch (Exception) {
-            }
+            catch (Exception) {}
 
             save.AddValue("TimeStamp", TimeStamp);
             save.AddValue("ExtraDelay", ExtraDelay);
@@ -60,10 +60,10 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// 
+        /// Load the basic informations for every command.
         /// </summary>
-        /// <param name="n"></param>
-        /// <param name="fc"></param>
+        /// <param name="n">Node with the command infos</param>
+        /// <param name="fc">Current flightcomputer</param>
         public virtual void Load(ConfigNode n, FlightComputer fc)
         {
             // nothing

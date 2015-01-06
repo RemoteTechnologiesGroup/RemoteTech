@@ -7,8 +7,7 @@ namespace RemoteTech
 {
     public class ActionGroupCommand : AbstractCommand
     {
-        [Persistent]
-        public KSPActionGroup ActionGroup;
+        [Persistent] public KSPActionGroup ActionGroup;
 
         public override string Description
         {

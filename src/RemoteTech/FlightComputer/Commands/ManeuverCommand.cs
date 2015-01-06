@@ -8,15 +8,12 @@ namespace RemoteTech
 {
     public class ManeuverCommand : AbstractCommand
     {
-        public ManeuverNode Node;
-        [Persistent]
-        public double NodeIndex;
-        [Persistent]
+        // Index id of this maneuver node from patchedConicSolver.maneuverNodes list
+        [Persistent] public int NodeIndex;
         public double OriginalDelta;
-        [Persistent]
         public double RemainingTime;
-        [Persistent]
         public double RemainingDelta;
+        public ManeuverNode Node;
         public bool EngineActivated { get; set; }
         public override int Priority { get { return 0; } }
 
@@ -111,15 +108,17 @@ namespace RemoteTech
             var newNode = new ManeuverCommand()
             {
                 Node = node,
+                NodeIndex = nodeIndex,
                 TimeStamp = node.UT - advance,
             };
             return newNode;
         }
 
         /// <summary>
-        /// 
+        /// Find the maneuver node by the saved node id (index id of the meneuver list)
         /// </summary>
-        /// <param name="n"></param>
+        /// <param name="n">Node with the command infos</param>
+        /// <param name="fc">Current flightcomputer</param>
         public override void Load(ConfigNode n, FlightComputer fc)
         {
             base.Load(n,fc);
@@ -127,11 +126,9 @@ namespace RemoteTech
             {
                 int nodeIndex = int.Parse(n.GetValue("NodeIndex"));
                 RTLog.Notify("Trying to get Maneuver {0}",nodeIndex);
-                //double thrust = FlightCore.GetTotalThrust(fc.Vessel);
-                ManeuverNode node = fc.Vessel.patchedConicSolver.maneuverNodes[nodeIndex];
-                RTLog.Notify("Found Maneuver {0} with {1} dV", nodeIndex, node.DeltaV);
-
-                Node = node;
+                // Set the ManeuverNode into this command
+                Node = fc.Vessel.patchedConicSolver.maneuverNodes[nodeIndex];
+                RTLog.Notify("Found Maneuver {0} with {1} dV", nodeIndex, Node.DeltaV);
             }
         }
     }
