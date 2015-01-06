@@ -29,7 +29,7 @@ namespace RemoteTech
             try {
                 commandMinCrew = ppms.GetInt("RTCommandMinCrew");
                 RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3})", 
-                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, commandMinCrew));
+                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, commandMinCrew);
             } catch (ArgumentException) {
                 // I'm assuming this would get thrown by ppms.GetInt()... do the other functions have an exception spec?
                 RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3} [Default]", 
