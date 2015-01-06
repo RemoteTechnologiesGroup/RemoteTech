@@ -79,7 +79,8 @@ namespace RemoteTech
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 mRegisteredId = vessel.id; 
                 RTCore.Instance.Satellites.Register(vessel, this);
-                FlightComputer = new FlightComputer(this);
+                if (FlightComputer == null)
+                    FlightComputer = new FlightComputer(this);
             }
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
         }
@@ -163,6 +164,7 @@ namespace RemoteTech
                     e.Invoke();
                     return;
                 }
+                
                 var vs = RTCore.Instance.Satellites[v];
                 if (vs == null || vs.HasLocalControl)
                 {
@@ -194,5 +196,37 @@ namespace RemoteTech
         {
             return String.Format("ModuleSPU({0}, {1})", Vessel != null ? Vessel.vesselName : "null", mRegisteredId);
         }
+
+        
+        public override void OnSave(ConfigNode node)
+        {
+            base.OnSave(node);
+            try
+            {
+                if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
+                {
+                    if (FlightComputer == null)
+                        FlightComputer = new FlightComputer(this);
+                    FlightComputer.Save(node);
+                }
+
+            }
+            catch (Exception e) { print(e); };
+        }
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+            try
+            {
+                if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
+                {
+                    if (FlightComputer == null)
+                        FlightComputer = new FlightComputer(this);
+                    FlightComputer.load(node);
+                }
+            }
+            catch (Exception e) { print(e); };
+        }
+
     }
 }

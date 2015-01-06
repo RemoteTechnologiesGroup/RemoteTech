@@ -7,9 +7,10 @@ namespace RemoteTech
 {
     public class BurnCommand : AbstractCommand
     {
-        public float Throttle { get; set; }
-        public double Duration { get; set; }
-        public double DeltaV { get; set; }
+        [Persistent] public float Throttle;
+        [Persistent] public double Duration;
+        [Persistent] public double DeltaV;
+
         public override int Priority { get { return 2; } }
 
         public override String Description

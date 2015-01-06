@@ -19,5 +19,8 @@ namespace RemoteTech
         bool Pop(FlightComputer f);
         bool Execute(FlightComputer f, FlightCtrlState fcs);
         void Abort();
+        /// 
+        void Save(ConfigNode n, FlightComputer fc);
+        void Load(ConfigNode n, FlightComputer fc);
     }
 }
