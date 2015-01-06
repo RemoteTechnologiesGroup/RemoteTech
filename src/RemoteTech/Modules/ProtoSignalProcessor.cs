@@ -17,7 +17,6 @@ namespace RemoteTech
         public Vessel Vessel { get { return mVessel; } }
         public FlightComputer FlightComputer { get { return null; } }
         public bool IsMaster { get { return true; } }
-
         private readonly Vessel mVessel;
 
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v)
@@ -25,16 +24,18 @@ namespace RemoteTech
             mVessel = v;
             Powered = ppms.GetBool("IsRTPowered");
 
+	    int commandMinCrew = RTSettings.Instance.DefaultMinimumCrew;
+			
             try {
-                IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= ppms.GetInt("RTCommandMinCrew");
+                commandMinCrew = ppms.GetInt("RTCommandMinCrew");
                 RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3})", 
-                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, ppms.GetInt("RTCommandMinCrew"));
+                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, commandMinCrew));
             } catch (ArgumentException) {
                 // I'm assuming this would get thrown by ppms.GetInt()... do the other functions have an exception spec?
-                IsCommandStation = false;
-                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})", 
-                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
+                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3} [Default]", 
+                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, RTSettings.Instance.DefaultMinimumCrew);
             }
+            IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= commandMinCrew;
         }
 
         public override String ToString()
