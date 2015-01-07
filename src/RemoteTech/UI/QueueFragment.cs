@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Text;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using RemoteTech.FlightComputer.Commands;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public class QueueFragment : IFragment
     {
-        private readonly FlightComputer mFlightComputer;
+        private readonly FlightComputer.FlightComputer mFlightComputer;
 
         private Vector2 mScrollPosition;
         private String mExtraDelay;
@@ -26,28 +26,28 @@ namespace RemoteTech
             {
                 var tooltip = new List<String>();
                 var status = new List<String>();
-                if ((mFlightComputer.Status & FlightComputer.State.NoConnection) == FlightComputer.State.NoConnection)
+                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.NoConnection) == FlightComputer.FlightComputer.State.NoConnection)
                 {
                     status.Add("Connection Error");
                     tooltip.Add("Cannot queue commands");
                 }
-                if ((mFlightComputer.Status & FlightComputer.State.OutOfPower) == FlightComputer.State.OutOfPower)
+                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.OutOfPower) == FlightComputer.FlightComputer.State.OutOfPower)
                 {
                     status.Add("Out of Power");
                     tooltip.Add("Commands can be missed");
                     tooltip.Add("Timers halt");
                 }
-                if ((mFlightComputer.Status & FlightComputer.State.NotMaster) == FlightComputer.State.NotMaster)
+                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.NotMaster) == FlightComputer.FlightComputer.State.NotMaster)
                 {
                     status.Add("Slave");
                     tooltip.Add("Has no control");
                 }
-                if ((mFlightComputer.Status & FlightComputer.State.Packed) == FlightComputer.State.Packed)
+                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.Packed) == FlightComputer.FlightComputer.State.Packed)
                 {
                     status.Add("Packed");
                     tooltip.Add("Frozen");
                 }
-                if (mFlightComputer.Status == FlightComputer.State.Normal)
+                if (mFlightComputer.Status == FlightComputer.FlightComputer.State.Normal)
                 {
                     status.Add("All systems nominal");
                     tooltip.Add("None");
@@ -57,7 +57,7 @@ namespace RemoteTech
             }
         }
 
-        public QueueFragment(FlightComputer fc)
+        public QueueFragment(FlightComputer.FlightComputer fc)
         {
             mFlightComputer = fc;
             Delay = 0;

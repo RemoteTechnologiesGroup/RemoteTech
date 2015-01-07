@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
 
     public class EZGUIPointerDisablePatcher : IDisposable

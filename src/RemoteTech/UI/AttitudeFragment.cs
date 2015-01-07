@@ -1,7 +1,8 @@
 ﻿using System;
+using RemoteTech.FlightComputer.Commands;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public enum ComputerMode
     {
@@ -81,7 +82,7 @@ namespace RemoteTech
 
         private FlightAttitude Attitude { get { return mAttitude; } }
 
-        private FlightComputer mFlightComputer;
+        private FlightComputer.FlightComputer mFlightComputer;
         private Action mOnClickQueue;
 
         private ComputerMode mMode;
@@ -93,7 +94,7 @@ namespace RemoteTech
         private String mHeading = "90";
         private String mDuration = "0s";
 
-        public AttitudeFragment(FlightComputer fc, Action queue)
+        public AttitudeFragment(FlightComputer.FlightComputer fc, Action queue)
         {
             mFlightComputer = fc;
             mOnClickQueue = queue;

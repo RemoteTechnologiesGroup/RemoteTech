@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.SimpleTypes
 {
     public static class GUITextureButtonFactory
     {

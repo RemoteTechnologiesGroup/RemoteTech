@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     public class ProtoSignalProcessor : ISignalProcessor
     {
@@ -15,7 +15,7 @@ namespace RemoteTech
         public bool IsCommandStation { get; private set; }
         public Guid Guid { get { return mVessel.id; } }
         public Vessel Vessel { get { return mVessel; } }
-        public FlightComputer FlightComputer { get { return null; } }
+        public FlightComputer.FlightComputer FlightComputer { get { return null; } }
         public bool IsMaster { get { return true; } }
 
         private readonly Vessel mVessel;

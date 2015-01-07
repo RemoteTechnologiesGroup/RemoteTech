@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace RemoteTech
+namespace RemoteTech.SimpleTypes
 {
     /// <summary>
     /// This class converts time strings like "1d 2m 2s" into a

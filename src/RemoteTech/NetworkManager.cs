@@ -2,18 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteTech.Modules;
+using RemoteTech.RangeModel;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 
 namespace RemoteTech
 {
-    [Flags]
-    public enum RangeModel
-    {
-        Standard,
-        Additive,
-        Root = Additive,
-    }
-
     public partial class NetworkManager : IEnumerable<ISatellite>
     {
         public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkAdd = delegate { };
@@ -144,7 +139,7 @@ namespace RemoteTech
 
             switch (RTSettings.Instance.RangeModelType)
             {
-                case RangeModel.Additive: // NathanKell
+                case RangeModel.RangeModel.Additive: // NathanKell
                     return RangeModelRoot.GetLink(sat_a, sat_b);
                 default: // Stock range model
                     return RangeModelStandard.GetLink(sat_a, sat_b);

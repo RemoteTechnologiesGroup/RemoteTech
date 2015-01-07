@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 using Object = System.Object;
 using Debug = UnityEngine.Debug;

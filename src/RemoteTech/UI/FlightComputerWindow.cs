@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public class FlightComputerWindow : AbstractWindow
     {
@@ -12,7 +9,7 @@ namespace RemoteTech
         private readonly QueueFragment mQueue;
         private bool mQueueEnabled;
 
-        public FlightComputerWindow(FlightComputer fc)
+        public FlightComputerWindow(FlightComputer.FlightComputer fc)
             : base(Guid.NewGuid(), "Flight Computer", new Rect(100, 100, 0, 0), WindowAlign.Floating)
         {
             mSavePosition = true;

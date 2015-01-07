@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteTech.FlightComputer;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     [KSPModule("Signal Processor")]
     public class ModuleSPU : PartModule, ISignalProcessor
@@ -23,7 +24,7 @@ namespace RemoteTech
                 return IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
             }
         }
-        public FlightComputer FlightComputer { get; private set; }
+        public FlightComputer.FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel { get { return vessel; } }
         public bool IsMaster { get { return Satellite != null && Satellite.SignalProcessor == this; } }
 
@@ -79,7 +80,7 @@ namespace RemoteTech
                 mRegisteredId = vessel.id; 
                 RTCore.Instance.Satellites.Register(vessel, this);
                 if (FlightComputer == null)
-                    FlightComputer = new FlightComputer(this);
+                    FlightComputer = new FlightComputer.FlightComputer(this);
             }
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
         }
@@ -205,7 +206,7 @@ namespace RemoteTech
                 if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
                 {
                     if (FlightComputer == null)
-                        FlightComputer = new FlightComputer(this);
+                        FlightComputer = new FlightComputer.FlightComputer(this);
                     FlightComputer.Save(node);
                 }
 
@@ -220,7 +221,7 @@ namespace RemoteTech
                 if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
                 {
                     if (FlightComputer == null)
-                        FlightComputer = new FlightComputer(this);
+                        FlightComputer = new FlightComputer.FlightComputer(this);
                     FlightComputer.load(node);
                 }
             }
