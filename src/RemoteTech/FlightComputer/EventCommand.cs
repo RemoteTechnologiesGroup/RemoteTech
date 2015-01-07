@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using RemoteTech.FlightComputer.Commands;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer
 {
     public class EventCommand : AbstractCommand
     {

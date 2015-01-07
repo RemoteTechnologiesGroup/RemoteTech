@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     public sealed class MissionControlAntenna : IAntenna
     {

@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using RemoteTech.FlightComputer.Commands;
+using RemoteTech.SimpleTypes;
+using RemoteTech.UI;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer
 {
     public class FlightComputer : IDisposable
     {
@@ -296,7 +297,7 @@ namespace RemoteTech
         public void updatePIDParameters()
         {
             if (Vessel != null) {
-                Vector3d torque = kOS.SteeringHelper.GetTorque (Vessel, 
+                Vector3d torque = SteeringHelper.GetTorque (Vessel, 
                     Vessel.ctrlState != null ? Vessel.ctrlState.mainThrottle : 0.0f);
                 var CoM = Vessel.findWorldCenterOfMass ();
                 var MoI = Vessel.findLocalMOI (CoM);

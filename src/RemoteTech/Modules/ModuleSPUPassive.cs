@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     public class ModuleSPUPassive : PartModule, ISignalProcessor
     {
@@ -16,7 +14,7 @@ namespace RemoteTech
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(vessel); } }
         public bool Powered { get { return Vessel.IsControllable; } }
         public bool IsCommandStation { get { return false; } }
-        public FlightComputer FlightComputer { get { return null; } }
+        public FlightComputer.FlightComputer FlightComputer { get { return null; } }
         public Vessel Vessel { get { return vessel; } }
         public bool IsMaster { get { return false; } }
 

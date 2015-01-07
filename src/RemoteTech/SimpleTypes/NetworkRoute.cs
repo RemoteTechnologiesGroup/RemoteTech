@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
-namespace RemoteTech
+namespace RemoteTech.SimpleTypes
 {
     public class NetworkRoute<T> : IComparable<NetworkRoute<T>>
     {

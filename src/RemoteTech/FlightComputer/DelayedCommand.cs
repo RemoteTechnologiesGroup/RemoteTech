@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Text;
-using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer
 {
     public class DelayedFlightCtrlState : IComparable<DelayedFlightCtrlState>
     {

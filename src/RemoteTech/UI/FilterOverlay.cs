@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public class FilterOverlay : IFragment, IDisposable
     {

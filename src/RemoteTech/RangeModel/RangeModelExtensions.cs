@@ -1,6 +1,7 @@
 ﻿using System;
+using RemoteTech.SimpleTypes;
 
-namespace RemoteTech
+namespace RemoteTech.RangeModel
 {
     public static class RangeModelExtensions
     {
