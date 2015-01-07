@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace RemoteTech
@@ -26,7 +25,7 @@ namespace RemoteTech
         }
         public FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel { get { return vessel; } }
-        public bool IsMaster { get { return Satellite != null && Satellite.SignalProcessor == (ISignalProcessor) this; } }
+        public bool IsMaster { get { return Satellite != null && Satellite.SignalProcessor == this; } }
 
         private VesselSatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
 
