@@ -46,17 +46,21 @@ namespace RemoteTech
                 return false;
             }
 
-            try {
-                Vector3d coneCenter = RTCore.Instance.Network.GetPositionFromGuid(dish.Target);
+            Vector3d? coneCenter = RTCore.Instance.Network.GetPositionFromGuid(dish.Target);
 
-                Vector3d dirToConeCenter = (coneCenter      - antennaSat.Position);
-                Vector3d dirToTarget     = (target.Position - antennaSat.Position);
+            if (coneCenter.HasValue)
+            {
+                Vector3d dirToConeCenter = (coneCenter.Value - antennaSat.Position);
+                Vector3d dirToTarget     = (target.Position  - antennaSat.Position);
 
                 return (Vector3d.Dot(dirToConeCenter.normalized, dirToTarget.normalized) >= dish.CosAngle);
-            } catch (ArgumentException e) {
-                RTLog.Notify("Unexpected dish target: {0}", e);
+            }
+            else
+            {
+                RTLog.Notify("Unexpected dish target: {0}", dish.Target);
                 return false;
             }
+            
         }
 
         /// <summary>Finds the distance between two ISatellites</summary>

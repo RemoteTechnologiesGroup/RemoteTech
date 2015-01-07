@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace RemoteTech
 {
@@ -141,9 +142,16 @@ namespace RemoteTech
                 mCones[i].Material = MapView.fetch.orbitLinesMaterial;
                 mCones[i].LineWidth = 2.0f;
                 mCones[i].Antenna = antennas[i];
-                mCones[i].Center = RTCore.Instance.Network.GetPositionFromGuid(antennas[i].Target);
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
+
+                var center = RTCore.Instance.Network.GetPositionFromGuid(antennas[i].Target);
+                Debug.Assert(center != null, 
+                             "center != null", 
+                             String.Format("GetPositionFromGuid retuned a null value for the target {0}", 
+                                           antennas[i].Target)
+                             );
+                mCones[i].Center = center.Value;
             }
         }
 
