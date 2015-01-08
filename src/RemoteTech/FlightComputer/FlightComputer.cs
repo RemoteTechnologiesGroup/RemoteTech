@@ -93,11 +93,24 @@ namespace RemoteTech
 
             var attitude = AttitudeCommand.Off();
             mActiveCommands[attitude.Priority] = attitude;
+
+            GameEvents.onVesselChange.Add(OnVesselChange);
+        }
+        
+        /// <summary>
+        /// After switching the vessel close the current flightcomputer.
+        /// </summary>
+        public void OnVesselChange(Vessel v)
+        {
+            Dispose();
         }
 
         public void Dispose()
         {
             RTLog.Notify("FlightComputer: Dispose");
+
+            GameEvents.onVesselChange.Remove(OnVesselChange);
+
             if (Vessel != null)
             {
                 Vessel.OnFlyByWire -= OnFlyByWirePre;
@@ -146,12 +159,12 @@ namespace RemoteTech
 
         public void OnFixedUpdate()
         {
+            if (Vessel == null)
+                Vessel = SignalProcessor.Vessel;
+
             // only handle onFixedUpdate if the ship is unpacked
             if (Vessel.packed)
                 return;
-
-            if (Vessel == null)
-                Vessel = SignalProcessor.Vessel;
 
             // Do we have a config?
             if (fcLoadedConfigs != null)

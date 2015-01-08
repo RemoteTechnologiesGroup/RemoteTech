@@ -56,7 +56,6 @@ namespace RemoteTech
             mAntennaFragment = mAntennaFragment ?? new AntennaFragment(mSetAntenna);
 
             /// Add callbacks for the onPositionChanged on the AbstractWindow
-            onPositionChanged += mouseOverAntennaWindow;
             onPositionChanged += mTargetInfos.calculatePosition;
 
             /// Add the showTargetInfo callback to the on mouse over/out event
@@ -76,7 +75,6 @@ namespace RemoteTech
             {
                 /// Remove callbacks from the onPositionChanged on the AbstractWindow
                 onPositionChanged -= mTargetInfos.calculatePosition;
-                onPositionChanged -= mouseOverAntennaWindow;
 
                 /// Remove the showTargetInfo callback from the on mouse over/out event
                 mAntennaFragment.onMouseOverListEntry -= showTargetInfo;
@@ -93,7 +91,10 @@ namespace RemoteTech
         {
             if (mAntennaFragment.Antenna == null) { Hide(); return; }
             GUI.skin = HighLogic.Skin;
-            
+
+            // check the mouse position on every draw call
+            mouseOverAntennaWindow();
+
             GUILayout.BeginVertical(GUILayout.Width(300), GUILayout.Height(500));
             {
                 mAntennaFragment.Draw();
@@ -103,9 +104,13 @@ namespace RemoteTech
             base.Window(uid);
         }
 
+        /// <summary>
+        /// Checks whether the mouse is over this window to set
+        /// the triggerMouseOverListEntry on the AntennaFragment
+        /// </summary>
         public void mouseOverAntennaWindow()
         {
-            mAntennaFragment.triggerMouseOverListEntry = Position.Contains(Event.current.mousePosition);
+            mAntennaFragment.triggerMouseOverListEntry = backupPosition.Contains(Event.current.mousePosition);
         }
 
         public void OnVesselChange(Vessel v)
