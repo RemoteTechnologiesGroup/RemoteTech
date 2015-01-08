@@ -36,7 +36,7 @@ namespace RemoteTech
         public float mInitialHeight;
         /// <summary>Callback trigger for the change in the posistion</summary>
         public Action onPositionChanged = delegate { };
-        private Rect tmpPosition;
+        public Rect backupPosition;
 
         static AbstractWindow()
         {
@@ -49,7 +49,7 @@ namespace RemoteTech
             Title = title;
             Alignment = align;
             Position = position;
-            tmpPosition = Position;
+            backupPosition = position;
             mInitialHeight = position.height + 15;
             mInitialWidth = position.width + 15;
 
@@ -181,13 +181,11 @@ namespace RemoteTech
                 mLastTime = Time.time;
 
                 // Position of the window changed?
-                if (!tmpPosition.Equals(Position))
+                if (!backupPosition.Equals(Position))
                 {
-                    RTLog.Notify("TmpPosition: {0}", tmpPosition);
-                    RTLog.Notify("Position: {0}", Position);
                     // trigger the onPositionChanged callbacks
                     onPositionChanged.Invoke();
-                    tmpPosition = Position;
+                    backupPosition = Position;
                 }
             }
         }
