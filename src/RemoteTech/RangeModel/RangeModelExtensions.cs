@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace RemoteTech
 {
@@ -46,17 +43,17 @@ namespace RemoteTech
                 return false;
             }
 
-            try {
-                Vector3d coneCenter = RTCore.Instance.Network.GetPositionFromGuid(dish.Target);
+            Vector3d? coneCenter = RTCore.Instance.Network.GetPositionFromGuid(dish.Target);
 
-                Vector3d dirToConeCenter = (coneCenter      - antennaSat.Position);
-                Vector3d dirToTarget     = (target.Position - antennaSat.Position);
+            if (coneCenter.HasValue)
+            {
+                Vector3d dirToConeCenter = (coneCenter.Value - antennaSat.Position);
+                Vector3d dirToTarget     = (target.Position  - antennaSat.Position);
 
                 return (Vector3d.Dot(dirToConeCenter.normalized, dirToTarget.normalized) >= dish.CosAngle);
-            } catch (ArgumentException e) {
-                RTLog.Notify("Unexpected dish target: {0}", e);
-                return false;
             }
+            RTLog.Notify("Unexpected dish target: {0}", dish.Target);
+            return false;
         }
 
         /// <summary>Finds the distance between two ISatellites</summary>
@@ -68,8 +65,8 @@ namespace RemoteTech
 
         /// <summary>Finds the distance between an ISatellite and the target of a connection</summary>
         /// <returns>The distance in meters.</returns>
-        /// <param name="sat">The satellite from which the distance is to be measured.
-        /// <param name="link">The network node to whose destination the distance is to be measured.
+        /// <param name="sat">The satellite from which the distance is to be measured.</param>
+        /// <param name="link">The network node to whose destination the distance is to be measured.</param>
         public static double DistanceTo(this ISatellite sat, NetworkLink<ISatellite> link)
         {
             return Vector3d.Distance(sat.Position, link.Target.Position);
@@ -80,7 +77,7 @@ namespace RemoteTech
         /// otherwise, <c>false</c>.</returns>
         public static bool HasLineOfSightWith(this ISatellite satA, ISatellite satB)
         {
-            const double minHeight = 5.0;
+            const double MIN_HEIGHT = 5.0;
             Vector3d satAPos = satA.Position;
             Vector3d satBPos = satB.Position;
 
@@ -97,7 +94,7 @@ namespace RemoteTech
                 // Above conditions guarantee that Vector3d.Dot(bodyFromA, bFromANorm) * bFromANorm 
                 // lies between the origin and bFromA
                 Vector3d lateralOffset = bodyFromA - Vector3d.Dot(bodyFromA, bFromANorm) * bFromANorm;
-                if (lateralOffset.magnitude < referenceBody.Radius - minHeight) return false;
+                if (lateralOffset.magnitude < referenceBody.Radius - MIN_HEIGHT) return false;
             }
             return true;
         }

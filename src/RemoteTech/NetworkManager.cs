@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
@@ -119,14 +118,7 @@ namespace RemoteTech
 
         private void UpdateGraph(ISatellite a)
         {
-            var result = new List<NetworkLink<ISatellite>>();
-
-            foreach (ISatellite b in this)
-            {
-                var link = GetLink(a, b);
-                if (link == null) continue;
-                result.Add(link);
-            }
+            var result = this.Select(b => GetLink(a, b)).Where(link => link != null).ToList();
 
             // Send events for removed edges
             foreach (var link in Graph[a.Guid].Except(result))
@@ -152,11 +144,10 @@ namespace RemoteTech
 
             switch (RTSettings.Instance.RangeModelType)
             {
-                default:
-                case RangeModel.Standard: // Stock range model
-                    return RangeModelStandard.GetLink(sat_a, sat_b);
                 case RangeModel.Additive: // NathanKell
                     return RangeModelRoot.GetLink(sat_a, sat_b);
+                default: // Stock range model
+                    return RangeModelStandard.GetLink(sat_a, sat_b);
             }
         }
 
@@ -208,15 +199,13 @@ namespace RemoteTech
         }
 
         /// <summary>Gets the position of a RemoteTech target from its id</summary>
-        /// <returns>The absolute position.</returns>
+        /// <returns>The absolute position or null if <paramref name="targetable"/> is neither 
+        /// a satellite nor a celestial body.</returns>
         /// <param name="targetable">The id of the satellite or celestial body whose position is 
-        /// desired. May be the active vessel Guid.</param>
-        /// 
-        /// <exception cref="System.ArgumentException">Thrown if <paramref name="targetable"/> is neither 
-        /// a satellite nor a celestial body.</exception>
+        ///     desired. May be the active vessel Guid.</param>
         /// 
         /// <exceptsafe>The program state is unchanged in the event of an exception.</exceptsafe>
-        internal Vector3d GetPositionFromGuid(Guid targetable)
+        internal Vector3d? GetPositionFromGuid(Guid targetable)
         {
             ISatellite targetSat = this[targetable];
             if (targetSat != null) {
@@ -227,7 +216,7 @@ namespace RemoteTech
                 return Planets[targetable].position;
             }
 
-            throw new ArgumentException("Guid is neither a satellite nor a celestial body: ", "targetable");
+            return null;
         }
     }
 
@@ -241,12 +230,12 @@ namespace RemoteTech
         [Persistent] private double Height = 75.0f;
         [Persistent] private int Body = 1;
         [Persistent] private Color MarkColor = new Color(0.996078f, 0, 0, 1);
-        [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = new MissionControlAntenna[] { new MissionControlAntenna() };
+        [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
 
         bool ISatellite.Powered { get { return true; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
-        Guid ISatellite.Guid { get { return this.mGuid; } }
+        Guid ISatellite.Guid { get { return mGuid; } }
         Vector3d ISatellite.Position { get { return FlightGlobals.Bodies[Body].GetWorldSurfacePosition(Latitude, Longitude, Height); } }
         bool ISatellite.IsCommandStation { get { return true; } }
         bool ISatellite.HasLocalControl { get { return false; } }
@@ -261,7 +250,7 @@ namespace RemoteTech
 
         public MissionControlSatellite()
         {
-            this.mGuid = new Guid(this.Guid);
+            mGuid = new Guid(Guid);
         }
 
         void IPersistenceLoad.PersistenceLoad()
@@ -270,7 +259,7 @@ namespace RemoteTech
             {
                 antenna.Parent = this;
             }
-            this.mGuid = new Guid(this.Guid);
+            mGuid = new Guid(Guid);
         }
 
         public override String ToString()
