@@ -65,7 +65,7 @@ namespace RemoteTech.UI
 
         public void Draw()
         {
-            if (Event.current.Equals(Event.KeyboardEvent("return")) && GUI.GetNameOfFocusedControl() == "xd")
+            if (Event.current.Equals(Event.KeyboardEvent("return")) && GUI.GetNameOfFocusedControl() == "rt_xd")
             {
                 RTCore.Instance.StartCoroutine(onClickAddExtraDelay());
             }
@@ -111,7 +111,7 @@ namespace RemoteTech.UI
                 {
                     GUILayout.Label(new GUIContent("Delay (+ signal): " + RTUtil.FormatDuration(mFlightComputer.TotalDelay), "Total delay including signal delay."));
                     GUILayout.FlexibleSpace();
-                    GUI.SetNextControlName("xd");
+                    GUI.SetNextControlName("rt_xd");
                     RTUtil.TextField(ref mExtraDelay, GUILayout.Width(45));
                     RTUtil.Button(new GUIContent(">", "Add extra signal delay - Example: 125, 125s, 5m20s, 1d6h20m10s"), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelay()), GUILayout.Width(21), GUILayout.Height(21));
                 }
