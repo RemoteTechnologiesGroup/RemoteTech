@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public enum WindowAlign
     {
@@ -95,6 +93,7 @@ namespace RemoteTech
 
         public virtual void Hide()
         {
+            removeWindowCtrlLock();
             Windows.Remove(mGuid);
             Enabled = false;
             if (mSavePosition)
@@ -187,6 +186,16 @@ namespace RemoteTech
                     onPositionChanged.Invoke();
                     backupPosition = Position;
                 }
+
+                // Set ship control lock if one rt input is in focus
+                if (GUI.GetNameOfFocusedControl().StartsWith("rt_"))
+                {
+                    setWindowCtrlLock();
+                }
+                else
+                {
+                    removeWindowCtrlLock();
+                }
             }
         }
 
@@ -194,6 +203,27 @@ namespace RemoteTech
         {
             RTSettings.Instance.savedWindowPositions.Remove(this.GetType().ToString());
             RTSettings.Instance.savedWindowPositions.Add(this.GetType().ToString(), Position);
+        }
+
+        /// <summary>
+        /// Set a input lock to keep typing to this window
+        /// </summary>
+        public void setWindowCtrlLock()
+        {
+            // only if we are enabled
+            if (Enabled)
+            {
+                InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "RTLockControlForWindows");
+            }
+        }
+
+
+        /// <summary>
+        /// Remove the input lock
+        /// </summary>
+        public void removeWindowCtrlLock()
+        {
+            InputLockManager.RemoveControlLock("RTLockControlForWindows");
         }
     }
 }

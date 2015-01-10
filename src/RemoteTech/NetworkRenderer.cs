@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using RemoteTech.SimpleTypes;
+using RemoteTech.UI;
 using UnityEngine;
+
 using Debug = System.Diagnostics.Debug;
 
 namespace RemoteTech
@@ -138,19 +141,21 @@ namespace RemoteTech
 
             for (int i = 0; i < newLength; i++)
             {
+                var center = RTCore.Instance.Network.GetPositionFromGuid(antennas[i].Target);
+                Debug.Assert(center != null,
+                             "center != null",
+                             String.Format("GetPositionFromGuid returned a null value for the target {0}",
+                                           antennas[i].Target)
+                             );
+
+                if (!center.HasValue) continue;
+
                 mCones[i] = mCones[i] ?? NetworkCone.Instantiate();
                 mCones[i].Material = MapView.fetch.orbitLinesMaterial;
                 mCones[i].LineWidth = 2.0f;
                 mCones[i].Antenna = antennas[i];
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
-
-                var center = RTCore.Instance.Network.GetPositionFromGuid(antennas[i].Target);
-                Debug.Assert(center != null, 
-                             "center != null", 
-                             String.Format("GetPositionFromGuid returned a null value for the target {0}", 
-                                           antennas[i].Target)
-                             );
                 mCones[i].Center = center.Value;
             }
         }

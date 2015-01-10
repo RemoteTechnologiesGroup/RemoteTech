@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RemoteTech
+namespace RemoteTech.SimpleTypes
 {
     public enum LinkType
     {

@@ -28,7 +28,7 @@ namespace RemoteTech
         [Persistent] public float SpeedOfLight = 3e8f;
         [Persistent] public MapFilter MapFilter = MapFilter.Path | MapFilter.Omni | MapFilter.Dish;
         [Persistent] public bool EnableSignalDelay = true;
-        [Persistent] public RangeModel RangeModelType = RangeModel.Standard;
+        [Persistent] public RangeModel.RangeModel RangeModelType = RangeModel.RangeModel.Standard;
         [Persistent] public double MultipleAntennaMultiplier = 0.0;
         [Persistent] public bool ThrottleTimeWarp = true;
         [Persistent] public bool HideGroundStationsBehindBody = false;

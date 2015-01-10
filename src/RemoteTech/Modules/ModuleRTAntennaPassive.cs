@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     [KSPModule("Technology Perk")]
     public class ModuleRTAntennaPassive : PartModule, IAntenna

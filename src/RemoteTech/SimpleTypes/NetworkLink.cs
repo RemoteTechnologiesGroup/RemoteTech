@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RemoteTech
+namespace RemoteTech.SimpleTypes
 {
     public class NetworkLink<T> : IEquatable<NetworkLink<T>>
     {

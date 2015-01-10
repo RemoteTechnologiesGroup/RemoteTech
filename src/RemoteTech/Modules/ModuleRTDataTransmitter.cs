@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     public sealed class ModuleRTDataTransmitter : PartModule, IScienceDataTransmitter
     {

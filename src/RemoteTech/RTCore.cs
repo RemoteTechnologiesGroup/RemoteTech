@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using RemoteTech.FlightComputer.Commands;
+using RemoteTech.UI;
 using UnityEngine;
 
 namespace RemoteTech

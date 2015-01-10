@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public class TimeWarpDecorator
     {

@@ -1,6 +1,7 @@
 ﻿using System;
+using RemoteTech.SimpleTypes;
 
-namespace RemoteTech
+namespace RemoteTech.RangeModel
 {
     public static class RangeModelExtensions
     {
@@ -52,7 +53,7 @@ namespace RemoteTech
 
                 return (Vector3d.Dot(dirToConeCenter.normalized, dirToTarget.normalized) >= dish.CosAngle);
             }
-            RTLog.Notify("Unexpected dish target: {0}", dish.Target);
+
             return false;
         }
 

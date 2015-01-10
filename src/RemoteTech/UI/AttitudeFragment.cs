@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
+using RemoteTech.FlightComputer.Commands;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public enum ComputerMode
     {
@@ -83,7 +83,7 @@ namespace RemoteTech
 
         private FlightAttitude Attitude { get { return mAttitude; } }
 
-        private FlightComputer mFlightComputer;
+        private FlightComputer.FlightComputer mFlightComputer;
         private Action mOnClickQueue;
 
         private ComputerMode mMode;
@@ -95,7 +95,7 @@ namespace RemoteTech
         private String mHeading = "90";
         private String mDuration = "0s";
 
-        public AttitudeFragment(FlightComputer fc, Action queue)
+        public AttitudeFragment(FlightComputer.FlightComputer fc, Action queue)
         {
             mFlightComputer = fc;
             mOnClickQueue = queue;
@@ -106,7 +106,7 @@ namespace RemoteTech
             float width3 = 156 / 3 - GUI.skin.button.margin.right * 2.0f / 3.0f;
             if (Event.current.Equals(Event.KeyboardEvent("return")))
             {
-                if (GUI.GetNameOfFocusedControl().StartsWith("phr"))
+                if (GUI.GetNameOfFocusedControl().StartsWith("rt_phr"))
                 {
                     mPitch = Pitch.ToString();
                     mHeading = Heading.ToString();
@@ -117,7 +117,7 @@ namespace RemoteTech
                         Confirm();
                     }
                 }
-                else if (GUI.GetNameOfFocusedControl() == "burn")
+                else if (GUI.GetNameOfFocusedControl() == "rt_burn")
                 {
                     OnBurnClick();
                 }
@@ -163,7 +163,7 @@ namespace RemoteTech
                     GUILayout.Label(new GUIContent("PIT:", "Sets pitch."), GUILayout.Width(width3));
                     RTUtil.Button("+", () => Pitch++);
                     RTUtil.Button("-", () => Pitch--);
-                    GUI.SetNextControlName("phr1");
+                    GUI.SetNextControlName("rt_phr1");
                     RTUtil.TextField(ref mPitch, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
@@ -173,7 +173,7 @@ namespace RemoteTech
                     GUILayout.Label(new GUIContent("HDG:", "Sets heading."), GUILayout.Width(width3));
                     RTUtil.Button("+", () => Heading++);
                     RTUtil.Button("-", () => Heading--);
-                    GUI.SetNextControlName("phr2");
+                    GUI.SetNextControlName("rt_phr2");
                     RTUtil.TextField(ref mHeading, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
@@ -183,7 +183,7 @@ namespace RemoteTech
                     GUILayout.Label(new GUIContent("RLL:", "Sets roll."), GUILayout.Width(width3));
                     RTUtil.Button("+", () => Roll++);
                     RTUtil.Button("-", () => Roll--);
-                    GUI.SetNextControlName("phr3");
+                    GUI.SetNextControlName("rt_phr3");
                     RTUtil.TextField(ref mRoll, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
@@ -197,7 +197,7 @@ namespace RemoteTech
                 GUILayout.EndHorizontal();
 
                 RTUtil.HorizontalSlider(ref mThrottle, 0, 1);
-                GUI.SetNextControlName("burn");
+                GUI.SetNextControlName("rt_burn");
                 RTUtil.TextField(ref mDuration);
 
                 GUILayout.BeginHorizontal();
