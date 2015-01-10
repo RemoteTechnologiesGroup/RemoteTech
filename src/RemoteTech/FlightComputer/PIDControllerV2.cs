@@ -7,12 +7,8 @@
 /// </description>
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer
 {
     // This PID Controler is used by Raf04 patch for the attitude controler. They have a separate implementation since they use
     // a different set of argument and do more (and less) than the other PID controler

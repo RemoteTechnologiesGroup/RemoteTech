@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 
 namespace RemoteTech
@@ -74,7 +75,8 @@ namespace RemoteTech
             get { return RTCore.Instance.Antennas[this]; }
         }
 
-        public FlightComputer FlightComputer { 
+        public FlightComputer.FlightComputer FlightComputer
+        { 
             get { return SignalProcessor.FlightComputer; } 
         }
 

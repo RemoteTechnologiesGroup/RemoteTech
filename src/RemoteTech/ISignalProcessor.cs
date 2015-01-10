@@ -18,7 +18,7 @@ namespace RemoteTech
         bool IsMaster { get; }
 
         // Reserved for Flight Computer
-        FlightComputer FlightComputer { get; }
+        FlightComputer.FlightComputer FlightComputer { get; }
         Vessel Vessel { get; }
     }
 }

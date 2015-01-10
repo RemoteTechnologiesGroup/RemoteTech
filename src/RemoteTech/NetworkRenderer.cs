@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using RemoteTech.SimpleTypes;
+using RemoteTech.UI;
 using UnityEngine;
+
 using Debug = System.Diagnostics.Debug;
 
 namespace RemoteTech

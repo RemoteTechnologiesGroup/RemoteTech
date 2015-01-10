@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using RemoteTech.SimpleTypes;
 
-namespace RemoteTech
+namespace RemoteTech.RangeModel
 {
     public static class RangeModelRoot
     {

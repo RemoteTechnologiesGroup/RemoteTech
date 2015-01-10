@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using RemoteTech.FlightComputer.Commands;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer
 {
     public static class FlightCore
     {
@@ -27,7 +28,7 @@ namespace RemoteTech
                     up = (v.mainBody.position - v.CoM);
                     forward = Vector3.Exclude(up,
                         v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM
-                     );
+                        );
                     break;
 
                 case ReferenceFrame.Maneuver:
@@ -109,7 +110,7 @@ namespace RemoteTech
         public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target)
         {
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
-            kOS.SteeringHelper.SteerShipToward(target, fs, f);
+            SteeringHelper.SteerShipToward(target, fs, f);
         }
 
         /// <summary>
@@ -165,10 +166,7 @@ namespace RemoteTech
             return thrust;
         }
     }
-}
 
-namespace kOS
-{
     public static class SteeringHelper
     {
         /// <summary>
@@ -177,7 +175,7 @@ namespace kOS
         /// <param name="target">The desired orientation</param>
         /// <param name="c">The FlightCtrlState for the current vessel.</param>
         /// <param name="fc">The flight computer carrying out the slew</param>
-        public static void SteerShipToward(Quaternion target, FlightCtrlState c, RemoteTech.FlightComputer fc)
+        public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc)
         {
             // Add support for roll-less targets later -- Starstrider42
             bool fixedRoll = true;
@@ -351,9 +349,9 @@ namespace kOS
 
             // Adapted from MechJeb master on June 27, 2014
             Vector3d retVar;
-            retVar.x = (torque.x != 0.0 ? angularMomentum.x*angularMomentum.x / (torque.x*momentOfInertia.x) : 0.0);
-            retVar.y = (torque.y != 0.0 ? angularMomentum.y*angularMomentum.y / (torque.y*momentOfInertia.y) : 0.0);
-            retVar.z = (torque.z != 0.0 ? angularMomentum.z*angularMomentum.z / (torque.z*momentOfInertia.z) : 0.0);
+            retVar.x = (torque.x != 0.0 ? angularMomentum.x * angularMomentum.x / (torque.x * momentOfInertia.x) : 0.0);
+            retVar.y = (torque.y != 0.0 ? angularMomentum.y * angularMomentum.y / (torque.y * momentOfInertia.y) : 0.0);
+            retVar.z = (torque.z != 0.0 ? angularMomentum.z * angularMomentum.z / (torque.z * momentOfInertia.z) : 0.0);
             retVar.Scale(Sign(angularMomentum));
 
             return retVar / 2;
@@ -388,7 +386,7 @@ namespace kOS
                         roll += reactionWheelModule.RollTorque;
                         yaw += reactionWheelModule.YawTorque;
                     }
-                    // Is there a more direct way to see if RCS is enabled? module.isEnabled doesn't work...
+                        // Is there a more direct way to see if RCS is enabled? module.isEnabled doesn't work...
                     else if (rcsModule != null && vessel.ActionGroups[KSPActionGroup.RCS])
                     {
                         var vesselTransform = vessel.GetTransform();
@@ -412,8 +410,8 @@ namespace kOS
 
                 Vector3d gimbal = GetThrustTorque(part, vessel) * thrust;
                 pitch += gimbal.x;
-                roll  += gimbal.y;
-                yaw   += gimbal.z;
+                roll += gimbal.y;
+                yaw += gimbal.z;
             }
 
             return new Vector3d(pitch, roll, yaw);
@@ -428,7 +426,8 @@ namespace kOS
         public static Vector3d GetThrustTorque(Part p, Vessel vessel)
         {
             double result = 0.0;
-            foreach (ModuleGimbal gimbal in p.Modules.OfType<ModuleGimbal>()) {
+            foreach (ModuleGimbal gimbal in p.Modules.OfType<ModuleGimbal>())
+            {
                 if (gimbal.gimbalLock)
                     continue;
 
@@ -439,7 +438,8 @@ namespace kOS
                 bool engineFound = false;
                 {
                     ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
-                    if (engine != null) {
+                    if (engine != null)
+                    {
                         if (!engine.isOperational)
                             continue;
                         engineFound = true;
@@ -448,7 +448,8 @@ namespace kOS
                 }
                 {
                     ModuleEnginesFX engine = p.Modules.OfType<ModuleEnginesFX>().FirstOrDefault();
-                    if (engine != null) {
+                    if (engine != null)
+                    {
                         if (!engine.isOperational)
                             continue;
                         engineFound = true;
@@ -470,9 +471,9 @@ namespace kOS
         private static Vector3d ReduceAngles(Vector3d input)
         {
             return new Vector3d(
-                      (input.x > 180f) ? (input.x - 360f) : input.x,
-                      (input.y > 180f) ? (input.y - 360f) : input.y,
-                      (input.z > 180f) ? (input.z - 360f) : input.z
+                  (input.x > 180f) ? (input.x - 360f) : input.x,
+                  (input.y > 180f) ? (input.y - 360f) : input.y,
+                  (input.z > 180f) ? (input.z - 360f) : input.z
                   );
         }
 
