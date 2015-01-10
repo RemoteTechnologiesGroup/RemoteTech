@@ -19,6 +19,10 @@ namespace RemoteTech
     public static partial class RTUtil
     {
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
+        /// <summary>
+        /// Returns the current AssemplyVersion from AssemblyInfos.cs
+        /// </summary>
+        public static string Version { get{ return "v"+Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
 
         public static readonly String[]
             DistanceUnits = { "", "k", "M", "G", "T" },
