@@ -45,7 +45,7 @@ namespace RemoteTech
 
             FlightUIPatcher.Patch();
 
-            RTLog.Notify("RTCore loaded successfully.");
+            RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
 
             foreach (var vessel in FlightGlobals.Vessels)
             {
