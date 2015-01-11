@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 
 namespace RemoteTech
@@ -26,6 +27,11 @@ namespace RemoteTech
 
         public CelestialBody Body { 
             get { return SignalProcessor.Body; }
+        }
+
+        public Color MarkColor
+        {
+            get { return new Color(0.996078f, 0, 0, 1); }
         }
 
         public List<ISignalProcessor> SignalProcessors { get; set; }
@@ -69,7 +75,8 @@ namespace RemoteTech
             get { return RTCore.Instance.Antennas[this]; }
         }
 
-        public FlightComputer FlightComputer { 
+        public FlightComputer.FlightComputer FlightComputer
+        { 
             get { return SignalProcessor.FlightComputer; } 
         }
 

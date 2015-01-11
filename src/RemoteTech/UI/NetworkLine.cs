@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RemoteTech.SimpleTypes;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public class NetworkLine : MonoBehaviour
     {

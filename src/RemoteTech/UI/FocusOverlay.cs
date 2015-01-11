@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public class FocusOverlay : IFragment, IDisposable
     {
@@ -28,6 +28,7 @@ namespace RemoteTech
 
         private FocusFragment mFocus = new FocusFragment();
         private bool mEnabled;
+        private bool mShowOverlay;
 
         private Rect PositionButton
         {
@@ -59,12 +60,16 @@ namespace RemoteTech
         {
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
+            GameEvents.onHideUI.Add(OnHideUI);
+            GameEvents.onShowUI.Add(OnShowUI);
         }
 
         public void Dispose()
         {
             MapView.OnEnterMapView -= OnEnterMapView;
             MapView.OnExitMapView -= OnExitMapView;
+            GameEvents.onHideUI.Remove(OnHideUI);
+            GameEvents.onShowUI.Remove(OnShowUI);
         }
 
         public void OnEnterMapView()
@@ -78,8 +83,19 @@ namespace RemoteTech
             RTCore.Instance.OnGuiUpdate -= Draw;
         }
 
+        private void OnHideUI()
+        {
+            mShowOverlay = false;
+        }
+
+        private void OnShowUI()
+        {
+            mShowOverlay = true;
+        }
+
         public void Draw()
         {
+            if (!mShowOverlay) return;
             GUI.depth = 0;
             GUI.skin = HighLogic.Skin;
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using RemoteTech.FlightComputer.Commands;
+using RemoteTech.UI;
 using UnityEngine;
 
 namespace RemoteTech
@@ -43,7 +45,7 @@ namespace RemoteTech
 
             FlightUIPatcher.Patch();
 
-            RTLog.Notify("RTCore loaded successfully.");
+            RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
 
             foreach (var vessel in FlightGlobals.Vessels)
             {

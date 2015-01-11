@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer.Commands
 {
     public class ActionGroupCommand : AbstractCommand
     {
-        public KSPActionGroup ActionGroup { get; private set; }
+        [Persistent] public KSPActionGroup ActionGroup;
 
         public override string Description
         {
