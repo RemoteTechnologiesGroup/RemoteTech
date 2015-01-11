@@ -288,9 +288,10 @@ namespace RemoteTech.UI
             }
 
             // Draw Antenna Selector
+            mAntennaFragment.triggerMouseOverListEntry = PositionAntenna.Contains(Event.current.mousePosition) && mEnabled;
+
             if (mEnabled && mSatelliteFragment.Satellite != null && mAntennaFragment.Antenna != null)
             {
-                mAntennaFragment.triggerMouseOverListEntry = PositionAntenna.Contains(Event.current.mousePosition);
                 GUILayout.BeginArea(PositionAntenna, AbstractWindow.Frame);
                 {
                     mAntennaFragment.Draw();
@@ -406,6 +407,7 @@ namespace RemoteTech.UI
             if (mEnabled)
             {
                 mEnabled = false;
+                mTargetInfos.Hide();
             }
             else if (StyleStatusButton != Style.ButtonRed && StyleStatusButton != Style.ButtonGray)
             {

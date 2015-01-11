@@ -107,7 +107,7 @@ namespace RemoteTech.UI
         /// </summary>
         public void mouseOverAntennaWindow()
         {
-            mAntennaFragment.triggerMouseOverListEntry = backupPosition.Contains(Event.current.mousePosition);
+            mAntennaFragment.triggerMouseOverListEntry = backupPosition.ContainsMouse();
         }
 
         public void OnVesselChange(Vessel v)
