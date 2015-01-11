@@ -8,7 +8,7 @@
 		"REPOSITORY": "RemoteTech",
 		"ALLOW_PRE_RELEASE": false
 	},
-	"VERSION": "1.5.2",
+	"VERSION": "1.6.0",
 	"KSP_VERSION": "0.90.0",
 	"KSP_VERSION_MIN": "0.90.0",
 	"KSP_VERSION_MAX": "0.90.0"
