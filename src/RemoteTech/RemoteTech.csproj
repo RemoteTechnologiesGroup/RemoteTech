@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\KSP_LIB\Assembly-CSharp.dll</HintPath>
+      <HintPath>Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -44,7 +44,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\KSP_LIB\UnityEngine.dll</HintPath>
+      <HintPath>UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
