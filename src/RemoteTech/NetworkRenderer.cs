@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using RemoteTech.SimpleTypes;
+using RemoteTech.UI;
 using UnityEngine;
+
+using Debug = System.Diagnostics.Debug;
 
 namespace RemoteTech
 {
@@ -32,10 +36,10 @@ namespace RemoteTech
             } 
         }
 
-        private static Texture2D mTexMark;
-        private HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();
-        private List<NetworkLine> mLines = new List<NetworkLine>();
-        private List<NetworkCone> mCones = new List<NetworkCone>();
+        private static readonly Texture2D mTexMark;
+        private readonly HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();
+        private readonly List<NetworkLine> mLines = new List<NetworkLine>();
+        private readonly List<NetworkCone> mCones = new List<NetworkCone>();
 
         public bool ShowOmni  { get { return (Filter & MapFilter.Omni)   == MapFilter.Omni; } }
         public bool ShowDish  { get { return (Filter & MapFilter.Dish)   == MapFilter.Dish; } }
@@ -78,20 +82,51 @@ namespace RemoteTech
             {
                 foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations.Values))
                 {
-                    var world_pos = ScaledSpace.LocalToScaledSpace(s.Position);
-                    if (MapView.MapCamera.transform.InverseTransformPoint(world_pos).z < 0f) continue;
-                    Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(world_pos);
-                    Rect screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
-                    Graphics.DrawTexture(screenRect, mTexMark, 0, 0, 0, 0);
+                    bool showOnMapview = true;
+                    var worldPos = ScaledSpace.LocalToScaledSpace(s.Position);
+                    if (MapView.MapCamera.transform.InverseTransformPoint(worldPos).z < 0f) continue;
+                    Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(worldPos);
+                    var screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
+
+                    if (s is MissionControlSatellite && RTSettings.Instance.HideGroundStationsBehindBody)
+                    {
+                        CelestialBody kerbin = FlightGlobals.Bodies.Find(body => body.name == "Kerbin");
+                        // Hide the current ISatellite if it is behind its body
+                        if (IsOccluded(s.Position, kerbin))
+                            showOnMapview = false;
+                    }
+
+                    if (showOnMapview)
+                    {
+                        Color pushColor = GUI.color;
+                        // tint the white mark.png into the defined color
+                        GUI.color = s.MarkColor;
+                        // draw the mark.png
+                        GUI.DrawTexture(screenRect, mTexMark, ScaleMode.ScaleToFit, true);
+                        GUI.color = pushColor;
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Checks whether the location is behind the body
+        /// Original code by regex from https://github.com/NathanKell/RealSolarSystem/blob/master/Source/KSCSwitcher.cs
+        /// </summary>
+        private bool IsOccluded(Vector3d loc, CelestialBody body)
+        {
+            Vector3d camPos = ScaledSpace.ScaledToLocalSpace(PlanetariumCamera.Camera.transform.position);
+
+            if (Vector3d.Angle(camPos - loc, body.position - loc) > 90) { return false; }
+            return true;
+        }
+
         private void UpdateNetworkCones()
         {
-            var antennas = (ShowCone ? RTCore.Instance.Antennas.Where(a => a.Powered && a.CanTarget && RTCore.Instance.Satellites[a.Guid] != null
-                                                                                       && RTCore.Instance.Network.Planets.ContainsKey(a.Target))
-                                       : Enumerable.Empty<IAntenna>()).ToList();
+            List<IAntenna> antennas = (ShowCone ? RTCore.Instance.Antennas.Where(
+                                        ant => ant.Powered && ant.CanTarget && RTCore.Instance.Satellites[ant.Guid] != null 
+                                        && ant.Target != Guid.Empty)
+                                     : Enumerable.Empty<IAntenna>()).ToList();
             int oldLength = mCones.Count;
             int newLength = antennas.Count;
 
@@ -106,26 +141,35 @@ namespace RemoteTech
 
             for (int i = 0; i < newLength; i++)
             {
+                var center = RTCore.Instance.Network.GetPositionFromGuid(antennas[i].Target);
+                Debug.Assert(center != null,
+                             "center != null",
+                             String.Format("GetPositionFromGuid returned a null value for the target {0}",
+                                           antennas[i].Target)
+                             );
+
+                if (!center.HasValue) continue;
+
                 mCones[i] = mCones[i] ?? NetworkCone.Instantiate();
                 mCones[i].Material = MapView.fetch.orbitLinesMaterial;
                 mCones[i].LineWidth = 2.0f;
                 mCones[i].Antenna = antennas[i];
-                mCones[i].Planet = RTCore.Instance.Network.Planets[antennas[i].Target];
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
+                mCones[i].Center = center.Value;
             }
         }
 
         private void UpdateNetworkEdges()
         {
-            var edges = mEdges.Where(e => CheckVisibility(e)).ToList();
+            var edges = mEdges.Where(CheckVisibility).ToList();
             int oldLength = mLines.Count;
             int newLength = edges.Count;
 
             // Free any unused lines
             for (int i = newLength; i < oldLength; i++)
             {
-                GameObject.Destroy(mLines[i]);
+                Destroy(mLines[i]);
                 mLines[i] = null;
             }
             mLines.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));

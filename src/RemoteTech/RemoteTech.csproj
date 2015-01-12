@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\$(MSBuildToolsVersion)\MSBuild.ExtensionPack.tasks" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -65,6 +63,7 @@
     <Compile Include="FlightComputer\PIDControllerV2.cs" />
     <Compile Include="Modules\MissionControlAntenna.cs" />
     <Compile Include="Modules\ProtoSignalProcessor.cs" />
+    <Compile Include="RangeModel\RangeModel.cs" />
     <Compile Include="RangeModel\RangeModelStandard.cs" />
     <Compile Include="RangeModel\RangeModelRoot.cs" />
     <Compile Include="RangeModel\RangeModelExtensions.cs" />
@@ -115,9 +114,12 @@
     <Compile Include="UI\NetworkLine.cs" />
     <Compile Include="UI\QueueFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
+    <Compile Include="UI\TargetInfoFragment.cs" />
+    <Compile Include="UI\TargetInfoWindow.cs" />
     <Compile Include="UI\TimeWarpDecorator.cs" />
     <Compile Include="VesselSatellite.cs" />
     <Compile Include="RangeModel\AbstractRangeModel.cs" />
+    <Compile Include="NetworkFeedback.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\mark.png" />

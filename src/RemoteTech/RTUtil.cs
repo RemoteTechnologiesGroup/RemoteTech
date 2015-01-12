@@ -8,7 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
+
 using Object = System.Object;
 using Debug = UnityEngine.Debug;
 
@@ -17,6 +19,10 @@ namespace RemoteTech
     public static partial class RTUtil
     {
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
+        /// <summary>
+        /// Returns the current AssemplyVersion from AssemblyInfos.cs
+        /// </summary>
+        public static string Version { get{ return "v"+Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
 
         public static readonly String[]
             DistanceUnits = { "", "k", "M", "G", "T" },
@@ -95,7 +101,7 @@ namespace RemoteTech
         /// </summary>
         /// <param name="duration"></param>
         /// <returns></returns>
-        public static String FormatDuration(double duration)
+        public static String FormatDuration(double duration, bool withMicroSecs = true)
         {
             TimeStringConverter time;
 
@@ -108,7 +114,7 @@ namespace RemoteTech
                 time = new EarthTimeStringConverter();
             }
 
-            return time.parseDouble(duration);
+            return time.parseDouble(duration, withMicroSecs);
         }
 
         /// <summary>

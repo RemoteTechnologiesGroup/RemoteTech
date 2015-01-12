@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer.Commands
 {
     public enum FlightMode
     {
@@ -71,11 +69,12 @@ namespace RemoteTech
             { ReferenceFrame.World,          "World" },
         };
 
-        public FlightMode Mode { get; set; }
-        public FlightAttitude Attitude { get; set; }
-        public ReferenceFrame Frame { get; set; }
-        public Quaternion Orientation { get; set; }
-        public float Altitude { get; set; }
+        [Persistent] public FlightMode Mode;
+        [Persistent] public FlightAttitude Attitude;
+        [Persistent] public ReferenceFrame Frame;
+        [Persistent] public Quaternion Orientation;
+        [Persistent] public float Altitude;
+
         public override int Priority { get { return 0; } }
 
         public override string Description

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace RemoteTech
+namespace RemoteTech.FlightComputer.Commands
 {
     public class BurnCommand : AbstractCommand
     {
-        public float Throttle { get; set; }
-        public double Duration { get; set; }
-        public double DeltaV { get; set; }
+        [Persistent] public float Throttle;
+        [Persistent] public double Duration;
+        [Persistent] public double DeltaV;
+
         public override int Priority { get { return 2; } }
 
         public override String Description
@@ -60,6 +58,18 @@ namespace RemoteTech
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Returns the total time for this burn in seconds
+        /// </summary>
+        /// <param name="f">Flightcomputer for the current vessel</param>
+        /// <returns>max burn time</returns>
+        public double getMaxBurnTime(FlightComputer f)
+        {
+            if (Duration > 0) return Duration;
+
+            return DeltaV / (Throttle * FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
         }
 
         public override void Abort() { mAbort = true; }

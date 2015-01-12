@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.SimpleTypes;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public class FilterOverlay : IFragment, IDisposable
     {
@@ -54,7 +55,9 @@ namespace RemoteTech
 
         private SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
         private AntennaFragment mAntennaFragment = new AntennaFragment(null);
+        private TargetInfoWindow mTargetInfos;
         private bool mEnabled;
+        private bool mShowOverlay = true;
         private bool onTrackingStation { get { return (HighLogic.LoadedScene == GameScenes.TRACKSTATION); } }
 
         private Rect Position
@@ -174,16 +177,46 @@ namespace RemoteTech
             }
         }
 
+        private void OnHideUI()
+        {
+            mShowOverlay = false;
+        }
+
+        private void OnShowUI()
+        {
+            mShowOverlay = true;
+        }
+
         public FilterOverlay()
         {
             GameEvents.onPlanetariumTargetChanged.Add(OnChangeTarget);
+            GameEvents.onHideUI.Add(OnHideUI);
+            GameEvents.onShowUI.Add(OnShowUI);
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
+            /// Add the on mouse over event
+            mAntennaFragment.onMouseOverListEntry += showTargetInfo;
+            
+            WindowAlign targetInfoAlign = WindowAlign.TopLeft;
+            if (this.onTrackingStation)
+            {
+                // switch to the other side if we are at the trackingStation
+                targetInfoAlign = WindowAlign.TopRight;
+            }
+
+            /// Create a new Targetinfo window with a fixed position to the antenna fragment
+            mTargetInfos = new TargetInfoWindow(PositionAntenna, targetInfoAlign);
+            
         }
 
         public void Dispose()
         {
+            /// Remove the on mouse over event
+            mAntennaFragment.onMouseOverListEntry -= showTargetInfo;
+
             GameEvents.onPlanetariumTargetChanged.Remove(OnChangeTarget);
+            GameEvents.onHideUI.Remove(OnHideUI);
+            GameEvents.onShowUI.Remove(OnShowUI);
             MapView.OnEnterMapView -= OnEnterMapView;
             MapView.OnExitMapView -= OnExitMapView;
             mSatelliteFragment.Dispose();
@@ -214,8 +247,27 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// Mouse over callback forced by the mAntennaFragment
+        /// </summary>
+        public void showTargetInfo()
+        {
+            if (mAntennaFragment.mouseOverEntry != null)
+            {
+                // set the current selected target to the targetwindow
+                mTargetInfos.setTarget(mAntennaFragment.mouseOverEntry, mAntennaFragment.Antenna);
+                mTargetInfos.Show();
+            }
+            else
+            {
+                // hide if we do not have any selection
+                mTargetInfos.Hide();
+            }
+        }
+
         public void Draw()
         {
+            if (!mShowOverlay) return;
             GUI.depth = 0;
             GUI.skin = HighLogic.Skin;
 
@@ -229,7 +281,15 @@ namespace RemoteTech
                 GUILayout.EndArea();
             }
 
+            // Hide the targetInfoWindow if we don't have a selected antenna
+            if (mAntennaFragment.Antenna == null)
+            {
+                mTargetInfos.Hide();
+            }
+
             // Draw Antenna Selector
+            mAntennaFragment.triggerMouseOverListEntry = PositionAntenna.Contains(Event.current.mousePosition) && mEnabled;
+
             if (mEnabled && mSatelliteFragment.Satellite != null && mAntennaFragment.Antenna != null)
             {
                 GUILayout.BeginArea(PositionAntenna, AbstractWindow.Frame);
@@ -347,6 +407,7 @@ namespace RemoteTech
             if (mEnabled)
             {
                 mEnabled = false;
+                mTargetInfos.Hide();
             }
             else if (StyleStatusButton != Style.ButtonRed && StyleStatusButton != Style.ButtonGray)
             {

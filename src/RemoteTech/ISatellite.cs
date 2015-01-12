@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RemoteTech.SimpleTypes;
 
 namespace RemoteTech
 {
@@ -11,6 +12,7 @@ namespace RemoteTech
         Guid Guid { get; }
         Vector3d Position { get; }
         CelestialBody Body { get; }
+        Color MarkColor { get; }
 
         bool Powered { get; }
         bool IsCommandStation { get; }

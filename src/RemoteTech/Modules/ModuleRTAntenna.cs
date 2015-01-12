@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
+using System.Text;
+using RemoteTech.UI;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     [KSPModule("Antenna")]
     public class ModuleRTAntenna : PartModule, IAntenna
@@ -90,7 +91,7 @@ namespace RemoteTech
             IsRTBroken = false;
 
         [KSPField(isPersistant = true)]
-        public double RTDishCosAngle = 1.0;
+        public double RTDishCosAngle = 1.0f;
 
         [KSPField(isPersistant = true)]
         public float
@@ -547,7 +548,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("ModuleRTAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, Radians: {5})", Name, mRegisteredId, Dish, Omni, Target, 2.0*Math.Acos(CosAngle));
+            return String.Format("ModuleRTAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, CosAngle: {5})", Name, mRegisteredId, Dish, Omni, Target, CosAngle);
         }
     }
 }

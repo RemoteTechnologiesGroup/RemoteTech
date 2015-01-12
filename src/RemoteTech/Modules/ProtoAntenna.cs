@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace RemoteTech
+namespace RemoteTech.Modules
 {
     internal class ProtoAntenna : IAntenna
     {
@@ -64,9 +64,7 @@ namespace RemoteTech
             float temp_float;
             bool temp_bool;
             Dish = Single.TryParse(n.GetValue("RTDishRange"), out temp_float) ? temp_float : 0.0f;
-            CosAngle = Double.TryParse(n.GetValue("RTDishCosAngle"), out temp_double) ? temp_double 
-                // Have RTDishRadians as a fallback to avoid corrupting save games
-                : (Double.TryParse(n.GetValue("RTDishRadians"), out temp_double) ? temp_double : 0.0);
+            CosAngle = Double.TryParse(n.GetValue("RTDishCosAngle"), out temp_double) ? temp_double : 0.0;
             Omni = Single.TryParse(n.GetValue("RTOmniRange"), out temp_float) ? temp_float : 0.0f;
             Powered = Boolean.TryParse(n.GetValue("IsRTPowered"), out temp_bool) ? temp_bool : false;
             Activated = Boolean.TryParse(n.GetValue("IsRTActive"), out temp_bool) ? temp_bool : false;
@@ -98,7 +96,7 @@ namespace RemoteTech
 
         public override string ToString()
         {
-            return String.Format("ProtoAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, Radians: {5})", Name, Guid, Dish, Omni, Target, 2.0*Math.Acos(CosAngle));
+            return String.Format("ProtoAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, CosAngle: {5})", Name, Guid, Dish, Omni, Target, CosAngle);
         }
     }
 }

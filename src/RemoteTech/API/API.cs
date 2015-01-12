@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteTech.RangeModel;
+using RemoteTech.SimpleTypes;
 
-namespace RemoteTech
+namespace RemoteTech.API
 {
     public static class API
     {

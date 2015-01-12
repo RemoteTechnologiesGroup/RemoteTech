@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.UI
 {
     public enum WindowAlign
     {
@@ -24,11 +22,19 @@ namespace RemoteTech
         public bool Enabled = false;
         public static GUIStyle Frame = new GUIStyle(HighLogic.Skin.window);
         public const double TooltipDelay = 0.5;
+        protected bool mSavePosition = false;
 
         private double mLastTime;
         private double mTooltipTimer;
         private readonly Guid mGuid;
         public static Dictionary<Guid, AbstractWindow> Windows = new Dictionary<Guid, AbstractWindow>();
+        /// <summary>The initial width of this window</summary>
+        public float mInitialWidth;
+        /// <summary>The initial height of this window</summary>
+        public float mInitialHeight;
+        /// <summary>Callback trigger for the change in the posistion</summary>
+        public Action onPositionChanged = delegate { };
+        public Rect backupPosition;
 
         static AbstractWindow()
         {
@@ -41,6 +47,12 @@ namespace RemoteTech
             Title = title;
             Alignment = align;
             Position = position;
+            backupPosition = position;
+            mInitialHeight = position.height + 15;
+            mInitialWidth = position.width + 15;
+
+            GameEvents.onHideUI.Add(OnHideUI);
+            GameEvents.onShowUI.Add(OnShowUI);
         }
 
         public Rect RequestPosition() { return Position; }
@@ -49,20 +61,47 @@ namespace RemoteTech
         {
             if (Enabled)
                 return;
+
+            if(mSavePosition)
+            {
+                onPositionChanged += storePosition;
+
+                // read the saved position
+                if (RTSettings.Instance.savedWindowPositions.ContainsKey(this.GetType().ToString()))
+                {
+                    Position = RTSettings.Instance.savedWindowPositions[this.GetType().ToString()];
+                }
+            }
+
             if (Windows.ContainsKey(mGuid))
             {
                 Windows[mGuid].Hide();
             }
             Windows[mGuid] = this;
             Enabled = true;
-            EZGUIPointerDisablePatcher.Register(RequestPosition);
+        }
+
+        private void OnHideUI()
+        {
+            Enabled = false;
+        }
+
+        private void OnShowUI()
+        {
+            Enabled = true;
         }
 
         public virtual void Hide()
         {
+            removeWindowCtrlLock();
             Windows.Remove(mGuid);
             Enabled = false;
-            EZGUIPointerDisablePatcher.Unregister(RequestPosition);
+            if (mSavePosition)
+            {
+                onPositionChanged -= storePosition;
+            }
+            GameEvents.onHideUI.Remove(OnHideUI);
+            GameEvents.onShowUI.Remove(OnShowUI);
         }
 
         private void WindowPre(int uid)
@@ -81,12 +120,15 @@ namespace RemoteTech
 
         public virtual void Draw()
         {
+            if (!Enabled) return;
             if (Event.current.type == EventType.Layout)
             {
                 Position.width = 0;
                 Position.height = 0;
             }
+
             Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
+            
             if (Title != null)
             {
                 if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
@@ -136,7 +178,52 @@ namespace RemoteTech
                     mTooltipTimer = 0.0;
                 }
                 mLastTime = Time.time;
+
+                // Position of the window changed?
+                if (!backupPosition.Equals(Position))
+                {
+                    // trigger the onPositionChanged callbacks
+                    onPositionChanged.Invoke();
+                    backupPosition = Position;
+                }
+
+                // Set ship control lock if one rt input is in focus
+                if (GUI.GetNameOfFocusedControl().StartsWith("rt_"))
+                {
+                    setWindowCtrlLock();
+                }
+                else
+                {
+                    removeWindowCtrlLock();
+                }
             }
+        }
+
+        private void storePosition()
+        {
+            RTSettings.Instance.savedWindowPositions.Remove(this.GetType().ToString());
+            RTSettings.Instance.savedWindowPositions.Add(this.GetType().ToString(), Position);
+        }
+
+        /// <summary>
+        /// Set a input lock to keep typing to this window
+        /// </summary>
+        public void setWindowCtrlLock()
+        {
+            // only if we are enabled
+            if (Enabled)
+            {
+                InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "RTLockControlForWindows");
+            }
+        }
+
+
+        /// <summary>
+        /// Remove the input lock
+        /// </summary>
+        public void removeWindowCtrlLock()
+        {
+            InputLockManager.RemoveControlLock("RTLockControlForWindows");
         }
     }
 }
