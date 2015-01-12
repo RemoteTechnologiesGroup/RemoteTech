@@ -38,4 +38,4 @@ using System.Runtime.InteropServices;
 // Use KSPAssembly to allow other DLLs to make this DLL a dependency in a
 // non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it
 // does not appear to have a hard requirement to match the assembly version.
-[assembly: KSPAssembly("RemoteTech", 1, 5)]
+[assembly: KSPAssembly("RemoteTech", 1, 6)]
