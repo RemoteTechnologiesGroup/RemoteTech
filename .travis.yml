@@ -5,7 +5,7 @@ os:
 
 env:
   global:
-   - secure: Q4UfP54tnvoioOnoQElnkUQMd4qQ/2dLLkhnSz35MiwUrraxqrixdh22EWsTmcqD8ntjPI4tt3P9N6On9+qn8D+qYpt+zX5otikfgvXdKCxGJj+q1Nv0rWq6b0P5QGo61vXFV1cH4EOONBDyAq0IbmtjtEISBhQaefFdzaAAk/Y=
+   - secure: qY6kU+hT5JteYRe456Pb+qQumenBBDOkzwYl+nQCxgCTYdX1krpGmnqox+GOSfC2CSWJDo58WGtydgKam/LDM1GTT1YY9Sv2kVUKGSUAzEQfj3PdUjHf+MvKOjhWq/KO9xkXQmYqmmjQs0vHKTjjtDVWiY+FQNpDDOSdLC8M8t4=
    - secure: J/M1/WIRgP4GssMr9HS9k7Wr9XUqlo0S+olIVWvr8eY8jxxVbx+ONZbkkjKey2BvC1BRVtRXpbBe+YcPLYe7V1jG5mmm3Lc1B/x5WC54q4KKfoV53m+ARAtaHFYrJY2h4O+GLaysQoCwCG/tAt0GhJmgJgy9IojH4ojJjDOGHCE=
 before_install:
  - date -u
@@ -18,7 +18,7 @@ install:
  - ./CI/travis.osx.install.deps.sh # it appears TRAVIS_OS_NAME is unset often, assume we're OSX if not linux
 
 script:
- - ./build.remotetech2.sh
+ - ./build.remotetech.sh
 
 # Custom deploy
 after_success:

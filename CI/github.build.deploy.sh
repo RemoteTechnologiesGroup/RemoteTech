@@ -37,6 +37,9 @@ then
 	exit 0;
 fi
 
+echo "Copy the licence to the gamedata folder"
+cp "LICENSE.txt" "GameData/RemoteTech/LICENSE.txt"
+
 echo "Build ${TRAVIS_BUILD_NUMBER} from branch ${TRAVIS_BRANCH} in ${TRAVIS_REPO_SLUG}" > GameData/build.txt
 echo "Built from commit ${TRAVIS_COMMIT} with tag ${BUILDTAG}" >>  GameData/build.txt
 echo "Creating ${FILENAME}"

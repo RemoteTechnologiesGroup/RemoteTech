@@ -1,0 +1,32 @@
+{
+	"NAME": "RemoteTech",
+	"URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech/RemoteTech.version",
+	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/CHANGES.md", 
+	"GITHUB":
+	{
+		"USERNAME": "RemoteTechnologiesGroup",
+		"REPOSITORY": "RemoteTech",
+		"ALLOW_PRE_RELEASE": false
+	},
+	"VERSION":{
+    "MAJOR":1,
+    "MINOR":6,
+    "PATCH":0,
+    "BUILD":0
+  },
+  "KSP_VERSION":{
+    "MAJOR":0,
+    "MINOR":90,
+    "PATCH":0
+  },
+  "KSP_VERSION_MIN":{
+    "MAJOR":0,
+    "MINOR":90,
+    "PATCH":0
+  },
+  "KSP_VERSION_MAX":{
+    "MAJOR":0,
+    "MINOR":90,
+    "PATCH":0
+  }
+}
