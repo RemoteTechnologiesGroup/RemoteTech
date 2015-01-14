@@ -55,7 +55,10 @@
     <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
     <Compile Include="FlightComputer\Commands\BurnCommand.cs" />
     <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
+    <Compile Include="FlightComputer\Commands\DriveCommand.cs" />
     <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
+    <Compile Include="FlightComputer\RoverComputer.cs" />
+    <Compile Include="FlightComputer\RoverPIDController.cs" />
     <Compile Include="FlightComputer\EventCommand.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
     <Compile Include="FlightComputer\Commands\ICommand.cs" />
@@ -113,6 +116,7 @@
     <Compile Include="UI\FilterOverlay.cs" />
     <Compile Include="UI\NetworkLine.cs" />
     <Compile Include="UI\QueueFragment.cs" />
+    <Compile Include="UI\RoverFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
     <Compile Include="UI\TargetInfoFragment.cs" />
     <Compile Include="UI\TargetInfoWindow.cs" />
