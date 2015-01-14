@@ -94,6 +94,7 @@ namespace RemoteTech.FlightComputer.Commands
                 case "CancelCommand":       { command = new CancelCommand(); break; }
                 case "TargetCommand":       { command = new TargetCommand(); break; }
                 case "EventCommand":        { command = new EventCommand(); break; }
+                case "DriveCommand":        { command = new DriveCommand(); break; }
             }
 
             if (command != null)
