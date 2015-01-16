@@ -66,6 +66,8 @@ namespace RemoteTech.FlightComputer
         public IEnumerable<ICommand> ActiveCommands { get { return mActiveCommands.Values; } }
         public IEnumerable<ICommand> QueuedCommands { get { return mCommandQueue; } }
 
+        public ICommand currentFlightMode { get { return (mActiveCommands[0] is AttitudeCommand) ? mActiveCommands[0] : null; } }
+
         // Flight controller parameters from MechJeb, copied from master on June 27, 2014
         public PIDControllerV2 pid { get; private set; }
         public Vector3d lastAct { get; set; }

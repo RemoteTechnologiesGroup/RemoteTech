@@ -253,6 +253,24 @@ namespace RemoteTech
             }
         }
 
+        public static void FakeStateButton(GUIContent text, Action onClick, int state, int value, Color toggleColor, params GUILayoutOption[] options)
+        {
+            var pushBgColor = GUI.backgroundColor;
+            var pushConColor = GUI.contentColor;
+            if (state == value)
+            {
+                //GUI.contentColor = Color.white;
+                GUI.backgroundColor = Color.black;
+            }
+
+            if (GUILayout.Button(text, options))
+            {
+                onClick.Invoke();
+            }
+            GUI.backgroundColor = pushBgColor;
+            GUI.contentColor = pushConColor;
+        }
+
         public static void HorizontalSlider(ref float state, float min, float max, params GUILayoutOption[] options)
         {
             state = GUILayout.HorizontalSlider(state, min, max, options);
