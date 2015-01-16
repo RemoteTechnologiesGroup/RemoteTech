@@ -51,6 +51,13 @@ namespace RemoteTech.FlightComputer.Commands
             }
             catch (Exception) {}
 
+            if (Delay == 0) {
+                // only save the current gametime if we have no signal delay.
+                // We need this to calculate the correct delta time for the
+                // ExtraDelay if we come back to this satellite.
+                TimeStamp = RTUtil.GameTime;
+            }
+
             save.AddValue("TimeStamp", TimeStamp);
             save.AddValue("ExtraDelay", ExtraDelay);
             n.AddNode(save);
