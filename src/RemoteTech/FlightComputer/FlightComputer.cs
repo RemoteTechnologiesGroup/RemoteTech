@@ -353,7 +353,7 @@ namespace RemoteTech.FlightComputer
         /// <param name="n">Node with the informations for the flightcomputer</param>
         public void load(ConfigNode n)
         {
-            RTLog.Notify("Loading Flightcomputer from persistant!");
+            RTLog.Notify("Loading Flightcomputer from persistent!");
 
             if (!n.HasNode("FlightComputer"))
                 return;
@@ -402,7 +402,7 @@ namespace RemoteTech.FlightComputer
                 if (mCommandQueue.Count > 0)
                     mCommandQueue.Clear();
 
-                RTLog.Notify("Loading queued commands from persistant ...");
+                RTLog.Notify("Loading queued commands from persistent ...");
                 foreach (ConfigNode cmdNode in Commands.nodes)
                 {
                     ICommand cmd = AbstractCommand.LoadCommand(cmdNode, this);
@@ -424,7 +424,6 @@ namespace RemoteTech.FlightComputer
                             if (cmd.ExtraDelay > 0)
                             {
                                 cmd.ExtraDelay = cmd.TimeStamp  + cmd.ExtraDelay - RTUtil.GameTime;
-                                cmd.TimeStamp = RTUtil.GameTime;
 
                                 // Are we ready to handle the command ?
                                 if (cmd.ExtraDelay <= 0)
