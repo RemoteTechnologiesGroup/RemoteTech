@@ -85,7 +85,6 @@ namespace RemoteTech.UI
 
         private FlightComputer.FlightComputer mFlightComputer;
         private Action mOnClickQueue;
-        public Action<BaseEvent, FlightAttitude> onFlightModeChange = delegate { };
 
         private ComputerMode mMode;
         private FlightAttitude mAttitude;
@@ -100,11 +99,6 @@ namespace RemoteTech.UI
         {
             mFlightComputer = fc;
             mOnClickQueue = queue;
-            
-            // get active command
-            MappedFlightMode mappedCommand = ((AttitudeCommand)mFlightComputer.currentFlightMode).mapFlightMode();
-            mMode = mappedCommand.computerMode;
-            mAttitude = mappedCommand.computerAttitude;
         }
 
         public void Draw()
@@ -130,42 +124,39 @@ namespace RemoteTech.UI
             }
             GUILayout.BeginVertical();
             {
-                Color activeToggleColor1 = new Color(0.8f, 1.0f, 0.2f, 1f);
-                Color activeToggleColor2 = new Color(1.0f, 1.0f, 0.0f, 1f);
-
                 GUILayout.BeginHorizontal();
                 {
                     GUIStyle guiTableRow = new GUIStyle(HighLogic.Skin.label);
                     guiTableRow.normal.textColor = Color.white;
 
-                    RTUtil.FakeStateButton(new GUIContent("KILL", "Kill rotation."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Kill)), (int)mMode, (int)ComputerMode.Kill, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("NODE", "Prograde points in the direction of the first maneuver node."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Node)), (int)mMode, (int)ComputerMode.Node, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("RVEL", "Prograde relative to target velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetVel)), (int)mMode, (int)ComputerMode.TargetVel, activeToggleColor1, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("KILL", "Kill rotation."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Kill)), (int)mMode, (int)ComputerMode.Kill, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("NODE", "Prograde points in the direction of the first maneuver node."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Node)), (int)mMode, (int)ComputerMode.Node, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("RVEL", "Prograde relative to target velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetVel)), (int)mMode, (int)ComputerMode.TargetVel, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent("ORB", "Prograde relative to orbital velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Orbital)), (int)mMode, (int)ComputerMode.Orbital, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("SRF", "Prograde relative to surface velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Surface)), (int)mMode, (int)ComputerMode.Surface, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("TGT", "Prograde points directly at target."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetPos)), (int)mMode, (int)ComputerMode.TargetPos, activeToggleColor1, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("ORB", "Prograde relative to orbital velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Orbital)), (int)mMode, (int)ComputerMode.Orbital, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("SRF", "Prograde relative to surface velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Surface)), (int)mMode, (int)ComputerMode.Surface, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("TGT", "Prograde points directly at target."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetPos)), (int)mMode, (int)ComputerMode.TargetPos, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
-                RTUtil.FakeStateButton(new GUIContent("CUSTOM", "Prograde fixed as pitch, heading, roll relative to north pole."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Custom)), (int)mMode, (int)ComputerMode.Custom, activeToggleColor1, GUILayout.ExpandWidth(true));
+                RTUtil.FakeStateButton(new GUIContent("CUSTOM", "Prograde fixed as pitch, heading, roll relative to north pole."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Custom)), (int)mMode, (int)ComputerMode.Custom, GUILayout.ExpandWidth(true));
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent("GRD\n+", "Orient to Prograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Prograde)), (int)mAttitude, (int)FlightAttitude.Prograde, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("RAD\n+", "Orient to Radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialPlus)), (int)mAttitude, (int)FlightAttitude.RadialPlus, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("NRM\n+", "Orient to Normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalPlus)), (int)mAttitude, (int)FlightAttitude.NormalPlus, activeToggleColor1, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("GRD\n+", "Orient to Prograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Prograde)), (int)mAttitude, (int)FlightAttitude.Prograde, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("RAD\n+", "Orient to Radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialPlus)), (int)mAttitude, (int)FlightAttitude.RadialPlus, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("NRM\n+", "Orient to Normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalPlus)), (int)mAttitude, (int)FlightAttitude.NormalPlus, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent("GRD\n-", "Orient to Retrograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Retrograde)), (int)mAttitude, (int)FlightAttitude.Retrograde, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("RAD\n-", "Orient to Anti-radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialMinus)), (int)mAttitude, (int)FlightAttitude.RadialMinus, activeToggleColor1, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("NRM\n-", "Orient to Anti-normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalMinus)), (int)mAttitude, (int)FlightAttitude.NormalMinus, activeToggleColor1, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("GRD\n-", "Orient to Retrograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Retrograde)), (int)mAttitude, (int)FlightAttitude.Retrograde, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("RAD\n-", "Orient to Anti-radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialMinus)), (int)mAttitude, (int)FlightAttitude.RadialMinus, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("NRM\n-", "Orient to Anti-normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalMinus)), (int)mAttitude, (int)FlightAttitude.NormalMinus, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5);
@@ -322,6 +313,37 @@ namespace RemoteTech.UI
             {
                 mFlightComputer.Enqueue(cmd, false, false, true);
             }
+        }
+
+        /// <summary>
+        /// Get the current active FlightMode and map it to the Computermode
+        /// </summary>
+        public void getActiveFlightMode()
+        {
+            // check the current flight mode
+            if (mFlightComputer.currentFlightMode == null)
+            {
+                Reset();
+                return;
+            }
+
+            // get active command
+            SimpleTypes.ComputerModeMapper mappedCommand = mFlightComputer.currentFlightMode.mapFlightMode();
+            mMode = mappedCommand.computerMode;
+            mAttitude = FlightAttitude.Null;
+
+            if(mMode == ComputerMode.Orbital || mMode == ComputerMode.Surface || mMode == ComputerMode.TargetPos || mMode == ComputerMode.TargetVel)
+                mAttitude = mappedCommand.computerAttitude;
+        }
+
+        /// <summary>
+        /// Reset the modes
+        /// </summary>
+        public void Reset()
+        {
+            // get active command
+            mMode = ComputerMode.Off;
+            mAttitude = FlightAttitude.Null;
         }
     }
 }

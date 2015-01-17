@@ -253,13 +253,15 @@ namespace RemoteTech
             }
         }
 
-        public static void FakeStateButton(GUIContent text, Action onClick, int state, int value, Color toggleColor, params GUILayoutOption[] options)
+        /// <summary>
+        /// Draw a fake toggle button. It is an action button with a toggle functionality. When <param name="state" /> and
+        /// <param name="value" /> are equal the background of the button will change to black.
+        /// </summary>
+        public static void FakeStateButton(GUIContent text, Action onClick, int state, int value, params GUILayoutOption[] options)
         {
             var pushBgColor = GUI.backgroundColor;
-            var pushConColor = GUI.contentColor;
             if (state == value)
             {
-                //GUI.contentColor = Color.white;
                 GUI.backgroundColor = Color.black;
             }
 
@@ -268,7 +270,6 @@ namespace RemoteTech
                 onClick.Invoke();
             }
             GUI.backgroundColor = pushBgColor;
-            GUI.contentColor = pushConColor;
         }
 
         public static void HorizontalSlider(ref float state, float min, float max, params GUILayoutOption[] options)

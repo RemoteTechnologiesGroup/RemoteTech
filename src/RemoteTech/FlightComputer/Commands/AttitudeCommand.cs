@@ -4,37 +4,6 @@ using UnityEngine;
 
 namespace RemoteTech.FlightComputer.Commands
 {
-    public class MappedFlightMode
-    {
-        public UI.ComputerMode computerMode;
-        public FlightAttitude computerAttitude;
-
-        public void mapFlightMode(FlightMode flightMode, FlightAttitude flightAttitude, ReferenceFrame frame)
-        {
-            computerMode = UI.ComputerMode.Off;
-            computerAttitude = flightAttitude;
-
-            switch (flightMode)
-            {
-                case FlightMode.Off: { computerMode = UI.ComputerMode.Off; break; }
-                case FlightMode.KillRot: { computerMode = UI.ComputerMode.Kill; break; }
-                case FlightMode.AttitudeHold:
-                    {
-                        computerMode = UI.ComputerMode.Custom;
-                        switch (frame)
-                        {
-                            case ReferenceFrame.Maneuver: { computerMode = UI.ComputerMode.Node; break; }
-                            case ReferenceFrame.Orbit: { computerMode = UI.ComputerMode.Orbital; break; }
-                            case ReferenceFrame.Surface: { computerMode = UI.ComputerMode.Surface; break; }
-                            case ReferenceFrame.TargetParallel: { computerMode = UI.ComputerMode.TargetPos; break; }
-                            case ReferenceFrame.TargetVelocity: { computerMode = UI.ComputerMode.TargetVel; break; }
-                        }
-                        break;
-                    }
-            }
-        }
-    };
-
     public enum FlightMode
     {
         Off,
@@ -258,10 +227,14 @@ namespace RemoteTech.FlightComputer.Commands
             };
         }
 
-        public MappedFlightMode mapFlightMode()
+        /// <summary>
+        /// Convert this AttitudeCommand values to a ComputerMode
+        /// </summary>
+        public SimpleTypes.ComputerModeMapper mapFlightMode()
         {
-            var computerMode = new MappedFlightMode();
+            SimpleTypes.ComputerModeMapper computerMode = new SimpleTypes.ComputerModeMapper();
             computerMode.mapFlightMode(Mode,Attitude,Frame);
+
             return computerMode;
         }
     }

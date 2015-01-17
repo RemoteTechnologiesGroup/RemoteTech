@@ -94,6 +94,7 @@
     <Compile Include="SimpleTypes\BinaryHeap.cs" />
     <Compile Include="SimpleTypes\CachedField.cs" />
     <Compile Include="SimpleTypes\Dish.cs" />
+    <Compile Include="SimpleTypes\ComputerModeMapper.cs" />
     <Compile Include="SimpleTypes\GUITextureButtonFactory.cs" />
     <Compile Include="SimpleTypes\NetworkRoute.cs" />
     <Compile Include="SimpleTypes\PriorityQueue.cs" />
