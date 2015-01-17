@@ -66,6 +66,13 @@ namespace RemoteTech.FlightComputer
         public IEnumerable<ICommand> ActiveCommands { get { return mActiveCommands.Values; } }
         public IEnumerable<ICommand> QueuedCommands { get { return mCommandQueue; } }
 
+        /// Will be triggered if the active command is aborted
+        public Action onActiveCommandAbort;
+        /// Will be triggered if a new command popped to an active command
+        public Action onNewCommandPop;
+        /// Get the active Flightmode
+        public AttitudeCommand currentFlightMode { get { return (mActiveCommands[0] is AttitudeCommand) ? (AttitudeCommand)mActiveCommands[0] : null; } }
+
         // Flight controller parameters from MechJeb, copied from master on June 27, 2014
         public PIDControllerV2 pid { get; private set; }
         public Vector3d lastAct { get; set; }
@@ -129,6 +136,8 @@ namespace RemoteTech.FlightComputer
             {
                 cmd.Abort();
             }
+
+            onActiveCommandAbort.Invoke();
         }
 
         public void Enqueue(ICommand cmd, bool ignore_control = false, bool ignore_delay = false, bool ignore_extra = false)
@@ -245,7 +254,10 @@ namespace RemoteTech.FlightComputer
                     {
                         if (SignalProcessor.Powered) {
                             // Note: depending on implementation, dc.Pop() may execute the event
-                            if (dc.Pop(this)) mActiveCommands [dc.Priority] = dc;
+                            if (dc.Pop(this)) {
+                                mActiveCommands[dc.Priority] = dc;
+                                onNewCommandPop.Invoke();
+                            }
                         } else {
                             string message = String.Format ("[Flight Computer]: Out of power, cannot run \"{0}\" on schedule.", dc.ShortName);
                             ScreenMessages.PostScreenMessage(new ScreenMessage(

@@ -226,5 +226,16 @@ namespace RemoteTech.FlightComputer.Commands
                 TimeStamp = RTUtil.GameTime,
             };
         }
+
+        /// <summary>
+        /// Convert this AttitudeCommand values to a ComputerMode
+        /// </summary>
+        public SimpleTypes.ComputerModeMapper mapFlightMode()
+        {
+            SimpleTypes.ComputerModeMapper computerMode = new SimpleTypes.ComputerModeMapper();
+            computerMode.mapFlightMode(Mode,Attitude,Frame);
+
+            return computerMode;
+        }
     }
 }
