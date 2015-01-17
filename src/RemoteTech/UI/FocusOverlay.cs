@@ -28,7 +28,7 @@ namespace RemoteTech.UI
 
         private FocusFragment mFocus = new FocusFragment();
         private bool mEnabled;
-        private bool mShowOverlay;
+        private bool mShowOverlay = true;
 
         private Rect PositionButton
         {
