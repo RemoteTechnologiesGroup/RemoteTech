@@ -242,7 +242,8 @@ namespace RemoteTech.FlightComputer
                     }
                 }
 
-                foreach (var dc in mCommandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime).ToList())
+                // Proceed the extraDelay for every command where the normal delay is over
+                foreach (var dc in mCommandQueue.Where(s=>s.Delay==0).ToList())
                 {
                     // Use time decrement instead of comparing scheduled time, in case we later want to 
                     //      reinstate event clocks stopping under certain conditions
