@@ -66,6 +66,13 @@ namespace RemoteTech.FlightComputer
         public IEnumerable<ICommand> ActiveCommands { get { return mActiveCommands.Values; } }
         public IEnumerable<ICommand> QueuedCommands { get { return mCommandQueue; } }
 
+        /// Will be triggered if the active command is aborted
+        public Action onActiveCommandAbort;
+        /// Will be triggered if a new command popped to an active command
+        public Action onNewCommandPop;
+        /// Get the active Flightmode
+        public AttitudeCommand currentFlightMode { get { return (mActiveCommands[0] is AttitudeCommand) ? (AttitudeCommand)mActiveCommands[0] : null; } }
+
         // Flight controller parameters from MechJeb, copied from master on June 27, 2014
         public PIDControllerV2 pid { get; private set; }
         public Vector3d lastAct { get; set; }
@@ -129,6 +136,8 @@ namespace RemoteTech.FlightComputer
             {
                 cmd.Abort();
             }
+
+            onActiveCommandAbort.Invoke();
         }
 
         public void Enqueue(ICommand cmd, bool ignore_control = false, bool ignore_delay = false, bool ignore_extra = false)
@@ -233,7 +242,8 @@ namespace RemoteTech.FlightComputer
                     }
                 }
 
-                foreach (var dc in mCommandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime).ToList())
+                // Proceed the extraDelay for every command where the normal delay is over
+                foreach (var dc in mCommandQueue.Where(s=>s.Delay==0).ToList())
                 {
                     // Use time decrement instead of comparing scheduled time, in case we later want to 
                     //      reinstate event clocks stopping under certain conditions
@@ -245,7 +255,10 @@ namespace RemoteTech.FlightComputer
                     {
                         if (SignalProcessor.Powered) {
                             // Note: depending on implementation, dc.Pop() may execute the event
-                            if (dc.Pop(this)) mActiveCommands [dc.Priority] = dc;
+                            if (dc.Pop(this)) {
+                                mActiveCommands[dc.Priority] = dc;
+                                onNewCommandPop.Invoke();
+                            }
                         } else {
                             string message = String.Format ("[Flight Computer]: Out of power, cannot run \"{0}\" on schedule.", dc.ShortName);
                             ScreenMessages.PostScreenMessage(new ScreenMessage(
@@ -353,7 +366,7 @@ namespace RemoteTech.FlightComputer
         /// <param name="n">Node with the informations for the flightcomputer</param>
         public void load(ConfigNode n)
         {
-            RTLog.Notify("Loading Flightcomputer from persistant!");
+            RTLog.Notify("Loading Flightcomputer from persistent!");
 
             if (!n.HasNode("FlightComputer"))
                 return;
@@ -402,7 +415,7 @@ namespace RemoteTech.FlightComputer
                 if (mCommandQueue.Count > 0)
                     mCommandQueue.Clear();
 
-                RTLog.Notify("Loading queued commands from persistant ...");
+                RTLog.Notify("Loading queued commands from persistent ...");
                 foreach (ConfigNode cmdNode in Commands.nodes)
                 {
                     ICommand cmd = AbstractCommand.LoadCommand(cmdNode, this);
@@ -424,7 +437,6 @@ namespace RemoteTech.FlightComputer
                             if (cmd.ExtraDelay > 0)
                             {
                                 cmd.ExtraDelay = cmd.TimeStamp  + cmd.ExtraDelay - RTUtil.GameTime;
-                                cmd.TimeStamp = RTUtil.GameTime;
 
                                 // Are we ready to handle the command ?
                                 if (cmd.ExtraDelay <= 0)
