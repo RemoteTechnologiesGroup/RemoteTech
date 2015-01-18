@@ -5,17 +5,45 @@ namespace RemoteTech.UI
 {
     public class FlightComputerWindow : AbstractWindow
     {
+        private enum FragmentTab
+        {
+            Attitude = 0,
+            Rover = 1,
+        }
+
+        private FragmentTab mTab = FragmentTab.Attitude;
         private readonly AttitudeFragment mAttitude;
+        private readonly RoverFragment mRover;
         private readonly QueueFragment mQueue;
         private bool mQueueEnabled;
         private FlightComputer.FlightComputer mFlightComputer;
 
+        private FragmentTab Tab
+        {
+            get
+            {
+                return mTab;
+            }
+            set
+            {
+                int NumberOfTabs = 2;
+                if ((int)value >= NumberOfTabs) {
+                    mTab = (FragmentTab)0;
+                } else if ((int)value < 0) {
+                    mTab = (FragmentTab)(NumberOfTabs - 1);
+                } else {
+                    mTab = value;
+                }
+            }
+        }
+
         public FlightComputerWindow(FlightComputer.FlightComputer fc)
-            : base(Guid.NewGuid(), "Flight Computer", new Rect(100, 100, 0, 0), WindowAlign.Floating)
+            : base(Guid.NewGuid(), "FlightComputer", new Rect(100, 100, 0, 0), WindowAlign.Floating)
         {
             mSavePosition = true;
             mFlightComputer = fc;
             mAttitude = new AttitudeFragment(fc, () => mQueueEnabled = !mQueueEnabled);
+            mRover = new RoverFragment(fc, () => mQueueEnabled = !mQueueEnabled);
             mQueue = new QueueFragment(fc);
             mQueueEnabled = false;
         }
@@ -41,13 +69,28 @@ namespace RemoteTech.UI
             GUI.skin = null;
             GUILayout.BeginHorizontal();
             {
-                mAttitude.Draw();
-                if (mQueueEnabled)
+                GUILayout.BeginHorizontal();
                 {
-                    mQueue.Draw();
+                    switch (mTab) {
+                        case FragmentTab.Attitude:
+                            mAttitude.Draw();
+                            break;
+                        case FragmentTab.Rover:
+                            mRover.Draw();
+                            break;
+                    }
                 }
-                else
-                {
+                GUILayout.EndHorizontal();
+                if (GUI.Button(new Rect(2, 2, 16, 16), "<")) {
+                    Tab--;
+                }
+                if (GUI.Button(new Rect(16, 2, 16, 16), ">")) {
+                    Tab++;
+                }
+
+                if (mQueueEnabled) {
+                    mQueue.Draw();
+                } else {
                     GUILayout.BeginVertical();
                     {
                         GUILayout.BeginScrollView(Vector2.zero, GUILayout.ExpandHeight(true));
