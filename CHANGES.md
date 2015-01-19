@@ -1,6 +1,18 @@
+Version 1.6.1
+========================================
+Released January 19, 2015
+
+Bug Fixes:
+--------------------
+* Fix for the calculation of the extraDelay after switching to the vessel with saved commands
+* The disappeared satellite switcher on the map view (middle right) will now displayed correctly
+* The attitude action-buttons now shows you the current flight mode
+* Fix for the stopped timer of commands after a maneuver command
+
+
 Version 1.6.0
 ========================================
-Released January 11, 2014
+Released January 11, 2015
 
 Features:
 --------------------
