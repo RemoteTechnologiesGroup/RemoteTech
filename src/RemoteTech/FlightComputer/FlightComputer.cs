@@ -257,7 +257,9 @@ namespace RemoteTech.FlightComputer
                             // Note: depending on implementation, dc.Pop() may execute the event
                             if (dc.Pop(this)) {
                                 mActiveCommands[dc.Priority] = dc;
-                                onNewCommandPop.Invoke();
+                                if (onNewCommandPop != null) {
+                                    onNewCommandPop.Invoke();
+                                }
                             }
                         } else {
                             string message = String.Format ("[Flight Computer]: Out of power, cannot run \"{0}\" on schedule.", dc.ShortName);
