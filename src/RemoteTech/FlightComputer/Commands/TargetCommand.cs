@@ -27,8 +27,12 @@ namespace RemoteTech.FlightComputer.Commands
         {
             f.DelayedTarget = Target;
             f.lastTarget = this;
-            // Switch the vessels target
-            FlightGlobals.fetch.SetVesselTarget(Target);
+
+            if (Target != null && Target != FlightGlobals.fetch.VesselTarget)
+            {
+                // Switch the vessels target
+                FlightGlobals.fetch.SetVesselTarget(Target);
+            }
 
             return true;
         }
@@ -87,26 +91,29 @@ namespace RemoteTech.FlightComputer.Commands
         public override void Save(ConfigNode n, FlightComputer fc)
         {
             if (Target != null)
+            {
                 TargetType = Target.GetType().ToString();
 
-            switch (TargetType)
-            {
-                case "Vessel":
-                    {
-                        TargetId = ((Vessel)Target).id.ToString();
-                        break;
-                    }
-                case "CelestialBody":
-                    {
-                        TargetId = FlightGlobals.Bodies.ToList().IndexOf(((CelestialBody)Target)).ToString();
-                        break;
-                    }
-                default:
-                    {
-                        TargetId = null;
-                        break;
-                    }
+                switch (TargetType)
+                {
+                    case "Vessel":
+                        {
+                            TargetId = ((Vessel)Target).id.ToString();
+                            break;
+                        }
+                    case "CelestialBody":
+                        {
+                            TargetId = FlightGlobals.Bodies.ToList().IndexOf(((CelestialBody)Target)).ToString();
+                            break;
+                        }
+                    default:
+                        {
+                            TargetId = null;
+                            break;
+                        }
+                }
             }
+
             base.Save(n, fc);
         }
     }
