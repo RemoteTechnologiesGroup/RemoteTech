@@ -102,6 +102,7 @@ namespace RemoteTech.FlightComputer.Commands
                 case "TargetCommand":       { command = new TargetCommand(); break; }
                 case "EventCommand":        { command = new EventCommand(); break; }
                 case "DriveCommand":        { command = new DriveCommand(); break; }
+                case "ExternalAPICommand":  { command = new ExternalAPICommand(); break; }
             }
 
             if (command != null)
