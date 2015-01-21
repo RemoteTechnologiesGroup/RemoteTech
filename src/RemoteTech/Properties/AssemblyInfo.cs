@@ -32,7 +32,11 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.6.1")]
+
+// Don't include the patch revision in the AssemblyVersion - as this will break any dependent
+// DLLs any time it changes.  Breaking on a minor revision is probably acceptable - it's
+// unlikely that there wouldn't be other breaking changes on a minor version change.
+[assembly: AssemblyVersion("1.6")]
 [assembly: AssemblyFileVersion("1.6.1")]
 
 // Use KSPAssembly to allow other DLLs to make this DLL a dependency in a
