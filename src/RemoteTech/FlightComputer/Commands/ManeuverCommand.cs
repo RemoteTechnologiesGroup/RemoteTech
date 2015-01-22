@@ -77,7 +77,7 @@ namespace RemoteTech.FlightComputer.Commands
                 RemainingDelta -= thrustToMass * TimeWarp.deltaTime;
                 return false;
             }
-            f.Enqueue(AttitudeCommand.Off(), true, true, true);
+            f.Enqueue(AttitudeCommand.KillRot(), true, true, true);
             return true;
         }
 
@@ -106,7 +106,6 @@ namespace RemoteTech.FlightComputer.Commands
             var newNode = new ManeuverCommand()
             {
                 Node = node,
-                NodeIndex = nodeIndex,
                 TimeStamp = node.UT - advance,
             };
             return newNode;
@@ -122,11 +121,29 @@ namespace RemoteTech.FlightComputer.Commands
             base.Load(n,fc);
             if(n.HasValue("NodeIndex"))
             {
-                int nodeIndex = int.Parse(n.GetValue("NodeIndex"));
-                RTLog.Notify("Trying to get Maneuver {0}",nodeIndex);
-                // Set the ManeuverNode into this command
-                Node = fc.Vessel.patchedConicSolver.maneuverNodes[nodeIndex];
-                RTLog.Notify("Found Maneuver {0} with {1} dV", nodeIndex, Node.DeltaV);
+                this.NodeIndex = int.Parse(n.GetValue("NodeIndex"));
+                RTLog.Notify("Trying to get Maneuver {0}", this.NodeIndex);
+                if (this.NodeIndex >= 0)
+                {
+                    // Set the ManeuverNode into this command
+                    this.Node = fc.Vessel.patchedConicSolver.maneuverNodes[this.NodeIndex];
+                    RTLog.Notify("Found Maneuver {0} with {1} dV", this.NodeIndex, this.Node.DeltaV);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Save the index of the maneuver node to the persistent
+        /// </summary>
+        public override void Save(ConfigNode n, FlightComputer fc)
+        {
+            // search the node on the List
+            this.NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.IndexOf(this.Node);
+
+            // only save this command if we are on the maneuverNode list
+            if (this.NodeIndex >= 0)
+            {
+                base.Save(n, fc);
             }
         }
     }
