@@ -40,6 +40,13 @@ namespace RemoteTech
                 foreach (var link in neighborsFunction.Invoke(current.Item.Target))
                 {
                     double new_cost = current.Cost + costFunction.Invoke(current.Item.Target, link);
+
+                    // Todo: Dennis: i use the fix from Taste83 #139 and i'll look closer if i'm more related to the Pathfinder
+                    if (new_cost == current.Cost)
+                    {
+                        continue;
+                    }
+
                     // If the item has a node, it will either be in the closedSet, or the openSet
                     if (nodeMap.ContainsKey(link.Target))
                     {
