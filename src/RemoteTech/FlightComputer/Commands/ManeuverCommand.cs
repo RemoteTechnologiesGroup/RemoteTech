@@ -15,6 +15,12 @@ namespace RemoteTech.FlightComputer.Commands
         public bool EngineActivated { get; set; }
         public override int Priority { get { return 0; } }
 
+        private double ticksRemaining = -1;
+        private float throttle = 1.0f;
+        private bool abortOnNextExecute = false;
+        private bool firstBurn = true;
+        private double lowestDeltaV = 0.0;
+
         public override string Description
         {
             get
@@ -58,7 +64,7 @@ namespace RemoteTech.FlightComputer.Commands
 
         public override bool Execute(FlightComputer f, FlightCtrlState fcs)
         {
-            if (RemainingDelta > 0)
+            if (RemainingDelta > 0.01 && this.abortOnNextExecute == false)
             {
                 var forward = Node.GetBurnVector(f.Vessel.orbit).normalized;
                 var up = (f.SignalProcessor.Body.position - f.SignalProcessor.Position).normalized;
@@ -66,17 +72,61 @@ namespace RemoteTech.FlightComputer.Commands
                 FlightCore.HoldOrientation(fcs, f, orientation);
 
                 double thrustToMass = (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
-                if (thrustToMass == 0.0) {
+                if (thrustToMass == 0.0)
+                {
                     EngineActivated = false;
                     return false;
                 }
-
+      
                 EngineActivated = true;
-                fcs.mainThrottle = 1.0f;
+
+                RemainingDelta = Node.GetBurnVector(f.Vessel.orbit).magnitude;
                 RemainingTime = RemainingDelta / thrustToMass;
-                RemainingDelta -= thrustToMass * TimeWarp.deltaTime;
+
+                // In case we would overpower with 100% thrust, calculate how much we actually need and set it.
+                if (f.Vessel.acceleration.magnitude > RemainingDelta)
+                {
+                    // Formula which leads to this: a = ( vE – vS ) / dT
+                    this.throttle = (float)RemainingDelta / (float)f.Vessel.acceleration.magnitude;
+                }
+                
+
+                ticksRemaining = RemainingTime / TimeWarp.deltaTime;
+       
+
+                fcs.mainThrottle = this.throttle;
+
+
+                double throttledThrustToMass = fcs.mainThrottle * thrustToMass;
+
+                RemainingDelta = Node.GetBurnVector(f.Vessel.orbit).magnitude;
+                RemainingTime = RemainingDelta / throttledThrustToMass;
+
+                ticksRemaining = RemainingTime / TimeWarp.deltaTime;
+
+
+                // We need to abort if the remaining delta was already low enough so it only takes exactly one more tick!
+                if (ticksRemaining <= 1)
+                {
+                    fcs.mainThrottle = this.throttle * (float)ticksRemaining;
+                    this.abortOnNextExecute = true;
+                }
+
+                // we only compare up to the fiftieth part due to some inconsistency when just firing up the engines
+                if (this.lowestDeltaV > 0 && (RemainingDelta - 0.02) > this.lowestDeltaV)
+                {
+                    // Aborting because deltaV was rising again!
+                    f.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+                    return true;
+                }
+                if (this.lowestDeltaV == 0 || RemainingDelta < this.lowestDeltaV)
+                {
+                    this.lowestDeltaV = RemainingDelta;
+                }
+
                 return false;
             }
+
             f.Enqueue(AttitudeCommand.KillRot(), true, true, true);
             return true;
         }
