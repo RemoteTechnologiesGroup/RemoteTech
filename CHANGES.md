@@ -1,3 +1,16 @@
+Version 1.6.2
+========================================
+Released January 24, 2015
+
+Bug Fixes:
+--------------------
+- Fixed an issue that can cause the KSP UI to be not clickable anymore after docking (thx DaveTSG for reporting)
+- Fixed an issue that can cause the flight computer to crash into a small gray dot while loading a saved EventCommand (thx Synighte for reporting)
+- Fix for saving/loading a ManeuverCommand
+- Reverted a change of the AssemblyVersion from 1.6.1 to 1.6.0 to prevent issues with other mods that use our API (thx jrossignol)
+- We fixed an old issue where KSP can freeze by zero cost links between two satellites
+
+
 Version 1.6.1
 ========================================
 Released January 19, 2015
