@@ -17,7 +17,7 @@ namespace RemoteTech.FlightComputer.Commands
 
         public override string Description
         {
-            get { return description; }
+            get { return description + Environment.NewLine + base.Description; }
         }
         public override string ShortName { get { return shortName; } }
 
