@@ -209,7 +209,7 @@ namespace RemoteTech
         public static ISignalProcessor GetSignalProcessor(this Vessel v)
         {
             RTLog.Notify("GetSignalProcessor({0}): Check", v.vesselName);
-            if (v.loaded)
+            if (v.loaded && v.parts.Count > 0)
             {
                 foreach (PartModule pm in v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Where(pm => pm.IsSignalProcessor()))
                 {
@@ -242,7 +242,7 @@ namespace RemoteTech
         public static bool HasCommandStation(this Vessel v)
         {
             RTLog.Notify("HasCommandStation({0})", v.vesselName);
-            if (v.loaded)
+            if (v.loaded && v.parts.Count > 0)
             {
                 return v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Any(pm => pm.IsCommandStation());
             }
