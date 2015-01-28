@@ -9,6 +9,8 @@ namespace RemoteTech.FlightComputer
     {
         // Guiname of the BaseEvent
         [Persistent] public string GUIName;
+        // Name of the BaseEvent
+        [Persistent] public string Name;
         // flight id of the part by this BaseEvent
         [Persistent] public uint flightID;
         // PartModule of the part by this BaseEvent
@@ -20,7 +22,7 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                return ((this.BaseEvent != null) ? this.BaseEvent.listParent.part.partInfo.title + ": " + this.BaseEvent.GUIName : "none") +
+                return ((this.BaseEvent != null) ? this.BaseEvent.listParent.part.partInfo.title + ": " + this.GUIName : "none") +
                         Environment.NewLine + base.Description;
             }
         }
@@ -45,6 +47,7 @@ namespace RemoteTech.FlightComputer
             return new EventCommand()
             {
                 BaseEvent = ev,
+                GUIName = ev.GUIName,
                 TimeStamp = RTUtil.GameTime,
             };
         }
@@ -65,11 +68,13 @@ namespace RemoteTech.FlightComputer
 
             if (n.HasValue("flightID"))
                 this.flightID = uint.Parse(n.GetValue("flightID"));
+                        
+            this.Module = n.GetValue("Module");
+            this.GUIName = n.GetValue("GUIName");
+            this.Name = n.GetValue("Name");
 
-            Module = n.GetValue("Module");
-            GUIName = n.GetValue("GUIName");
-
-            RTLog.Notify("Try to load an EventCommand from persistent with {0},{1},{2},{3}", PartId, flightID, Module, GUIName);
+            RTLog.Notify("Try to load an EventCommand from persistent with {0},{1},{2},{3},{4}",
+                         PartId, this.flightID, this.Module, this.GUIName, this.Name);
 
             Part part = null;
             var partlist = FlightGlobals.ActiveVessel.parts;
@@ -93,7 +98,7 @@ namespace RemoteTech.FlightComputer
                     BaseEventList eventlist = new BaseEventList(part, partmodule);
                     if (eventlist.Count > 0)
                     {
-                        this.BaseEvent = eventlist.Where(ba => ba.GUIName == this.GUIName).FirstOrDefault();
+                        this.BaseEvent = eventlist.Where(ba => (ba.GUIName == this.GUIName || ba.name == this.Name)).FirstOrDefault();
                     }
                 }
             }
@@ -104,9 +109,10 @@ namespace RemoteTech.FlightComputer
         /// </summary>
         public override void Save(ConfigNode n, FlightComputer fc)
         {
-            GUIName = this.BaseEvent.GUIName;
-            flightID = this.BaseEvent.listParent.module.part.flightID;
-            Module = this.BaseEvent.listParent.module.ClassName.ToString();
+            this.GUIName = this.BaseEvent.GUIName;
+            this.flightID = this.BaseEvent.listParent.module.part.flightID;
+            this.Module = this.BaseEvent.listParent.module.ClassName.ToString();
+            this.Name = this.BaseEvent.name;
 
             base.Save(n, fc);
         }
