@@ -20,9 +20,16 @@ namespace RemoteTech
     {
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
         /// <summary>
-        /// Returns the current AssemplyVersion from AssemblyInfos.cs
+        /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
         /// </summary>
-        public static string Version { get{ return "v"+Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
+        public static string Version
+        {
+            get
+            {
+                Assembly executableAssembly = Assembly.GetExecutingAssembly();
+                return "v" + FileVersionInfo.GetVersionInfo(executableAssembly.Location).ProductVersion.ToString();
+            }
+        }
 
         public static readonly String[]
             DistanceUnits = { "", "k", "M", "G", "T" },
