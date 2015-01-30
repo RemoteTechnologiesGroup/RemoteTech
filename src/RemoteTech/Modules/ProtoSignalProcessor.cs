@@ -25,15 +25,24 @@ namespace RemoteTech.Modules
             mVessel = v;
             Powered = ppms.GetBool("IsRTPowered");
 
+            // get the crew count from the vessel
+            int crewcount = v.GetVesselCrew().Count;
+            // when the crewcount is eq 0 than look into the protoVessel
+            if (crewcount == 0 && v.protoVessel.GetVesselCrew() != null)
+                crewcount = v.protoVessel.GetVesselCrew().Count;
+
+            RTLog.Notify("ProtoSignalProcessor crew count of {0} is {1}", v.vesselName, crewcount);
+
             try {
-                IsCommandStation = Powered && v.HasCommandStation() && v.GetVesselCrew().Count >= ppms.GetInt("RTCommandMinCrew");
-                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3})", 
-                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count, ppms.GetInt("RTCommandMinCrew"));
-            } catch (ArgumentException) {
+                IsCommandStation = Powered && v.HasCommandStation() && crewcount >= ppms.GetInt("RTCommandMinCrew");
+                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3})",
+                    Powered, v.HasCommandStation(), crewcount, ppms.GetInt("RTCommandMinCrew"));
+            } catch (ArgumentException argexeception) {
                 // I'm assuming this would get thrown by ppms.GetInt()... do the other functions have an exception spec?
                 IsCommandStation = false;
-                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})", 
-                    Powered, v.HasCommandStation(), v.GetVesselCrew().Count);
+                RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})",
+                    Powered, v.HasCommandStation(), crewcount);
+                RTLog.Notify("ProtoSignalProcessor ", argexeception);
             }
         }
 
