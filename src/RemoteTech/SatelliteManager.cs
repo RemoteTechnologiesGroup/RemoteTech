@@ -209,24 +209,41 @@ namespace RemoteTech
         public static ISignalProcessor GetSignalProcessor(this Vessel v)
         {
             RTLog.Notify("GetSignalProcessor({0}): Check", v.vesselName);
+
+            ISignalProcessor result = null;
+
             if (v.loaded && v.parts.Count > 0)
             {
-                foreach (PartModule pm in v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Where(pm => pm.IsSignalProcessor()))
-                {
-                    RTLog.Notify("GetSignalProcessor({0}): Found", v.vesselName);
-                    return pm as ISignalProcessor;
-                }
+                var partModuleList = v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Where(pm => pm.IsSignalProcessor());
+                // try to look for a moduleSPU
+                result = partModuleList.Where(pm => pm.moduleName == "ModuleSPU").FirstOrDefault() as ISignalProcessor;
 
+                if (result == null)
+                {
+                    // otherwise get the first moduleSpuPassive
+                    result = partModuleList.FirstOrDefault() as ISignalProcessor;
+                }
             }
             else
             {
-                foreach (ProtoPartModuleSnapshot ppms in v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Where(ppms => ppms.IsSignalProcessor()))
+                var protoPartList = v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Where(ppms => ppms.IsSignalProcessor());
+                // try to look for a moduleSPU on a unloaded vessel
+                var protoPartProcessor = protoPartList.Where(ppms => ppms.moduleName == "ModuleSPU").FirstOrDefault();
+
+                if (protoPartProcessor == null)
                 {
-                    RTLog.Notify("GetSignalProcessor({0}): Found", v.vesselName);
-                    return new ProtoSignalProcessor(ppms, v);
+                    // otherwise get the first moduleSpuPassive
+                    protoPartProcessor = protoPartList.FirstOrDefault();
+                }
+
+                // convert the found protoPartSnapshots to a ProtoSignalProcessor
+                if (protoPartProcessor != null)
+                {
+                    result = new ProtoSignalProcessor(protoPartProcessor, v);
                 }
             }
-            return null;
+
+            return result;
         }
 
         public static bool IsCommandStation(this ProtoPartModuleSnapshot ppms)
