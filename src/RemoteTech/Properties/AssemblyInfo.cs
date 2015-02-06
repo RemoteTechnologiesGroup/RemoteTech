@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("RemoteTech")]
-[assembly: AssemblyCopyright("Copyright ©  2013-2014")]
+[assembly: AssemblyCopyright("Copyright © 2013-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 // DLLs any time it changes.  Breaking on a minor revision is probably acceptable - it's
 // unlikely that there wouldn't be other breaking changes on a minor version change.
 [assembly: AssemblyVersion("1.6")]
-[assembly: AssemblyFileVersion("1.6.2")]
+[assembly: AssemblyFileVersion("1.6.3")]
 
 // Use KSPAssembly to allow other DLLs to make this DLL a dependency in a
 // non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it

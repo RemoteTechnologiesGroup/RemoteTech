@@ -1,3 +1,16 @@
+Version 1.6.3
+========================================
+Released February 06, 2015
+
+Bug Fixes:
+--------------------
+- We've fixed an old issue where unloading a vessel can cause a log spamming with KeyNotFoundException
+- We'll now log the current RemoteTech FileVersion to the ksp.log
+- Stations will now properly re-registered as a station after unloading
+- Stations will now properly registered as a station even if the first part is not the Remote Guidance Unit
+- Fix for loading a saved RemoteTech EventCommand like 'activate antenna'
+
+
 Version 1.6.2
 ========================================
 Released January 24, 2015
