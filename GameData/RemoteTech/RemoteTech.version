@@ -1,7 +1,8 @@
 {
 	"NAME": "RemoteTech",
 	"URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech/RemoteTech.version",
-	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/CHANGES.md", 
+	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/CHANGES.md",
+	"DOWNLOAD": "https://kerbalstuff.com/mod/134/RemoteTech",  
 	"GITHUB":
 	{
 		"USERNAME": "RemoteTechnologiesGroup",
@@ -11,7 +12,7 @@
 	"VERSION":{
     "MAJOR":1,
     "MINOR":6,
-    "PATCH":2,
+    "PATCH":3,
     "BUILD":0
   },
   "KSP_VERSION":{
