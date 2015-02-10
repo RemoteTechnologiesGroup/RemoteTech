@@ -101,7 +101,7 @@ namespace RemoteTech
 
         public void OnDestroy()
         {
-            if (FocusOverlay != null) FocusOverlay.Dispose();
+            if (FocusOverlay != null) FocusOverlay.Dispose(); 
             if (FilterOverlay != null) FilterOverlay.Dispose();
             if (FilterOverlay != null) FilterOverlay.Dispose();
             if (Renderer != null) Renderer.Detach();

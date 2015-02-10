@@ -91,5 +91,38 @@ namespace RemoteTech.API
             RTLog.Verbose("Connection from {0} to {1} Delay: {2}", a, b, delayBetween);
             return delayBetween;
         }
+        public static void ReceiveData(ConfigNode ExternalData) //exposed method called by other mods, passing a ConfigNode to RemoteTech
+        {
+            if (ExternalData != null) //check we were actually passed a config node
+            {
+                try
+                {
+                    RemoteTech.FlightComputer.Commands.ExternalAPICommand extCmd = new RemoteTech.FlightComputer.Commands.ExternalAPICommand() //make our command
+                    {
+                        externalData = ExternalData,
+                        TimeStamp = RTUtil.GameTime,
+                        description = ExternalData.GetValue("Description"), //string on GUI
+                        shortName = ExternalData.GetValue("ShortName"), //???
+                        reflectionGetType = ExternalData.GetValue("ReflectionGetType"), //required for reflection back
+                        reflectionInvokeMember = ExternalData.GetValue("ReflectionInvokeMember"), //required 
+                        vslGUIDstr = ExternalData.GetValue("GUIDString"),
+                    };
+                    foreach (Vessel vsl2 in FlightGlobals.Vessels) //can not find a Guid.Parse method, so do it this way
+                    {
+                        if (vsl2.id.ToString() == extCmd.vslGUIDstr)
+                        {
+                            extCmd.vslGUID = vsl2.id;
+                            extCmd.vsl = vsl2;
+                        }
+                    }
+                    RemoteTech.FlightComputer.FlightComputer fltComp = RTCore.Instance.Satellites[extCmd.vslGUID].FlightComputer;
+                    fltComp.Enqueue(extCmd);
+                }
+                catch
+                {
+                    RTDebugUnit.print("RT Error: Invalid ConfigNode passed by other mod");
+                }
+            }
+        }
     }
 }

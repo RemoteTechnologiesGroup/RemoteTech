@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
+    <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
     <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
     <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
     <Compile Include="FlightComputer\Commands\BurnCommand.cs" />
