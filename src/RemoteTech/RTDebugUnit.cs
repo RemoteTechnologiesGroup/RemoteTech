@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace RemoteTech
@@ -9,12 +7,28 @@ namespace RemoteTech
     [KSPAddon(KSPAddon.Startup.EveryScene, false)]
     public class RTDebugUnit : MonoBehaviour
     {
+        private RemoteTech.UI.DebugWindow debugWindow = null;
+
+        public void Start()
+        {
+            #if DEBUG
+            this.debugWindow = new RemoteTech.UI.DebugWindow();
+            #endif
+        }
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F11) && HighLogic.LoadedSceneIsFlight)
+            if ((Input.GetKeyDown(KeyCode.F11) || Input.GetKeyDown(KeyCode.F12)) && (HighLogic.LoadedSceneIsFlight || HighLogic.LoadedSceneHasPlanetarium))
             {
-                Dump();
+                if (Input.GetKeyDown(KeyCode.F11)){
+                    Dump();
+                }
+                else {
+                    if (this.debugWindow != null)
+                    {
+                        this.debugWindow.toggleWindow();
+                    }
+                }
             }
         }
 

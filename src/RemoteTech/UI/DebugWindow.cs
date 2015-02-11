@@ -1,0 +1,492 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace RemoteTech.UI
+{
+    class DebugWindow : AbstractWindow
+    {
+        #region AbstractWindow-Definitions
+        public static Guid Guid = new Guid("B17930C0-EDE6-4299-BE78-D975EAD1986B");
+        public static String WindowTitle = "RemoteTech DebugWindow";
+        public static WindowAlign Windowalignment = WindowAlign.Floating;
+
+        public DebugWindow()
+            : base(Guid, WindowTitle, new Rect(Screen.width/2-250, Screen.height/2-175, 500, 350), Windowalignment)
+        {
+            this.mSavePosition = true;
+            this.initializeDebugMenue();
+        }
+
+        public override void Hide()
+        {
+            InputLockManager.RemoveControlLock("RTLockDebug");
+            base.Hide();
+        }
+        #endregion
+
+        #region Member
+        Vector2 debugLogScrollPosition;
+        Vector2 contentScrollPosition;
+        int currentDebugLevel = 0;
+        int currentDebugMenue = 0;
+        List<string> debugMenueItems = new List<string>();
+        #endregion
+
+        #region Base-drawing
+        /// <summary>
+        /// Draws the content of the window
+        /// </summary>
+        public override void Window(int uid)
+        {
+            // push the current GUI.skin
+            var pushSkin = GUI.skin;
+            GUI.skin = HighLogic.Skin;
+
+            GUILayout.BeginVertical(GUILayout.Width(500), GUILayout.Height(350));
+            {
+                #region Draw debug menue
+                // Draw the debug menue
+                GUILayout.BeginHorizontal();
+                {
+                    // push the font size of buttons
+                    var pushFontsize = GUI.skin.button.fontSize;
+                    GUI.skin.button.fontSize = 11;
+
+                    var menueItemCounter = 0;
+                    foreach (var menueItem in this.debugMenueItems)
+                    {
+                        RTUtil.FakeStateButton(new GUIContent(menueItem), () => { this.currentDebugMenue = menueItemCounter; }, currentDebugMenue, menueItemCounter, GUILayout.Height(16));
+                        menueItemCounter++;
+                    }
+
+                    // pop the saved button size back
+                    GUI.skin.button.fontSize = pushFontsize;
+                }
+                GUILayout.EndHorizontal();
+                #endregion
+
+                #region Draw content
+                contentScrollPosition = GUILayout.BeginScrollView(contentScrollPosition);
+                {
+                    switch(this.currentDebugMenue)
+                    {
+                        case 0: { this.drawRTSettingsTab(); break; }
+                        case 1: { this.drawAPITester(); break; }
+                        case 2: { this.drawGuidReader();  break; }
+                        default: { GUILayout.Label("Item " + this.currentDebugMenue.ToString() + " not yet implemented"); break; }
+                    }
+                    GUILayout.FlexibleSpace();
+                }
+                GUILayout.EndScrollView();
+                #endregion
+
+                #region Draw debug log
+                // Draw a 100 height debug-console at the bottom of the debug-window
+                GUILayout.BeginVertical(GUILayout.Height(100));
+                    this.drawRTDebugLogEntrys();
+                GUILayout.EndVertical();
+                #endregion
+            }
+            GUILayout.EndVertical();
+
+            // Set a control lock that we can scroll through textareas
+            InputLockManager.RemoveControlLock("RTLockDebug");
+            if (this.backupPosition.ContainsMouse())
+            {
+                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockDebug");
+            }
+
+            base.Window(uid);
+
+            // pop back the saved skin
+            GUI.skin = pushSkin;
+        }
+        #endregion
+
+        private void initializeDebugMenue()
+        {
+            this.debugMenueItems.Add("RemoteTech Settings");
+            this.debugMenueItems.Add("API-Tester");
+            this.debugMenueItems.Add("GUID-Reader");
+        }
+
+        /// <summary>
+        /// Draws all debug logs
+        /// </summary>
+        private void drawRTDebugLogEntrys()
+        {
+            GUIStyle lablestyle = new GUIStyle(GUI.skin.label);
+            lablestyle.wordWrap = false;
+            lablestyle.fontSize = 11;
+            lablestyle.normal.textColor = Color.white;
+
+            // draw the vertical buttons for each debug lvl
+            GUILayout.BeginHorizontal();
+            {
+                var pushFontsize = GUI.skin.button.fontSize;
+                GUI.skin.button.fontSize = 11;
+                for (int i = 0; i < RTLog.maxDebugLevels; i++)
+                {
+                    RTUtil.FakeStateButton(new GUIContent("LVL" + i.ToString()), () => { this.currentDebugLevel = i; }, currentDebugLevel, i, GUILayout.Height(16));
+                }
+                GUI.skin.button.fontSize = pushFontsize;
+            }
+            GUILayout.EndHorizontal();
+            
+            // draw the input of the selected debug list
+            debugLogScrollPosition = GUILayout.BeginScrollView(debugLogScrollPosition);
+            {
+                foreach (var logEntry in RTLog.RTLogList[this.currentDebugLevel])
+                {
+                    GUILayout.Label(logEntry, lablestyle, GUILayout.Height(13));
+                }
+            }
+            GUILayout.EndScrollView();
+
+            // If the mouse is not over the debug window we will flip the scrollposition.y to maximum
+            if (!this.backupPosition.ContainsMouse())
+            {
+                debugLogScrollPosition.y = Mathf.Infinity;
+            }
+        }
+
+        /// <summary>
+        /// Draws the RTSettings section
+        /// </summary>
+        private void drawRTSettingsTab()
+        {
+            var settings = RTSettings.Instance;
+            int firstColWidth = 250;
+
+            var pushLabelSize = GUI.skin.label.fontSize;
+            var pushButtonSize = GUI.skin.button.fontSize;
+            GUI.skin.label.fontSize = 12;
+            GUI.skin.button.fontSize = 12;
+
+            // Enable SignalDelay
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Enable Signal Delay: ", GUILayout.Width(firstColWidth));
+                int enabledSignalDelay = (settings.EnableSignalDelay) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.EnableSignalDelay = true; }, enabledSignalDelay, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.EnableSignalDelay = false; }, enabledSignalDelay, 0);
+            }
+            GUILayout.EndHorizontal();
+
+            // Consumption Multiplier
+            GUILayout.BeginHorizontal();
+            {
+                string label = RTLog.formatMessage("Consumption Multiplier: ({0})", settings.ConsumptionMultiplier);
+                GUILayout.Label(label, GUILayout.Width(firstColWidth));
+                settings.ConsumptionMultiplier = GUILayout.HorizontalSlider(settings.ConsumptionMultiplier, 0, 2);
+            }
+            GUILayout.EndHorizontal();
+
+            // Range Multiplier
+            GUILayout.BeginHorizontal();
+            {
+                string label = RTLog.formatMessage("Range Multiplier: ({0})", settings.RangeMultiplier);
+                GUILayout.Label(label, GUILayout.Width(firstColWidth));
+                settings.RangeMultiplier = GUILayout.HorizontalSlider(settings.RangeMultiplier, 0, 2);
+            }
+            GUILayout.EndHorizontal();
+
+            // Speed of light
+            GUILayout.BeginHorizontal();
+            {
+                string label = RTLog.formatMessage("Speed of light: ({0})", settings.SpeedOfLight);
+                GUILayout.Label(label, GUILayout.Width(firstColWidth));
+                settings.SpeedOfLight = GUILayout.HorizontalSlider(settings.SpeedOfLight, 100000, 300000000);
+            }
+            GUILayout.EndHorizontal();
+
+            // ThrottleTimeWarp
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Throttle TimeWarp: ", GUILayout.Width(firstColWidth));
+                int throttleTimeWarp = (settings.ThrottleTimeWarp) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.ThrottleTimeWarp = true; }, throttleTimeWarp, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.ThrottleTimeWarp = false; }, throttleTimeWarp, 0);
+            }
+            GUILayout.EndHorizontal();
+
+            // HideGroundStationsBehindBody 
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Hide Station behind body: ", GUILayout.Width(firstColWidth));
+                int hideGroundStationsBehindBody = (settings.HideGroundStationsBehindBody) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.HideGroundStationsBehindBody = true; }, hideGroundStationsBehindBody, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.HideGroundStationsBehindBody = false; }, hideGroundStationsBehindBody, 0);
+            }
+            GUILayout.EndHorizontal();
+
+
+            GUILayout.Space(10);
+            GUILayout.Label("Cheat options");
+
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Signal through bodys: ", GUILayout.Width(firstColWidth));
+                int cheatEVAFuel = (CheatOptions.InfiniteEVAFuel) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfiniteEVAFuel = true; }, cheatEVAFuel, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfiniteEVAFuel = false; }, cheatEVAFuel, 0);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Infinite Fuel: ", GUILayout.Width(firstColWidth));
+                int cheatinfiniteFuel = (CheatOptions.InfiniteFuel) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfiniteFuel = true; }, cheatinfiniteFuel, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfiniteFuel = false; }, cheatinfiniteFuel, 0);
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Infinite RCS Fuel: ", GUILayout.Width(firstColWidth));
+                int cheatinfiniteRCSFuel = (CheatOptions.InfiniteRCS) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfiniteRCS = true; }, cheatinfiniteRCSFuel, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfiniteRCS = false; }, cheatinfiniteRCSFuel, 0);
+            }
+            GUILayout.EndHorizontal();
+
+            GUI.skin.label.fontSize = pushLabelSize;
+            GUI.skin.button.fontSize = pushButtonSize;
+        }
+
+        /// <summary>
+        /// Draws the API Tester section
+        /// </summary>
+        private string HasFlightComputerGuidInput = "";
+        private string HasAnyConnectionGuidInput = "";
+        private string HasConnectionToKSCGuidInput = "";
+        private string GetShortestSignalDelayGuidInput = "";
+        private string GetSignalDelayToKSCGuidInput = "";
+        private string GetSignalDelayToSatelliteGuidAInput = "";
+        private string GetSignalDelayToSatelliteGuidBInput = "";
+        private string ReceivDataVesselGuidInput = "";
+        private void drawAPITester()
+        {
+            // switch to the API Debug log
+            this.currentDebugLevel = 6;
+
+            // API.HasFlightComputer
+            #region API.HasFlightComputer
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.HasFlightComputer; Guid: ", GUILayout.ExpandWidth(true));
+                this.HasFlightComputerGuidInput = GUILayout.TextField(this.HasFlightComputerGuidInput, GUILayout.Width(160));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.HasFlightComputer(new Guid(this.HasFlightComputerGuidInput));
+                        RTLog.Verbose("API.HasFlightComputer({0}) = {1}", this.currentDebugLevel, this.HasFlightComputerGuidInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.HasAnyConnection
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.HasAnyConnection; Guid: ", GUILayout.ExpandWidth(true));
+                this.HasAnyConnectionGuidInput = GUILayout.TextField(this.HasAnyConnectionGuidInput, GUILayout.Width(160));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.HasAnyConnection(new Guid(this.HasAnyConnectionGuidInput));
+                        RTLog.Verbose("API.HasAnyConnection({0}) = {1}", this.currentDebugLevel, this.HasAnyConnectionGuidInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.HasConnectionToKSC
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.HasConnectionToKSC; Guid: ", GUILayout.ExpandWidth(true));
+                this.HasConnectionToKSCGuidInput = GUILayout.TextField(this.HasConnectionToKSCGuidInput, GUILayout.Width(160));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.HasConnectionToKSC(new Guid(this.HasConnectionToKSCGuidInput));
+                        RTLog.Verbose("API.HasConnectionToKSC({0}) = {1}", this.currentDebugLevel, this.HasConnectionToKSCGuidInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region APi.GetShortestSignalDelay
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.GetShortestSignalDelay; Guid: ", GUILayout.ExpandWidth(true));
+                this.GetShortestSignalDelayGuidInput = GUILayout.TextField(this.GetShortestSignalDelayGuidInput, GUILayout.Width(160));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.GetShortestSignalDelay(new Guid(this.GetShortestSignalDelayGuidInput));
+                        RTLog.Verbose("API.GetShortestSignalDelayGuidInput({0}) = {1}", this.currentDebugLevel, this.GetShortestSignalDelayGuidInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.GetSignalDelayToKSC
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.GetSignalDelayToKSC; Guid: ", GUILayout.ExpandWidth(true));
+                this.GetSignalDelayToKSCGuidInput = GUILayout.TextField(this.GetSignalDelayToKSCGuidInput, GUILayout.Width(160));
+                if (GUILayout.Button("Run",GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.GetSignalDelayToKSC(new Guid(this.GetSignalDelayToKSCGuidInput));
+                        RTLog.Verbose("API.GetSignalDelayToKSC({0}) = {1}", this.currentDebugLevel, this.GetSignalDelayToKSCGuidInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.GetSignalDelayToSatellite
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.GetSignalDelayToSatellite; Guid: ", GUILayout.ExpandWidth(true));
+                this.GetSignalDelayToSatelliteGuidAInput = GUILayout.TextField(this.GetSignalDelayToSatelliteGuidAInput, GUILayout.Width(70));
+                GUILayout.Label("to: ", GUILayout.ExpandWidth(true));
+                this.GetSignalDelayToSatelliteGuidBInput = GUILayout.TextField(this.GetSignalDelayToSatelliteGuidBInput, GUILayout.Width(70));
+                if (GUILayout.Button("Run",GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.GetSignalDelayToSatellite(new Guid(this.GetSignalDelayToSatelliteGuidAInput), new Guid(this.GetSignalDelayToSatelliteGuidBInput));
+                        RTLog.Verbose("API.GetSignalDelayToSatellite({0},{1}) = {2}", this.currentDebugLevel, this.GetSignalDelayToSatelliteGuidAInput, this.GetSignalDelayToSatelliteGuidBInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.ReceiveData
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.ReceiveData; Guid: ", GUILayout.ExpandWidth(true));
+                this.ReceivDataVesselGuidInput = GUILayout.TextField(this.ReceivDataVesselGuidInput, GUILayout.Width(160));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        ConfigNode dataNode = new ConfigNode();
+                        dataNode.AddValue("Description", "Debug ReceiveData");
+                        dataNode.AddValue("ShortName","Debug-Short");
+                        dataNode.AddValue("ReflectionGetType", "RemoteTech.UI.DebugWindow");
+                        dataNode.AddValue("ReflectionInvokeMember", "ReceiveData");
+                        dataNode.AddValue("GUIDString", this.ReceivDataVesselGuidInput);
+                        RemoteTech.API.API.ReceiveData(dataNode);
+
+                        RTLog.Verbose("API.ReceiveData({0})", this.currentDebugLevel, dataNode);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+        }
+
+        /// <summary>
+        /// Draws a list with all ship guids and command stations to copy these values for the api tester
+        /// </summary>
+        private void drawGuidReader()
+        {
+            // draw the vessel list
+            #region Vessel list
+            foreach (var vessel in FlightGlobals.Vessels)
+            {
+                // skip different types
+                if (vessel.vesselType == VesselType.SpaceObject || vessel.vesselType == VesselType.Unknown) continue;
+
+                GUILayout.BeginHorizontal();
+                {
+                    var pushFontStyle = GUI.skin.label.fontStyle;
+                    // active vessel, make bold
+                    if (FlightGlobals.ActiveVessel.id == vessel.id)
+                    {
+                        GUI.skin.label.fontStyle = FontStyle.Bold;
+                    }
+
+                    GUILayout.Label(vessel.vesselName,GUILayout.ExpandWidth(true));
+                    GUILayout.TextField(vessel.id.ToString(),GUILayout.Width(270));
+                    GUI.skin.label.fontStyle = pushFontStyle;
+                }
+                GUILayout.EndHorizontal();
+            }
+            #endregion
+            // draw the Ground stations
+            #region Ground stations
+            foreach (var stations in RTCore.Instance.Network.GroundStations)
+            {
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label(stations.Value.Name, GUILayout.ExpandWidth(true));
+                    GUILayout.TextField(stations.Key.ToString(), GUILayout.Width(270));
+                }
+                GUILayout.EndHorizontal();
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// This method is needed as a callback function for the API.ReceiveData
+        /// </summary>
+        /// <param name="data">data passed from the flightcomputer</param>
+        public static void ReceiveData(ConfigNode data)
+        {
+            RTLog.Verbose("Received Data via Api.ReceiveData with {0}", 6, data);
+        }
+    }
+}

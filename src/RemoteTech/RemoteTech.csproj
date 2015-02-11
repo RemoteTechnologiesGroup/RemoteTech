@@ -108,6 +108,7 @@
     <Compile Include="UI\AntennaFragment.cs" />
     <Compile Include="UI\AntennaWindow.cs" />
     <Compile Include="UI\AttitudeFragment.cs" />
+    <Compile Include="UI\DebugWindow.cs" />
     <Compile Include="UI\FocusOverlay.cs" />
     <Compile Include="UI\FocusFragment.cs" />
     <Compile Include="UI\FlightComputerWindow.cs" />

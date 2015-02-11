@@ -225,5 +225,17 @@ namespace RemoteTech.UI
         {
             InputLockManager.RemoveControlLock("RTLockControlForWindows");
         }
+
+        public void toggleWindow()
+        {
+            if (this.Enabled)
+            {
+                this.Hide();
+            }
+            else
+            {
+                this.Show();
+            }
+        }
     }
 }
