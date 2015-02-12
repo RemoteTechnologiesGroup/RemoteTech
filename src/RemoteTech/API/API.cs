@@ -13,7 +13,7 @@ namespace RemoteTech.API
             var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
             var hasFlightComputer = satellite.FlightComputer != null;
-            RTLog.Verbose("Flight: {0} HasFlightComputer: {1}", 6, id, hasFlightComputer);
+            RTLog.Verbose("Flight: {0} HasFlightComputer: {1}", RTLogLevel.API, id, hasFlightComputer);
 
             return hasFlightComputer;
         }
@@ -26,7 +26,7 @@ namespace RemoteTech.API
             {
                 if (spu.FlightComputer == null) continue;
                 if (spu.FlightComputer.SanctionedPilots.Contains(autopilot)) continue;
-                RTLog.Verbose("Flight: {0} Adding Sanctioned Pilot", 6, id);
+                RTLog.Verbose("Flight: {0} Adding Sanctioned Pilot", RTLogLevel.API, id);
                 spu.FlightComputer.SanctionedPilots.Add(autopilot);
             }
         }
@@ -38,7 +38,7 @@ namespace RemoteTech.API
             foreach (var spu in satellite.SignalProcessors)
             {
                 if (spu.FlightComputer == null) continue;
-                RTLog.Verbose("Flight: {0} Removing Sanctioned Pilot", 6, id);
+                RTLog.Verbose("Flight: {0} Removing Sanctioned Pilot", RTLogLevel.API, id);
                 spu.FlightComputer.SanctionedPilots.Remove(autopilot);
             }
         }
@@ -47,7 +47,7 @@ namespace RemoteTech.API
         {
             var satellite = RTCore.Instance.Satellites[id];
             var hasConnection = RTCore.Instance.Network[satellite].Any();
-            RTLog.Verbose("Flight: {0} Has Connection: {1}", 6, id, hasConnection);
+            RTLog.Verbose("Flight: {0} Has Connection: {1}", RTLogLevel.API, id, hasConnection);
             return hasConnection;
         }
 
@@ -55,7 +55,7 @@ namespace RemoteTech.API
         {
             var satellite = RTCore.Instance.Satellites[id];
             var connectedToKerbin = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
-            RTLog.Verbose("Flight: {0} Has Connection to Kerbin: {1}", 6, id, connectedToKerbin);
+            RTLog.Verbose("Flight: {0} Has Connection to Kerbin: {1}", RTLogLevel.API, id, connectedToKerbin);
             return connectedToKerbin;
         }
 
@@ -64,7 +64,7 @@ namespace RemoteTech.API
             var satellite = RTCore.Instance.Satellites[id];
             if (!RTCore.Instance.Network[satellite].Any()) return Double.PositiveInfinity;
             var shortestDelay = RTCore.Instance.Network[satellite].Min().Delay;
-            RTLog.Verbose("Flight: Shortest signal delay from {0} to {1}", 6, id, shortestDelay);
+            RTLog.Verbose("Flight: Shortest signal delay from {0} to {1}", RTLogLevel.API, id, shortestDelay);
             return shortestDelay;
         }
 
@@ -73,7 +73,7 @@ namespace RemoteTech.API
             var satellite = RTCore.Instance.Satellites[id];
             if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return Double.PositiveInfinity;
             var signalDelaytoKerbin = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Delay;
-            RTLog.Verbose("Connection from {0} to Kerbin Delay: {1}", 6, id, signalDelaytoKerbin);
+            RTLog.Verbose("Connection from {0} to Kerbin Delay: {1}", RTLogLevel.API, id, signalDelaytoKerbin);
             return signalDelaytoKerbin;
         }
 
@@ -89,7 +89,7 @@ namespace RemoteTech.API
 
             var path = NetworkPathfinder.Solve(satelliteA, satelliteB, neighbors, cost, heuristic);
             var delayBetween = path.Delay;
-            RTLog.Verbose("Connection from {0} to {1} Delay: {2}", 6, a, b, delayBetween);
+            RTLog.Verbose("Connection from {0} to {1} Delay: {2}", RTLogLevel.API, a, b, delayBetween);
             return delayBetween;
         }
 

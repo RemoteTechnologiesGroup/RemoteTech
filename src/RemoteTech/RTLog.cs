@@ -1,122 +1,128 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RemoteTech
 {
+    /// <summary>
+    /// Different log levels to log messages for debugging.
+    /// </summary>
+    public enum RTLogLevel
+    {
+        LVL1,
+        LVL2,
+        LVL3,
+        LVL4,
+        API
+    };
+
     public static class RTLog
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <value></value>
-        private static readonly bool verboseLogging;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <value></value>
-        public static int maxDebugLevels = 7;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <value></value>
-        public static Dictionary<int, List<string>> RTLogList = new Dictionary<int, List<string>>();
 
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary>On true the verbose-Methods will notify their messages</summary>
+        private static readonly bool verboseLogging;
+        /// <summary>debug log list</summary>
+        public static readonly Dictionary<RTLogLevel, List<string>> RTLogList = new Dictionary<RTLogLevel, List<string>>();
+
         static RTLog()
         {
             RTLog.verboseLogging = GameSettings.VERBOSE_DEBUG_LOG;
 
             #region ON-DEBUGMODE
 #if DEBUG
+            // always set the verboseLogging to true on debug mode
             RTLog.verboseLogging = true;
 
-            for (int i = 0; i < RTLog.maxDebugLevels; i++)
+            // initialize debug list
+            foreach (RTLogLevel lvl in Enum.GetValues(typeof(RTLogLevel)))
             {
-                RTLog.RTLogList.Add(i, new List<string>());
+                RTLog.RTLogList.Add(lvl, new List<string>());
             }
 #endif
             #endregion
         }
-
+        
         /// <summary>
-        /// 
+        /// Notify a message to the log. In debug mode the message will also be logged 
+        /// to the <paramref name="LogLevel"/> list.
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="param"></param>
-        /// <returns>formated string</returns>
-        public static string formatMessage(string message, params object[] param)
-        {
-            return string.Format(message, param);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        public static void Notify(string message, int debugLvl = 0)
+        /// <param name="message">Message to log</param>
+        /// <param name="LogLevel">Loglevel for debugging</param>
+        public static void Notify(string message, RTLogLevel LogLevel = RTLogLevel.LVL1)
         {
             UnityEngine.Debug.Log("RemoteTech: " + message);
 
             #region ON-DEBUGMODE
 #if DEBUG
-            RTLog.NotifyToDebugLevel(message, debugLvl);
+            RTLog.NotifyToLogLevel(message, LogLevel);
 #endif
             #endregion
         }
 
         /// <summary>
-        /// 
+        /// Notify a message to the log. Replaces each format item on the <paramref name="message"/>
+        /// with the text equivalent of a corresponding objects value from <paramref name="param"/>.
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="param"></param>
+        /// <param name="message">Message to log with format items</param>
+        /// <param name="param">objects to format</param>
         public static void Notify(string message, params object[] param)
         {
-            RTLog.Notify(RTLog.formatMessage(message, param));
+            RTLog.Notify(string.Format(message, param));
         }
 
         /// <summary>
-        /// 
+        /// Notify a message to the log. Replaces each format item on the <paramref name="message"/>
+        /// with the text equivalent of a corresponding objects value from <paramref name="param"/>.
+        /// In debug mode the message will also be logged to the <paramref name="LogLevel"/> list.
         /// </summary>
-        /// <param name="message"></param>
-        public static void Verbose(string message, int debugLvl = 0)
+        /// <param name="message">Message to log with format items</param>
+        /// <param name="LogLevel">Loglevel for debugging</param>
+        /// <param name="param">objects to format</param>
+        public static void Notify(string message, RTLogLevel LogLevel = RTLogLevel.LVL1, params object[] param)
         {
-            if (verboseLogging)
+            RTLog.Notify(string.Format(message, param), LogLevel);
+        }
+
+        /// <summary>
+        /// Notify a message to the log only if the VERBOSE_DEBUG_LOG from the ksp settings.cfg
+        /// is set to true. In debug mode the message will also be logged to the
+        /// <paramref name="LogLevel"/> list.
+        /// </summary>
+        /// <param name="message">Message to log</param>
+        /// <param name="LogLevel">Loglevel for debugging</param>
+        public static void Verbose(string message, RTLogLevel LogLevel = RTLogLevel.LVL1)
+        {
+            if (RTLog.verboseLogging)
             {
-                RTLog.Notify(message, debugLvl);
+                RTLog.Notify(message, LogLevel);
             }
         }
 
         /// <summary>
-        /// 
+        /// Notify a message to the log only if the VERBOSE_DEBUG_LOG from the ksp settings.cfg
+        /// is set to true. Replaces each format item on the <paramref name="message"/>
+        /// with the text equivalent of a corresponding objects value from <paramref name="param"/>.
+        /// In debug mode the message will also be logged to the <paramref name="LogLevel"/> list.
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="param"></param>
-        public static void Verbose(string message, int debugLvl, params object[] param)
+        /// <param name="message">Message to log</param>
+        /// <param name="LogLevel">Loglevel for debugging</param>
+        /// <param name="param">objects to format</param>
+        public static void Verbose(string message, RTLogLevel LogLevel = RTLogLevel.LVL1, params object[] param)
         {
-            RTLog.Verbose(RTLog.formatMessage(message, param), debugLvl);
+            RTLog.Verbose(string.Format(message, param), LogLevel);
         }
 
         /// <summary>
-        /// 
+        /// Logs the <paramref name="message"/> to the <paramref name="LogLevel"/>
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="Debuglevel"></param>
-        /// <param name="param"></param>
-        public static void NotifyToDebugLevel(string message, int Debuglevel, params object[] param)
+        /// <param name="message">Message to log</param>
+        /// <param name="LogLevel">Loglevel for debugging</param>
+        private static void NotifyToLogLevel(string message, RTLogLevel LogLevel)
         {
-            #region ON-DEBUGMODE
-#if DEBUG
-            RTLog.RTLogList[Debuglevel].Add(message);
-#endif
-            #endregion
+            RTLog.RTLogList[LogLevel].Add(message);
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public static class RTLogExtenstions
     {
         public static string ToDebugString<T>(this List<T> list)
