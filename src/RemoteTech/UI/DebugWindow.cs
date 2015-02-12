@@ -7,12 +7,10 @@ namespace RemoteTech.UI
     class DebugWindow : AbstractWindow
     {
         #region AbstractWindow-Definitions
-        public static Guid Guid = new Guid("B17930C0-EDE6-4299-BE78-D975EAD1986B");
-        public static String WindowTitle = "RemoteTech DebugWindow";
-        public static WindowAlign Windowalignment = WindowAlign.Floating;
 
         public DebugWindow()
-            : base(Guid, WindowTitle, new Rect(Screen.width/2-250, Screen.height/2-175, 500, 350), Windowalignment)
+            : base(new Guid("B17930C0-EDE6-4299-BE78-D975EAD1986B"), "RemoteTech DebugWindow",
+                   new Rect(Screen.width / 2 - 250, Screen.height / 2 - 175, 500, 350), WindowAlign.Floating)
         {
             this.mSavePosition = true;
             this.initializeDebugMenue();
@@ -26,11 +24,26 @@ namespace RemoteTech.UI
         #endregion
 
         #region Member
-        Vector2 debugLogScrollPosition;
-        Vector2 contentScrollPosition;
-        int currentDebugLevel = 0;
-        int currentDebugMenue = 0;
-        List<string> debugMenueItems = new List<string>();
+        /// <summary>Scroll position of the debug log textarea</summary>
+        private Vector2 debugLogScrollPosition;
+        /// <summary>Scroll position of the content area</summary>
+        private Vector2 contentScrollPosition;
+        /// <summary>Current selected log level</summary>
+        private RTLogLevel currentLogLevel = RTLogLevel.LVL1;
+        /// <summary>Current selected menue item</summary>
+        private int currentDebugMenue = 0;
+        /// <summary>List of all menue items</summary>
+        private List<string> debugMenueItems = new List<string>();
+
+        /// API Input fields
+        private string HasFlightComputerGuidInput = "";
+        private string HasAnyConnectionGuidInput = "";
+        private string HasConnectionToKSCGuidInput = "";
+        private string GetShortestSignalDelayGuidInput = "";
+        private string GetSignalDelayToKSCGuidInput = "";
+        private string GetSignalDelayToSatelliteGuidAInput = "";
+        private string GetSignalDelayToSatelliteGuidBInput = "";
+        private string ReceivDataVesselGuidInput = "";
         #endregion
 
         #region Base-drawing
@@ -53,8 +66,8 @@ namespace RemoteTech.UI
                     var pushFontsize = GUI.skin.button.fontSize;
                     GUI.skin.button.fontSize = 11;
 
-                    var menueItemCounter = 0;
-                    foreach (var menueItem in this.debugMenueItems)
+                    int menueItemCounter = 0;
+                    foreach (string menueItem in this.debugMenueItems)
                     {
                         RTUtil.FakeStateButton(new GUIContent(menueItem), () => { this.currentDebugMenue = menueItemCounter; }, currentDebugMenue, menueItemCounter, GUILayout.Height(16));
                         menueItemCounter++;
@@ -69,11 +82,11 @@ namespace RemoteTech.UI
                 #region Draw content
                 contentScrollPosition = GUILayout.BeginScrollView(contentScrollPosition);
                 {
-                    switch(this.currentDebugMenue)
+                    switch (this.currentDebugMenue)
                     {
                         case 0: { this.drawRTSettingsTab(); break; }
                         case 1: { this.drawAPITester(); break; }
-                        case 2: { this.drawGuidReader();  break; }
+                        case 2: { this.drawGuidReader(); break; }
                         default: { GUILayout.Label("Item " + this.currentDebugMenue.ToString() + " not yet implemented"); break; }
                     }
                     GUILayout.FlexibleSpace();
@@ -84,7 +97,7 @@ namespace RemoteTech.UI
                 #region Draw debug log
                 // Draw a 100 height debug-console at the bottom of the debug-window
                 GUILayout.BeginVertical(GUILayout.Height(100));
-                    this.drawRTDebugLogEntrys();
+                this.drawRTDebugLogEntrys();
                 GUILayout.EndVertical();
                 #endregion
             }
@@ -126,18 +139,18 @@ namespace RemoteTech.UI
             {
                 var pushFontsize = GUI.skin.button.fontSize;
                 GUI.skin.button.fontSize = 11;
-                for (int i = 0; i < RTLog.maxDebugLevels; i++)
+                foreach (RTLogLevel lvl in Enum.GetValues(typeof(RTLogLevel)))
                 {
-                    RTUtil.FakeStateButton(new GUIContent("LVL" + i.ToString()), () => { this.currentDebugLevel = i; }, currentDebugLevel, i, GUILayout.Height(16));
+                    RTUtil.FakeStateButton(new GUIContent(lvl.ToString()), () => { this.currentLogLevel = lvl; }, (int)currentLogLevel, (int)lvl, GUILayout.Height(16));
                 }
                 GUI.skin.button.fontSize = pushFontsize;
             }
             GUILayout.EndHorizontal();
-            
+
             // draw the input of the selected debug list
             debugLogScrollPosition = GUILayout.BeginScrollView(debugLogScrollPosition);
             {
-                foreach (var logEntry in RTLog.RTLogList[this.currentDebugLevel])
+                foreach (var logEntry in RTLog.RTLogList[this.currentLogLevel])
                 {
                     GUILayout.Label(logEntry, lablestyle, GUILayout.Height(13));
                 }
@@ -177,7 +190,7 @@ namespace RemoteTech.UI
             // Consumption Multiplier
             GUILayout.BeginHorizontal();
             {
-                string label = RTLog.formatMessage("Consumption Multiplier: ({0})", settings.ConsumptionMultiplier);
+                string label = string.Format("Consumption Multiplier: ({0})", settings.ConsumptionMultiplier);
                 GUILayout.Label(label, GUILayout.Width(firstColWidth));
                 settings.ConsumptionMultiplier = GUILayout.HorizontalSlider(settings.ConsumptionMultiplier, 0, 2);
             }
@@ -186,7 +199,7 @@ namespace RemoteTech.UI
             // Range Multiplier
             GUILayout.BeginHorizontal();
             {
-                string label = RTLog.formatMessage("Range Multiplier: ({0})", settings.RangeMultiplier);
+                string label = string.Format("Range Multiplier: ({0})", settings.RangeMultiplier);
                 GUILayout.Label(label, GUILayout.Width(firstColWidth));
                 settings.RangeMultiplier = GUILayout.HorizontalSlider(settings.RangeMultiplier, 0, 2);
             }
@@ -195,7 +208,7 @@ namespace RemoteTech.UI
             // Speed of light
             GUILayout.BeginHorizontal();
             {
-                string label = RTLog.formatMessage("Speed of light: ({0})", settings.SpeedOfLight);
+                string label = string.Format("Speed of light: ({0})", settings.SpeedOfLight);
                 GUILayout.Label(label, GUILayout.Width(firstColWidth));
                 settings.SpeedOfLight = GUILayout.HorizontalSlider(settings.SpeedOfLight, 100000, 300000000);
             }
@@ -259,18 +272,10 @@ namespace RemoteTech.UI
         /// <summary>
         /// Draws the API Tester section
         /// </summary>
-        private string HasFlightComputerGuidInput = "";
-        private string HasAnyConnectionGuidInput = "";
-        private string HasConnectionToKSCGuidInput = "";
-        private string GetShortestSignalDelayGuidInput = "";
-        private string GetSignalDelayToKSCGuidInput = "";
-        private string GetSignalDelayToSatelliteGuidAInput = "";
-        private string GetSignalDelayToSatelliteGuidBInput = "";
-        private string ReceivDataVesselGuidInput = "";
         private void drawAPITester()
         {
             // switch to the API Debug log
-            this.currentDebugLevel = 6;
+            this.currentLogLevel = RTLogLevel.API;
 
             // API.HasFlightComputer
             #region API.HasFlightComputer
@@ -283,11 +288,11 @@ namespace RemoteTech.UI
                     try
                     {
                         var result = RemoteTech.API.API.HasFlightComputer(new Guid(this.HasFlightComputerGuidInput));
-                        RTLog.Verbose("API.HasFlightComputer({0}) = {1}", this.currentDebugLevel, this.HasFlightComputerGuidInput, result);
+                        RTLog.Verbose("API.HasFlightComputer({0}) = {1}", this.currentLogLevel, this.HasFlightComputerGuidInput, result);
                     }
                     catch (Exception ex)
                     {
-                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
                     }
                     // go to the end of the log
                     this.debugLogScrollPosition.y = Mathf.Infinity;
@@ -305,11 +310,11 @@ namespace RemoteTech.UI
                     try
                     {
                         var result = RemoteTech.API.API.HasAnyConnection(new Guid(this.HasAnyConnectionGuidInput));
-                        RTLog.Verbose("API.HasAnyConnection({0}) = {1}", this.currentDebugLevel, this.HasAnyConnectionGuidInput, result);
+                        RTLog.Verbose("API.HasAnyConnection({0}) = {1}", this.currentLogLevel, this.HasAnyConnectionGuidInput, result);
                     }
                     catch (Exception ex)
                     {
-                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
                     }
                     // go to the end of the log
                     this.debugLogScrollPosition.y = Mathf.Infinity;
@@ -327,11 +332,11 @@ namespace RemoteTech.UI
                     try
                     {
                         var result = RemoteTech.API.API.HasConnectionToKSC(new Guid(this.HasConnectionToKSCGuidInput));
-                        RTLog.Verbose("API.HasConnectionToKSC({0}) = {1}", this.currentDebugLevel, this.HasConnectionToKSCGuidInput, result);
+                        RTLog.Verbose("API.HasConnectionToKSC({0}) = {1}", this.currentLogLevel, this.HasConnectionToKSCGuidInput, result);
                     }
                     catch (Exception ex)
                     {
-                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
                     }
                     // go to the end of the log
                     this.debugLogScrollPosition.y = Mathf.Infinity;
@@ -349,11 +354,11 @@ namespace RemoteTech.UI
                     try
                     {
                         var result = RemoteTech.API.API.GetShortestSignalDelay(new Guid(this.GetShortestSignalDelayGuidInput));
-                        RTLog.Verbose("API.GetShortestSignalDelayGuidInput({0}) = {1}", this.currentDebugLevel, this.GetShortestSignalDelayGuidInput, result);
+                        RTLog.Verbose("API.GetShortestSignalDelayGuidInput({0}) = {1}", this.currentLogLevel, this.GetShortestSignalDelayGuidInput, result);
                     }
                     catch (Exception ex)
                     {
-                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
                     }
                     // go to the end of the log
                     this.debugLogScrollPosition.y = Mathf.Infinity;
@@ -366,16 +371,16 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label("API.GetSignalDelayToKSC; Guid: ", GUILayout.ExpandWidth(true));
                 this.GetSignalDelayToKSCGuidInput = GUILayout.TextField(this.GetSignalDelayToKSCGuidInput, GUILayout.Width(160));
-                if (GUILayout.Button("Run",GUILayout.Width(50)))
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
                 {
                     try
                     {
                         var result = RemoteTech.API.API.GetSignalDelayToKSC(new Guid(this.GetSignalDelayToKSCGuidInput));
-                        RTLog.Verbose("API.GetSignalDelayToKSC({0}) = {1}", this.currentDebugLevel, this.GetSignalDelayToKSCGuidInput, result);
+                        RTLog.Verbose("API.GetSignalDelayToKSC({0}) = {1}", this.currentLogLevel, this.GetSignalDelayToKSCGuidInput, result);
                     }
                     catch (Exception ex)
                     {
-                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
                     }
                     // go to the end of the log
                     this.debugLogScrollPosition.y = Mathf.Infinity;
@@ -390,16 +395,16 @@ namespace RemoteTech.UI
                 this.GetSignalDelayToSatelliteGuidAInput = GUILayout.TextField(this.GetSignalDelayToSatelliteGuidAInput, GUILayout.Width(70));
                 GUILayout.Label("to: ", GUILayout.ExpandWidth(true));
                 this.GetSignalDelayToSatelliteGuidBInput = GUILayout.TextField(this.GetSignalDelayToSatelliteGuidBInput, GUILayout.Width(70));
-                if (GUILayout.Button("Run",GUILayout.Width(50)))
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
                 {
                     try
                     {
                         var result = RemoteTech.API.API.GetSignalDelayToSatellite(new Guid(this.GetSignalDelayToSatelliteGuidAInput), new Guid(this.GetSignalDelayToSatelliteGuidBInput));
-                        RTLog.Verbose("API.GetSignalDelayToSatellite({0},{1}) = {2}", this.currentDebugLevel, this.GetSignalDelayToSatelliteGuidAInput, this.GetSignalDelayToSatelliteGuidBInput, result);
+                        RTLog.Verbose("API.GetSignalDelayToSatellite({0},{1}) = {2}", this.currentLogLevel, this.GetSignalDelayToSatelliteGuidAInput, this.GetSignalDelayToSatelliteGuidBInput, result);
                     }
                     catch (Exception ex)
                     {
-                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
                     }
                     // go to the end of the log
                     this.debugLogScrollPosition.y = Mathf.Infinity;
@@ -418,17 +423,17 @@ namespace RemoteTech.UI
                     {
                         ConfigNode dataNode = new ConfigNode();
                         dataNode.AddValue("Description", "Debug ReceiveData");
-                        dataNode.AddValue("ShortName","Debug-Short");
+                        dataNode.AddValue("ShortName", "Debug-Short");
                         dataNode.AddValue("ReflectionGetType", "RemoteTech.UI.DebugWindow");
                         dataNode.AddValue("ReflectionInvokeMember", "ReceiveData");
                         dataNode.AddValue("GUIDString", this.ReceivDataVesselGuidInput);
                         RemoteTech.API.API.ReceiveData(dataNode);
 
-                        RTLog.Verbose("API.ReceiveData({0})", this.currentDebugLevel, dataNode);
+                        RTLog.Verbose("API.ReceiveData({0})", this.currentLogLevel, dataNode);
                     }
                     catch (Exception ex)
                     {
-                        RTLog.Verbose("Exception {0}", this.currentDebugLevel, ex);
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
                     }
                     // go to the end of the log
                     this.debugLogScrollPosition.y = Mathf.Infinity;
@@ -459,8 +464,8 @@ namespace RemoteTech.UI
                         GUI.skin.label.fontStyle = FontStyle.Bold;
                     }
 
-                    GUILayout.Label(vessel.vesselName,GUILayout.ExpandWidth(true));
-                    GUILayout.TextField(vessel.id.ToString(),GUILayout.Width(270));
+                    GUILayout.Label(vessel.vesselName, GUILayout.ExpandWidth(true));
+                    GUILayout.TextField(vessel.id.ToString(), GUILayout.Width(270));
                     GUI.skin.label.fontStyle = pushFontStyle;
                 }
                 GUILayout.EndHorizontal();
@@ -486,7 +491,7 @@ namespace RemoteTech.UI
         /// <param name="data">data passed from the flightcomputer</param>
         public static void ReceiveData(ConfigNode data)
         {
-            RTLog.Verbose("Received Data via Api.ReceiveData with {0}", 6, data);
+            RTLog.Verbose("Received Data via Api.ReceiveData with {0}", RTLogLevel.API, data);
         }
     }
 }
