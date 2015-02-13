@@ -19,6 +19,8 @@ namespace RemoteTech
     public static partial class RTUtil
     {
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
+        /// <summary>This time member is needed to debounce the RepeatButton</summary>
+        private static double TimeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? RTUtil.GameTime : 0;
         /// <summary>
         /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
         /// </summary>
@@ -261,6 +263,23 @@ namespace RemoteTech
         }
 
         /// <summary>
+        /// Draws a repeat button. If you hold the mouse click the <paramref name="onClick"/>-callback
+        /// will be triggered at least every 0.05 seconds.
+        /// </summary>
+        /// <param name="text">Text for the button</param>
+        /// <param name="onClick">Callback to trigger for every repeat</param>
+        /// <param name="options">GUILayout params</param>
+        public static void RepeatButton(String text, Action onClick, params GUILayoutOption[] options)
+        {
+            if (GUILayout.RepeatButton(text, options) && (RTUtil.TimeDebouncer + 0.05) < RTUtil.GameTime)
+            {
+                onClick.Invoke();
+                // set the new time to the debouncer
+                RTUtil.TimeDebouncer = RTUtil.GameTime;
+            }
+        }
+
+        /// <summary>
         /// Draw a fake toggle button. It is an action button with a toggle functionality. When <param name="state" /> and
         /// <param name="value" /> are equal the background of the button will change to black.
         /// </summary>
@@ -329,6 +348,38 @@ namespace RemoteTech
         public static void TextField(ref String text, params GUILayoutOption[] options)
         {
             text = GUILayout.TextField(text, options);
+        }
+
+        /// <summary>
+        /// Draws a Textfield with a functionality to use the mouse wheel to trigger
+        /// the events <paramref name="onWheelDown"/> and <paramref name="onWheelUp"/>.
+        /// The callbacks will only be triggered if the textfield is focused while using
+        /// the mouse wheel.
+        /// </summary>
+        /// <param name="text">Reference to the input value</param>
+        /// <param name="fieldName">Name for this field</param>
+        /// <param name="onWheelDown">Action trigger for the mousewheel down event</param>
+        /// <param name="onWheelUp">Action trigger for the mousewheel up event</param>
+        /// <param name="options">GUILayout params</param>
+        public static void MouseWheelTriggerField(ref String text, string fieldName, Action onWheelDown, Action onWheelUp, params GUILayoutOption[] options)
+        {
+            GUI.SetNextControlName(fieldName);
+            text = GUILayout.TextField(text, options);
+
+            // Current textfield under control?
+            if((GUI.GetNameOfFocusedControl() == fieldName))
+            {
+                if (Input.GetAxis("Mouse ScrollWheel") > 0 && (TimeDebouncer + 0.05) < RTUtil.GameTime)
+                {
+                    onWheelDown.Invoke();
+                    TimeDebouncer = RTUtil.GameTime;
+                }
+                else if (Input.GetAxis("Mouse ScrollWheel") < 0 && (TimeDebouncer + 0.05) < RTUtil.GameTime)
+                {
+                    onWheelUp.Invoke();
+                    TimeDebouncer = RTUtil.GameTime;
+                }
+            }
         }
 
         public static bool ContainsMouse(this Rect window)

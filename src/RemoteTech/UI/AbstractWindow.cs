@@ -214,6 +214,7 @@ namespace RemoteTech.UI
             if (Enabled)
             {
                 InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "RTLockControlForWindows");
+                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockControlCamForWindows");
             }
         }
 
@@ -224,8 +225,12 @@ namespace RemoteTech.UI
         public void removeWindowCtrlLock()
         {
             InputLockManager.RemoveControlLock("RTLockControlForWindows");
+            InputLockManager.RemoveControlLock("RTLockControlCamForWindows");
         }
 
+        /// <summary>
+        /// Toggle the window
+        /// </summary>
         public void toggleWindow()
         {
             if (this.Enabled)
