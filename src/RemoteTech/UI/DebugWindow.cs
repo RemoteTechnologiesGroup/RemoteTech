@@ -44,6 +44,7 @@ namespace RemoteTech.UI
         private string GetSignalDelayToSatelliteGuidAInput = "";
         private string GetSignalDelayToSatelliteGuidBInput = "";
         private string ReceivDataVesselGuidInput = "";
+        private string HasLocalControlGuidInput = "";
         #endregion
 
         #region Base-drawing
@@ -430,6 +431,28 @@ namespace RemoteTech.UI
                         RemoteTech.API.API.ReceiveData(dataNode);
 
                         RTLog.Verbose("API.ReceiveData({0})", this.currentLogLevel, dataNode);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.HasLocalControl
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.HasLocalControl; Guid: ", GUILayout.ExpandWidth(true));
+                this.HasLocalControlGuidInput = GUILayout.TextField(this.HasLocalControlGuidInput, GUILayout.Width(160));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.HasLocalControl(new Guid(this.HasLocalControlGuidInput));
+                        RTLog.Verbose("API.HasLocalControl({0}) = {1}", this.currentLogLevel, this.HasLocalControlGuidInput, result);
                     }
                     catch (Exception ex)
                     {
