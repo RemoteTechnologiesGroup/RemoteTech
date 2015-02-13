@@ -128,7 +128,7 @@ namespace RemoteTech.API
             }
             catch
             {
-                RTLog.Notify("Invalid ConfigNode passed by other mod");
+                RTLog.Notify("Invalid ConfigNode passed by other mod", RTLogLevel.API);
             }
         }
     }
