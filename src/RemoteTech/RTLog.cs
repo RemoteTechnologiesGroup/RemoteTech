@@ -13,7 +13,8 @@ namespace RemoteTech
         LVL2,
         LVL3,
         LVL4,
-        API
+        API,
+        Assembly
     };
 
     public static class RTLog

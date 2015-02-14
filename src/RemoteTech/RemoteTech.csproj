@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddOns\ControlLockAPI.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="RTUtil.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />
+    <Compile Include="SimpleTypes\AddOn.cs" />
     <Compile Include="SimpleTypes\BidirectionalEdge.cs" />
     <Compile Include="SimpleTypes\BinaryHeap.cs" />
     <Compile Include="SimpleTypes\CachedField.cs" />
