@@ -255,7 +255,7 @@ namespace RemoteTech.UI
             if (mAntennaFragment.mouseOverEntry != null)
             {
                 // set the current selected target to the targetwindow
-                mTargetInfos.setTarget(mAntennaFragment.mouseOverEntry, mAntennaFragment.Antenna);
+                mTargetInfos.SetTarget(mAntennaFragment.mouseOverEntry, mAntennaFragment.Antenna);
                 mTargetInfos.Show();
             }
             else

@@ -45,9 +45,9 @@ namespace RemoteTech.FlightComputer
                 Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
 
                 if (ForwardAxis == Vector3.zero)
-                    return RTUtil.GetHDG(mVessel.srf_velocity.normalized, up, north);
+                    return RTUtil.GetHeading(mVessel.srf_velocity.normalized, up, north);
                 else
-                    return RTUtil.GetHDG(mVessel.ReferenceTransform.TransformDirection(ForwardAxis), up, north);
+                    return RTUtil.GetHeading(mVessel.ReferenceTransform.TransformDirection(ForwardAxis), up, north);
             }
         }
 
@@ -57,7 +57,7 @@ namespace RemoteTech.FlightComputer
             {
                 Vector3d up = (mVessel.CoM - mVessel.mainBody.position).normalized;
                 Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
-                return RTUtil.GetHDG((TargetPos - mVessel.CoM).normalized, up, north);
+                return RTUtil.GetHeading((TargetPos - mVessel.CoM).normalized, up, north);
             }
         }
 

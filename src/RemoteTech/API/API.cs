@@ -1,8 +1,8 @@
-﻿using System;
+﻿using RemoteTech.RangeModel;
+using RemoteTech.SimpleTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using RemoteTech.RangeModel;
-using RemoteTech.SimpleTypes;
 
 namespace RemoteTech.API
 {
@@ -10,11 +10,12 @@ namespace RemoteTech.API
     {
         public static bool HasLocalControl(Guid id)
         {
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null) return false;
-            RTLog.Verbose("Flight: {0} HasLocalControl: {1}", RTLogLevel.API, id, satellite.HasLocalControl);
+            var vessel = FlightGlobals.Vessels.FirstOrDefault(v => v.id == id);
+            if (vessel == null) return false;
 
-            return satellite.HasLocalControl;
+            RTLog.Verbose("Flight: {0} HasLocalControl: {1}", RTLogLevel.API, id, vessel.HasLocalControl());
+
+            return vessel.HasLocalControl();
         }
 
         public static bool HasFlightComputer(Guid id)
@@ -115,7 +116,7 @@ namespace RemoteTech.API
                     description = externalData.GetValue("Description"), //string on GUI
                     shortName = externalData.GetValue("ShortName"), //???
                     reflectionGetType = externalData.GetValue("ReflectionGetType"), //required for reflection back
-                    reflectionInvokeMember = externalData.GetValue("ReflectionInvokeMember"), //required 
+                    reflectionInvokeMember = externalData.GetValue("ReflectionInvokeMember"), //required
                     vslGUIDstr = externalData.GetValue("GUIDString"),
                 };
                 foreach (Vessel vsl2 in FlightGlobals.Vessels.Where(vsl2 => vsl2.id.ToString() == extCmd.vslGUIDstr))
