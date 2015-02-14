@@ -16,6 +16,9 @@ namespace RemoteTech
         public NetworkManager Network { get; protected set; }
         public NetworkRenderer Renderer { get; protected set; }
 
+        /// Addons
+        public AddOns.ControlLockAddon ctrlLockAddon { get; protected set; }
+
         public event Action OnFrameUpdate = delegate { };
         public event Action OnPhysicsUpdate = delegate { };
         public event Action OnGuiUpdate = delegate { };
@@ -33,6 +36,8 @@ namespace RemoteTech
             }
 
             Instance = this;
+
+            ctrlLockAddon = new AddOns.ControlLockAddon();
 
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();

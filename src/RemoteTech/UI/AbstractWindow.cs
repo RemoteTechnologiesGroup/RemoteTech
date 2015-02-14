@@ -210,11 +210,14 @@ namespace RemoteTech.UI
         /// </summary>
         public void setWindowCtrlLock()
         {
-            // only if we are enabled
-            if (Enabled)
+            // only if we are enabled and the controllock is not set
+            if (Enabled && InputLockManager.GetControlLock("RTLockControlForWindows") == ControlTypes.None)
             {
                 InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "RTLockControlForWindows");
                 InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockControlCamForWindows");
+
+                if (!RTCore.Instance.ctrlLockAddon.IsLockSet())
+                    RTCore.Instance.ctrlLockAddon.SetFullLock("RemoteTech");
             }
         }
 
@@ -224,8 +227,15 @@ namespace RemoteTech.UI
         /// </summary>
         public void removeWindowCtrlLock()
         {
-            InputLockManager.RemoveControlLock("RTLockControlForWindows");
-            InputLockManager.RemoveControlLock("RTLockControlCamForWindows");
+            // only if the controllock is set
+            if (InputLockManager.GetControlLock("RTLockControlForWindows") != ControlTypes.None)
+            {
+                InputLockManager.RemoveControlLock("RTLockControlForWindows");
+                InputLockManager.RemoveControlLock("RTLockControlCamForWindows");
+
+                if (RTCore.Instance.ctrlLockAddon.IsLockSet("RemoteTech"))
+                    RTCore.Instance.ctrlLockAddon.UnsetFullLock("RemoteTech");
+            }
         }
 
         /// <summary>
