@@ -126,6 +126,7 @@
     <Compile Include="UI\TargetInfoFragment.cs" />
     <Compile Include="UI\TargetInfoWindow.cs" />
     <Compile Include="UI\TimeWarpDecorator.cs" />
+    <Compile Include="VesselExtension.cs" />
     <Compile Include="VesselSatellite.cs" />
     <Compile Include="RangeModel\AbstractRangeModel.cs" />
     <Compile Include="NetworkFeedback.cs" />
