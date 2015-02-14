@@ -1,31 +1,36 @@
-﻿using System;
+﻿using RemoteTech.SimpleTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using RemoteTech.SimpleTypes;
 using UnityEngine;
 
 namespace RemoteTech
 {
     public class VesselSatellite : ISatellite
     {
-        public bool Visible { 
+        public bool Visible
+        {
             get { return SignalProcessor.Visible; }
         }
 
-        public String Name { 
-            get { return SignalProcessor.VesselName; } 
+        public String Name
+        {
+            get { return SignalProcessor.VesselName; }
             set { SignalProcessor.VesselName = value; }
         }
 
-        public Guid Guid { 
+        public Guid Guid
+        {
             get { return SignalProcessor.Guid; }
         }
 
-        public Vector3d Position { 
+        public Vector3d Position
+        {
             get { return SignalProcessor.Position; }
         }
 
-        public CelestialBody Body { 
+        public CelestialBody Body
+        {
             get { return SignalProcessor.Body; }
         }
 
@@ -36,17 +41,20 @@ namespace RemoteTech
 
         public List<ISignalProcessor> SignalProcessors { get; set; }
 
-        public bool Powered { 
-            get { return SignalProcessors.Any(s => s.Powered); } 
+        public bool Powered
+        {
+            get { return SignalProcessors.Any(s => s.Powered); }
         }
 
-        public bool IsCommandStation { 
-            get { return SignalProcessors.Any(s => s.IsCommandStation); } 
+        public bool IsCommandStation
+        {
+            get { return SignalProcessors.Any(s => s.IsCommandStation); }
         }
 
         public ISignalProcessor SignalProcessor
-        { 
-            get {
+        {
+            get
+            {
                 return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors[0];
             }
         }
@@ -55,17 +63,16 @@ namespace RemoteTech
         {
             get
             {
-                return RTUtil.CachePerFrame(ref mLocalControl, () =>
-                {
-                    return SignalProcessor.Vessel.parts.Any(p => p.isControlSource && (p.protoModuleCrew.Any() || !p.FindModulesImplementing<ISignalProcessor>().Any()));
-                });
+                return RTUtil.CachePerFrame(ref mLocalControl, () => SignalProcessor.Vessel.HasLocalControl());
             }
         }
 
         public bool isVessel { get { return true; } }
 
-        public Vessel parentVessel {
-            get {
+        public Vessel parentVessel
+        {
+            get
+            {
                 return SignalProcessor.Vessel;
             }
         }
@@ -76,13 +83,14 @@ namespace RemoteTech
         }
 
         public FlightComputer.FlightComputer FlightComputer
-        { 
-            get { return SignalProcessor.FlightComputer; } 
+        {
+            get { return SignalProcessor.FlightComputer; }
         }
 
         // Helpers
-        public List<NetworkRoute<ISatellite>> Connections { 
-            get { return RTCore.Instance.Network[this]; } 
+        public List<NetworkRoute<ISatellite>> Connections
+        {
+            get { return RTCore.Instance.Network[this]; }
         }
 
         public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes)
@@ -90,7 +98,7 @@ namespace RemoteTech
             foreach (IAntenna a in Antennas)
             {
                 a.OnConnectionRefresh();
-            } 
+            }
         }
 
         private CachedField<bool> mLocalControl;

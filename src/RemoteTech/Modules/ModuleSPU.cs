@@ -57,7 +57,8 @@ namespace RemoteTech.Modules
         /// Contains the names of any events that should always be run, 
         /// regardless of connection status or signal delay
         /// </summary>
-        private static readonly HashSet<String> eventWhiteList = new HashSet<String>() {
+        private static readonly HashSet<String> eventWhiteList = new HashSet<String>
+        {
             "RenameVessel", "RenameAsteroidEvent"
         };
 
@@ -156,7 +157,7 @@ namespace RemoteTech.Modules
 
         public void HookPartMenus()
         {
-            UIPartActionMenuPatcher.Wrap(vessel, (e, ignore_delay) =>
+            UIPartActionMenuPatcher.Wrap(vessel, (e, ignoreDelay) =>
             {
                 var v = FlightGlobals.ActiveVessel;
                 if (v == null || v.isEVA || RTCore.Instance == null)
@@ -176,7 +177,7 @@ namespace RemoteTech.Modules
                 }
                 else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
                 {
-                    if (ignore_delay)
+                    if (ignoreDelay)
                     {
                         e.Invoke();
                     }
@@ -211,7 +212,7 @@ namespace RemoteTech.Modules
                 }
 
             }
-            catch (Exception e) { print(e); };
+            catch (Exception e) { print(e); }
         }
         public override void OnLoad(ConfigNode node)
         {

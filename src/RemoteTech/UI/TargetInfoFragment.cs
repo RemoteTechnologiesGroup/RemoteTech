@@ -5,38 +5,38 @@ using UnityEngine;
 
 namespace RemoteTech.UI
 {
-    class TargetInfoFragment : IFragment, IDisposable
+    public class TargetInfoFragment : IFragment, IDisposable
     {
 
         public class Target
         {
-            public AntennaFragment.Entry targetEntry;
-            public IAntenna antenna;
-            public KeyValuePair<string, Color> targetInfos
+            public AntennaFragment.Entry TargetEntry { get; set; }
+            public IAntenna Antenna { get; set; }
+            public KeyValuePair<string, Color> TargetInfos
             {
                 get
                 {
-                    if (targetEntry == null || antenna == null)
-                        return new KeyValuePair<string, Color>("",UnityEngine.Color.white);
+                    if (TargetEntry == null || Antenna == null)
+                        return new KeyValuePair<string, Color>("",Color.white);
                     
-                    return NetworkFeedback.tryConnection(antenna, targetEntry.Guid);
+                    return NetworkFeedback.tryConnection(Antenna, TargetEntry.Guid);
                 }
             }
         }
 
         /// <summary>Current target infos</summary>
         private Target target;
-        /// <summary>Styleset for each row on the target popup</summary>
-        GUIStyle guiTableRow;
-        /// <summary>Styleset for the headline of the target popup</summary>
-        GUIStyle guiHeadline;
+        /// <summary>Style set for each row on the target pop-up</summary>
+        private GUIStyle guiTableRow;
+        /// <summary>Style set for the headline of the target pop-up</summary>
+        private GUIStyle guiHeadline;
 
         /// <summary>
         /// Initialize the targetinfoFragment without a target
         /// </summary>
         public TargetInfoFragment()
         {
-            initalGuiStyles();
+            InitalGuiStyles();
         }
 
         /// <summary>
@@ -47,22 +47,26 @@ namespace RemoteTech.UI
         public TargetInfoFragment(AntennaFragment.Entry targetEntry, IAntenna antenna)
             : this()
         {
-            setTarget(targetEntry, antenna);
+            SetTarget(targetEntry, antenna);
         }
 
         /// <summary>
         /// Initialize the style sets for this fragment
         /// </summary>
-        private void initalGuiStyles()
+        private void InitalGuiStyles()
         {
             // initial styles
-            guiTableRow = new GUIStyle(HighLogic.Skin.label);
-            guiTableRow.fontSize = 12;
-            guiTableRow.normal.textColor = UnityEngine.Color.white;
+            guiTableRow = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 12,
+                normal = {textColor = Color.white}
+            };
 
-            guiHeadline = new GUIStyle(HighLogic.Skin.label);
-            guiHeadline.fontSize = 13;
-            guiHeadline.fontStyle = FontStyle.Bold;
+            guiHeadline = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 13, 
+                fontStyle = FontStyle.Bold
+            };
         }
 
         /// <summary>
@@ -70,11 +74,9 @@ namespace RemoteTech.UI
         /// </summary>
         /// <param name="targetEntry">Target from the antenna fragment</param>
         /// <param name="antenna">current antenna</param>
-        public void setTarget(AntennaFragment.Entry targetEntry, IAntenna antenna)
+        public void SetTarget(AntennaFragment.Entry targetEntry, IAntenna antenna)
         {
-            target = new Target();
-            target.targetEntry = targetEntry;
-            target.antenna = antenna;
+            target = new Target {TargetEntry = targetEntry, Antenna = antenna};
         }
 
         public void Dispose()
@@ -83,15 +85,15 @@ namespace RemoteTech.UI
         }
 
         /// <summary>
-        /// Draw the informationes for the target, set by the setTarget()
+        /// Draw the information for the target, set by the setTarget()
         /// </summary>
         public void Draw()
         {
             if(target != null)
             {
-                KeyValuePair<string, Color> infos = target.targetInfos;
+                KeyValuePair<string, Color> infos = target.TargetInfos;
 
-                GUILayout.Label(target.targetEntry.Text, guiHeadline);
+                GUILayout.Label(target.TargetEntry.Text, guiHeadline);
 
                 // Split the given informations from the target.targetInfos. Each ; is one row
                 var diagnostic = infos.Key.Split(';');
@@ -117,7 +119,7 @@ namespace RemoteTech.UI
                             // print the value for this row
                             GUILayout.Label(tableString[1], guiTableRow);
                             // restore the text color
-                            guiTableRow.normal.textColor = UnityEngine.Color.white;
+                            guiTableRow.normal.textColor = Color.white;
                         }
                         else
                         {
@@ -128,7 +130,7 @@ namespace RemoteTech.UI
                     }
                     catch (Exception ex)
                     {
-                        // RTLog.Notify("Exception {0}",ex);
+                        RTLog.Notify("Exception {0}",ex);
                         // I got one exception, thrown from Unity and i don't know how to deal with it
 
                         // Exception System.ArgumentException: Getting control 4's

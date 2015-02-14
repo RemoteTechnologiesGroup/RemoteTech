@@ -164,30 +164,27 @@ namespace RemoteTech.UI
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent("PIT:", "Sets pitch."), GUILayout.Width(width3));
-                    RTUtil.Button("+", () => Pitch++);
-                    RTUtil.Button("-", () => Pitch--);
-                    GUI.SetNextControlName("rt_phr1");
-                    RTUtil.TextField(ref mPitch, GUILayout.Width(width3));
+                    RTUtil.RepeatButton("+", () => { Pitch++; });
+                    RTUtil.RepeatButton("-", () => { Pitch--; });
+                    RTUtil.MouseWheelTriggerField(ref mPitch, "rt_phr1", () => { Pitch++; }, () => { Pitch--; }, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent("HDG:", "Sets heading."), GUILayout.Width(width3));
-                    RTUtil.Button("+", () => Heading++);
-                    RTUtil.Button("-", () => Heading--);
-                    GUI.SetNextControlName("rt_phr2");
-                    RTUtil.TextField(ref mHeading, GUILayout.Width(width3));
+                    RTUtil.RepeatButton("+", () => { Heading++; });
+                    RTUtil.RepeatButton("-", () => { Heading--; });
+                    RTUtil.MouseWheelTriggerField(ref mHeading, "rt_phr2", () => { Heading++; }, () => { Heading--; }, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent("RLL:", "Sets roll."), GUILayout.Width(width3));
-                    RTUtil.Button("+", () => Roll++);
-                    RTUtil.Button("-", () => Roll--);
-                    GUI.SetNextControlName("rt_phr3");
-                    RTUtil.TextField(ref mRoll, GUILayout.Width(width3));
+                    RTUtil.RepeatButton("+", () => { Roll++; });
+                    RTUtil.RepeatButton("-", () => { Roll--; });
+                    RTUtil.MouseWheelTriggerField(ref mRoll, "rt_phr3", () => { Roll++; }, () => { Roll--; }, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 

@@ -26,14 +26,8 @@ namespace RemoteTech
             GameEvents.onVesselDestroy.Add(OnVesselDestroy);
             GameEvents.onVesselGoOnRails.Add(OnVesselOnRails);
 
-            OnRegister += vs =>
-            {
-                RTLog.Notify("SatelliteManager: OnRegister({0})", vs);
-            };
-            OnUnregister += vs => 
-            {
-                RTLog.Notify("SatelliteManager: OnUnregister({0})", vs);
-            };
+            OnRegister += vs => RTLog.Notify("SatelliteManager: OnRegister({0})", vs);
+            OnUnregister += vs => RTLog.Notify("SatelliteManager: OnUnregister({0})", vs);
         }
 
         /// <summary>
@@ -79,8 +73,8 @@ namespace RemoteTech
             // Return if nothing to unregister.
             if (!mLoadedSpuCache.ContainsKey(key)) return;
             // Find instance of the signal processor.
-            int instance_id = mLoadedSpuCache[key].FindIndex(x => x == spu);
-            if (instance_id != -1)
+            int instanceID = mLoadedSpuCache[key].FindIndex(x => x == spu);
+            if (instanceID != -1)
             {
                 // Remove satellite if no signal processors remain.
                 if (mLoadedSpuCache[key].Count == 1)
@@ -91,12 +85,12 @@ namespace RemoteTech
                         OnUnregister(sat);
                         mSatelliteCache.Remove(key);
                     }
-                    mLoadedSpuCache[key].RemoveAt(instance_id);
+                    mLoadedSpuCache[key].RemoveAt(instanceID);
                     mLoadedSpuCache.Remove(key);
                 }
                 else
                 {
-                    mLoadedSpuCache[key].RemoveAt(instance_id);
+                    mLoadedSpuCache[key].RemoveAt(instanceID);
                 }
             }
         }
@@ -117,8 +111,7 @@ namespace RemoteTech
             ISignalProcessor spu = vessel.GetSignalProcessor();
             if (spu != null)
             {
-                List<ISignalProcessor> protos = new List<ISignalProcessor>();
-                protos.Add(spu);
+                var protos = new List<ISignalProcessor> {spu};
                 mSatelliteCache[key] = new VesselSatellite(protos);
                 OnRegister(mSatelliteCache[key]);
             }
@@ -127,7 +120,6 @@ namespace RemoteTech
         /// <summary>
         /// Unregisters the protosatellite which was compiled from the unloaded vessel data.
         /// </summary>
-        /// <param name="vessel">The vessel.</param>
         public void UnregisterProto(Guid key)
         {
             RTLog.Notify("SatelliteManager: UnregisterProto({0})", key);
@@ -214,27 +206,17 @@ namespace RemoteTech
 
             if (v.loaded && v.parts.Count > 0)
             {
-                var partModuleList = v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Where(pm => pm.IsSignalProcessor());
+                var partModuleList = v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Where(pm => pm.IsSignalProcessor()).ToList();
                 // try to look for a moduleSPU
-                result = partModuleList.Where(pm => pm.moduleName == "ModuleSPU").FirstOrDefault() as ISignalProcessor;
-
-                if (result == null)
-                {
-                    // otherwise get the first moduleSpuPassive
-                    result = partModuleList.FirstOrDefault() as ISignalProcessor;
-                }
+                result = partModuleList.FirstOrDefault(pm => pm.moduleName == "ModuleSPU") as ISignalProcessor ??
+                         partModuleList.FirstOrDefault() as ISignalProcessor;
             }
             else
             {
-                var protoPartList = v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Where(ppms => ppms.IsSignalProcessor());
+                var protoPartList = v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Where(ppms => ppms.IsSignalProcessor()).ToList();
                 // try to look for a moduleSPU on a unloaded vessel
-                var protoPartProcessor = protoPartList.Where(ppms => ppms.moduleName == "ModuleSPU").FirstOrDefault();
-
-                if (protoPartProcessor == null)
-                {
-                    // otherwise get the first moduleSpuPassive
-                    protoPartProcessor = protoPartList.FirstOrDefault();
-                }
+                var protoPartProcessor = protoPartList.FirstOrDefault(ppms => ppms.moduleName == "ModuleSPU") ??
+                                         protoPartList.FirstOrDefault();
 
                 // convert the found protoPartSnapshots to a ProtoSignalProcessor
                 if (protoPartProcessor != null)
@@ -263,10 +245,7 @@ namespace RemoteTech
             {
                 return v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Any(pm => pm.IsCommandStation());
             }
-            else
-            {
-                return v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Any(pm => pm.IsCommandStation());
-            }
+            return v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Any(pm => pm.IsCommandStation());
         }
     }
 }

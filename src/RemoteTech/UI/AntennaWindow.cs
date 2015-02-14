@@ -29,7 +29,7 @@ namespace RemoteTech.UI
                 if (mAntennaFragment.mouseOverEntry != null)
                 {
                     // set the current selected target to the targetwindow
-                    mTargetInfos.setTarget(mAntennaFragment.mouseOverEntry, mSetAntenna);
+                    mTargetInfos.SetTarget(mAntennaFragment.mouseOverEntry, mSetAntenna);
                     mTargetInfos.Show();
                 }
                 else
@@ -53,7 +53,7 @@ namespace RemoteTech.UI
             mAntennaFragment = mAntennaFragment ?? new AntennaFragment(mSetAntenna);
 
             /// Add callbacks for the onPositionChanged on the AbstractWindow
-            onPositionChanged += mTargetInfos.calculatePosition;
+            onPositionChanged += mTargetInfos.CalculatePosition;
 
             /// Add the showTargetInfo callback to the on mouse over/out event
             mAntennaFragment.onMouseOverListEntry += showTargetInfo;
@@ -71,7 +71,7 @@ namespace RemoteTech.UI
             if (mAntennaFragment != null)
             {
                 /// Remove callbacks from the onPositionChanged on the AbstractWindow
-                onPositionChanged -= mTargetInfos.calculatePosition;
+                onPositionChanged -= mTargetInfos.CalculatePosition;
 
                 /// Remove the showTargetInfo callback from the on mouse over/out event
                 mAntennaFragment.onMouseOverListEntry -= showTargetInfo;

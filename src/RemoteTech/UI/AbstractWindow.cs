@@ -214,6 +214,7 @@ namespace RemoteTech.UI
             if (Enabled && InputLockManager.GetControlLock("RTLockControlForWindows") == ControlTypes.None)
             {
                 InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "RTLockControlForWindows");
+                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockControlCamForWindows");
 
                 if (!RTCore.Instance.ctrlLockAddon.IsLockSet())
                     RTCore.Instance.ctrlLockAddon.SetFullLock("RemoteTech");
@@ -230,12 +231,16 @@ namespace RemoteTech.UI
             if (InputLockManager.GetControlLock("RTLockControlForWindows") != ControlTypes.None)
             {
                 InputLockManager.RemoveControlLock("RTLockControlForWindows");
+                InputLockManager.RemoveControlLock("RTLockControlCamForWindows");
 
                 if (RTCore.Instance.ctrlLockAddon.IsLockSet("RemoteTech"))
                     RTCore.Instance.ctrlLockAddon.UnsetFullLock("RemoteTech");
             }
         }
 
+        /// <summary>
+        /// Toggle the window
+        /// </summary>
         public void toggleWindow()
         {
             if (this.Enabled)
