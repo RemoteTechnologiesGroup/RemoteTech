@@ -68,7 +68,8 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="n">Node with the command infos</param>
         /// <param name="fc">Current flightcomputer</param>
-        public virtual void Load(ConfigNode n, FlightComputer fc)
+        /// <returns>true - loaded successfull</returns>
+        public virtual bool Load(ConfigNode n, FlightComputer fc)
         {
             // nothing
             if (n.HasValue("TimeStamp"))
@@ -79,6 +80,8 @@ namespace RemoteTech.FlightComputer.Commands
             {
                 ExtraDelay = double.Parse(n.GetValue("ExtraDelay"));
             }
+
+            return true;
         }
         
         /// <summary>
@@ -109,7 +112,11 @@ namespace RemoteTech.FlightComputer.Commands
             {
                 ConfigNode.LoadObjectFromConfig(command, n);
                 // additional loadings
-                command.Load(n, fc);
+                var result = command.Load(n, fc);
+                RTLog.Verbose("Loading command {0}={1}", RTLogLevel.LVL1, n.name, result);
+                // delete command if we can't load the command correctlys
+                if (result == false)
+                    command = null;
             }
 
             return command;
