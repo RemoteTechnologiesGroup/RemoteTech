@@ -184,20 +184,25 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="n">Node with the command infos</param>
         /// <param name="fc">Current flightcomputer</param>
-        public override void Load(ConfigNode n, FlightComputer fc)
+        /// <returns>true - loaded successfull</returns>
+        public override bool Load(ConfigNode n, FlightComputer fc)
         {
-            base.Load(n,fc);
-            if(n.HasValue("NodeIndex"))
+            if(base.Load(n,fc))
             {
-                this.NodeIndex = int.Parse(n.GetValue("NodeIndex"));
-                RTLog.Notify("Trying to get Maneuver {0}", this.NodeIndex);
-                if (this.NodeIndex >= 0)
+                if(n.HasValue("NodeIndex"))
                 {
-                    // Set the ManeuverNode into this command
-                    this.Node = fc.Vessel.patchedConicSolver.maneuverNodes[this.NodeIndex];
-                    RTLog.Notify("Found Maneuver {0} with {1} dV", this.NodeIndex, this.Node.DeltaV);
+                    this.NodeIndex = int.Parse(n.GetValue("NodeIndex"));
+                    RTLog.Notify("Trying to get Maneuver {0}", this.NodeIndex);
+                    if (this.NodeIndex >= 0)
+                    {
+                        // Set the ManeuverNode into this command
+                        this.Node = fc.Vessel.patchedConicSolver.maneuverNodes[this.NodeIndex];
+                        RTLog.Notify("Found Maneuver {0} with {1} dV", this.NodeIndex, this.Node.DeltaV);
+                    }
                 }
             }
+
+            return false;
         }
 
         /// <summary>

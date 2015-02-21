@@ -103,34 +103,44 @@ namespace RemoteTech.API
             return delayBetween;
         }
 
-        public static void ReceiveData(ConfigNode externalData) //exposed method called by other mods, passing a ConfigNode to RemoteTech
+        //exposed method called by other mods, passing a ConfigNode to RemoteTech
+        public static bool QueueCommandToFlightComputer(ConfigNode externalData)
         {
-            if (externalData == null) return; //check we were actually passed a config node
+            //check we were actually passed a config node
+            if (externalData == null) return false;
+            // check our min values
+            if (!externalData.HasValue("GUIDString") && !externalData.HasValue("Executor") && !externalData.HasValue("ReflectionType"))
+            {
+                return false;
+            }
 
             try
             {
-                var extCmd = new FlightComputer.Commands.ExternalAPICommand //make our command
+                Guid externalVesselId = new Guid(externalData.GetValue("GUIDString"));
+                // you can only push a new external command if the vessel guid is the current active vessel
+                if (FlightGlobals.ActiveVessel.id != externalVesselId)
                 {
-                    externalData = externalData,
-                    TimeStamp = RTUtil.GameTime,
-                    description = externalData.GetValue("Description"), //string on GUI
-                    shortName = externalData.GetValue("ShortName"), //???
-                    reflectionGetType = externalData.GetValue("ReflectionGetType"), //required for reflection back
-                    reflectionInvokeMember = externalData.GetValue("ReflectionInvokeMember"), //required
-                    vslGUIDstr = externalData.GetValue("GUIDString"),
-                };
-                foreach (Vessel vsl2 in FlightGlobals.Vessels.Where(vsl2 => vsl2.id.ToString() == extCmd.vslGUIDstr))
-                {
-                    extCmd.vslGUID = vsl2.id;
-                    extCmd.vsl = vsl2;
+                    RTLog.Verbose("Passed Guid is not the active Vessels guid", RTLogLevel.API);
+                    return false;
                 }
-                FlightComputer.FlightComputer fltComp = RTCore.Instance.Satellites[extCmd.vslGUID].FlightComputer;
-                fltComp.Enqueue(extCmd);
+
+                // maybe we should look if this vessel hasLocal controll or not. If so, we can execute the command
+                // immediately
+
+                // get the flightcomputer
+                FlightComputer.FlightComputer computer = RTCore.Instance.Satellites[externalVesselId].FlightComputer;
+
+                var extCmd = FlightComputer.Commands.ExternalAPICommand.FromExternal(externalData);
+
+                computer.Enqueue(extCmd);
+                return true;
             }
-            catch
+            catch(Exception ex)
             {
-                RTLog.Notify("Invalid ConfigNode passed by other mod", RTLogLevel.API);
+                RTLog.Verbose(ex.Message, RTLogLevel.API);
             }
+
+            return false;
         }
     }
 }

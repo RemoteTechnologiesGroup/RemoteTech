@@ -47,10 +47,15 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Load the saved CancelCommand and find the element to cancel, based on the saved queue position
         /// </summary>
-        public override void Load(ConfigNode n, FlightComputer fc)
+        /// <returns>true - loaded successfull</returns>
+        public override bool Load(ConfigNode n, FlightComputer fc)
         {
-            base.Load(n, fc);
-            Command = fc.QueuedCommands.ElementAt(queueIndex);
+            if(base.Load(n, fc))
+            {
+                Command = fc.QueuedCommands.ElementAt(queueIndex);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>

@@ -413,24 +413,30 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
             #endregion
-            #region API.ReceiveData
+            #region API.QueueCommandToFlightComputer
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("API.ReceiveData; Guid: ", GUILayout.ExpandWidth(true));
+                GUILayout.Label("API.QueueCommandToFlightComputer; Guid: ", GUILayout.ExpandWidth(true));
                 this.ReceivDataVesselGuidInput = GUILayout.TextField(this.ReceivDataVesselGuidInput, GUILayout.Width(160));
                 if (GUILayout.Button("Run", GUILayout.Width(50)))
                 {
                     try
                     {
                         ConfigNode dataNode = new ConfigNode();
-                        dataNode.AddValue("Description", "Debug ReceiveData");
-                        dataNode.AddValue("ShortName", "Debug-Short");
-                        dataNode.AddValue("ReflectionGetType", "RemoteTech.UI.DebugWindow");
-                        dataNode.AddValue("ReflectionInvokeMember", "ReceiveData");
-                        dataNode.AddValue("GUIDString", this.ReceivDataVesselGuidInput);
-                        RemoteTech.API.API.ReceiveData(dataNode);
 
-                        RTLog.Verbose("API.ReceiveData({0})", this.currentLogLevel, dataNode);
+                        dataNode.AddValue("Executor", "RemoteTech");
+                        dataNode.AddValue("QueueLabel", "Receive Data");
+                        dataNode.AddValue("ActiveLabel", "Receiveing Data ...");
+                        dataNode.AddValue("ShortLabel", "Receive Data");
+                        dataNode.AddValue("ReflectionType", "RemoteTech.UI.DebugWindow");
+                        dataNode.AddValue("ReflectionPopMethod", "ReceiveDataPop");
+                        dataNode.AddValue("ReflectionExecuteMethod", "ReceiveDataExec");
+                        dataNode.AddValue("ReflectionAbortMethod", "ReceiveDataAbort");
+                        dataNode.AddValue("GUIDString", this.ReceivDataVesselGuidInput);
+
+                        var result = RemoteTech.API.API.QueueCommandToFlightComputer(dataNode);
+
+                        RTLog.Verbose("API.QueueCommandToFlightComputer(ConfigNode) = {0}", this.currentLogLevel, result);
                     }
                     catch (Exception ex)
                     {
@@ -509,12 +515,26 @@ namespace RemoteTech.UI
         }
 
         /// <summary>
-        /// This method is needed as a callback function for the API.ReceiveData
+        /// This method is needed as a callback function for the API.QueueCommandToFlightComputer
         /// </summary>
         /// <param name="data">data passed from the flightcomputer</param>
-        public static void ReceiveData(ConfigNode data)
+        public static bool ReceiveDataPop(ConfigNode data)
         {
-            RTLog.Verbose("Received Data via Api.ReceiveData with {0}", RTLogLevel.API, data);
+            RTLog.Verbose("Received Data via Api.ReceiveData", RTLogLevel.API);
+            RTLog.Notify("Data: {0}",data);
+            return true;
+        }
+        public static bool ReceiveDataExec(ConfigNode data)
+        {
+            RTLog.Verbose("Received Data via Api.ReceiveDataExec", RTLogLevel.API);
+            RTLog.Notify("Data: {0}", data);
+            
+            return bool.Parse(data.GetValue("AbortCommand"));
+        }
+        public static void ReceiveDataAbort(ConfigNode data)
+        {
+            RTLog.Verbose("Aborting via Api.ReceiveDataAbort", RTLogLevel.API);
+            RTLog.Notify("Data: {0}", data);
         }
     }
 }
