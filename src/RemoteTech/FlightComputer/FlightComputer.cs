@@ -489,11 +489,19 @@ namespace RemoteTech.FlightComputer
 
             foreach (KeyValuePair<int, ICommand> cmd in mActiveCommands)
             {
-                cmd.Value.Save(ActiveCommands, this);
+                // Save each active command on his own node
+                ConfigNode activeCommandNode = new ConfigNode(cmd.Value.GetType().Name);
+                cmd.Value.Save(activeCommandNode, this);
+                ActiveCommands.AddNode(activeCommandNode);
             }
 
             foreach (ICommand cmd in mCommandQueue)
-                cmd.Save(Commands, this);
+            {
+                // Save each command on his own node
+                ConfigNode commandNode = new ConfigNode(cmd.GetType().Name);
+                cmd.Save(commandNode, this);
+                Commands.AddNode(commandNode);
+            }
 
             ConfigNode FlightNode = new ConfigNode("FlightComputer");
             FlightNode.AddValue("TotalDelay", TotalDelay);

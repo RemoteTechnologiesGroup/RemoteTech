@@ -433,6 +433,8 @@ namespace RemoteTech.UI
                         dataNode.AddValue("ReflectionExecuteMethod", "ReceiveDataExec");
                         dataNode.AddValue("ReflectionAbortMethod", "ReceiveDataAbort");
                         dataNode.AddValue("GUIDString", this.ReceivDataVesselGuidInput);
+                        dataNode.AddValue("YourData1", "RemoteTech");
+                        dataNode.AddValue("YourDataN", "TechRemote");
 
                         var result = RemoteTech.API.API.QueueCommandToFlightComputer(dataNode);
 
