@@ -5,24 +5,26 @@ namespace RemoteTech.FlightComputer.Commands
 {
     public class ExternalAPICommand : AbstractCommand
     {
+        /// <summary>original ConfigNode object passed from the api</summary>
+        private ConfigNode externalData;
         /// <summary>Name of the mod who passed this command</summary>
-        [Persistent] private string Executor;
+        private string Executor;
         /// <summary>Label for this command on the queue</summary>
-        [Persistent] private string QueueLabel;
+        private string QueueLabel;
         /// <summary>Label for this command if its active</summary>
-        [Persistent] private string ActiveLabel;
+        private string ActiveLabel;
         /// <summary>Label for alert on no power</summary>
-        [Persistent] private string ShortLabel;
+        private string ShortLabel;
         /// <summary>The ReflectionType for the methods to invoke</summary>
-        [Persistent] private string ReflectionType;
+        private string ReflectionType;
         /// <summary>Name of the Pop-method on the ReflectionType</summary>
-        [Persistent] private string ReflectionPopMethod = "";
+        private string ReflectionPopMethod = "";
         /// <summary>Name of the Execution-method on the ReflectionType</summary>
-        [Persistent] private string ReflectionExecuteMethod = "";
+        private string ReflectionExecuteMethod = "";
         /// <summary>Name of the Abort-method on the ReflectionType</summary>
-        [Persistent] private string ReflectionAbortMethod = "";
+        private string ReflectionAbortMethod = "";
         /// <summary>GUID of the vessel</summary>
-        [Persistent] private string GUIDString;
+        private string GUIDString;
         /// <summary>true - when this command will be aborted</summary>
         private bool AbortCommand = false;
 
@@ -127,26 +129,50 @@ namespace RemoteTech.FlightComputer.Commands
         {
             ExternalAPICommand command =  new ExternalAPICommand();
             command.TimeStamp = RTUtil.GameTime;
-            command.Executor = externalData.GetValue("Executor");
-            command.ReflectionType = externalData.GetValue("ReflectionType");
-            command.GUIDString = externalData.GetValue("GUIDString");
-
-            if (externalData.HasValue("QueueLabel"))
-                command.QueueLabel = externalData.GetValue("QueueLabel");
-            if (externalData.HasValue("ActiveLabel"))
-                command.ActiveLabel = externalData.GetValue("ActiveLabel");
-            if (externalData.HasValue("ShortLabel"))
-                command.ShortLabel = externalData.GetValue("ShortLabel");
-
-
-            if (externalData.HasValue("ReflectionPopMethod"))
-                command.ReflectionPopMethod = externalData.GetValue("ReflectionPopMethod");
-            if (externalData.HasValue("ReflectionExecuteMethod"))
-                command.ReflectionExecuteMethod = externalData.GetValue("ReflectionExecuteMethod");
-            if (externalData.HasValue("ReflectionAbortMethod"))
-                command.ReflectionAbortMethod = externalData.GetValue("ReflectionAbortMethod");
+            command.ConfigNodeToObject(command,externalData);
 
             return command;
+        }
+
+        /// <summary>
+        /// Maps the ConfigNode object passed from the api or loading to an ExternalAPICommand.
+        /// </summary>
+        /// <param name="command">Map the data to this object</param>
+        /// <param name="data">Data to map onto the command</param>
+        private void ConfigNodeToObject(ExternalAPICommand command, ConfigNode data)
+        {
+            command.externalData = new ConfigNode("ExternalData").AddNode(data);
+            command.Executor = data.GetValue("Executor");
+            command.ReflectionType = data.GetValue("ReflectionType");
+            command.GUIDString = data.GetValue("GUIDString");
+
+            if (data.HasValue("QueueLabel"))
+                command.QueueLabel = data.GetValue("QueueLabel");
+            if (data.HasValue("ActiveLabel"))
+                command.ActiveLabel = data.GetValue("ActiveLabel");
+            if (data.HasValue("ShortLabel"))
+                command.ShortLabel = data.GetValue("ShortLabel");
+
+            if (data.HasValue("ReflectionPopMethod"))
+                command.ReflectionPopMethod = data.GetValue("ReflectionPopMethod");
+            if (data.HasValue("ReflectionExecuteMethod"))
+                command.ReflectionExecuteMethod = data.GetValue("ReflectionExecuteMethod");
+            if (data.HasValue("ReflectionAbortMethod"))
+                command.ReflectionAbortMethod = data.GetValue("ReflectionAbortMethod");
+        }
+
+        /// <summary>
+        /// Saves the original configNode <see cref="externalData"/> passed from the api
+        /// to the persistent
+        /// </summary>
+        /// <param name="node">Node with the command infos to save in</param>
+        /// <param name="computer">Current flightcomputer</param>
+        public override void Save(ConfigNode node, FlightComputer computer)
+        {
+            base.Save(node, computer);
+
+            node.AddNode("ExternalData");
+            node.SetNode("ExternalData", this.externalData);
         }
 
         /// <summary>
@@ -154,18 +180,22 @@ namespace RemoteTech.FlightComputer.Commands
         /// can't find the <see cref="ReflectionType"/> we'll notify a ScreenMessage
         /// and remove the command.
         /// </summary>
-        /// <param name="n">Node with the command infos</param>
+        /// <param name="node">Node with the command infos to load</param>
         /// <param name="computer">Current flightcomputer</param>
         /// <returns>true - loaded successfull</returns>
-        public override bool Load(ConfigNode n, FlightComputer computer)
+        public override bool Load(ConfigNode node, FlightComputer computer)
         {
             try
             {
-                if(base.Load(n, computer))
+                if(base.Load(node, computer))
                 {
-                    // try loading the reflectionType
-                    this.getReflectionType(this.ReflectionType);
-                    return true;
+                    if (node.HasNode("ExternalData"))
+                    {
+                        this.ConfigNodeToObject(this, node.GetNode("ExternalData"));
+                        // try loading the reflectionType
+                        this.getReflectionType(this.ReflectionType);
+                        return true;
+                    }
                 }
             }
             catch(Exception)
@@ -181,7 +211,8 @@ namespace RemoteTech.FlightComputer.Commands
         /// <returns>ConfigNode to pass over to the reflection methods</returns>
         private ConfigNode prepareDataForExternalMod()
         {
-            ConfigNode externalData = ConfigNode.CreateConfigFromObject(this);
+            ConfigNode externalData = new ConfigNode();
+            this.externalData.CopyTo(externalData);
             externalData.AddValue("AbortCommand",this.AbortCommand);
 
             return externalData;

@@ -39,15 +39,14 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Save the basic informations for every command.
         /// </summary>
-        /// <param name="n">Node to save in</param>
-        /// <param name="fc">Current flightcomputer</param>
-        public virtual void Save(ConfigNode n, FlightComputer fc)
+        /// <param name="node">Node to save in</param>
+        /// <param name="computer">Current flightcomputer</param>
+        public virtual void Save(ConfigNode node, FlightComputer computer)
         {
-            ConfigNode save = new ConfigNode(this.GetType().Name);
             try
             {
                 // try to serialize 'this'
-                ConfigNode.CreateConfigFromObject(this, 0, save);
+                ConfigNode.CreateConfigFromObject(this, 0, node);
             }
             catch (Exception) {}
 
@@ -58,9 +57,8 @@ namespace RemoteTech.FlightComputer.Commands
                 TimeStamp = RTUtil.GameTime;
             }
 
-            save.AddValue("TimeStamp", TimeStamp);
-            save.AddValue("ExtraDelay", ExtraDelay);
-            n.AddNode(save);
+            node.AddValue("TimeStamp", TimeStamp);
+            node.AddValue("ExtraDelay", ExtraDelay);
         }
 
         /// <summary>
