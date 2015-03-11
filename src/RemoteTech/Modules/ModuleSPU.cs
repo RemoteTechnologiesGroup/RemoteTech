@@ -111,7 +111,7 @@ namespace RemoteTech.Modules
                 return State.ParentDefect;
             }
 
-            if (Satellite == null || !RTCore.Instance.Network[Satellite].Any())
+			if ((Satellite == null || !RTCore.Instance.Network[Satellite].Any()) && !RTSettings.Instance.EnableNetworkOnlyMode)
             {
                 return State.NoConnection;
             }
@@ -134,7 +134,14 @@ namespace RemoteTech.Modules
                     break;
                 case State.ParentDefect:
                 case State.NoConnection:
-                    GUI_Status = "No connection.";
+				    if (RTSettings.Instance.EnableNetworkOnlyMode) 
+					{
+						GUI_Status = "Network Only Mode";
+					} 
+					else 
+					{
+						GUI_Status = "No connection.";
+					}
                     break;
             }
         }
