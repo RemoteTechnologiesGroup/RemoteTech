@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +28,7 @@ namespace RemoteTech
         [Persistent] public float SpeedOfLight = 3e8f;
         [Persistent] public MapFilter MapFilter = MapFilter.Path | MapFilter.Omni | MapFilter.Dish;
         [Persistent] public bool EnableSignalDelay = true;
+        [Persistent] public bool EnableNetworkOnlyMode = false;
         [Persistent] public RangeModel.RangeModel RangeModelType = RangeModel.RangeModel.Standard;
         [Persistent] public double MultipleAntennaMultiplier = 0.0;
         [Persistent] public bool ThrottleTimeWarp = true;

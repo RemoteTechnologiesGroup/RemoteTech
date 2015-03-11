@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +26,9 @@ namespace RemoteTech.FlightComputer
             {
                 var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
                 var connection = RTCore.Instance.Network[satellite];
-                return (satellite != null && satellite.HasLocalControl) || (SignalProcessor.Powered && connection.Any());
+                return (satellite != null && satellite.HasLocalControl) || 
+		       (SignalProcessor.Powered && connection.Any()) || 
+		       (SignalProcessor.Powered && RTSettings.Instance.EnableNetworkOnlyMode);
             }
         }
 
@@ -37,6 +39,7 @@ namespace RemoteTech.FlightComputer
                 var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
                 if (satellite != null && satellite.HasLocalControl) return 0.0;
                 var connection = RTCore.Instance.Network[satellite];
+				if (RTSettings.Instance.EnableNetworkOnlyMode && !connection.Any ()) return 0.0;
                 if (!connection.Any()) return Double.PositiveInfinity;
                 return connection.Min().Delay;
             }
@@ -51,7 +54,9 @@ namespace RemoteTech.FlightComputer
                 var status = State.Normal;
                 if (!SignalProcessor.Powered) status |= State.OutOfPower;
                 if (!SignalProcessor.IsMaster) status |= State.NotMaster;
-                if (!connection.Any()) status |= State.NoConnection;
+				if (!RTSettings.Instance.EnableNetworkOnlyMode) {
+					if (!connection.Any ()) status |= State.NoConnection;
+				}
                 if (Vessel.packed) status |= State.Packed;
                 return status;
             }

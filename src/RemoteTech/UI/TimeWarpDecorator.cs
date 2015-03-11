@@ -61,7 +61,14 @@ namespace RemoteTech.UI
                         return "Connected";
                     }                    
                 }
-                return "No Connection";
+				if (RTSettings.Instance.EnableNetworkOnlyMode) 
+				{
+					return "Network Only Mode";
+				} 
+				else 
+				{
+					return "No Connection";
+				}
             }
         }
 
