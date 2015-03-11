@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +26,9 @@ namespace RemoteTech.FlightComputer
             {
                 var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
                 var connection = RTCore.Instance.Network[satellite];
-                return (satellite != null && satellite.HasLocalControl) || (SignalProcessor.Powered && connection.Any());
+                return (satellite != null && satellite.HasLocalControl) || 
+		       (SignalProcessor.Powered && connection.Any()) || 
+		       (SignalProcessor.Powered && RTSettings.Instance.EnableNetworkOnlyMode);
             }
         }
 
