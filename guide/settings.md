@@ -42,6 +42,9 @@ The settings are as follows:
    `Root`
    : The two antennas can communicate as long as they are within ![Min(r1, r2) + Sqrt(r1 r2)](rootmodel.png) of each other, where r<sub>1</sub> and r<sub>2</sub> are the ranges of the two antennas, up to a limit of 100 times the omni range or 1000 times the dish range, whichever is smallest. A table of effective ranges for all pairs of antennas is given in an [appendix](#appendix-root-range-model). Since this formula doubles the effective range between two identical antennas, it is recommended to use `RangeMultiplier = 0.5` with this mode to preserve part balance.
 
+   `Additive`
+   : This is another name for `Root`, and works exactly the same way.
+
 
 `MultipleAntennaMultiplier` (default = 0.0)
 : This setting lets multiple omnidirectional antennas on the same craft act as a single, slightly larger antenna. The default value of 0.0 means that omni antennas do not boost each other; a value of 1.0 means that the effective range of the satellite equals the total range of all omni antennas on board. The effective range scales linearly between these two extremes. This option works with both the Standard and Root range models.
@@ -56,6 +59,9 @@ The settings are as follows:
 
 `ActiveConnectionColor` (RGB&alpha; quadruplet) (default = Electric Lime, fully opaque)
 : The color in which the working connection to mission control will be drawn on the map view and tracking station
+
+`HideGroundStationsBehindBody` (default = False)
+: If true, ground stations occulued by the body they're on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.
 
 ## Miscellaneous
 
