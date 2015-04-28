@@ -38,7 +38,7 @@ namespace RemoteTech.UI
                 var position = KnowledgeBase.Instance.KnowledgeContainer.transform.position;
                 var position2 = UIManager.instance.rayCamera.WorldToScreenPoint(position);
                 var rect = new Rect(position2.x + 154,
-                                250 + 2 * 31,
+                                250 - 1 * 31,
                                 Texture.Satellite.width,
                                 Texture.Satellite.height);
                 return rect;
@@ -50,7 +50,7 @@ namespace RemoteTech.UI
             get
             {
                 var rect = new Rect(0, 0, 250, 500);
-                rect.y = PositionButton.y + PositionButton.height / 2 - rect.height / 2;
+                rect.y = PositionButton.y;
                 rect.x = PositionButton.x - 5 - rect.width;
                 return rect;
             }
