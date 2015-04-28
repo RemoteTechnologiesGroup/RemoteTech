@@ -421,7 +421,7 @@ namespace RemoteTech.Modules
         /// <summary>
         /// Determines whether or not the antenna is shielded from aerodynamic forces
         /// </summary>
-        /// <returns><c>true</c>, if the antenna is shielded by a supported mod, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c>, if the antenna is shielded, <c>false</c> otherwise.</returns>
         ///
         /// <precondition><c>this.part</c> is not null</precondition>
         ///
@@ -430,17 +430,21 @@ namespace RemoteTech.Modules
         {
             PartModule FARPartModule = GetFARModule();
 
-            if (FARPartModule != null) {
-                try {
-                    FieldInfo fi = FARPartModule.GetType ().GetField ("isShielded");
-                    return (bool)(fi.GetValue (FARPartModule));
-                } catch (Exception e) {
-                    RTLog.Notify ("GetShieldedState: {0}", e);
-                    return false;
+            if (FARPartModule != null)
+            {
+                try
+                {
+                    FieldInfo fi = FARPartModule.GetType().GetField("isShielded");
+                    return (bool)(fi.GetValue(FARPartModule));
                 }
-            } else {
-                return false;
+                catch (Exception)
+                {
+                    // otherwise go further and try to get the stock shielded value
+                }
             }
+
+            // For KSP 1.0
+            return this.part.ShieldedFromAirstream;
         }
 
         /// <summary>
