@@ -22,6 +22,8 @@ namespace RemoteTech.Modules
 
         private bool mBusy;
         private List<ScienceData> mQueue = new List<ScienceData>();
+        
+        private Callback CallBackFunction;
 
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
@@ -50,12 +52,13 @@ namespace RemoteTech.Modules
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
         bool IScienceDataTransmitter.IsBusy() { return mBusy; }
 
-        void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
+        void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue, Callback NewCallBackFunction)
         {
             mQueue.AddRange(dataQueue);
             if (!mBusy)
             {
                 StartCoroutine(Transmit());
+                CallBackFunction = NewCallBackFunction;    
             }
         }
 
@@ -109,7 +112,7 @@ namespace RemoteTech.Modules
                         ScreenMessages.PostScreenMessage(msg_status, true);
                         if (commStream != null)
                         {
-                            commStream.StreamData(frame);
+                            commStream.StreamData(frame, this.part.vessel.protoVessel);
                         }
                     }
                     else
