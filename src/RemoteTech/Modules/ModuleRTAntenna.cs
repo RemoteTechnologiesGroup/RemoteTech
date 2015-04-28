@@ -437,8 +437,9 @@ namespace RemoteTech.Modules
                     FieldInfo fi = FARPartModule.GetType().GetField("isShielded");
                     return (bool)(fi.GetValue(FARPartModule));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    RTLog.Notify("GetShieldedState: {0}", e);
                     // otherwise go further and try to get the stock shielded value
                 }
             }
