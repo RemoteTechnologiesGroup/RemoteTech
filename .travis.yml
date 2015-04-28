@@ -7,6 +7,10 @@ env:
   global:
    - secure: qY6kU+hT5JteYRe456Pb+qQumenBBDOkzwYl+nQCxgCTYdX1krpGmnqox+GOSfC2CSWJDo58WGtydgKam/LDM1GTT1YY9Sv2kVUKGSUAzEQfj3PdUjHf+MvKOjhWq/KO9xkXQmYqmmjQs0vHKTjjtDVWiY+FQNpDDOSdLC8M8t4=
    - secure: J/M1/WIRgP4GssMr9HS9k7Wr9XUqlo0S+olIVWvr8eY8jxxVbx+ONZbkkjKey2BvC1BRVtRXpbBe+YcPLYe7V1jG5mmm3Lc1B/x5WC54q4KKfoV53m+ARAtaHFYrJY2h4O+GLaysQoCwCG/tAt0GhJmgJgy9IojH4ojJjDOGHCE=
+
+notifications:
+ slack: remotetech:UMyObqwkLCHGWqwBQ6ZVznxF
+
 before_install:
  - date -u
  - uname -a
