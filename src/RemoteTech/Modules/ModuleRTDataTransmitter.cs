@@ -18,27 +18,27 @@ namespace RemoteTech.Modules
         public String
             RequiredResource = "ElectricCharge";
         [KSPField(guiName = "Comms", guiActive = true)]
-        public String GUI_Status = "";
+        public String GUIStatus = "";
 
-        private bool mBusy;
-        private List<ScienceData> mQueue = new List<ScienceData>();
+        private bool isBusy;
+        private readonly List<ScienceData> scienceDataQueue = new List<ScienceData>();
 
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
         {
             foreach (ConfigNode data in node.GetNodes("CommsData"))
             {
-                mQueue.Add(new ScienceData(data));
+                scienceDataQueue.Add(new ScienceData(data));
             }
 
             var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
-            GUI_Status = "Idle";
+            GUIStatus = "Idle";
         }
 
         // Compatible with ModuleDataTransmitter
         public override void OnSave(ConfigNode node)
         {
-            mQueue.ForEach(d => d.Save(node.AddNode("CommsData")));
+            scienceDataQueue.ForEach(d => d.Save(node.AddNode("CommsData")));
         }
        
         bool IScienceDataTransmitter.CanTransmit()
@@ -46,35 +46,44 @@ namespace RemoteTech.Modules
             return true;
         }
 
+        void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue, Callback callback)
+        {
+            scienceDataQueue.AddRange(dataQueue);
+            if (!isBusy)
+            {
+                StartCoroutine(Transmit(callback));
+            }
+        }
+
         float IScienceDataTransmitter.DataRate { get { return PacketSize / PacketInterval; } }
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
-        bool IScienceDataTransmitter.IsBusy() { return mBusy; }
+        bool IScienceDataTransmitter.IsBusy() { return isBusy; }
 
         void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
         {
-            mQueue.AddRange(dataQueue);
-            if (!mBusy)
+            scienceDataQueue.AddRange(dataQueue);
+            if (!isBusy)
             {
                 StartCoroutine(Transmit());
             }
         }
 
-        private IEnumerator Transmit()
+        private IEnumerator Transmit(Callback callback = null)
         {
             var msg = new ScreenMessage(String.Format("[{0}]: Starting Transmission...", part.partInfo.title), 4f, ScreenMessageStyle.UPPER_LEFT);
-            var msg_status = new ScreenMessage(String.Empty, 4.0f, ScreenMessageStyle.UPPER_LEFT);
+            var msgStatus = new ScreenMessage(String.Empty, 4.0f, ScreenMessageStyle.UPPER_LEFT);
             ScreenMessages.PostScreenMessage(msg);
 
-            mBusy = true;
+            isBusy = true;
 
-            while (mQueue.Any())
+            while (scienceDataQueue.Any())
             {
                 RnDCommsStream commStream = null;
-                var science_data = mQueue[0];
-                var data_amount = science_data.dataAmount;
-                mQueue.RemoveAt(0);
-                var subject = ResearchAndDevelopment.GetSubjectByID(science_data.subjectID);
-                int packets = Mathf.CeilToInt(science_data.dataAmount / PacketSize);
+                var scienceData = scienceDataQueue[0];
+                var dataAmount = scienceData.dataAmount;
+                scienceDataQueue.RemoveAt(0);
+                var subject = ResearchAndDevelopment.GetSubjectByID(scienceData.subjectID);
+                int packets = Mathf.CeilToInt(scienceData.dataAmount / PacketSize);
                 if (ResearchAndDevelopment.Instance != null)
                 {
                     // pre calculate the time interval - fix for x64 systems
@@ -86,8 +95,8 @@ namespace RemoteTech.Modules
 
                     RTLog.Notify("Changing RnDCommsStream timeout from {0} to {1}", PacketInterval, x64PacketInterval);
 
-                    commStream = new RnDCommsStream(subject, science_data.dataAmount, x64PacketInterval,
-                                            science_data.transmitValue, ResearchAndDevelopment.Instance);
+                    commStream = new RnDCommsStream(subject, scienceData.dataAmount, x64PacketInterval,
+                                            scienceData.transmitValue, ResearchAndDevelopment.Instance);
                 }
                 //StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
                 float power = 0;
@@ -96,38 +105,38 @@ namespace RemoteTech.Modules
                     power += part.RequestResource("ElectricCharge", PacketResourceCost - power);
                     if (power >= PacketResourceCost * 0.95)
                     {
-                        float frame = Math.Min(PacketSize, data_amount);
+                        float frame = Math.Min(PacketSize, dataAmount);
                         power -= PacketResourceCost;
-                        GUI_Status = "Uploading Data...";
-                        data_amount -= frame;
+                        GUIStatus = "Uploading Data...";
+                        dataAmount -= frame;
                         packets--;
-                        float progress = (science_data.dataAmount - data_amount) / science_data.dataAmount;
+                        float progress = (scienceData.dataAmount - dataAmount) / scienceData.dataAmount;
                         //StartCoroutine(SetFXModules_Coroutine(modules_progress, progress));
-                        msg_status.message = String.Format("[{0}]: Uploading Data... {1}", part.partInfo.title, progress.ToString("P0"));
+                        msgStatus.message = String.Format("[{0}]: Uploading Data... {1}", part.partInfo.title, progress.ToString("P0"));
                         RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
-                            science_data.title, (PacketSize / PacketInterval).ToString("0.00"), packets, mQueue.Count);
-                        ScreenMessages.PostScreenMessage(msg_status, true);
+                            scienceData.title, (PacketSize / PacketInterval).ToString("0.00"), packets, scienceDataQueue.Count);
+                        ScreenMessages.PostScreenMessage(msgStatus, true);
                         if (commStream != null)
                         {
-                            commStream.StreamData(frame);
+                            commStream.StreamData(frame, vessel.protoVessel);
                         }
                     }
                     else
                     {
                         msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
                         ScreenMessages.PostScreenMessage(msg, true);
-                        GUI_Status = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
+                        GUIStatus = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
 
                     }
                     yield return new WaitForSeconds(PacketInterval);
                 }
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
-            mBusy = false;
+            isBusy = false;
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
             ScreenMessages.PostScreenMessage(msg, true);
-            GUI_Status = "Idle";
-            yield break;
+            if (callback != null) callback.Invoke();
+            GUIStatus = "Idle";
         }
     }
 }
