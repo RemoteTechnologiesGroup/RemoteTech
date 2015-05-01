@@ -15,20 +15,11 @@ namespace RemoteTech.UI
                 RTUtil.LoadImage(out Satellite, "texSatellite.png");
             }
         }
-
-        private static class Style
-        {
-            public static readonly GUIStyle Button;
-
-            static Style()
-            {
-                Button = GUITextureButtonFactory.CreateFromFilename("texKnowledgeNormal.png", "texKnowledgeHover.png", "texKnowledgeActive.png", "texKnowledgeHover.png");
-            }
-        }
-
+        
         private FocusFragment mFocus = new FocusFragment();
         private bool mEnabled;
         private bool mShowOverlay = true;
+        public static GUIStyle Button;
 
         private Rect PositionButton
         {
@@ -58,6 +49,8 @@ namespace RemoteTech.UI
 
         public FocusOverlay()
         {
+            Button = GUITextureButtonFactory.CreateFromFilename("texKnowledgeNormal.png", "texKnowledgeHover.png", "texKnowledgeActive.png", "texKnowledgeHover.png");
+
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
             GameEvents.onHideUI.Add(OnHideUI);
@@ -101,7 +94,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginArea(PositionButton);
             {
-                mEnabled = GUILayout.Toggle(mEnabled, Texture.Satellite, Style.Button);
+                mEnabled = GUILayout.Toggle(mEnabled, Texture.Satellite, Button);
             }
             GUILayout.EndArea();
 
