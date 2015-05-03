@@ -26,8 +26,7 @@ namespace RemoteTech.FlightComputer
 
                 case ReferenceFrame.North:
                     up = (v.mainBody.position - v.CoM);
-                    forward = Vector3.ProjectOnPlane(up,
-                        v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM );
+                    forward = Vector3.ProjectOnPlane(v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM, up);
                     break;
 
                 case ReferenceFrame.Maneuver:
