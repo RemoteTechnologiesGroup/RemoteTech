@@ -116,7 +116,9 @@ namespace RemoteTech.Modules
                         RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
                             scienceData.title, (PacketSize / PacketInterval).ToString("0.00"), packets, scienceDataQueue.Count);
                         ScreenMessages.PostScreenMessage(msgStatus, true);
-                        if (commStream != null)
+
+                        // if we've a defined callback parameter so skip to stream each packet
+                        if (commStream != null && callback == null)
                         {
                             commStream.StreamData(frame, vessel.protoVessel);
                         }
