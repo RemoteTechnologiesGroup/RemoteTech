@@ -186,6 +186,12 @@ namespace RemoteTech.Modules
                         vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
                     }
                 }
+                else if (e.listParent.part.Modules.OfType<IAntenna>().Any() &&
+                         !e.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
+                         RTSettings.Instance.ControlAntennaWithoutConnection)
+                {
+                    e.Invoke();
+                }
                 else
                 {
                     ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
