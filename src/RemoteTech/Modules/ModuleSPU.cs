@@ -78,6 +78,7 @@ namespace RemoteTech.Modules
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
+                GameEvents.onPartActionUICreate.Add(onPartActionUICreate);
                 mRegisteredId = vessel.id; 
                 RTCore.Instance.Satellites.Register(vessel, this);
                 if (FlightComputer == null)
@@ -86,11 +87,17 @@ namespace RemoteTech.Modules
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
         }
 
+        public void onPartActionUICreate(Part p)
+        {
+            HookPartMenus();
+        }
+
         public void OnDestroy()
         {
             RTLog.Notify("ModuleSPU: OnDestroy");
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
+            GameEvents.onPartActionUICreate.Remove(onPartActionUICreate);
             if (RTCore.Instance != null)
             {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
@@ -127,7 +134,7 @@ namespace RemoteTech.Modules
         public void FixedUpdate()
         {
             if (FlightComputer != null) FlightComputer.OnFixedUpdate();
-            HookPartMenus();
+            
             switch (UpdateControlState())
             {
                 case State.Operational:
