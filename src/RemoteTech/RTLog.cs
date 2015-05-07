@@ -68,7 +68,7 @@ namespace RemoteTech
         /// <param name="param">objects to format</param>
         public static void Notify(string message, params object[] param)
         {
-            Notify(string.Format(message, param));
+            Notify(string.Format(message, param), RTLogLevel.LVL1);
         }
 
         /// <summary>

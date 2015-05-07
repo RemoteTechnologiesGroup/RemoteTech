@@ -9,34 +9,56 @@ namespace RemoteTech.FlightComputer
     {
         public static void Wrap(Vessel parent, Action<BaseEvent, bool> pass)
         {
-            var controller = UIPartActionController.Instance;
+            UIPartActionController controller = UIPartActionController.Instance;
             if (!controller) return;
-            var listFieldInfo = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                .First(fi => fi.FieldType == typeof(List<UIPartActionWindow>));
 
-            var list = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
-            foreach (var window in list.Where(l => l.part.vessel == parent))
+            // Get the open context menus
+            FieldInfo listFieldInfo = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                      .First(fi => fi.FieldType == typeof(List<UIPartActionWindow>));
+
+            List<UIPartActionWindow> openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
+
+            foreach (UIPartActionWindow window in openWindows.Where(l => l.part.vessel == parent))
             {
-                var itemsFieldInfo = window.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                    .First(fi => fi.FieldType == typeof(List<UIPartActionItem>));
+                // Get the list of all UIPartActionItem's
+                FieldInfo itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                           .First(fi => fi.FieldType == typeof(List<UIPartActionItem>));
 
-                var item = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
-                foreach (var it in item)
+                List<UIPartActionItem> item = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
+                // We only need the UIPartActionEventItem's
+                IEnumerable<UIPartActionItem> actionEventButtons = item.Where(l => (l as UIPartActionEventItem) != null);
+
+                foreach (UIPartActionEventItem button in actionEventButtons)
                 {
-                    var button = it as UIPartActionEventItem;
-                    if (button != null)
-                    {
-                        var partEventFieldInfo = button.Evt.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                            .First(fi => fi.FieldType == typeof(BaseEventDelegate));
+                    BaseEvent originalEvent = button.Evt;
+                    // Get the BaseEventDelegate object from the button
+                    FieldInfo partEventFieldInfo = typeof(BaseEvent).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                                   .First(fi => fi.FieldType == typeof(BaseEventDelegate));
 
-                        var partEvent = (BaseEventDelegate)partEventFieldInfo.GetValue(button.Evt);
-                        if (!partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_control")))
-                        {
-                            bool ignore_delay = partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true).Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
-                            var eventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                .First(fi => fi.FieldType == typeof(BaseEvent));
-                            eventField.SetValue(button, Wrapper.CreateWrapper(button.Evt, pass, ignore_delay));
-                        }
+                    BaseEventDelegate partEvent = (BaseEventDelegate)partEventFieldInfo.GetValue(originalEvent);
+                    object[] customAttributes = partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true);
+
+                    // Look for the custom attribute skip_control
+                    bool skip_control = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_control"));
+
+                    if (!skip_control)
+                    {
+                        // Look for the custom attribute skip_delay
+                        bool ignore_delay = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
+
+                        // Override the old BaseEvent with our BaseEvent to the button
+                        FieldInfo eventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                               .First(fi => fi.FieldType == typeof(BaseEvent));
+
+                        BaseEventList eventList = originalEvent.listParent;
+                        int listIndex = eventList.IndexOf(originalEvent);
+
+                        // create the new BaseEvent
+                        BaseEvent hookedEvent = Wrapper.CreateWrapper(originalEvent, pass, ignore_delay);
+                        eventList.RemoveAt(listIndex);
+                        eventList.Add(hookedEvent);
+
+                        eventField.SetValue(button, hookedEvent);
                     }
                 }
             }
@@ -66,7 +88,7 @@ namespace RemoteTech.FlightComputer
                 return new_event;
             }
 
-            [KSPEvent(category="skip_control")]
+            [KSPEvent(category = "skip_control")]
             public void Invoke()
             {
                 mPassthrough.Invoke(mEvent, mIgnoreDelay);
