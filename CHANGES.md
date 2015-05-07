@@ -1,6 +1,6 @@
 Version 1.6.4
 ========================================
-Released May 05, 2015
+Released May 07, 2015
 
 - KSP 1.0 compatibility
 
