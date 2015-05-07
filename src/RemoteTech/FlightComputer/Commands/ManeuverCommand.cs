@@ -198,6 +198,8 @@ namespace RemoteTech.FlightComputer.Commands
                         // Set the ManeuverNode into this command
                         this.Node = fc.Vessel.patchedConicSolver.maneuverNodes[this.NodeIndex];
                         RTLog.Notify("Found Maneuver {0} with {1} dV", this.NodeIndex, this.Node.DeltaV);
+
+                        return true;
                     }
                 }
             }
