@@ -26,8 +26,7 @@ namespace RemoteTech.FlightComputer
 
                 case ReferenceFrame.North:
                     up = (v.mainBody.position - v.CoM);
-                    forward = Vector3.ProjectOnPlane(up,
-                        v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM );
+                    forward = Vector3.ProjectOnPlane(v.mainBody.position + v.mainBody.transform.up * (float)v.mainBody.Radius - v.CoM, up);
                     break;
 
                 case ReferenceFrame.Maneuver:
@@ -145,15 +144,6 @@ namespace RemoteTech.FlightComputer
             double thrust = 0.0;
 
             foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>()))
-            {
-                // Notice: flameout is only true if you try to perform with this engine not before
-                if (!pm.EngineIgnited || pm.flameout) continue;
-                // check for the needed propellant before changing the total thrust
-                if (!FlightCore.hasPropellant(pm.propellants)) continue;
-                thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
-            }
-
-            foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>()))
             {
                 // Notice: flameout is only true if you try to perform with this engine not before
                 if (!pm.EngineIgnited || pm.flameout) continue;
@@ -437,16 +427,6 @@ namespace RemoteTech.FlightComputer
                 bool engineFound = false;
                 {
                     ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
-                    if (engine != null)
-                    {
-                        if (!engine.isOperational)
-                            continue;
-                        engineFound = true;
-                        maxThrust = engine.maxThrust;
-                    }
-                }
-                {
-                    ModuleEnginesFX engine = p.Modules.OfType<ModuleEnginesFX>().FirstOrDefault();
                     if (engine != null)
                     {
                         if (!engine.isOperational)

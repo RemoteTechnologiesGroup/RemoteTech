@@ -35,30 +35,18 @@ namespace RemoteTech.UI
             }
         }
 
-        private static class Style
-        {
-            public static readonly GUIStyle Button;
-            public static readonly GUIStyle ButtonGray;
-            public static readonly GUIStyle ButtonGreen;
-            public static readonly GUIStyle ButtonRed;
-            public static readonly GUIStyle ButtonYellow;
-
-            static Style()
-            {
-                Button = GUITextureButtonFactory.CreateFromFilename("texButton.png");
-                ButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray.png");
-                ButtonGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen.png");
-                ButtonRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed.png");
-                ButtonYellow = GUITextureButtonFactory.CreateFromFilename("texButtonYellow.png");
-            }
-        }
-
         private SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
         private AntennaFragment mAntennaFragment = new AntennaFragment(null);
         private TargetInfoWindow mTargetInfos;
         private bool mEnabled;
         private bool mShowOverlay = true;
         private bool onTrackingStation { get { return (HighLogic.LoadedScene == GameScenes.TRACKSTATION); } }
+
+        public static GUIStyle Button;
+        public static GUIStyle ButtonGray;
+        public static GUIStyle ButtonGreen;
+        public static GUIStyle ButtonRed;
+        public static GUIStyle ButtonYellow;
 
         private Rect Position
         {
@@ -168,12 +156,12 @@ namespace RemoteTech.UI
             {
                 var sat = mSatelliteFragment.Satellite;
                 if (sat == null)
-                    return Style.ButtonGray;
+                    return ButtonGray;
                 if (RTCore.Instance.Network[sat].Any())
-                    return Style.ButtonGreen;
+                    return ButtonGreen;
                 if (sat.HasLocalControl)
-                    return Style.ButtonYellow;
-                return Style.ButtonRed;
+                    return ButtonYellow;
+                return ButtonRed;
             }
         }
 
@@ -189,6 +177,13 @@ namespace RemoteTech.UI
 
         public FilterOverlay()
         {
+            // loading styles
+            Button = GUITextureButtonFactory.CreateFromFilename("texButton.png");
+            ButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray.png");
+            ButtonGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen.png");
+            ButtonRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed.png");
+            ButtonYellow = GUITextureButtonFactory.CreateFromFilename("texButtonYellow.png");
+
             GameEvents.onPlanetariumTargetChanged.Add(OnChangeTarget);
             GameEvents.onHideUI.Add(OnHideUI);
             GameEvents.onShowUI.Add(OnShowUI);
@@ -316,21 +311,21 @@ namespace RemoteTech.UI
                     {
                         if (GUILayout.Button("", StyleStatusButton))
                             OnClickStatus();
-                        if (GUILayout.Button(TextureTypeButton, Style.Button))
+                        if (GUILayout.Button(TextureTypeButton, Button))
                             OnClickType();
-                        if (GUILayout.Button(TextureReachButton, Style.Button))
+                        if (GUILayout.Button(TextureReachButton, Button))
                             OnClickReach();
-                        if (GUILayout.Button(TextureComButton, Style.Button))
+                        if (GUILayout.Button(TextureComButton, Button))
                             OnClickCompath();
                     }
                     else
                     {
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button(TextureComButton, Style.Button))
+                        if (GUILayout.Button(TextureComButton, Button))
                             OnClickCompath();
-                        if (GUILayout.Button(TextureReachButton, Style.Button))
+                        if (GUILayout.Button(TextureReachButton, Button))
                             OnClickReach();
-                        if (GUILayout.Button(TextureTypeButton, Style.Button))
+                        if (GUILayout.Button(TextureTypeButton, Button))
                             OnClickType();
                         if (GUILayout.Button("", StyleStatusButton))
                             OnClickStatus();
@@ -409,7 +404,7 @@ namespace RemoteTech.UI
                 mEnabled = false;
                 mTargetInfos.Hide();
             }
-            else if (StyleStatusButton != Style.ButtonRed && StyleStatusButton != Style.ButtonGray)
+            else if (StyleStatusButton != ButtonRed && StyleStatusButton != ButtonGray)
             {
                 mEnabled = true;
             }

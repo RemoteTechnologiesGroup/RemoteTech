@@ -15,20 +15,11 @@ namespace RemoteTech.UI
                 RTUtil.LoadImage(out Satellite, "texSatellite.png");
             }
         }
-
-        private static class Style
-        {
-            public static readonly GUIStyle Button;
-
-            static Style()
-            {
-                Button = GUITextureButtonFactory.CreateFromFilename("texKnowledgeNormal.png", "texKnowledgeHover.png", "texKnowledgeActive.png", "texKnowledgeHover.png");
-            }
-        }
-
+        
         private FocusFragment mFocus = new FocusFragment();
         private bool mEnabled;
         private bool mShowOverlay = true;
+        public static GUIStyle Button;
 
         private Rect PositionButton
         {
@@ -38,7 +29,7 @@ namespace RemoteTech.UI
                 var position = KnowledgeBase.Instance.KnowledgeContainer.transform.position;
                 var position2 = UIManager.instance.rayCamera.WorldToScreenPoint(position);
                 var rect = new Rect(position2.x + 154,
-                                250 + 2 * 31,
+                                250 - 1 * 31,
                                 Texture.Satellite.width,
                                 Texture.Satellite.height);
                 return rect;
@@ -50,7 +41,7 @@ namespace RemoteTech.UI
             get
             {
                 var rect = new Rect(0, 0, 250, 500);
-                rect.y = PositionButton.y + PositionButton.height / 2 - rect.height / 2;
+                rect.y = PositionButton.y;
                 rect.x = PositionButton.x - 5 - rect.width;
                 return rect;
             }
@@ -58,6 +49,8 @@ namespace RemoteTech.UI
 
         public FocusOverlay()
         {
+            Button = GUITextureButtonFactory.CreateFromFilename("texKnowledgeNormal.png", "texKnowledgeHover.png", "texKnowledgeActive.png", "texKnowledgeHover.png");
+
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
             GameEvents.onHideUI.Add(OnHideUI);
@@ -101,7 +94,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginArea(PositionButton);
             {
-                mEnabled = GUILayout.Toggle(mEnabled, Texture.Satellite, Style.Button);
+                mEnabled = GUILayout.Toggle(mEnabled, Texture.Satellite, Button);
             }
             GUILayout.EndArea();
 

@@ -62,6 +62,13 @@ namespace RemoteTech.Modules
         [KSPField] // Persistence handled by Save()
         public Guid RTAntennaTarget = Guid.Empty;
 
+        // workarround for ksp 1.0
+        [KSPField]
+        public float
+            RTPacketInterval = 0.0f,
+            RTPacketSize = 0.0f,
+            RTPacketResourceCost = 0.0f;
+
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
 //        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
 //        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
@@ -109,11 +116,31 @@ namespace RemoteTech.Modules
                 RTLog.Notify("ModuleRTAntennaPassive: Found TRANSMITTER block.");
                 mTransmitterConfig = node.GetNode("TRANSMITTER");
                 mTransmitterConfig.AddValue("name", "ModuleRTDataTransmitter");
+
+                // workarround for ksp 1.0
+                if (mTransmitterConfig.HasValue("PacketInterval"))
+                    RTPacketInterval = float.Parse(mTransmitterConfig.GetValue("PacketInterval"));
+
+                if (mTransmitterConfig.HasValue("PacketSize"))
+                    RTPacketSize = float.Parse(mTransmitterConfig.GetValue("PacketSize"));
+
+                if (mTransmitterConfig.HasValue("PacketResourceCost"))
+                    RTPacketResourceCost = float.Parse(mTransmitterConfig.GetValue("PacketResourceCost"));
             }
         }
 
         public override void OnStart(StartState state)
         {
+            // workarround for ksp 1.0
+            if (mTransmitterConfig == null)
+            {
+                mTransmitterConfig = new ConfigNode("TRANSMITTER");
+                mTransmitterConfig.AddValue("PacketInterval", RTPacketInterval);
+                mTransmitterConfig.AddValue("PacketSize", RTPacketSize);
+                mTransmitterConfig.AddValue("PacketResourceCost", RTPacketResourceCost);
+                mTransmitterConfig.AddValue("name", "ModuleRTDataTransmitter");
+            }
+
             if (RTCore.Instance != null)
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
