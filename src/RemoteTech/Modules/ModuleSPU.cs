@@ -17,10 +17,10 @@ namespace RemoteTech.Modules
         public CelestialBody Body { get { return vessel.mainBody; } }
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(vessel); } }
         public bool Powered { get { return IsRTPowered; } }
-        public bool IsCommandStation 
-        { 
+        public bool IsCommandStation
+        {
             get
-            { 
+            {
                 return IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
             }
         }
@@ -31,7 +31,7 @@ namespace RemoteTech.Modules
         private VesselSatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
 
         [KSPField(isPersistant = true)]
-        public bool 
+        public bool
             IsRTPowered = false,
             IsRTSignalProcessor = true,
             IsRTCommandStation = false;
@@ -67,8 +67,8 @@ namespace RemoteTech.Modules
         public override String GetInfo()
         {
             if (!ShowEditor_Type) return String.Empty;
-            return IsRTCommandStation 
-                ? String.Format("Remote Command capable ({0}+ crew)", RTCommandMinCrew) 
+            return IsRTCommandStation
+                ? String.Format("Remote Command capable ({0}+ crew)", RTCommandMinCrew)
                 : "Remote Control capable";
         }
 
@@ -79,7 +79,7 @@ namespace RemoteTech.Modules
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 GameEvents.onPartActionUICreate.Add(onPartActionUICreate);
-                mRegisteredId = vessel.id; 
+                mRegisteredId = vessel.id;
                 RTCore.Instance.Satellites.Register(vessel, this);
                 if (FlightComputer == null)
                     FlightComputer = new FlightComputer.FlightComputer(this);
@@ -134,7 +134,7 @@ namespace RemoteTech.Modules
         public void FixedUpdate()
         {
             if (FlightComputer != null) FlightComputer.OnFixedUpdate();
-            
+
             switch (UpdateControlState())
             {
                 case State.Operational:
@@ -172,7 +172,7 @@ namespace RemoteTech.Modules
                     e.Invoke();
                     return;
                 }
-                
+
                 var vs = RTCore.Instance.Satellites[v];
                 if (vs == null || vs.HasLocalControl)
                 {
@@ -193,6 +193,12 @@ namespace RemoteTech.Modules
                         vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
                     }
                 }
+                else if (e.listParent.part.Modules.OfType<IAntenna>().Any() &&
+                     !e.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
+                     RTSettings.Instance.ControlAntennaWithoutConnection)
+                {
+                    e.Invoke();
+                }
                 else
                 {
                     ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
@@ -205,7 +211,7 @@ namespace RemoteTech.Modules
             return String.Format("ModuleSPU({0}, {1})", Vessel != null ? Vessel.vesselName : "null", mRegisteredId);
         }
 
-        
+
         public override void OnSave(ConfigNode node)
         {
             base.OnSave(node);
