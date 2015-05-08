@@ -152,6 +152,15 @@ namespace RemoteTech.FlightComputer
                 thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
             }
 
+            foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEnginesFX>()))
+            {
+                // Notice: flameout is only true if you try to perform with this engine not before
+                if (!pm.EngineIgnited || pm.flameout) continue;
+                // check for the needed propellant before changing the total thrust
+                if (!FlightCore.hasPropellant(pm.propellants)) continue;
+                thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
+            }
+
             return thrust;
         }
     }
@@ -427,6 +436,16 @@ namespace RemoteTech.FlightComputer
                 bool engineFound = false;
                 {
                     ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
+                    if (engine != null)
+                    {
+                        if (!engine.isOperational)
+                            continue;
+                        engineFound = true;
+                        maxThrust = engine.maxThrust;
+                    }
+                }
+                {
+                    ModuleEnginesFX engine = p.Modules.OfType<ModuleEnginesFX>().FirstOrDefault();
                     if (engine != null)
                     {
                         if (!engine.isOperational)
