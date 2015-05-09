@@ -361,7 +361,7 @@ namespace RemoteTech.FlightComputer
 
             List<ICommand> backupList = mCommandQueue;
             // sort the backup queue
-            backupList = backupList.OrderBy(s => (s.TimeStamp + s.ExtraDelay)).ToList();
+            backupList = backupList.OrderBy(s => (s.Delay + s.ExtraDelay)).ToList();
             // clear the old queue
             mCommandQueue.Clear();
 
