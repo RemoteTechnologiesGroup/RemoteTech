@@ -89,7 +89,7 @@ namespace RemoteTech.FlightComputer.Commands
             var forward = Node.GetBurnVector(computer.Vessel.orbit).normalized;
             var up = (computer.SignalProcessor.Body.position - computer.SignalProcessor.Position).normalized;
             var orientation = Quaternion.LookRotation(forward, up);
-            FlightCore.HoldOrientation(ctrlState, computer, orientation);
+            FlightCore.HoldOrientation(ctrlState, computer, orientation, true);
 
             // This represents the theoretical acceleration but is off by a few m/s^2, probably because some parts are partially physicsless
             double thrustToMass = (FlightCore.GetTotalThrust(computer.Vessel) / computer.Vessel.GetTotalMass());
