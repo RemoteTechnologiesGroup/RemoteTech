@@ -37,7 +37,18 @@ namespace RemoteTech.FlightComputer
         public override bool Pop(FlightComputer f)
         {
             if (this.BaseEvent != null)
-                this.BaseEvent.Invoke();
+            {
+                try
+                {
+                    // invoke the baseevent
+                    this.BaseEvent.Invoke();
+                }
+                catch (Exception invokeException)
+                {
+                    RTLog.Notify("BaseEvent invokeException by '{0}' with message: {1}",
+                                 RTLogLevel.LVL1, this.BaseEvent.guiName, invokeException.Message);
+                }
+            }
             
             return false;
         }
