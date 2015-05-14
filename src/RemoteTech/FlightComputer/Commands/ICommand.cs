@@ -6,6 +6,7 @@ namespace RemoteTech.FlightComputer.Commands
     {
         double TimeStamp { get; set; }
         double ExtraDelay { get; set; }
+        Guid CmdGuid { get; }
         double Delay { get; }
         // The command description displayed in the flight computer
         String Description { get; }
