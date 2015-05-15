@@ -12,14 +12,18 @@ namespace RemoteTech.FlightComputer
             var v = f.Vessel;
             var forward = Vector3.zero;
             var up = Vector3.zero;
+            bool ignoreRoll = false;
+
             switch (frame)
             {
                 case ReferenceFrame.Orbit:
+                    ignoreRoll = true;
                     forward = v.GetObtVelocity();
                     up = (v.mainBody.position - v.CoM);
                     break;
 
                 case ReferenceFrame.Surface:
+                    ignoreRoll = true;
                     forward = v.GetSrfVelocity();
                     up = (v.mainBody.position - v.CoM);
                     break;
@@ -30,6 +34,7 @@ namespace RemoteTech.FlightComputer
                     break;
 
                 case ReferenceFrame.Maneuver:
+                    ignoreRoll = true;
                     if (f.Vessel.patchedConicSolver.maneuverNodes.Count != 0)
                     {
                         forward = f.Vessel.patchedConicSolver.maneuverNodes[0].GetBurnVector(v.orbit);
@@ -73,6 +78,7 @@ namespace RemoteTech.FlightComputer
             }
             Vector3.OrthoNormalize(ref forward, ref up);
             Quaternion rotationReference = Quaternion.LookRotation(forward, up);
+            
             switch (attitude)
             {
                 case FlightAttitude.Prograde:
@@ -102,13 +108,13 @@ namespace RemoteTech.FlightComputer
                     rotationReference = rotationReference * extra;
                     break;
             }
-            HoldOrientation(fs, f, rotationReference);
+            HoldOrientation(fs, f, rotationReference, ignoreRoll);
         }
 
-        public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target)
+        public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target, bool ignoreRoll = false)
         {
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
-            SteeringHelper.SteerShipToward(target, fs, f);
+            SteeringHelper.SteerShipToward(target, fs, f, ignoreRoll);
         }
 
         /// <summary>
@@ -164,10 +170,11 @@ namespace RemoteTech.FlightComputer
         /// <param name="target">The desired orientation</param>
         /// <param name="c">The FlightCtrlState for the current vessel.</param>
         /// <param name="fc">The flight computer carrying out the slew</param>
-        public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc)
+        /// <param name="ignoreRoll">[optional] to ignore the roll</param>
+        public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll)
         {
             // Add support for roll-less targets later -- Starstrider42
-            bool fixedRoll = true;
+            bool fixedRoll = !ignoreRoll;
             Vessel vessel = fc.Vessel;
             Vector3d momentOfInertia = GetTrueMoI(vessel);
             Transform vesselReference = vessel.GetTransform();
