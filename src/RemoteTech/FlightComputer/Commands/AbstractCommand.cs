@@ -5,6 +5,7 @@ namespace RemoteTech.FlightComputer.Commands
     public abstract class AbstractCommand : ICommand
     {
         public double TimeStamp { get; set; }
+        public Guid CmdGuid { get; private set; }
         public virtual double ExtraDelay { get; set; }
         public virtual double Delay { get { return Math.Max(TimeStamp - RTUtil.GameTime, 0); } }
         public virtual String Description {
@@ -22,6 +23,14 @@ namespace RemoteTech.FlightComputer.Commands
         }
         public abstract String ShortName { get; }
         public virtual int Priority { get { return 255; } }
+
+        /// <summary>
+        /// Creates a new Guid for the current command
+        /// </summary>
+        public AbstractCommand()
+        {
+            this.CmdGuid = Guid.NewGuid();
+        }
 
         // true: move to active.
         public virtual bool Pop(FlightComputer f) { return false; }
@@ -50,15 +59,16 @@ namespace RemoteTech.FlightComputer.Commands
             }
             catch (Exception) {}
 
-            if (Delay == 0) {
+            if (this.Delay == 0) {
                 // only save the current gametime if we have no signal delay.
                 // We need this to calculate the correct delta time for the
                 // ExtraDelay if we come back to this satellite.
-                TimeStamp = RTUtil.GameTime;
+                this.TimeStamp = RTUtil.GameTime;
             }
 
-            node.AddValue("TimeStamp", TimeStamp);
-            node.AddValue("ExtraDelay", ExtraDelay);
+            node.AddValue("TimeStamp", this.TimeStamp);
+            node.AddValue("ExtraDelay", this.ExtraDelay);
+            node.AddValue("CmdGuid", this.CmdGuid);
         }
 
         /// <summary>
@@ -77,6 +87,10 @@ namespace RemoteTech.FlightComputer.Commands
             if (n.HasValue("ExtraDelay"))
             {
                 ExtraDelay = double.Parse(n.GetValue("ExtraDelay"));
+            }
+            if (n.HasValue("CmdGuid"))
+            {
+                this.CmdGuid = new Guid(n.GetValue("CmdGuid"));
             }
 
             return true;
@@ -111,7 +125,7 @@ namespace RemoteTech.FlightComputer.Commands
                 ConfigNode.LoadObjectFromConfig(command, n);
                 // additional loadings
                 var result = command.Load(n, fc);
-                RTLog.Verbose("Loading command {0}={1}", RTLogLevel.LVL1, n.name, result);
+                RTLog.Verbose("Loading command {0}({1})={2}", RTLogLevel.LVL1, n.name, command.CmdGuid, result);
                 // delete command if we can't load the command correctlys
                 if (result == false)
                     command = null;
