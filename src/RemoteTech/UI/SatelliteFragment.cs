@@ -40,7 +40,7 @@ namespace RemoteTech.UI
                 GUILayout.TextField(Satellite.Name.Truncate(25), GUILayout.ExpandWidth(true));
                 RTUtil.Button("Name", () =>
                 {
-                    var vessel = FlightGlobals.Vessels.First(v => v.id == Satellite.Guid);
+                    var vessel = RTUtil.GetVesselById(Satellite.Guid);
                     if (vessel) vessel.RenameVessel();
                 }, GUILayout.ExpandWidth(false), GUILayout.Height(24));
             }

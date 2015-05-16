@@ -67,7 +67,7 @@ namespace RemoteTech.FlightComputer.Commands
                     case "Vessel":
                         {
                             Guid Vesselid = new Guid(TargetId);
-                            Target = FlightGlobals.Vessels.Where(v => v.id == Vesselid).FirstOrDefault();
+                            Target = RTUtil.GetVesselById(Vesselid);
                             break;
                         }
                     case "CelestialBody":

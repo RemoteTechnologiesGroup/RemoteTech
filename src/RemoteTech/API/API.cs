@@ -10,10 +10,10 @@ namespace RemoteTech.API
     {
         public static bool HasLocalControl(Guid id)
         {
-            var vessel = FlightGlobals.Vessels.FirstOrDefault(v => v.id == id);
+            var vessel = RTUtil.GetVesselById(id);            
             if (vessel == null) return false;
 
-            RTLog.Verbose("Flight: {0} HasLocalControl: {1}", RTLogLevel.API, id, vessel.HasLocalControl());
+            RTLog.Verbose("Flight: {0}({1}) HasLocalControl: {2}", RTLogLevel.API, id, vessel.name, vessel.HasLocalControl());
 
             return vessel.HasLocalControl();
         }
