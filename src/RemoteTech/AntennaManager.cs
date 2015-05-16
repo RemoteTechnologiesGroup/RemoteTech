@@ -70,6 +70,14 @@ namespace RemoteTech
                     mLoadedAntennaCache.Remove(key);
                 }
                 OnUnregister(antenna);
+
+                Vessel vessel = RTUtil.GetVesselById(key);
+                if (vessel != null)
+                {
+                    // trigger the onRails on more time
+                    // to reregister the antenna as a protoSat
+                    this.OnVesselGoOnRails(vessel);
+                }
             }
         }
 
