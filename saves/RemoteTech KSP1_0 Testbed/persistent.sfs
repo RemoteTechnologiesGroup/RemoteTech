@@ -10,7 +10,7 @@ GAME
 	scene = 5
 	editor = None
 	flag = Squad/Flags/default
-	launchID = 25
+	launchID = 30
 	PARAMETERS
 	{
 		preset = Custom
@@ -87,7 +87,7 @@ GAME
 	{
 		name = ContractSystem
 		scene = 7, 8, 5, 6
-		update = 543392.788165607
+		update = 544761.657988417
 		CONTRACTS
 		{
 			CONTRACT
@@ -1067,7 +1067,7 @@ GAME
 	{
 		name = Funding
 		scene = 7, 8, 5, 6
-		funds = 34428851.7725087
+		funds = 33669838.2260324
 	}
 	SCENARIO
 	{
@@ -1359,7 +1359,7 @@ GAME
 	{
 		name = ResearchAndDevelopment
 		scene = 7, 8, 5, 6
-		sci = 1307.923
+		sci = 9.899167E+07
 		Tech
 		{
 			id = start
@@ -1481,8 +1481,6 @@ GAME
 			id = electrics
 			state = Available
 			cost = 90
-			part = shorty
-			part = shrimp
 			part = RTShortDish2
 			part = probeCoreOcto
 			part = solarPanels5
@@ -1653,7 +1651,6 @@ GAME
 			id = largeElectrics
 			state = Available
 			cost = 300
-			part = sghga
 			part = RTLongAntenna2
 			part = RTLongDish2
 			part = largeSolarPanel
@@ -1719,7 +1716,6 @@ GAME
 			id = specializedElectrics
 			state = Available
 			cost = 550
-			part = tsa
 			part = RTGigaDish2
 			part = RTLongAntenna3
 			part = batteryBankLarge
@@ -1761,7 +1757,6 @@ GAME
 			id = advScienceTech
 			state = Available
 			cost = 550
-			part = hgagali
 			part = RTGigaDish1
 			part = ISRU
 			part = RadialDrill
@@ -1775,6 +1770,236 @@ GAME
 			cost = 300
 			part = sensorAccelerometer
 			part = commDish
+		}
+		Tech
+		{
+			id = experimentalScience
+			state = Available
+			cost = 1000
+			part = LargeTank
+			part = OrbitalScanner
+		}
+		Tech
+		{
+			id = fieldScience
+			state = Available
+			cost = 300
+			part = seatExternalCmd
+			part = roverBody
+			part = sensorAtmosphere
+			part = roverWheel1
+			part = roverWheel2
+		}
+		Tech
+		{
+			id = heavierRocketry
+			state = Available
+			cost = 160
+			part = liquidEngine1-2
+			part = Size2LFB
+		}
+		Tech
+		{
+			id = nuclearPropulsion
+			state = Available
+			cost = 300
+			part = nuclearEngine
+		}
+		Tech
+		{
+			id = veryHeavyRocketry
+			state = Available
+			cost = 550
+			part = Size3AdvancedEngine
+			part = Size3EngineCluster
+		}
+		Tech
+		{
+			id = largeVolumeContainment
+			state = Available
+			cost = 300
+			part = Size3MediumTank
+			part = Size3SmallTank
+			part = size3Decoupler
+			part = Size3to2Adapter
+		}
+		Tech
+		{
+			id = highPerformanceFuelSystems
+			state = Available
+			cost = 550
+			part = Size3LargeTank
+		}
+		Tech
+		{
+			id = metaMaterials
+			state = Available
+			cost = 550
+			part = adapterLargeSmallBi
+			part = adapterLargeSmallQuad
+			part = adapterLargeSmallTri
+			part = stationHub
+			part = dockingPortLarge
+		}
+		Tech
+		{
+			id = actuators
+			state = Available
+			cost = 160
+			part = GrapplingDevice
+		}
+		Tech
+		{
+			id = supersonicFlight
+			state = Available
+			cost = 160
+			part = nacelleBody
+			part = ramAirIntake
+			part = elevon2
+			part = elevon3
+			part = wingStrake
+			part = mk2Cockpit.Standard
+			part = adapterSize2-Size1
+			part = mk2SpacePlaneAdapter
+			part = mk2FuselageLongLFO
+			part = mk2Fuselage
+			part = mk2CargoBayL
+		}
+		Tech
+		{
+			id = highAltitudeFlight
+			state = Available
+			cost = 300
+			part = IntakeRadialLong
+			part = wingConnector5
+			part = delta.small
+			part = structuralWing3
+			part = mk2Cockpit.Inline
+			part = turboFanEngine
+			part = mk2FuselageShortLFO
+			part = mk2FuselageShortLiquid
+			part = mk2FuselageShortMono
+			part = smallHardpoint
+		}
+		Tech
+		{
+			id = hypersonicFlight
+			state = Available
+			cost = 550
+			part = AdvancedCanard
+			part = CanardController
+			part = radialEngineBody
+			part = shockConeIntake
+			part = elevon5
+			part = toroidalAerospike
+		}
+		Tech
+		{
+			id = aerospaceTech
+			state = Available
+			cost = 1000
+			part = wingShuttleDelta
+			part = wingShuttleElevon1
+			part = wingShuttleElevon2
+			part = wingShuttleRudder
+			part = wingShuttleStrake
+			part = RAPIER
+		}
+		Tech
+		{
+			id = advAerodynamics
+			state = Available
+			cost = 160
+			part = airbrake1
+			part = pointyNoseConeB
+			part = noseConeAdapter
+			part = fairingSize2
+			part = wingConnector4
+			part = smallCtrlSrf
+			part = structuralWing4
+			part = adapterSize2-Mk2
+			part = adapterSize2-Size1Slant
+			part = mk2.1m.Bicoupler
+			part = mk2.1m.AdapterLong
+			part = structuralPylon
+			part = mk2CargoBayS
+			part = mk2CrewCabin
+			part = mk2DockingPort
+		}
+		Tech
+		{
+			id = heavyAerodynamics
+			state = Available
+			cost = 300
+			part = fairingSize3
+			part = mk3Cockpit.Shuttle
+			part = adapterMk3-Mk2
+			part = adapterMk3-Size2
+			part = adapterMk3-Size2Slant
+			part = mk3CrewCabin
+			part = mk3FuselageLFO.25
+			part = mk3FuselageLFO.50
+			part = mk3FuselageLF.25
+			part = mk3FuselageLF.50
+			part = mk3CargoBayM
+			part = mk3CargoBayS
+		}
+		Tech
+		{
+			id = experimentalAerodynamics
+			state = Available
+			cost = 550
+			part = airlinerCtrlSrf
+			part = airlinerMainWing
+			part = airlinerTailFin
+			part = adapterSize3-Mk3
+			part = mk3FuselageLFO.100
+			part = mk3FuselageLF.100
+			part = mk3FuselageMONO
+			part = mk3CargoBayL
+		}
+		Tech
+		{
+			id = advLanding
+			state = Available
+			cost = 160
+			part = HeatShield3
+			part = landingLeg1-2
+			part = radialDrogue
+			part = parachuteDrogue
+			part = GearMedium
+		}
+		Tech
+		{
+			id = heavyLanding
+			state = Available
+			cost = 300
+			part = GearLarge
+		}
+		Tech
+		{
+			id = advancedMotors
+			state = Available
+			cost = 550
+			part = wheelMed
+			part = roverWheel3
+		}
+		Tech
+		{
+			id = specializedControl
+			state = Available
+			cost = 160
+			part = avionicsNoseCone
+			part = asasmodule1-2
+			part = vernierEngine
+			part = rcsTankRadialLong
+		}
+		Tech
+		{
+			id = automation
+			state = Available
+			cost = 550
+			part = mk2DroneCore
 		}
 		Science
 		{
@@ -1921,9 +2146,9 @@ GAME
 			id = recovery@KerbinFlew
 			title = Recovery of a vessel that survived a flight.
 			dsc = 1
-			scv = 0.1666667
+			scv = 0.02777775
 			sbv = 5
-			sci = 5
+			sci = 5.833333
 			cap = 6
 		}
 		Science
@@ -1935,6 +2160,16 @@ GAME
 			sbv = 8
 			sci = 8
 			cap = 9.6
+		}
+		Science
+		{
+			id = gravityScan@KerbinInSpaceLowWater
+			title = Gravity Scan from space just above Kerbin's Water
+			dsc = 3
+			scv = 1
+			sbv = 1
+			sci = 0
+			cap = 22
 		}
 	}
 	SCENARIO
@@ -2281,7 +2516,7 @@ GAME
 	FLIGHTSTATE
 	{
 		version = 1.0.2
-		UT = 543398.168165612
+		UT = 544765.597988421
 		activeVessel = 0
 		mapViewFiltering = -1
 		VESSEL
@@ -37492,7 +37727,7 @@ GAME
 				INC = 3.61520467496315E-05
 				LPE = 350.59263072508
 				LAN = 52.8435875155722
-				MNA = 0.167015297436235
+				MNA = 5.26221772890188
 				EPH = 179092.50164093
 				REF = 3
 			}
@@ -42020,7 +42255,7 @@ GAME
 				INC = 1.606365529442E-05
 				LPE = 197.018720587285
 				LAN = -13.4571908723043
-				MNA = 6.06757016128376
+				MNA = 0.681213163742595
 				EPH = 179142.601640904
 				REF = 3
 			}
@@ -54958,13 +55193,13 @@ GAME
 			cMod = 0
 			ORBIT
 			{
-				SMA = 101579.820971994
+				SMA = NaN
 				ECC = 1
 				INC = NaN
-				LPE = 57.1531682561873
-				LAN = 275.186491383381
-				MNA = 3.14159265358979
-				EPH = 543392.748165607
+				LPE = 87.8325340653783
+				LAN = 309.396462045939
+				MNA = 0
+				EPH = 544761.597988417
 				REF = 2
 			}
 			PART
@@ -67429,6 +67664,4991 @@ GAME
 				mainThrottle = 0
 			}
 		}
+		VESSEL
+		{
+			pid = 39515494ae2c4478bfcd458d72b725a5
+			name = Narrow Scanner Kerbin
+			type = Probe
+			sit = ORBITING
+			landed = False
+			landedAt = 
+			splashed = False
+			met = 162.800000152318
+			lct = 543491.348165697
+			root = 0
+			lat = -33.4357114696857
+			lon = 236.633252955862
+			alt = 71981.6585399703
+			hgt = -1
+			nrm = -3.671293E-06,-1,1.3805E-05
+			rot = -0.4404894,-0.7212364,-0.1745608,-0.5052878
+			CoM = 0.00167083,-0.3315859,-0.002423667
+			stg = 1
+			prst = False
+			ref = 11584384
+			ctrl = True
+			cPch = 
+			cHdg = 
+			cMod = 0
+			ORBIT
+			{
+				SMA = 671999.195887321
+				ECC = 4.63908468527242E-05
+				INC = 91.1952301457727
+				LPE = 156.944097610217
+				LAN = 208.362281040114
+				MNA = 0.98609920920067
+				EPH = 543654.168165849
+				REF = 1
+			}
+			PART
+			{
+				name = probeCoreOcto
+				cid = 4294721148
+				uid = 11584384
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = 0,0,0
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 0
+				srfN = None, -1
+				attN = bottom, 3
+				attN = top, 13
+				mass = 0.1
+				temp = 288.418161570086
+				expt = 0
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = probeCoreOcto (Narrow Scanner Kerbin)
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleCommand
+					isEnabled = True
+					controlSrcStatusText = Operational
+					EVENTS
+					{
+						MakeReference
+						{
+							active = True
+							guiActive = True
+							guiIcon = Control From Here
+							guiName = Control From Here
+							category = Control From Here
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						RenameVessel
+						{
+							active = True
+							guiActive = True
+							guiIcon = Rename Vessel
+							guiName = Rename Vessel
+							category = Rename Vessel
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleReactionWheel
+					isEnabled = True
+					stateString = Running
+					WheelState = Active
+					EVENTS
+					{
+						OnToggle
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Toggle Torque
+							guiName = Toggle Torque
+							category = Toggle Torque
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						Activate
+						{
+							actionGroup = None
+						}
+						Deactivate
+						{
+							actionGroup = None
+						}
+						Toggle
+						{
+							actionGroup = None
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleSAS
+					isEnabled = True
+					standaloneToggle = True
+					standaloneToggle_UIFlight
+					{
+						controlEnabled = True
+					}
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleSPU
+					isEnabled = True
+					IsRTPowered = True
+					IsRTSignalProcessor = True
+					IsRTCommandStation = False
+					RTCommandMinCrew = 6
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+					FlightComputer
+					{
+						TotalDelay = 0
+						ActiveCommands
+						{
+							AttitudeCommand
+							{
+								Mode = AttitudeHold
+								Attitude = RadialMinus
+								Frame = Orbit
+								Orientation = 0,0,0,1
+								Altitude = NaN
+								TimeStamp = 543654.168165849
+								ExtraDelay = 0
+								CmdGuid = 82b4a3ef-4572-46ef-a273-0e7f0dbd0ce7
+							}
+						}
+						Commands
+						{
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleRTAntennaPassive
+					isEnabled = True
+					IsRTAntenna = True
+					IsRTActive = True
+					IsRTPowered = True
+					IsRTBroken = False
+					RTDishCosAngle = 1
+					RTOmniRange = 3000
+					RTDishRange = -1
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleTripLogger
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+					Log
+					{
+						flight = 0
+						0 = Orbit,Kerbin
+					}
+				}
+				RESOURCE
+				{
+					name = ElectricCharge
+					amount = 9.999933333335
+					maxAmount = 10
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = ksp.r.largeBatteryPack
+				cid = 4294701064
+				uid = 4266102887
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = -0.256530493497849,-0.11670970916748,8.32620372648307E-08
+				rotation = 0,-0.7071068,0,-0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 2
+				srfN = srfAttach, 0
+				mass = 0.02
+				temp = 288.506245018089
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = ksp.r.largeBatteryPack
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				RESOURCE
+				{
+					name = ElectricCharge
+					amount = 399.999933333335
+					maxAmount = 400
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = ksp.r.largeBatteryPack
+				cid = 4294700654
+				uid = 3282101441
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = 0.256530493497849,-0.11670970916748,-6.08354326914196E-08
+				rotation = 0,0.7071068,0,-0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 1
+				srfN = srfAttach, 0
+				mass = 0.02
+				temp = 288.49203505195
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = ksp.r.largeBatteryPack
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				RESOURCE
+				{
+					name = ElectricCharge
+					amount = 399.999933333335
+					maxAmount = 400
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = sasModule
+				cid = 4294696762
+				uid = 4218978625
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = 0,-0.278189659118652,0
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 0
+				srfN = None, -1
+				attN = bottom, 4
+				attN = top, 0
+				mass = 0.05
+				temp = 288.148402387687
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = sasModule
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleReactionWheel
+					isEnabled = True
+					stateString = Running
+					WheelState = Active
+					EVENTS
+					{
+						OnToggle
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Toggle Torque
+							guiName = Toggle Torque
+							category = Toggle Torque
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						Activate
+						{
+							actionGroup = None
+						}
+						Deactivate
+						{
+							actionGroup = None
+						}
+						Toggle
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = rcsTankMini
+				cid = 4294713878
+				uid = 501212518
+				mid = 337419889
+				launchID = 25
+				parent = 3
+				position = 0,-0.55679988861084,0
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 0
+				srfN = None, -1
+				attN = top, 3
+				attN = None, -1
+				mass = 0.05
+				temp = 287.77222179696
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = rcsTankMini
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				RESOURCE
+				{
+					name = MonoPropellant
+					amount = 80
+					maxAmount = 80
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = RCSBlock
+				cid = 4294657678
+				uid = 3890193594
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = 0.366466999053955,-0.612739562988281,-0.000742256874218583
+				rotation = -6.102155E-08,1,-2.512148E-15,0
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 6
+				srfN = srfAttach, 4
+				mass = 0.05
+				temp = 287.872268574845
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = RCSBlock
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleRCS
+					isEnabled = True
+					rcsEnabled = True
+					EVENTS
+					{
+						Disable
+						{
+							active = True
+							guiActive = True
+							guiIcon = Disable RCS Port
+							guiName = Disable RCS Port
+							category = Disable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Enable
+						{
+							active = False
+							guiActive = True
+							guiIcon = Enable RCS Port
+							guiName = Enable RCS Port
+							category = Enable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = RCSBlock
+				cid = 4294657334
+				uid = 3505732421
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = -0.366466999053955,-0.612739562988281,0.000742288888432086
+				rotation = 1.551889E-16,-4.371139E-08,6.102155E-08,-1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 5
+				srfN = srfAttach, 4
+				mass = 0.05
+				temp = 287.859894311924
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = RCSBlock
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleRCS
+					isEnabled = True
+					rcsEnabled = True
+					EVENTS
+					{
+						Disable
+						{
+							active = True
+							guiActive = True
+							guiIcon = Disable RCS Port
+							guiName = Disable RCS Port
+							category = Disable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Enable
+						{
+							active = False
+							guiActive = True
+							guiIcon = Enable RCS Port
+							guiName = Enable RCS Port
+							category = Enable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = RTLongAntenna3
+				cid = 4294646554
+				uid = 2620680317
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = 0.213445901870728,-0.578869819641113,-0.213445797562599
+				rotation = 0.2705981,0.6532814,-0.6532816,0.270598
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 4
+				mass = 0.02
+				temp = 287.970670711827
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = RTLongAntenna3
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleAnimateGeneric
+					isEnabled = True
+					status = Locked
+					animSwitch = True
+					animTime = 0.9927171
+					animSpeed = 1
+					EVENTS
+					{
+						Toggle
+						{
+							active = False
+							guiActive = False
+							guiActiveEditor = True
+							guiIcon = Toggle
+							guiName = Extend
+							category = Toggle
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+							active = False
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleRTAntenna
+					isEnabled = True
+					IsRTAntenna = True
+					IsRTActive = True
+					IsRTPowered = True
+					IsRTBroken = False
+					RTDishCosAngle = 1
+					RTOmniRange = 3000000
+					RTDishRange = -1
+					RTAntennaTarget = 00000000-0000-0000-0000-000000000000
+					EVENTS
+					{
+						EventToggle
+						{
+							active = True
+							guiActive = False
+							guiIcon = 
+							guiName = Toggle
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventTarget
+						{
+							active = False
+							guiActive = False
+							guiIcon = Target
+							guiName = No Target
+							category = Target
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventEditorOpen
+						{
+							active = True
+							guiActive = False
+							guiIcon = Start deployed
+							guiName = Start deployed
+							category = Start deployed
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventEditorClose
+						{
+							active = True
+							guiActive = False
+							guiActiveEditor = True
+							guiIcon = Start retracted
+							guiName = Start retracted
+							category = Start retracted
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventOpen
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Activate
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventClose
+						{
+							active = True
+							guiActive = True
+							guiIcon = 
+							guiName = Deactivate
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						OverrideTarget
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Set Target
+							guiName = [EVA] Set Target
+							category = [EVA] Set Target
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+						OverrideOpen
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Force Open
+							guiName = [EVA] Force Open
+							category = [EVA] Force Open
+							guiActiveUnfocused = False
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+						OverrideClose
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Force Close
+							guiName = [EVA] Force Close
+							category = [EVA] Force Close
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ActionToggle
+						{
+							actionGroup = None
+						}
+						ActionOpen
+						{
+							actionGroup = None
+						}
+						ActionClose
+						{
+							actionGroup = None
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleSPUPassive
+					isEnabled = True
+					IsRTPowered = True
+					IsRTSignalProcessor = True
+					IsRTCommandStation = False
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleRTDataTransmitter
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+			}
+			PART
+			{
+				name = omsEngine
+				cid = 4294632020
+				uid = 1298597048
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = -0.213495194911957,-0.493720054626465,-0.213495194911957
+				rotation = -6.379805E-08,0.9238796,-1.540221E-07,-0.3826835
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 9
+				srfN = srfAttach, 4
+				mass = 0.09
+				temp = 287.731253264107
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = omsEngine
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleEngines
+					isEnabled = True
+					staged = False
+					flameout = False
+					EngineIgnited = False
+					engineShutdown = False
+					currentThrottle = 0
+					thrustPercentage = 100
+					manuallyOverridden = False
+					thrustPercentage_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 100
+						stepIncrement = 0.5
+					}
+					EVENTS
+					{
+						Activate
+						{
+							active = True
+							guiActive = True
+							guiIcon = Activate Engine
+							guiName = Activate Engine
+							category = Activate Engine
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Shutdown
+						{
+							active = False
+							guiActive = True
+							guiIcon = Shutdown Engine
+							guiName = Shutdown Engine
+							category = Shutdown Engine
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						OnAction
+						{
+							actionGroup = None
+						}
+						ShutdownAction
+						{
+							actionGroup = None
+						}
+						ActivateAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = omsEngine
+				cid = 4294631406
+				uid = 4187346521
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = 0.213495194911957,-0.493720054626465,0.213495194911957
+				rotation = -1.540221E-07,-0.3826835,6.379806E-08,-0.9238796
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 8
+				srfN = srfAttach, 4
+				mass = 0.09
+				temp = 287.710408857967
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = omsEngine
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleEngines
+					isEnabled = True
+					staged = False
+					flameout = False
+					EngineIgnited = False
+					engineShutdown = False
+					currentThrottle = 0
+					thrustPercentage = 100
+					manuallyOverridden = False
+					thrustPercentage_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 100
+						stepIncrement = 0.5
+					}
+					EVENTS
+					{
+						Activate
+						{
+							active = True
+							guiActive = True
+							guiIcon = Activate Engine
+							guiName = Activate Engine
+							category = Activate Engine
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Shutdown
+						{
+							active = False
+							guiActive = True
+							guiIcon = Shutdown Engine
+							guiName = Shutdown Engine
+							category = Shutdown Engine
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						OnAction
+						{
+							actionGroup = None
+						}
+						ShutdownAction
+						{
+							actionGroup = None
+						}
+						ActivateAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = solarPanels4
+				cid = 4294599156
+				uid = 2528810480
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = 2.66314508223786E-08,-0.557299613952637,-0.304628312587738
+				rotation = -0.7071068,-1.610317E-07,-0.7071068,-1.610317E-07
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 11
+				srfN = srfAttach, 4
+				mass = 0.0175
+				temp = 288.385814109344
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = solarPanels4
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleDeployableSolarPanel
+					isEnabled = True
+					currentRotation = (-0.3501133, -0.3501032, -0.6143414, 0.6143558)
+					stateString = EXTENDED
+					storedAnimationTime = 0
+					storedAnimationSpeed = 0
+					EVENTS
+					{
+						Extend
+						{
+							active = False
+							guiActive = True
+							guiIcon = Extend Panels
+							guiName = Extend Panels
+							category = Extend Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+						Retract
+						{
+							active = False
+							guiActive = False
+							guiIcon = Retract Panels
+							guiName = Retract Panels
+							category = Retract Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ExtendPanelsAction
+						{
+							actionGroup = None
+						}
+						ExtendAction
+						{
+							actionGroup = None
+						}
+						RetractAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = solarPanels4
+				cid = 4294598914
+				uid = 2026831147
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = 4.2884431086538E-16,-0.557299613952637,0.304628312587738
+				rotation = -0.7071068,-1.610317E-07,0.7071068,1.610317E-07
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 10
+				srfN = srfAttach, 4
+				mass = 0.0175
+				temp = 288.256748217521
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = solarPanels4
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleDeployableSolarPanel
+					isEnabled = True
+					currentRotation = (-0.6143547, -0.6143423, -0.3501019, 0.350115)
+					stateString = EXTENDED
+					storedAnimationTime = 0
+					storedAnimationSpeed = 0
+					EVENTS
+					{
+						Extend
+						{
+							active = False
+							guiActive = True
+							guiIcon = Extend Panels
+							guiName = Extend Panels
+							category = Extend Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+						Retract
+						{
+							active = False
+							guiActive = False
+							guiIcon = Retract Panels
+							guiName = Retract Panels
+							category = Retract Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ExtendPanelsAction
+						{
+							actionGroup = None
+						}
+						ExtendAction
+						{
+							actionGroup = None
+						}
+						RetractAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = sensorGravimeter
+				cid = 4294527682
+				uid = 3776953403
+				mid = 337419889
+				launchID = 25
+				parent = 4
+				position = -0.213706195354462,-0.579669952392578,0.213706105947495
+				rotation = 6.379805E-08,0.9238796,-1.540221E-07,0.3826835
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 4
+				mass = 0.005
+				temp = 289.033959952614
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = sensorGravimeter
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleEnviroSensor
+					isEnabled = True
+					sensorActive = False
+					EVENTS
+					{
+						Toggle
+						{
+							active = True
+							guiActive = True
+							guiIcon = Toggle Display
+							guiName = Toggle Display
+							category = Toggle Display
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleScienceExperiment
+					isEnabled = True
+					Deployed = False
+					Inoperable = False
+					EVENTS
+					{
+						DeployExperiment
+						{
+							active = True
+							guiActive = True
+							guiIcon = Deploy
+							guiName = Log Gravity Data
+							category = Deploy
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						CollectDataExternalEvent
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Take Data
+							category = 
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+						ReviewDataEvent
+						{
+							active = False
+							guiActive = True
+							guiIcon = Review Data
+							guiName = Review Data
+							category = Review Data
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperiment
+						{
+							active = False
+							guiActive = True
+							guiIcon = Reset
+							guiName = Delete Data
+							category = Reset
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DeployExperimentExternal
+						{
+							active = True
+							guiActive = False
+							guiIcon = Deploy
+							guiName = Log Gravity Data
+							category = Deploy
+							guiActiveUnfocused = True
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Reset
+							guiName = Delete Data
+							category = Reset
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+						CleanUpExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Restore
+							guiName = Restore
+							category = Restore
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						DeployAction
+						{
+							actionGroup = None
+						}
+						ResetAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = OrbitalScanner
+				cid = 4294685688
+				uid = 70528359
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = 0,-0.044520378112793,0
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 0
+				srfN = None, -1
+				attN = bottom, 0
+				mass = 0.1
+				temp = 288.46468031659
+				expt = 0.5
+				state = 1
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = OrbitalScanner
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleGPS
+					isEnabled = False
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleResourceScanner
+					isEnabled = False
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleHighDefCamera
+					isEnabled = False
+					EVENTS
+					{
+						ToggleGui
+						{
+							active = True
+							guiActive = True
+							guiIcon = Toggle scanner GUI
+							guiName = Toggle scanner GUI
+							category = Toggle scanner GUI
+							guiActiveUnfocused = True
+							unfocusedRange = 3
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleAnimationGroup
+					isEnabled = True
+					_isActive = False
+					isDeployed = False
+					EVENTS
+					{
+						DeployModule
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Deploy
+							guiName = Activate Scanner
+							category = Deploy
+							guiActiveUnfocused = True
+							unfocusedRange = 3
+							externalToEVAOnly = True
+						}
+						RetractModule
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Retract
+							guiName = Deactivate Scanner
+							category = Retract
+							guiActiveUnfocused = True
+							unfocusedRange = 3
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						DeployModuleAction
+						{
+							actionGroup = None
+						}
+						RetractModuleAction
+						{
+							actionGroup = None
+						}
+						ToggleModuleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = rtg
+				cid = 4294670552
+				uid = 3581868530
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = -0.287154704332352,-0.136190414428711,-0.328793495893478
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 15
+				sym = 16
+				sym = 17
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.08
+				temp = 288.331285641424
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = rtg
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleGenerator
+					isEnabled = True
+					generatorIsActive = True
+					throttle = 0
+					EVENTS
+					{
+						Activate
+						{
+							active = False
+							guiActive = True
+							guiIcon = Activate Generator
+							guiName = Activate Generator
+							category = Activate Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Shutdown
+						{
+							active = False
+							guiActive = True
+							guiIcon = Shutdown Generator
+							guiName = Shutdown Generator
+							category = Shutdown Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+						ActivateAction
+						{
+							actionGroup = None
+						}
+						ShutdownAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = rtg
+				cid = 4294669722
+				uid = 1434293708
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = -0.328793495893478,-0.136190414428711,0.287154585123062
+				rotation = 0,0.7071068,0,0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 14
+				sym = 16
+				sym = 17
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.08
+				temp = 288.288873465399
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = rtg
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleGenerator
+					isEnabled = True
+					generatorIsActive = True
+					throttle = 0
+					EVENTS
+					{
+						Activate
+						{
+							active = False
+							guiActive = True
+							guiIcon = Activate Generator
+							guiName = Activate Generator
+							category = Activate Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Shutdown
+						{
+							active = False
+							guiActive = True
+							guiIcon = Shutdown Generator
+							guiName = Shutdown Generator
+							category = Shutdown Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+						ActivateAction
+						{
+							actionGroup = None
+						}
+						ShutdownAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = rtg
+				cid = 4294669690
+				uid = 1566503645
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = 0.287154704332352,-0.136190414428711,0.328793495893478
+				rotation = 0,1,0,-4.371139E-08
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 14
+				sym = 15
+				sym = 17
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.08
+				temp = 288.279423480383
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = rtg
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleGenerator
+					isEnabled = True
+					generatorIsActive = True
+					throttle = 0
+					EVENTS
+					{
+						Activate
+						{
+							active = False
+							guiActive = True
+							guiIcon = Activate Generator
+							guiName = Activate Generator
+							category = Activate Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Shutdown
+						{
+							active = False
+							guiActive = True
+							guiIcon = Shutdown Generator
+							guiName = Shutdown Generator
+							category = Shutdown Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+						ActivateAction
+						{
+							actionGroup = None
+						}
+						ShutdownAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = rtg
+				cid = 4294669658
+				uid = 4191802866
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = 0.328793495893478,-0.136190414428711,-0.287154704332352
+				rotation = 0,0.7071068,0,-0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 14
+				sym = 15
+				sym = 16
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.08
+				temp = 288.307065935918
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = rtg
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleGenerator
+					isEnabled = True
+					generatorIsActive = True
+					throttle = 0
+					EVENTS
+					{
+						Activate
+						{
+							active = False
+							guiActive = True
+							guiIcon = Activate Generator
+							guiName = Activate Generator
+							category = Activate Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Shutdown
+						{
+							active = False
+							guiActive = True
+							guiIcon = Shutdown Generator
+							guiName = Shutdown Generator
+							category = Shutdown Generator
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+						ActivateAction
+						{
+							actionGroup = None
+						}
+						ShutdownAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = RCSBlock
+				cid = 4294661412
+				uid = 3954634406
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = -0.000742218107916415,0.0172500610351563,-0.399995714426041
+				rotation = 0,0.7071069,0,-0.7071067
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 19
+				srfN = srfAttach, 0
+				mass = 0.05
+				temp = 288.453033119765
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = RCSBlock
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleRCS
+					isEnabled = True
+					rcsEnabled = True
+					EVENTS
+					{
+						Disable
+						{
+							active = True
+							guiActive = True
+							guiIcon = Disable RCS Port
+							guiName = Disable RCS Port
+							category = Disable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Enable
+						{
+							active = False
+							guiActive = True
+							guiIcon = Enable RCS Port
+							guiName = Enable RCS Port
+							category = Enable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = RCSBlock
+				cid = 4294658746
+				uid = 2919140280
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = 0.000742253090720624,0.0172500610351563,0.399995714426041
+				rotation = 0,-0.7071068,0,-0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 18
+				srfN = srfAttach, 0
+				mass = 0.05
+				temp = 288.454955095639
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = RCSBlock
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleRCS
+					isEnabled = True
+					rcsEnabled = True
+					EVENTS
+					{
+						Disable
+						{
+							active = True
+							guiActive = True
+							guiIcon = Disable RCS Port
+							guiName = Disable RCS Port
+							category = Disable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						Enable
+						{
+							active = False
+							guiActive = True
+							guiIcon = Enable RCS Port
+							guiName = Enable RCS Port
+							category = Enable RCS Port
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = RTShortAntenna1
+				cid = 4294583376
+				uid = 1786892302
+				mid = 337419889
+				launchID = 25
+				parent = 0
+				position = -4.07379907585437E-08,0.118000030517578,-0.270776808261871
+				rotation = 0,0,-0.7071068,0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 0
+				mass = 0.005
+				temp = 289.252025168227
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = RTShortAntenna1
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleRTAntenna
+					isEnabled = True
+					IsRTAntenna = True
+					IsRTActive = True
+					IsRTPowered = True
+					IsRTBroken = False
+					RTDishCosAngle = 1
+					RTOmniRange = 500000
+					RTDishRange = -1
+					RTAntennaTarget = 00000000-0000-0000-0000-000000000000
+					EVENTS
+					{
+						EventToggle
+						{
+							active = True
+							guiActive = False
+							guiIcon = 
+							guiName = Toggle
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventTarget
+						{
+							active = False
+							guiActive = False
+							guiIcon = Target
+							guiName = No Target
+							category = Target
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventEditorOpen
+						{
+							active = True
+							guiActive = False
+							guiIcon = Start deployed
+							guiName = Start deployed
+							category = Start deployed
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventEditorClose
+						{
+							active = True
+							guiActive = False
+							guiActiveEditor = True
+							guiIcon = Start retracted
+							guiName = Start retracted
+							category = Start retracted
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventOpen
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Activate
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventClose
+						{
+							active = True
+							guiActive = True
+							guiIcon = 
+							guiName = Deactivate
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						OverrideTarget
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Set Target
+							guiName = [EVA] Set Target
+							category = [EVA] Set Target
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+						OverrideOpen
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Force Open
+							guiName = [EVA] Force Open
+							category = [EVA] Force Open
+							guiActiveUnfocused = False
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+						OverrideClose
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Force Close
+							guiName = [EVA] Force Close
+							category = [EVA] Force Close
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ActionToggle
+						{
+							actionGroup = None
+						}
+						ActionOpen
+						{
+							actionGroup = None
+						}
+						ActionClose
+						{
+							actionGroup = None
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleSPUPassive
+					isEnabled = True
+					IsRTPowered = True
+					IsRTSignalProcessor = True
+					IsRTCommandStation = False
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+			}
+			ACTIONGROUPS
+			{
+				Stage = False, 0
+				Gear = True, 0
+				Light = False, 0
+				RCS = False, 0
+				SAS = False, 0
+				Brakes = False, 0
+				Abort = False, 0
+				Custom01 = False, 0
+				Custom02 = False, 0
+				Custom03 = False, 0
+				Custom04 = False, 0
+				Custom05 = False, 0
+				Custom06 = False, 0
+				Custom07 = False, 0
+				Custom08 = False, 0
+				Custom09 = False, 0
+				Custom10 = False, 0
+			}
+			DISCOVERY
+			{
+				state = -1
+				lastObservedTime = 0
+				lifetime = Infinity
+				refTime = Infinity
+				size = 2
+			}
+			FLIGHTPLAN
+			{
+			}
+			CTRLSTATE
+			{
+				pitch = 0.0001519381
+				yaw = -8.439755E-05
+				roll = 0.0001381878
+				trimPitch = 0
+				trimYaw = 0
+				trimRoll = 0
+				mainThrottle = 0
+			}
+		}
+		VESSEL
+		{
+			pid = 38c7a2297ed34f63aba190c285a2946a
+			name = Fun Rover
+			type = Rover
+			sit = LANDED
+			landed = True
+			landedAt = KSC
+			splashed = False
+			met = 1102.54982256389
+			lct = 543659.028165853
+			root = 0
+			lat = -0.078954872679006
+			lon = 285.432085230201
+			alt = 65.2454262287356
+			hgt = 0.5735611
+			nrm = -0.0003547103,0.9999744,-0.007146107
+			rot = -0.7043817,-0.1616017,-0.02701477,0.690653
+			CoM = -0.000648393,-0.05337455,0.02726122
+			stg = 1
+			prst = False
+			ref = 2391258724
+			ctrl = True
+			cPch = 0
+			cHdg = 0
+			cMod = 0
+			ORBIT
+			{
+				SMA = NaN
+				ECC = 1
+				INC = NaN
+				LPE = 34.5675058178629
+				LAN = 309.396462045939
+				MNA = -8.40714670366795
+				EPH = 544761.597988417
+				REF = 1
+			}
+			PART
+			{
+				name = probeCoreOcto2
+				cid = 4294222436
+				uid = 2391258724
+				mid = 1186405287
+				launchID = 26
+				parent = 0
+				position = 0,0,0
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 0
+				srfN = None, -1
+				attN = bottom, 17
+				attN = None, -1
+				mass = 0.04
+				temp = 297.190055636513
+				expt = 0
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = probeCoreOcto2 (Fun Rover)
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleCommand
+					isEnabled = True
+					controlSrcStatusText = Operational
+					EVENTS
+					{
+						MakeReference
+						{
+							active = True
+							guiActive = True
+							guiIcon = Control From Here
+							guiName = Control From Here
+							category = Control From Here
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						RenameVessel
+						{
+							active = True
+							guiActive = True
+							guiIcon = Rename Vessel
+							guiName = Rename Vessel
+							category = Rename Vessel
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleSAS
+					isEnabled = True
+					standaloneToggle = True
+					standaloneToggle_UIFlight
+					{
+						controlEnabled = True
+					}
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleSPU
+					isEnabled = True
+					IsRTPowered = True
+					IsRTSignalProcessor = True
+					IsRTCommandStation = False
+					RTCommandMinCrew = 6
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+					FlightComputer
+					{
+						TotalDelay = 0
+						ActiveCommands
+						{
+							AttitudeCommand
+							{
+								Mode = Off
+								Attitude = Prograde
+								Frame = World
+								Orientation = 0,0,0,1
+								Altitude = NaN
+								TimeStamp = 544761.597988417
+								ExtraDelay = 0
+								CmdGuid = e1c272af-29fd-4c4f-bb69-85df01f64439
+							}
+						}
+						Commands
+						{
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleRTAntennaPassive
+					isEnabled = True
+					IsRTAntenna = True
+					IsRTActive = True
+					IsRTPowered = True
+					IsRTBroken = False
+					RTDishCosAngle = 1
+					RTOmniRange = 3000
+					RTDishRange = -1
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleTripLogger
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+					Log
+					{
+						flight = 0
+						0 = Land,Kerbin
+					}
+				}
+				MODULE
+				{
+					name = ModuleRTDataTransmitter
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				RESOURCE
+				{
+					name = ElectricCharge
+					amount = 0.000130663625895977
+					maxAmount = 5
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = strutCube
+				cid = 4294215750
+				uid = 438159944
+				mid = 1186405287
+				launchID = 26
+				parent = 0
+				position = -0.106169901788235,-0.0112800598144531,0.407902210950851
+				rotation = 0.7071068,-9.112319E-08,9.112319E-08,0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 4
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.001
+				temp = 301.613738893311
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = strutCube
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+			}
+			PART
+			{
+				name = roverWheel2
+				cid = 4294182356
+				uid = 1036667963
+				mid = 1186405287
+				launchID = 26
+				parent = 1
+				position = -0.324593901634216,-0.439539909362793,0.36187818646431
+				rotation = 8.429374E-08,0,-2.980233E-07,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 5
+				srfN = srfAttach, 1
+				mass = 0.05
+				temp = 295.626629295445
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = roverWheel2
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleWheel
+					isEnabled = True
+					brakeTorque = 180
+					brakesEngaged = True
+					steeringLocked = False
+					isDamaged = False
+					invertSteering = False
+					motorEnabled = True
+					brakeTorque_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 30
+						stepIncrement = 1
+					}
+					EVENTS
+					{
+						UnLockSteering
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Unlock Steering
+							guiName = Unlock Steering
+							category = Unlock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						LockSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Lock Steering
+							guiName = Lock Steering
+							category = Lock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EnableMotor
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Enable Motor
+							guiName = Enable Motor
+							category = Enable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DisableMotor
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Disable Motor
+							guiName = Disable Motor
+							category = Disable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						InvertSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Invert Steering
+							guiName = Invert Steering
+							category = Invert Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						RepairWheel
+						{
+							active = False
+							guiActive = False
+							guiIcon = Repair Wheel
+							guiName = Repair Wheel
+							category = Repair Wheel
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						InvertSteeringAction
+						{
+							actionGroup = None
+						}
+						LockSteeringAction
+						{
+							actionGroup = None
+						}
+						UnlockSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleMotorAction
+						{
+							actionGroup = None
+						}
+						BrakesAction
+						{
+							actionGroup = Brakes
+						}
+					}
+				}
+				MODULE
+				{
+					name = FXModuleLookAtConstraint
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = FXModuleConstrainPosition
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+			}
+			PART
+			{
+				name = spotLight1
+				cid = 4294089916
+				uid = 760033193
+				mid = 1186405287
+				launchID = 26
+				parent = 1
+				position = 0.00350818037986755,-0.000479698181152344,0.50599992275238
+				rotation = 0.04502949,0.7995686,-0.5981899,-0.02883278
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 1
+				mass = 0.015
+				temp = 303.370313550343
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = spotLight1
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleLight
+					isEnabled = True
+					isOn = True
+					lightR = 1
+					lightG = 0.8
+					lightB = 0.8
+					lightR_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 1
+						stepIncrement = 0.05
+					}
+					lightG_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 1
+						stepIncrement = 0.05
+					}
+					lightB_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 1
+						stepIncrement = 0.05
+					}
+					EVENTS
+					{
+						LightsOff
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Lights Off
+							guiName = Lights Off
+							category = Lights Off
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						LightsOn
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Lights On
+							guiName = Lights On
+							category = Lights On
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleLightAction
+						{
+							actionGroup = Light
+						}
+						LightOnAction
+						{
+							actionGroup = None
+						}
+						LightOffAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = strutCube
+				cid = 4294215222
+				uid = 1476348172
+				mid = 1186405287
+				launchID = 26
+				parent = 0
+				position = 0.106169797480106,-0.0112800598144531,-0.407902210950851
+				rotation = 6.021457E-08,0.7071068,-0.7071068,6.021457E-08
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 1
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.001
+				temp = 302.316162545926
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = strutCube
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+			}
+			PART
+			{
+				name = roverWheel2
+				cid = 4294182008
+				uid = 896944166
+				mid = 1186405287
+				launchID = 26
+				parent = 4
+				position = 0.324594110250473,-0.439539909362793,-0.361878484487534
+				rotation = -2.980234E-07,1,-8.429373E-08,-4.371139E-08
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 2
+				srfN = srfAttach, 4
+				mass = 0.05
+				temp = 296.927186520436
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = roverWheel2
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleWheel
+					isEnabled = True
+					brakeTorque = 180
+					brakesEngaged = True
+					steeringLocked = False
+					isDamaged = False
+					invertSteering = False
+					motorEnabled = True
+					brakeTorque_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 30
+						stepIncrement = 1
+					}
+					EVENTS
+					{
+						UnLockSteering
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Unlock Steering
+							guiName = Unlock Steering
+							category = Unlock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						LockSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Lock Steering
+							guiName = Lock Steering
+							category = Lock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EnableMotor
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Enable Motor
+							guiName = Enable Motor
+							category = Enable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DisableMotor
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Disable Motor
+							guiName = Disable Motor
+							category = Disable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						InvertSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Invert Steering
+							guiName = Invert Steering
+							category = Invert Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						RepairWheel
+						{
+							active = False
+							guiActive = False
+							guiIcon = Repair Wheel
+							guiName = Repair Wheel
+							category = Repair Wheel
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						InvertSteeringAction
+						{
+							actionGroup = None
+						}
+						LockSteeringAction
+						{
+							actionGroup = None
+						}
+						UnlockSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleMotorAction
+						{
+							actionGroup = None
+						}
+						BrakesAction
+						{
+							actionGroup = Brakes
+						}
+					}
+				}
+				MODULE
+				{
+					name = FXModuleLookAtConstraint
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = FXModuleConstrainPosition
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+			}
+			PART
+			{
+				name = solarPanels5
+				cid = 4294116980
+				uid = 1221872632
+				mid = 1186405287
+				launchID = 26
+				parent = 5
+				position = 0.176280856132507,0.127699851989746,-0.47390428185463
+				rotation = 0.6086387,0.01224342,-0.01594182,-0.793193
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 5
+				mass = 0.005
+				temp = 299.69239487591
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = solarPanels5
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleDeployableSolarPanel
+					isEnabled = True
+					currentRotation = (0, 0, 0, 1)
+					stateString = EXTENDED
+					storedAnimationTime = 0
+					storedAnimationSpeed = 0
+					EVENTS
+					{
+						Extend
+						{
+							active = False
+							guiActive = True
+							guiIcon = Extend Panels
+							guiName = Extend Panels
+							category = Extend Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+						Retract
+						{
+							active = False
+							guiActive = True
+							guiIcon = Retract Panels
+							guiName = Retract Panels
+							category = Retract Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ExtendPanelsAction
+						{
+							actionGroup = None
+						}
+						ExtendAction
+						{
+							actionGroup = None
+						}
+						RetractAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = longAntenna
+				cid = 4294071396
+				uid = 2865626401
+				mid = 1186405287
+				launchID = 26
+				parent = 4
+				position = -0.000511161983013153,0.076359748840332,-0.517902195453644
+				rotation = 0.4226183,6.148333E-16,2.130889E-15,-0.9063079
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 4
+				attN = None, -1
+				mass = 0.005
+				temp = 301.279584003577
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = longAntenna
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleAnimateGeneric
+					isEnabled = True
+					status = Locked
+					animSwitch = True
+					animTime = 0.9913011
+					animSpeed = 1
+					EVENTS
+					{
+						Toggle
+						{
+							active = False
+							guiActive = False
+							guiActiveEditor = True
+							guiIcon = Toggle
+							guiName = Extend
+							category = Toggle
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+							active = False
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleRTAntenna
+					isEnabled = True
+					IsRTAntenna = True
+					IsRTActive = True
+					IsRTPowered = True
+					IsRTBroken = False
+					RTDishCosAngle = 1
+					RTOmniRange = 2500000
+					RTDishRange = -1
+					RTAntennaTarget = 00000000-0000-0000-0000-000000000000
+					EVENTS
+					{
+						EventToggle
+						{
+							active = True
+							guiActive = False
+							guiIcon = 
+							guiName = Toggle
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventTarget
+						{
+							active = False
+							guiActive = False
+							guiIcon = Target
+							guiName = No Target
+							category = Target
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventEditorOpen
+						{
+							active = True
+							guiActive = False
+							guiIcon = Start deployed
+							guiName = Start deployed
+							category = Start deployed
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventEditorClose
+						{
+							active = True
+							guiActive = False
+							guiActiveEditor = True
+							guiIcon = Start retracted
+							guiName = Start retracted
+							category = Start retracted
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventOpen
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Activate
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EventClose
+						{
+							active = True
+							guiActive = True
+							guiIcon = 
+							guiName = Deactivate
+							category = 
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						OverrideTarget
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Set Target
+							guiName = [EVA] Set Target
+							category = [EVA] Set Target
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+						OverrideOpen
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Force Open
+							guiName = [EVA] Force Open
+							category = [EVA] Force Open
+							guiActiveUnfocused = False
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+						OverrideClose
+						{
+							active = True
+							guiActive = False
+							guiIcon = [EVA] Force Close
+							guiName = [EVA] Force Close
+							category = [EVA] Force Close
+							guiActiveUnfocused = True
+							unfocusedRange = 5
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ActionToggle
+						{
+							actionGroup = None
+						}
+						ActionOpen
+						{
+							actionGroup = None
+						}
+						ActionClose
+						{
+							actionGroup = None
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleSPUPassive
+					isEnabled = True
+					IsRTPowered = True
+					IsRTSignalProcessor = True
+					IsRTCommandStation = False
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleRTDataTransmitter
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+			}
+			PART
+			{
+				name = sensorAccelerometer
+				cid = 4294064518
+				uid = 750631103
+				mid = 1186405287
+				launchID = 26
+				parent = 4
+				position = 0.0160740241408348,-0.0290298461914063,-0.499457120895386
+				rotation = 0.5,0.5000001,-0.5000002,-0.4999999
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 4
+				mass = 0.005
+				temp = 301.296986749612
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = sensorAccelerometer
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleEnviroSensor
+					isEnabled = True
+					sensorActive = False
+					EVENTS
+					{
+						Toggle
+						{
+							active = True
+							guiActive = True
+							guiIcon = Toggle Display
+							guiName = Toggle Display
+							category = Toggle Display
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleScienceExperiment
+					isEnabled = True
+					Deployed = False
+					Inoperable = False
+					EVENTS
+					{
+						DeployExperiment
+						{
+							active = True
+							guiActive = True
+							guiIcon = Deploy
+							guiName = Log Seismic Data
+							category = Deploy
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						CollectDataExternalEvent
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Take Data
+							category = 
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+						ReviewDataEvent
+						{
+							active = False
+							guiActive = True
+							guiIcon = Review Data
+							guiName = Review Data
+							category = Review Data
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperiment
+						{
+							active = False
+							guiActive = True
+							guiIcon = Reset
+							guiName = Delete Data
+							category = Reset
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DeployExperimentExternal
+						{
+							active = True
+							guiActive = False
+							guiIcon = Deploy
+							guiName = Log Seismic Data
+							category = Deploy
+							guiActiveUnfocused = True
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Reset
+							guiName = Delete Data
+							category = Reset
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+						CleanUpExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Restore
+							guiName = Restore
+							category = Restore
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						DeployAction
+						{
+							actionGroup = None
+						}
+						ResetAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = batteryPack
+				cid = 4293949602
+				uid = 887620126
+				mid = 1186405287
+				launchID = 26
+				parent = 4
+				position = 0.00196588039398193,0.0035400390625,-0.316460281610489
+				rotation = 0.6689014,1.646216E-07,-5.563655E-08,-0.7433513
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 4
+				mass = 0.005
+				temp = 305.436938573436
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = batteryPack
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				RESOURCE
+				{
+					name = ElectricCharge
+					amount = 75.7438670219329
+					maxAmount = 100
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = strutCube
+				cid = 4294213444
+				uid = 3994260417
+				mid = 1186405287
+				launchID = 26
+				parent = 0
+				position = 0.0950885266065598,-0.00981998443603516,0.407893687486649
+				rotation = 0.7071068,-9.112319E-08,9.112319E-08,0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 13
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.001
+				temp = 299.016112635355
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = strutCube
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+			}
+			PART
+			{
+				name = roverWheel2
+				cid = 4294178422
+				uid = 100586968
+				mid = 1186405287
+				launchID = 26
+				parent = 10
+				position = 0.313583612442017,-0.444979667663574,0.37961021065712
+				rotation = 2.533198E-07,1,8.429374E-08,-9.920975E-10
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 14
+				srfN = srfAttach, 10
+				mass = 0.05
+				temp = 295.452986545098
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = roverWheel2
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleWheel
+					isEnabled = True
+					brakeTorque = 180
+					brakesEngaged = True
+					steeringLocked = False
+					isDamaged = False
+					invertSteering = False
+					motorEnabled = True
+					brakeTorque_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 30
+						stepIncrement = 1
+					}
+					EVENTS
+					{
+						UnLockSteering
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Unlock Steering
+							guiName = Unlock Steering
+							category = Unlock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						LockSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Lock Steering
+							guiName = Lock Steering
+							category = Lock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EnableMotor
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Enable Motor
+							guiName = Enable Motor
+							category = Enable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DisableMotor
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Disable Motor
+							guiName = Disable Motor
+							category = Disable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						InvertSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Invert Steering
+							guiName = Invert Steering
+							category = Invert Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						RepairWheel
+						{
+							active = False
+							guiActive = False
+							guiIcon = Repair Wheel
+							guiName = Repair Wheel
+							category = Repair Wheel
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						InvertSteeringAction
+						{
+							actionGroup = None
+						}
+						LockSteeringAction
+						{
+							actionGroup = None
+						}
+						UnlockSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleMotorAction
+						{
+							actionGroup = None
+						}
+						BrakesAction
+						{
+							actionGroup = Brakes
+						}
+					}
+				}
+				MODULE
+				{
+					name = FXModuleLookAtConstraint
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = FXModuleConstrainPosition
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+			}
+			PART
+			{
+				name = FuelCell
+				cid = 4294099450
+				uid = 3572803135
+				mid = 1186405287
+				launchID = 26
+				parent = 10
+				position = 0.0265405476093292,0.0584602355957031,0.341664373874664
+				rotation = 0.5000004,-0.4999999,-0.4999999,0.5000001
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 10
+				mass = 0.05
+				temp = 295.954439775949
+				expt = 0.5
+				state = 1
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = FuelCell
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleResourceConverter
+					isEnabled = True
+					HeatThrottle = 1
+					HeatThrottleSpeed = 0.05
+					avgHeatThrottle = 1
+					DirtyFlag = False
+					EfficiencyBonus = 1
+					IsActivated = False
+					lastUpdateTime = 544761.597988417
+					EVENTS
+					{
+						StartResourceConverter
+						{
+							active = True
+							guiActive = True
+							guiIcon = Start Converter
+							guiName = Start Fuel Cell
+							category = Start Converter
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						StopResourceConverter
+						{
+							active = False
+							guiActive = True
+							guiIcon = Stop Converter
+							guiName = Stop Fuel Cell
+							category = Stop Converter
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						StopResourceConverterAction
+						{
+							actionGroup = None
+						}
+						StartResourceConverterAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+				RESOURCE
+				{
+					name = ElectricCharge
+					amount = 25.7438670219275
+					maxAmount = 50
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = strutCube
+				cid = 4294212306
+				uid = 3935551661
+				mid = 1186405287
+				launchID = 26
+				parent = 0
+				position = -0.0950885564088821,-0.00981998443603516,-0.407893687486649
+				rotation = 6.021457E-08,0.7071068,-0.7071068,6.021457E-08
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 10
+				srfN = srfAttach, 0
+				attN = None, -1
+				attN = None, -1
+				mass = 0.001
+				temp = 301.463762107696
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = strutCube
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+			}
+			PART
+			{
+				name = roverWheel2
+				cid = 4294179410
+				uid = 423234701
+				mid = 1186405287
+				launchID = 26
+				parent = 13
+				position = -0.313583731651306,-0.444979667663574,-0.379610300064087
+				rotation = 8.429372E-08,-4.470349E-08,-2.533198E-07,-1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				sym = 11
+				srfN = srfAttach, 13
+				mass = 0.05
+				temp = 296.936532058715
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = roverWheel2
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleWheel
+					isEnabled = True
+					brakeTorque = 180
+					brakesEngaged = True
+					steeringLocked = False
+					isDamaged = False
+					invertSteering = False
+					motorEnabled = True
+					brakeTorque_UIFlight
+					{
+						controlEnabled = True
+						minValue = 0
+						maxValue = 30
+						stepIncrement = 1
+					}
+					EVENTS
+					{
+						UnLockSteering
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Unlock Steering
+							guiName = Unlock Steering
+							category = Unlock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						LockSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Lock Steering
+							guiName = Lock Steering
+							category = Lock Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						EnableMotor
+						{
+							active = False
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Enable Motor
+							guiName = Enable Motor
+							category = Enable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DisableMotor
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Disable Motor
+							guiName = Disable Motor
+							category = Disable Motor
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						InvertSteering
+						{
+							active = True
+							guiActive = True
+							guiActiveEditor = True
+							guiIcon = Invert Steering
+							guiName = Invert Steering
+							category = Invert Steering
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						RepairWheel
+						{
+							active = False
+							guiActive = False
+							guiIcon = Repair Wheel
+							guiName = Repair Wheel
+							category = Repair Wheel
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						InvertSteeringAction
+						{
+							actionGroup = None
+						}
+						LockSteeringAction
+						{
+							actionGroup = None
+						}
+						UnlockSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleSteeringAction
+						{
+							actionGroup = None
+						}
+						ToggleMotorAction
+						{
+							actionGroup = None
+						}
+						BrakesAction
+						{
+							actionGroup = Brakes
+						}
+					}
+				}
+				MODULE
+				{
+					name = FXModuleLookAtConstraint
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = FXModuleConstrainPosition
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+				}
+			}
+			PART
+			{
+				name = solarPanels5
+				cid = 4294119296
+				uid = 211186332
+				mid = 1186405287
+				launchID = 26
+				parent = 14
+				position = -0.170847624540329,0.122480392456055,-0.479458808898926
+				rotation = -0.6086389,0.01224018,-0.01594354,0.7931929
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 14
+				mass = 0.005
+				temp = 299.684712914622
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = solarPanels5
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleDeployableSolarPanel
+					isEnabled = True
+					currentRotation = (0, 0, 0, 1)
+					stateString = EXTENDED
+					storedAnimationTime = 0
+					storedAnimationSpeed = 0
+					EVENTS
+					{
+						Extend
+						{
+							active = False
+							guiActive = True
+							guiIcon = Extend Panels
+							guiName = Extend Panels
+							category = Extend Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+						Retract
+						{
+							active = False
+							guiActive = True
+							guiIcon = Retract Panels
+							guiName = Retract Panels
+							category = Retract Panels
+							guiActiveUnfocused = True
+							unfocusedRange = 4
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ExtendPanelsAction
+						{
+							actionGroup = None
+						}
+						ExtendAction
+						{
+							actionGroup = None
+						}
+						RetractAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = sensorAccelerometer
+				cid = 4294066770
+				uid = 871346768
+				mid = 1186405287
+				launchID = 26
+				parent = 13
+				position = -0.0119163766503334,-0.026860237121582,-0.512402296066284
+				rotation = -0.5000002,0.4999999,-0.5,0.5000001
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 13
+				mass = 0.005
+				temp = 301.239879399926
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = sensorAccelerometer
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = ModuleEnviroSensor
+					isEnabled = True
+					sensorActive = False
+					EVENTS
+					{
+						Toggle
+						{
+							active = True
+							guiActive = True
+							guiIcon = Toggle Display
+							guiName = Toggle Display
+							category = Toggle Display
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						ToggleAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleScienceExperiment
+					isEnabled = True
+					Deployed = False
+					Inoperable = False
+					EVENTS
+					{
+						DeployExperiment
+						{
+							active = True
+							guiActive = True
+							guiIcon = Deploy
+							guiName = Log Seismic Data
+							category = Deploy
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						CollectDataExternalEvent
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Take Data
+							category = 
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+						ReviewDataEvent
+						{
+							active = False
+							guiActive = True
+							guiIcon = Review Data
+							guiName = Review Data
+							category = Review Data
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperiment
+						{
+							active = False
+							guiActive = True
+							guiIcon = Reset
+							guiName = Delete Data
+							category = Reset
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DeployExperimentExternal
+						{
+							active = True
+							guiActive = False
+							guiIcon = Deploy
+							guiName = Log Seismic Data
+							category = Deploy
+							guiActiveUnfocused = True
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Reset
+							guiName = Delete Data
+							category = Reset
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+						CleanUpExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Restore
+							guiName = Restore
+							category = Restore
+							guiActiveUnfocused = True
+							unfocusedRange = 1.2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						DeployAction
+						{
+							actionGroup = None
+						}
+						ResetAction
+						{
+							actionGroup = None
+						}
+					}
+				}
+			}
+			PART
+			{
+				name = batteryBankMini
+				cid = 4294155078
+				uid = 2226296327
+				mid = 1186405287
+				launchID = 26
+				parent = 0
+				position = 0,-0.121199607849121,0
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 0
+				srfN = None, -1
+				attN = top, 0
+				attN = None, -1
+				mass = 0.01
+				temp = 299.213154753945
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = batteryBankMini
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				RESOURCE
+				{
+					name = ElectricCharge
+					amount = 175.743867022087
+					maxAmount = 200
+					flowState = True
+					isTweakable = True
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			PART
+			{
+				name = seatExternalCmd
+				cid = 4294110810
+				uid = 3839644598
+				mid = 1186405287
+				launchID = 26
+				parent = 0
+				position = -0.0078778462484479,0.250699996948242,-0.0185090005397797
+				rotation = -0.7071068,0,0,-0.7071068
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 1
+				srfN = srfAttach, 0
+				mass = 0.05
+				temp = 295.543015232298
+				expt = 0.5
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = seatExternalCmd
+				modCost = 0
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = KerbalSeat
+					isEnabled = True
+					EVENTS
+					{
+						BoardSeat
+						{
+							active = True
+							guiActive = False
+							guiIcon = Board
+							guiName = Board
+							category = Board
+							guiActiveUnfocused = True
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleTripLogger
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+					Log
+					{
+						flight = 0
+						0 = Land,Kerbin
+					}
+				}
+			}
+			ACTIONGROUPS
+			{
+				Stage = False, 0
+				Gear = True, 543682.588165875
+				Light = True, 543679.748165873
+				RCS = False, 0
+				SAS = False, 0
+				Brakes = True, 543688.268165881
+				Abort = False, 0
+				Custom01 = False, 0
+				Custom02 = False, 0
+				Custom03 = False, 0
+				Custom04 = False, 0
+				Custom05 = False, 0
+				Custom06 = False, 0
+				Custom07 = False, 0
+				Custom08 = False, 0
+				Custom09 = False, 0
+				Custom10 = False, 0
+			}
+			DISCOVERY
+			{
+				state = -1
+				lastObservedTime = 0
+				lifetime = Infinity
+				refTime = Infinity
+				size = 2
+			}
+			FLIGHTPLAN
+			{
+			}
+			CTRLSTATE
+			{
+				pitch = 0
+				yaw = 0
+				roll = 0
+				trimPitch = 0
+				trimYaw = 0
+				trimRoll = 0
+				mainThrottle = 0
+			}
+		}
+		VESSEL
+		{
+			pid = 1bff32f00f1d4b2284e42f03b1b583bd
+			name = Mitcan Kerman
+			type = EVA
+			sit = LANDED
+			landed = True
+			landedAt = KSC
+			splashed = False
+			met = 1049.52982251393
+			lct = 543712.048165903
+			root = 0
+			lat = -0.0788014966998966
+			lon = 285.432249457091
+			alt = 64.8981536545325
+			hgt = 0.2268816
+			nrm = -0.0004432719,0.9999999,-0.0003430044
+			rot = 0.6480588,0.4451105,-0.2831413,-0.5492973
+			CoM = 1.376514E-05,0.2098479,0.008570137
+			stg = 0
+			prst = False
+			ref = 0
+			ctrl = True
+			cPch = 0
+			cHdg = 0
+			cMod = 0
+			ORBIT
+			{
+				SMA = NaN
+				ECC = 1
+				INC = NaN
+				LPE = 34.5673414703462
+				LAN = 309.396462045939
+				MNA = -8.40714670366795
+				EPH = 544761.597988417
+				REF = 1
+			}
+			PART
+			{
+				name = kerbalEVA
+				cid = 4293822534
+				uid = 3703128715
+				mid = 1892272770
+				launchID = 27
+				parent = 0
+				position = 0,0,0
+				rotation = 0,0,0,1
+				mirror = 1,1,1
+				symMethod = Radial
+				istg = 0
+				dstg = 0
+				sqor = -1
+				sepI = 0
+				sidx = -1
+				attm = 0
+				srfN = None, -1
+				mass = 0.09375
+				temp = 300.266777144574
+				expt = 0
+				state = 0
+				connected = True
+				attached = True
+				flag = Squad/Flags/default
+				rTrf = referenceTransform
+				modCost = 0
+				crew = Mitcan Kerman
+				EVENTS
+				{
+				}
+				ACTIONS
+				{
+				}
+				PARTDATA
+				{
+				}
+				MODULE
+				{
+					name = KerbalEVA
+					isEnabled = True
+					state = Idle (Grounded)
+					step = 1.208333
+					packExt = False
+					lightOn = False
+					flags = 1
+					EVENTS
+					{
+						PlantFlag
+						{
+							active = False
+							guiActive = True
+							guiIcon = Plant Flag [1]
+							guiName = Plant Flag [1]
+							category = Plant Flag [1]
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						MakeReference
+						{
+							active = False
+							guiActive = True
+							guiIcon = Control From Here
+							guiName = Control From Here
+							category = Control From Here
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						OnDeboardSeat
+						{
+							active = False
+							guiActive = True
+							guiIcon = Leave Seat
+							guiName = Leave Seat
+							category = Leave Seat
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						RenameVessel
+						{
+							active = False
+							guiActive = True
+							guiIcon = Rename Vessel
+							guiName = Rename Vessel
+							category = Rename Vessel
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+					}
+					vInfo
+					{
+						vesselName = Mitcan Kerman
+						vesselType = 9
+						rootUId = 3703128715
+					}
+				}
+				MODULE
+				{
+					name = ModuleScienceExperiment
+					isEnabled = True
+					Deployed = False
+					Inoperable = False
+					EVENTS
+					{
+						DeployExperiment
+						{
+							active = True
+							guiActive = True
+							guiIcon = Deploy
+							guiName = Take Surface Sample
+							category = Deploy
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						CollectDataExternalEvent
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Take Data
+							category = 
+							guiActiveUnfocused = True
+							unfocusedRange = 1.5
+							externalToEVAOnly = True
+						}
+						ReviewDataEvent
+						{
+							active = False
+							guiActive = True
+							guiIcon = Review Data
+							guiName = Review Sample
+							category = Review Data
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperiment
+						{
+							active = False
+							guiActive = True
+							guiIcon = Reset
+							guiName = Discard Sample
+							category = Reset
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DeployExperimentExternal
+						{
+							active = True
+							guiActive = False
+							guiIcon = Deploy
+							guiName = Take Surface Sample
+							category = Deploy
+							guiActiveUnfocused = True
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Reset
+							guiName = Discard Sample
+							category = Reset
+							guiActiveUnfocused = True
+							unfocusedRange = 1.5
+							externalToEVAOnly = True
+						}
+						CleanUpExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Restore
+							guiName = Restore
+							category = Restore
+							guiActiveUnfocused = True
+							unfocusedRange = 1.5
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						DeployAction
+						{
+							actionGroup = None
+							active = False
+						}
+						ResetAction
+						{
+							actionGroup = None
+							active = False
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleScienceExperiment
+					isEnabled = True
+					Deployed = False
+					Inoperable = False
+					EVENTS
+					{
+						DeployExperiment
+						{
+							active = True
+							guiActive = True
+							guiIcon = Deploy
+							guiName = EVA Report
+							category = Deploy
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						CollectDataExternalEvent
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Take Data
+							category = 
+							guiActiveUnfocused = True
+							unfocusedRange = 1.5
+							externalToEVAOnly = True
+						}
+						ReviewDataEvent
+						{
+							active = False
+							guiActive = True
+							guiIcon = Review Data
+							guiName = Review Report
+							category = Review Data
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperiment
+						{
+							active = False
+							guiActive = True
+							guiIcon = Reset
+							guiName = Discard Report
+							category = Reset
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						DeployExperimentExternal
+						{
+							active = True
+							guiActive = False
+							guiIcon = Deploy
+							guiName = EVA Report
+							category = Deploy
+							guiActiveUnfocused = True
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+						ResetExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Reset
+							guiName = Discard Report
+							category = Reset
+							guiActiveUnfocused = True
+							unfocusedRange = 1.5
+							externalToEVAOnly = True
+						}
+						CleanUpExperimentExternal
+						{
+							active = False
+							guiActive = False
+							guiIcon = Restore
+							guiName = Restore
+							category = Restore
+							guiActiveUnfocused = True
+							unfocusedRange = 1.5
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+						DeployAction
+						{
+							actionGroup = None
+							active = False
+						}
+						ResetAction
+						{
+							actionGroup = None
+							active = False
+						}
+					}
+				}
+				MODULE
+				{
+					name = ModuleScienceContainer
+					isEnabled = True
+					EVENTS
+					{
+						StoreDataExternalEvent
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Give Data (0)
+							category = 
+							guiActiveUnfocused = True
+							unfocusedRange = 1
+							externalToEVAOnly = True
+						}
+						CollectDataExternalEvent
+						{
+							active = False
+							guiActive = False
+							guiIcon = 
+							guiName = Take Data (0)
+							category = 
+							guiActiveUnfocused = True
+							unfocusedRange = 1
+							externalToEVAOnly = True
+						}
+						ReviewDataEvent
+						{
+							active = False
+							guiActive = True
+							guiIcon = Review Data
+							guiName = Review Stored Data (0)
+							category = Review Data
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = FlagDecal
+					isEnabled = True
+					flagDisplayed = True
+					EVENTS
+					{
+						ToggleFlag
+						{
+							active = True
+							guiActive = False
+							guiActiveEditor = True
+							guiIcon = Toggle Flag
+							guiName = Toggle Flag
+							category = Toggle Flag
+							guiActiveUnfocused = False
+							unfocusedRange = 2
+							externalToEVAOnly = True
+						}
+					}
+					ACTIONS
+					{
+					}
+				}
+				MODULE
+				{
+					name = ModuleTripLogger
+					isEnabled = True
+					EVENTS
+					{
+					}
+					ACTIONS
+					{
+					}
+					Log
+					{
+						flight = 0
+						0 = Flight,Kerbin
+						0 = Land,Kerbin
+					}
+				}
+				RESOURCE
+				{
+					name = EVA Propellant
+					amount = 5
+					maxAmount = 5
+					flowState = True
+					isTweakable = False
+					hideFlow = False
+					flowMode = Both
+				}
+			}
+			ACTIONGROUPS
+			{
+				Stage = False, 0
+				Gear = True, 0
+				Light = False, 0
+				RCS = False, 0
+				SAS = False, 0
+				Brakes = False, 0
+				Abort = False, 0
+				Custom01 = False, 0
+				Custom02 = False, 0
+				Custom03 = False, 0
+				Custom04 = False, 0
+				Custom05 = False, 0
+				Custom06 = False, 0
+				Custom07 = False, 0
+				Custom08 = False, 0
+				Custom09 = False, 0
+				Custom10 = False, 0
+			}
+			DISCOVERY
+			{
+				state = -1
+				lastObservedTime = 0
+				lifetime = Infinity
+				refTime = Infinity
+				size = 2
+			}
+			FLIGHTPLAN
+			{
+			}
+			CTRLSTATE
+			{
+				pitch = 0
+				yaw = 0
+				roll = 0
+				trimPitch = 0
+				trimYaw = 0
+				trimRoll = 0
+				mainThrottle = 0
+			}
+		}
 	}
 	ROSTER
 	{
@@ -67909,12 +73129,12 @@ GAME
 		{
 			name = Mitcan Kerman
 			gender = Male
-			type = Applicant
+			type = Crew
 			brave = 0.7832715
 			dumb = 0.3912154
 			badS = False
 			tour = False
-			state = Available
+			state = Assigned
 			ToD = 761920.660042341
 			idx = -1
 			CAREER_LOG
@@ -67924,6 +73144,9 @@ GAME
 			FLIGHT_LOG
 			{
 				flight = 0
+				0 = ExitVessel,Kerbin
+				0 = Flight,Kerbin
+				0 = Land,Kerbin
 			}
 		}
 		KERBAL
@@ -68119,21 +73342,24 @@ GAME
 		{
 			name = Leacine Kerman
 			gender = Female
-			type = Applicant
+			type = Crew
 			brave = 0.6726016
 			dumb = 0.9704735
 			badS = True
 			tour = False
 			state = Available
 			ToD = 664470.295357282
-			idx = -1
+			idx = 0
 			CAREER_LOG
 			{
-				flight = 0
+				flight = 1
+				0 = Land,Kerbin
+				0 = Flight,Kerbin
+				0 = Recover
 			}
 			FLIGHT_LOG
 			{
-				flight = 0
+				flight = 1
 			}
 		}
 	}
