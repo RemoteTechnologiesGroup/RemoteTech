@@ -132,7 +132,8 @@ namespace RemoteTech.FlightComputer.Commands
 
             // we only compare up to the fiftieth part due to some burn-up delay when just firing up the engines
             if (this.lowestDeltaV > 0 // Do ignore the first tick
-                && (this.RemainingDelta - 0.02) > this.lowestDeltaV)
+                && (this.RemainingDelta - 0.02) > this.lowestDeltaV
+                && this.RemainingDelta < 1.0)   // be safe that we do not abort the command to early
             {
                 // Aborting because deltaV was rising again!
                 computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
@@ -169,6 +170,8 @@ namespace RemoteTech.FlightComputer.Commands
 
             if (thrust > 0) {
                 advance += (node.DeltaV.magnitude / (thrust / f.Vessel.GetTotalMass())) / 2;
+                // add 1 second for the throttle down time @ the end of the burn
+                advance += 1;
             }
 
             var newNode = new ManeuverCommand()
