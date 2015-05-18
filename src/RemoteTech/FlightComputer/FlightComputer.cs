@@ -237,7 +237,7 @@ namespace RemoteTech.FlightComputer
             if (mCommandQueue.Count > 0)
             {
                 // Can come out of time warp even if ship unpowered; workaround for KSP 0.24 power consumption bug
-                if (RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 1.0f)
+                if (RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 4.0f)
                 {
                     var time = TimeWarp.deltaTime;
                     foreach (var dc in mCommandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime + (2 * time + 1.0)))
@@ -361,7 +361,7 @@ namespace RemoteTech.FlightComputer
 
             List<ICommand> backupList = mCommandQueue;
             // sort the backup queue
-            backupList = backupList.OrderBy(s => (s.TimeStamp + s.ExtraDelay)).ToList();
+            backupList = backupList.OrderBy(s => (s.Delay + s.ExtraDelay)).ToList();
             // clear the old queue
             mCommandQueue.Clear();
 
