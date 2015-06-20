@@ -90,9 +90,8 @@ namespace RemoteTech
 
                     if (s is MissionControlSatellite && RTSettings.Instance.HideGroundStationsBehindBody)
                     {
-                        CelestialBody kerbin = FlightGlobals.Bodies.Find(body => body.name == "Kerbin");
                         // Hide the current ISatellite if it is behind its body
-                        if (IsOccluded(s.Position, kerbin))
+                        if (IsOccluded(s.Position, s.Body))
                             showOnMapview = false;
                     }
 
