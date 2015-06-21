@@ -187,6 +187,9 @@ namespace RemoteTech.Modules
             mTransmitter = null;
         }
 
+        /// <summary>
+        /// Deprecated?
+        /// </summary>
         private List<IScalarModule> FindFxModules(int[] indices, bool showUI)
         {
             var modules = new List<IScalarModule>();
