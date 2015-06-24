@@ -358,6 +358,8 @@ namespace RemoteTech.Modules
                 part.AddModule(copy);
                 AddTransmitter();
                 RTLog.Notify("ModuleRTAntenna: Add TRANSMITTER success.");
+                // Trigger onVesselWasModified after adding a new transmitter
+                GameEvents.onVesselWasModified.Fire(this.part.vessel);
             }
         }
 
@@ -365,8 +367,11 @@ namespace RemoteTech.Modules
         {
             RTLog.Notify("ModuleRTAntenna: Remove TRANSMITTER success.");
             if (mTransmitter == null) return;
+
             part.RemoveModule((PartModule) mTransmitter);
             mTransmitter = null;
+            // Trigger onVesselWasModified after removing the transmitter
+            GameEvents.onVesselWasModified.Fire(this.part.vessel);
         }
 
         private State UpdateControlState()
