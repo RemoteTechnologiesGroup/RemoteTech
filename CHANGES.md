@@ -1,3 +1,31 @@
+Version 1.6.7
+========================================
+Released June 25, 2015
+
+Bug fixes
+--------------------
+- Fixed a problem for transmitting science data in combination with ScienceAlert
+
+General
+--------------------
+- KSP 1.0.4 update
+
+
+Version 1.6.6
+========================================
+Released June 21, 2015
+
+Bug fixes
+--------------------
+- Fixed an exception-Spamming for `HideGroundStationsBehindBody = true` with RSS
+- Fixed the animation for Fasa's Explorer probe
+
+General
+--------------------
+- Added CactEye probes (thx xZise)
+- Added SignalProcessor to Fasa's Pioneer probe
+
+
 Version 1.6.5
 ========================================
 Released May 18, 2015

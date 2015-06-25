@@ -358,6 +358,8 @@ namespace RemoteTech.Modules
                 part.AddModule(copy);
                 AddTransmitter();
                 RTLog.Notify("ModuleRTAntenna: Add TRANSMITTER success.");
+                // Trigger onVesselWasModified after adding a new transmitter
+                GameEvents.onVesselWasModified.Fire(this.part.vessel);
             }
         }
 
@@ -365,8 +367,11 @@ namespace RemoteTech.Modules
         {
             RTLog.Notify("ModuleRTAntenna: Remove TRANSMITTER success.");
             if (mTransmitter == null) return;
+
             part.RemoveModule((PartModule) mTransmitter);
             mTransmitter = null;
+            // Trigger onVesselWasModified after removing the transmitter
+            GameEvents.onVesselWasModified.Fire(this.part.vessel);
         }
 
         private State UpdateControlState()
@@ -508,19 +513,16 @@ namespace RemoteTech.Modules
         {
             var modules = new List<IScalarModule>();
             if (indices == null) return modules;
-            foreach (int i in indices)
+
+            foreach (PartModule partModule in this.part.Modules)
             {
-                var item = base.part.Modules[i] as IScalarModule;
-                if (item != null)
-                {
-                    item.SetUIWrite(showUI);
-                    item.SetUIRead(showUI);
-                    modules.Add(item);
-                }
-                else
-                {
-                    RTLog.Notify("ModuleRTAntenna: Part Module {0} doesn't implement IScalarModule", part.Modules[i].name);
-                }
+                var item = partModule as IScalarModule;
+                // skip this module if it has no IScalarModule
+                if (item == null) continue;
+                
+                item.SetUIWrite(showUI);
+                item.SetUIRead(showUI);
+                modules.Add(item);
             }
             return modules;
         }
