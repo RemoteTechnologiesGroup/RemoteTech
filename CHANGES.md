@@ -1,3 +1,16 @@
+Version 1.6.7
+========================================
+Released June 25, 2015
+
+Bug fixes
+--------------------
+- Fixed a problem for transmitting science data in combination with ScienceAlert
+
+General
+--------------------
+- KSP 1.0.4 update
+
+
 Version 1.6.6
 ========================================
 Released June 21, 2015
