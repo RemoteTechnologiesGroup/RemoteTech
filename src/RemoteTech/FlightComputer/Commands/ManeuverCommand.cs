@@ -89,7 +89,7 @@ namespace RemoteTech.FlightComputer.Commands
             var forward = Node.GetBurnVector(computer.Vessel.orbit).normalized;
             var up = (computer.SignalProcessor.Body.position - computer.SignalProcessor.Position).normalized;
             var orientation = Quaternion.LookRotation(forward, up);
-            FlightCore.HoldOrientation(ctrlState, computer, orientation);
+            FlightCore.HoldOrientation(ctrlState, computer, orientation, true);
 
             // This represents the theoretical acceleration but is off by a few m/s^2, probably because some parts are partially physicsless
             double thrustToMass = (FlightCore.GetTotalThrust(computer.Vessel) / computer.Vessel.GetTotalMass());
@@ -132,7 +132,8 @@ namespace RemoteTech.FlightComputer.Commands
 
             // we only compare up to the fiftieth part due to some burn-up delay when just firing up the engines
             if (this.lowestDeltaV > 0 // Do ignore the first tick
-                && (this.RemainingDelta - 0.02) > this.lowestDeltaV)
+                && (this.RemainingDelta - 0.02) > this.lowestDeltaV
+                && this.RemainingDelta < 1.0)   // be safe that we do not abort the command to early
             {
                 // Aborting because deltaV was rising again!
                 computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
@@ -169,6 +170,8 @@ namespace RemoteTech.FlightComputer.Commands
 
             if (thrust > 0) {
                 advance += (node.DeltaV.magnitude / (thrust / f.Vessel.GetTotalMass())) / 2;
+                // add 1 second for the throttle down time @ the end of the burn
+                advance += 1;
             }
 
             var newNode = new ManeuverCommand()
@@ -198,6 +201,8 @@ namespace RemoteTech.FlightComputer.Commands
                         // Set the ManeuverNode into this command
                         this.Node = fc.Vessel.patchedConicSolver.maneuverNodes[this.NodeIndex];
                         RTLog.Notify("Found Maneuver {0} with {1} dV", this.NodeIndex, this.Node.DeltaV);
+
+                        return true;
                     }
                 }
             }

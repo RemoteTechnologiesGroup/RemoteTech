@@ -619,6 +619,15 @@ namespace RemoteTech
             return angle;
         }
 
+        /// <summary>
+        /// Returns a vessel object by the given <paramref name="vesselid"/> or
+        /// null if no vessel was found
+        /// </summary>
+        /// <param name="vesselid">Guid of a vessel</param>
+        public static Vessel GetVesselById(Guid vesselid)
+        {
+            return FlightGlobals.Vessels.FirstOrDefault(vessel => vessel.id == vesselid);
+        }
 
     }
 }

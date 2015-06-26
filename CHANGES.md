@@ -1,3 +1,51 @@
+Version 1.6.7
+========================================
+Released June 25, 2015
+
+Bug fixes
+--------------------
+- Fixed a problem for transmitting science data in combination with ScienceAlert
+
+General
+--------------------
+- KSP 1.0.4 update
+
+
+Version 1.6.6
+========================================
+Released June 21, 2015
+
+Bug fixes
+--------------------
+- Fixed an exception-Spamming for `HideGroundStationsBehindBody = true` with RSS
+- Fixed the animation for Fasa's Explorer probe
+
+General
+--------------------
+- Added CactEye probes (thx xZise)
+- Added SignalProcessor to Fasa's Pioneer probe
+
+
+Version 1.6.5
+========================================
+Released May 18, 2015
+
+Bug fixes
+--------------------
+- We've fixed an issue while loading a saved maneuver command
+- We've fixed an issue while loading a saved cancel command
+- Queued commands will now sorted correctly
+- The flight computer will no longer goes crazy if a queued BaseEvent throws an exception
+- We've fixed the SoundingRockets config file
+- Satellite/Stations will now properly re-registered as a satellite after unloading (>2.5km distance)
+
+General
+--------------------
+- Textures are now converted to DDS (thx @InsanePlumber)
+- We'll no longer throttling back the timewarp if you are on phys.warp
+- We'll no longer fix the "roll" position for maneuver, orbit und surface commands
+
+
 Version 1.6.4
 ========================================
 Released May 07, 2015

@@ -87,6 +87,15 @@ namespace RemoteTech
                     }
                     mLoadedSpuCache[key].RemoveAt(instanceID);
                     mLoadedSpuCache.Remove(key);
+
+                    // search vessel by id
+                    Vessel vessel = RTUtil.GetVesselById(key);
+                    if (vessel != null)
+                    {
+                        // trigger the onRails on more time
+                        // to reregister the satellite as a protoSat
+                        this.OnVesselOnRails(vessel);
+                    }
                 }
                 else
                 {
