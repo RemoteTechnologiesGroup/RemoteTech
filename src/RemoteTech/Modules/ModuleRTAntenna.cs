@@ -88,7 +88,8 @@ namespace RemoteTech.Modules
             IsRTAntenna = true,
             IsRTActive = false,
             IsRTPowered = false,
-            IsRTBroken = false;
+            IsRTBroken = false,
+            IsRTHibernating = false;
 
         [KSPField(isPersistant = true)]
         public double RTDishCosAngle = 1.0f;
@@ -120,6 +121,7 @@ namespace RemoteTech.Modules
             Operational,
             NoResources,
             Malfunction,
+            Hibernating,
         }
 
         private Guid mRegisteredId;
@@ -159,19 +161,27 @@ namespace RemoteTech.Modules
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
         }
 
-        public virtual void SetState(bool state)
-        {
+        public virtual void SetState (bool state)
+		{
+			bool hibernating = false;
+			if (RTCore.Instance != null)
+			{
+				var satellite = RTCore.Instance.Satellites[Guid];
+				if (satellite != null)
+					hibernating = satellite.isHibernating;
+			}
+            IsRTHibernating = hibernating;
             IsRTActive = state && !IsRTBroken;
             Events["EventOpen"].guiActive = Events["EventOpen"].active = 
             Events["EventEditorOpen"].guiActiveEditor = 
-            Events["OverrideOpen"].guiActiveUnfocused = !IsRTActive && !IsRTBroken;
+			Events["OverrideOpen"].guiActiveUnfocused = !IsRTActive && !IsRTBroken;
 
             Events["EventClose"].guiActive = Events["EventClose"].active = 
             Events["EventEditorClose"].guiActiveEditor =
-            Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
+			Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
 
             UpdateContext();
-            StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
+            StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, (IsRTActive && !IsRTHibernating) ? 1.0f : 0.0f));
 
             if (RTCore.Instance != null)
             {
@@ -382,6 +392,8 @@ namespace RemoteTech.Modules
 
             if (!IsRTActive) return State.Off;
 
+			if (IsRTHibernating) return State.Hibernating;
+
             float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
             if (resourceAmount < resourceRequest * 0.9) return State.NoResources;
@@ -407,6 +419,10 @@ namespace RemoteTech.Modules
                     break;
                 case State.Malfunction:
                     GUI_Status = "Malfunction";
+                    IsRTPowered = false;
+				break;
+                case State.Hibernating:
+                    GUI_Status = "Hibernating";
                     IsRTPowered = false;
                     break;
             }

@@ -21,7 +21,8 @@ namespace RemoteTech
         /// Indicates whether the ISatellite corresponds to a vessel
         /// </summary>
         /// <value><c>true</c> if satellite is vessel or asteroid; otherwise (e.g. a ground station), <c>false</c>.</value>
-        bool isVessel { get; }
+		bool isVessel { get; }
+        bool isHibernating { get; }
         /// <summary>
         /// The vessel hosting the ISatellite, if one exists.
         /// </summary>

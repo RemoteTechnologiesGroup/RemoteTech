@@ -234,7 +234,8 @@ namespace RemoteTech
         Vector3d ISatellite.Position { get { return FlightGlobals.Bodies[Body].GetWorldSurfacePosition(Latitude, Longitude, Height); } }
         bool ISatellite.IsCommandStation { get { return true; } }
         bool ISatellite.HasLocalControl { get { return false; } }
-        bool ISatellite.isVessel { get { return false; } }
+		bool ISatellite.isVessel { get { return false; } }
+        bool ISatellite.isHibernating { get { return false; } }
         Vessel ISatellite.parentVessel { get { return null; } }
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         Color ISatellite.MarkColor { get { return MarkColor; } }

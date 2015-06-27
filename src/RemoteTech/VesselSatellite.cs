@@ -82,6 +82,41 @@ namespace RemoteTech
             get { return RTCore.Instance.Antennas[this]; }
         }
 
+        bool ISatellite.isHibernating
+        {
+        	get { return isHibernating; }
+        }
+
+        public bool isHibernating = false;
+
+        public IEnumerable<PartResource> ElectricChargeResources {
+			get
+			{
+				if (this.parentVessel != null && this.parentVessel.rootPart != null) {
+					int ecid = PartResourceLibrary.Instance.GetDefinition ("ElectricCharge").id;
+					List<PartResource> resources = new List<PartResource> ();
+					this.parentVessel.rootPart.GetConnectedResources (ecid, ResourceFlowMode.ALL_VESSEL, resources);
+					return resources;
+				}
+				return new List<PartResource>();
+            }
+        }
+
+        public double TotalElectricCharge
+        {
+            get { return this.ElectricChargeResources.Sum(x => x.amount); }
+        }
+
+        public double TotalElectricChargeCapacity
+        {
+        	get { return this.ElectricChargeResources.Sum(x => x.maxAmount); }
+        }
+
+        public double ElectricChargeFillLevel
+        {
+        	get { return this.TotalElectricCharge / this.TotalElectricChargeCapacity; }
+        }
+
         public FlightComputer.FlightComputer FlightComputer
         {
             get { return SignalProcessor.FlightComputer; }
@@ -95,6 +130,17 @@ namespace RemoteTech
 
         public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes)
         {
+        	double level = ElectricChargeFillLevel;
+        	if (!isHibernating && level < 0.1f)
+        	{
+        		RTLog.Notify("Vessel entered hibernation");
+        		isHibernating = true;
+        	}
+			else if (isHibernating && level > 0.9f)
+			{
+        		RTLog.Notify("Vessel awoke from hibernation");
+				isHibernating = false;
+            }
             foreach (IAntenna a in Antennas)
             {
                 a.OnConnectionRefresh();
