@@ -18,6 +18,7 @@ namespace RemoteTech.FlightComputer
             OutOfPower = 4,
             NoConnection = 8,
             NotMaster = 16,
+            Hibernating = 32,
         }
 
         public bool InputAllowed
@@ -52,6 +53,7 @@ namespace RemoteTech.FlightComputer
                 if (!SignalProcessor.Powered) status |= State.OutOfPower;
                 if (!SignalProcessor.IsMaster) status |= State.NotMaster;
                 if (!connection.Any()) status |= State.NoConnection;
+                if (satellite.isHibernating) status |= State.Hibernating;
                 if (Vessel.packed) status |= State.Packed;
                 return status;
             }

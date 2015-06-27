@@ -30,6 +30,11 @@ namespace RemoteTech.UI
                 {
                     status.Add("Connection Error");
                     tooltip.Add("Cannot queue commands");
+				}
+                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.Hibernating) == FlightComputer.FlightComputer.State.Hibernating)
+                {
+                    status.Add("Hibernating");
+                    tooltip.Add("Antennas disabled until batteries recharge");
                 }
                 if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.OutOfPower) == FlightComputer.FlightComputer.State.OutOfPower)
                 {
