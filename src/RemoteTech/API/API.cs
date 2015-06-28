@@ -1,4 +1,5 @@
-﻿using RemoteTech.RangeModel;
+﻿using RemoteTech.Modules;
+using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;
 using System;
 using System.Collections.Generic;
@@ -79,6 +80,14 @@ namespace RemoteTech.API
             var connectedToKerbin = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
             RTLog.Verbose("Flight: {0} Has Connection to Kerbin: {1}", RTLogLevel.API, id, connectedToKerbin);
             return connectedToKerbin;
+        }
+
+        public static bool AntennaHasConnection(Part part)
+        {
+            if (RTCore.Instance == null) return false;
+            var antennaModules = part.Modules.OfType<IAntenna>();
+
+            return antennaModules.Any(m => m.Connected);
         }
 
         public static double GetShortestSignalDelay(Guid id)
