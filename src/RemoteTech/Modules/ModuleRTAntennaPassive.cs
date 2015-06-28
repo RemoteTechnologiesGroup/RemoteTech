@@ -13,6 +13,7 @@ namespace RemoteTech.Modules
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return vessel.id; } }
         public bool Powered { get { return Activated; } }
+        public bool Connected { get { return RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this)); } }
         public bool Activated { get { return Unlocked; } set { return; } }
         public bool Animating { get { return false; } }
 

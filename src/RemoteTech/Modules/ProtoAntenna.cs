@@ -9,6 +9,7 @@ namespace RemoteTech.Modules
         public Guid Guid { get; private set; }
         public bool Powered { get; private set; }
         public bool Activated { get; set; }
+        public bool Connected { get { return RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this)); } }
         public float Consumption { get; private set; }
 
         public bool CanTarget { get { return Dish != -1; } }
