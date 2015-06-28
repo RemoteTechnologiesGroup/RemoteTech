@@ -15,6 +15,7 @@ namespace RemoteTech.Modules
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return mRegisteredId; } }
         public bool Powered { get { return IsRTPowered; } }
+        public bool Connected { get { return RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this)); } }
         public bool Activated { get { return IsRTActive; } set { SetState(value); } }
         public bool CanAnimate { get { return mDeployFxModules.Count > 0; } }
         public bool AnimClosed { get { return mDeployFxModules.Any(fx => fx.GetScalar <= 0.1f                        ); } }
@@ -22,6 +23,7 @@ namespace RemoteTech.Modules
         public bool AnimOpen   { get { return mDeployFxModules.Any(fx =>                         fx.GetScalar >= 0.9f); } }
 
         public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
+
         public Guid Target
         {
             get { return RTAntennaTarget; }
@@ -118,6 +120,7 @@ namespace RemoteTech.Modules
         {
             Off,
             Operational,
+            Connected,
             NoResources,
             Malfunction,
         }
@@ -386,7 +389,7 @@ namespace RemoteTech.Modules
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
             if (resourceAmount < resourceRequest * 0.9) return State.NoResources;
             
-            return State.Operational;
+            return Connected ? State.Connected : State.Operational;
         }
 
         private void FixedUpdate()
@@ -399,6 +402,10 @@ namespace RemoteTech.Modules
                     break;
                 case State.Operational:
                     GUI_Status = Mode1Name;
+                    IsRTPowered = true;
+                    break;
+                case State.Connected:
+                    GUI_Status = "Connected";
                     IsRTPowered = true;
                     break;
                 case State.NoResources:

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace RemoteTech.Modules
 {
@@ -11,6 +12,7 @@ namespace RemoteTech.Modules
         Guid IAntenna.Guid { get { return Parent.Guid; } }
         String IAntenna.Name { get { return "Dummy Antenna"; } }
         bool IAntenna.Powered { get { return true; } }
+        public bool Connected { get { return RTCore.Instance.Network.Graph [((IAntenna)this).Guid].Any (l => l.Interfaces.Contains (this)); } }
         bool IAntenna.Activated { get { return true; } set { return; } }
         float IAntenna.Consumption { get { return 0.0f; } }
         bool IAntenna.CanTarget { get { return false; } }
