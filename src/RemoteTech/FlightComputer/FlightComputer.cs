@@ -207,7 +207,8 @@ namespace RemoteTech.FlightComputer
             updatePIDParameters();
 
             // Send updates for Target
-            if (FlightGlobals.fetch.VesselTarget != DelayedTarget && (mCommandQueue.FindLastIndex(c => (lastTarget = c as TargetCommand) != null)) == -1)
+            if (Vessel == FlightGlobals.ActiveVessel && FlightGlobals.fetch.VesselTarget != DelayedTarget &&
+                (mCommandQueue.FindLastIndex(c => (lastTarget = c as TargetCommand) != null)) == -1)
             {
                 Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
             }
