@@ -222,7 +222,8 @@ namespace RemoteTech.FlightComputer
             {
                 lastTarget = mCommandQueue[lastTargetIndex] as TargetCommand;
             }
-            else if (mActiveCommands[lastTarget.Priority] is TargetCommand)
+            else if (mActiveCommands.ContainsKey(lastTarget.Priority) &&
+                     mActiveCommands[lastTarget.Priority] is TargetCommand)
             {
                 lastTarget = mActiveCommands[lastTarget.Priority] as TargetCommand;
             }
