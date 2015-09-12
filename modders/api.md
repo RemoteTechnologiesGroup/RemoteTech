@@ -9,15 +9,15 @@ navbar: false
 **UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
-#RemoteTech Software API
+# RemoteTech Software API
 
 {% include toc.html %}
 
 RemoteTech presents a public API for use by other mods. All API functions can be found in the `RemoteTech.API` static class.
 
-##Vessel State
+## Vessel State
 
-###`bool API.HasFlightComputer(Guid id)`
+### `bool API.HasFlightComputer(Guid id)`
 
 This function tests whether a vessel has a flight computer on board.
 
@@ -34,7 +34,7 @@ True if `id` is the id of a known vessel with a flight computer; false otherwise
 
 Does not throw exceptions.
 
-###`bool API.HasAnyConnection(Guid id)`
+### `bool API.HasAnyConnection(Guid id)`
 
 This function tests whether a vessel can recieve commands from a ground station or command station.
 
@@ -51,7 +51,7 @@ True if `id` is the id of a known vessel with a working connection; false otherw
 
 Does not throw exceptions.
 
-###`bool API.HasConnectionToKSC(Guid id)`
+### `bool API.HasConnectionToKSC(Guid id)`
 
 This function tests whether a vessel can transmit science data to a ground station. Despite the name, if the game has multiple ground stations then any of them will qualify.
 
@@ -68,7 +68,7 @@ True if `id` is the id of a known vessel with a working connection to a ground s
 
 Does not throw exceptions.
 
-###`double API.GetShortestSignalDelay(Guid id)`
+### `double API.GetShortestSignalDelay(Guid id)`
 
 This function measures the signal delay experienced by a vessel when sending commands.
 
@@ -85,7 +85,7 @@ The number of seconds of signal delay introduced.
 
 Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
-###`double API.GetSignalDelayToKSC(Guid id)`
+### `double API.GetSignalDelayToKSC(Guid id)`
 
 This function measures the signal delay experienced by a vessel were commands to be sent from a ground station. Despite the name, if the game has multiple ground stations then any of them will qualify.
 
@@ -102,7 +102,7 @@ The number of seconds of signal delay introduced.
 
 Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
-###`double API.GetSignalDelayToSatellite(Guid a, Guid b)`
+### `double API.GetSignalDelayToSatellite(Guid a, Guid b)`
 
 This function measures the signal delay between two arbitrary vessels or ground stations.
 
@@ -119,9 +119,9 @@ The number of seconds of signal delay introduced.
 
 Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
-##Autopilot Support
+## Autopilot Support
 
-###`void API.AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)`
+### `void API.AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)`
 
 This function allows an external function to bypass signal delay and apply control input to a vessel in real time.
 
@@ -143,7 +143,7 @@ All flight computers on board vessel `id` will allow `autopilot` real-time contr
 
 Atomic guarantee: the program state in the event of an exception is unchanged from before the function call.
 
-###`void API.RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)`
+### `void API.RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)`
 
 This function revokes the signal delay bypass granted by [`AddSanctionedPilot()`](#void-apiaddsanctionedpilotguid-id-actionflightctrlstate-autopilot).
 

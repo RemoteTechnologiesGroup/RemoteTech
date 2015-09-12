@@ -9,19 +9,19 @@ navbar: false
 **UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
-#Configuring Parts for RemoteTech
+# Configuring Parts for RemoteTech
 
 {% include toc.html %}
 
 RemoteTech defines several new part modules appropriate for antennas or probe cores. These can be added via ModuleManager, as done in the default RemoteTech installation, or you can include them in your parts directly.
 
-##ModuleManager Conventions
+## ModuleManager Conventions
 
 All patches incorporated as part of RemoteTech are placed in the `:FOR[RemoteTech]` slot. Please use `:BEFORE[RemoteTech]`, `:AFTER[RemoteTech]`, and/or `:NEEDS[RemoteTech]` in your own patches.
 
-##Antenna Modules
+## Antenna Modules
 
-###ModuleRTAntenna
+### ModuleRTAntenna
 
 This module represents a part that can recieve control transmissions from another vessel. You **must** remove any `ModuleDataTransmitter` modules from the antenna if using `ModuleRTAntenna`. It has the following fields:
 
@@ -53,7 +53,7 @@ This module represents a part that can recieve control transmissions from anothe
 : This block, if present, indicates that the antenna can send science transmissions through the communications network. The `PacketInterval`, `PacketSize`, `PacketResourceCost`, and `RequiredResource` fields have the same meanings as those in the stock `ModuleDataTransmitter` module.
 
 
-###ModuleRTAntennaPassive
+### ModuleRTAntennaPassive
 
 This module represents an omnidirectional antenna that is always on, but consumes no power. Intended as a secondary function on non-antenna parts, such as probe cores.
 
@@ -66,13 +66,13 @@ This module represents an omnidirectional antenna that is always on, but consume
 `TRANSMITTER`
 : This block is identical to that for `ModuleRTAntenna`.
 
-###ModuleSPUPassive
+### ModuleSPUPassive
 
 This module allows any vessel with an antenna to participate in a RemoteTech network, even if it does not have a `ModuleSPU`. It should be included in all RemoteTech antennas. Unlike `ModuleSPU`, it does not filter commands or provide a flight computer.
 
-##Control Modules
+## Control Modules
 
-###ModuleSPU
+### ModuleSPU
 
 This module represents the "autopilot" living in a probe core. A vessel will only filter commands according to network availability and time delay if all parts with `ModuleCommand` also have `ModuleSPU`; otherwise, the vessel can be controlled in real time. Having at least one `ModuleSPU` on board is also required to use the flight computer. `ModuleSPU` has the following fields:
 
