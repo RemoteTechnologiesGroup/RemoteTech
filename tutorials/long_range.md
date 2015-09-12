@@ -5,7 +5,7 @@ layout: content
 
 {% include banner.html %}
 
-#Tutorial: Interplanetary Networks
+# Tutorial: Interplanetary Networks
 
 Original tutorial by grays42. Some editing done by the Remote Technologies Group.
 
@@ -13,7 +13,7 @@ Original tutorial by grays42. Some editing done by the Remote Technologies Group
 
 This tutorial is geared toward players who have connected to Low Kerbin Orbit and have made one or more connections to the Mun and Minmus, and now want to create stable, reliable networks at interplanetary distances. The same relay system that works for Kerbin’s moons can work outside Kerbin’s sphere of influence, but the distance and equipment needed change significantly.
 
-##Dish Range and Cone of Influence
+## Dish Range and Cone of Influence
 
 This guide will refer to the Comms DTS-1 (45 Mm) and Reflectron KR-7 (90 Mm) as “short-range dishes”, because these operate only within Kerbin’s sphere of influence and are designed for connection to Mun and Minmus. The Communotron 88-88 and all later dishes are “long-range dishes” designed to reach out between planets.
 
@@ -43,7 +43,7 @@ Unless design decisions dictate a different solution, it is generally advisable 
 
 This problem can be mitigated by pointing the dish at a specific satellite rather than a planet or moon, but this limits the usefulness of the antenna as a method to connect to many vessels at a particular destination, and introduces micromanagement in assigning specific dishes to specific missions.
 
-##Interplanetary Network Example
+## Interplanetary Network Example
 
 This example of an interplanetary network is a commonly used due to its small number of relays and reliably high uptime. Other networks are possible on a situational basis, and this method can be extended for use in more complex networks around Jool’s moons.
 
@@ -55,27 +55,27 @@ This example of an interplanetary network is a commonly used due to its small nu
 
 3. One or more relays at the destination equipped with a long-range dish pointed at the relay satellite in step 2 and either an omnidirectional antenna or short-range antenna for communication with a lander. (Because you have direct control over your lander and relay at your destination, blanket coverage is generally optional.)
 
-##Other Considerations and Pitfalls
+## Other Considerations and Pitfalls
 
-###Minimize line-of-sight blackout periods.
+### Minimize line-of-sight blackout periods.
 
 Every step in the chain is vulnerable to blackouts, and any break in the chain will black out the entire link. Ensure that blackout periods are minimized by providing redundant coverage or placing long-range relays into highly eccentric orbits.
 
-###Minimize power blackout periods.
+### Minimize power blackout periods.
 
 Be sure to account for power concerns for all satellites. Use the power calculator [available here](https://docs.google.com/spreadsheet/ccc?key=0AkXf-77s6gmFdEdVeGFqX0xobTczYkhEaEVrVTdWV3c) (or in [OpenOffice/LibreOffice format](http://www.mediafire.com/view/63tyil19qwo417r/KSP_Battery_Calculator_LibreOffice_fix.ods) if the Google link doesn't work) if you’re not sure how much solar and battery power your satellite will need.
 
-###Orbits’ relative positions will change throughout the year
+### Orbits’ relative positions will change throughout the year
 
 Setting a satellite into a polar circular orbit so that it always has a clear line of sight to Kerbin is fine, except that throughout the course of a year, that orbit’s orientation relative to Kerbin will change as both planets orbit the sun. During some periods of the year, the satellite will black out on every orbit as it passes behind the planet. Avoid this by setting up highly eccentric orbits, which will black out infrequently and briefly.
 
-###Use Active Vessel with caution.
+### Use Active Vessel with caution.
 
 The use of Active Vessel as a target of any dish antenna can potentially cause confusion. In all cases of dish antennas, using explicit connections rather than Active Vessel connections dramatically reduces network troubleshooting issues. More detail regarding the Active Vessel troubleshooting issue is available [here](http://remotetechnologiesgroup.github.io/RemoteTech/guide/overview/#target-active).
 
 A tutorial on when to use and how to troubleshoot active vessel will be posted later.
 
-###Beware of time delay.
+### Beware of time delay.
 
 Interplanetary probes experience a very significant (several minutes or more) time delay unless local control is provided by a [RC-L01](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) as a [Command Station](http://remotetechnologiesgroup.github.io/RemoteTech/#command-stations). Commands can be queued up to be executed during blackout periods, but the execution of extremely long burns to insert into orbit is very unpredictable, and interplanetary atmospheric aerobraking is very difficult, bordering on impossible.
 
@@ -83,7 +83,7 @@ Burns to insert into orbit after an interplanetary intercept need to be done wit
 
 Without a local source of control such as a command station, attempting to land a probe using engines at interplanetary distances is not recommended, as the time delay makes such a landing virtually impossible. Parachute landings can be done, however, as shown in the [re-entry tutorial](../reentry/).
 
-##Final Challenge: Jool
+## Final Challenge: Jool
 
 Jool is an interesting case for interplanetary networks, and it is advisable to attempt other connections prior to tackling the gas giant’s multiple moon system. With Jool’s radius of 6 Mm, setting up a low-orbit omnidirectional relay is impractical, and with Pol’s apoapsis of 210 Mm, the short-range dishes can’t guarantee coverage to all of Jool’s moons. In addition, the CommTech-1’s cone of influence of 0.006° provides a coverage diameter of 10.8 Gm at Jool’s closest point to Kerbin, making blanket coverage of all moons with a single dish impossible.
 
