@@ -6,13 +6,14 @@ navbar: true
 
 {% include banner.html %}
 
-#RemoteTech Player's Guide
+# RemoteTech Player's Guide
 
 {::comment}
 Can't generate this automatically at present
 {:/comment}
 
 <div class="toc" markdown="1">
+
 * [Playing RemoteTech](overview/)
     * [Connection Status](overview/#connection-status)
     * [Antenna Configuration](overview/#antenna-configuration)
@@ -32,5 +33,7 @@ Can't generate this automatically at present
     * [Visual Style](settings/#visual-style)
     * [Miscellaneous](settings/#miscellaneous)
     * [Appendix: Root Range Model](settings/#appendix-root-range-model)
+
 {: #markdown-toc}
+
 </div>
