@@ -9,7 +9,7 @@ navbar: true
 **UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
-#RemoteTech API and Modding Guide
+# RemoteTech API and Modding Guide
 
 {::comment}
 Can't generate this automatically at present

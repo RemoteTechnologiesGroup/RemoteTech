@@ -9,7 +9,7 @@ navbar: false
 **UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
-#RemoteTech Options
+# RemoteTech Options
 
 {% include toc.html %}
 
@@ -71,7 +71,7 @@ The settings are as follows:
 `ThrottleZeroOnNoConnection` (default = True)
 : If true, the flight computer cuts the thrust if you have no connection to mission control.
 
-##Appendix: Root Range Model
+## Appendix: Root Range Model
 
 In the root range model, the minimum distance to achieve a link depends on the ranges of both antennas. The following table shows the ranges for each pair of RemoteTech antennas, assuming `RangeMultiplier = 0.5`.
 

@@ -5,7 +5,7 @@ layout: content
 
 {% include banner.html %}
 
-#The Flight Computer
+# The Flight Computer
 
 {% include toc.html %}
 
@@ -17,13 +17,13 @@ The basic flight computer window shows only the controls for operating it; click
 
 An instant command may be canceled by clicking the "X" button next to the command. Non-instant commands cannot be canceled.
 
-##Signal delay
+## Signal delay
 
 All commands, instant and otherwise, are subject to signal delay, whether or not the flight computer's window is open. Instant commands will be shown in the queue along with the amount of time remaining until the probe receives the command. Once the time drops to zero, the command will be executed. Cancellations also count as commands and appear in the queue, along with a signal delay. Unless you are using manual delay (see below), there is no way to get a cancel command to the ship before it starts executing the original command.
 
 If a command pulls up a window, you may click buttons in the window without signal delay. For example, if you have a two-minute delay and activate a science experiment, you have to wait only two minutes, not four, before the probe discards, saves, or transmits the data.
 
-##Manual delay
+## Manual delay
 
 The text box in the lower right corner of the computer window lets you choose to delay an action by a specific amount. This is useful if you expect to go out of contact, but want the probe to carry out a command while out of reach. To set the manual delay, type a delay into the box **and hit enter**. Merely typing the delay does nothing. Numbers with no units will be interpreted as seconds; otherwise, you need to give exact units: "y"ears, "d"ays, "h"ours, "m"inutes, or "s"econds. For example, "1m20s" or "1m 20s" will be parsed as one minute and twenty seconds, while "1m20" or "1m 20" will be treated as bad input. Once a manual delay is set, any command, instant or not, will be delayed, whether the flight computer window is open or not. **Remember to set your delay to zero when you're done!**
 
@@ -33,11 +33,11 @@ If the manual delay is less than the signal delay, the delay will be ignored -- 
 
 Cancellations are not affected by manual delay, so a command will be removed from the queue as soon as the cancellation reaches the ship. This makes manual delay helpful if you want to double-check a complex sequence of commands before they are executed.
 
-##Autopilot commands
+## Autopilot commands
 
 The buttons on the left side of the screen control a simple autopilot. All buttons are instant actions, so they are shown in the queue and may be canceled. Like all commands, they are subject to signal delay and manual delay. The buttons are as follows:
 
-###Attitude Control
+### Attitude Control
 
 ![IMAGE: layout of the attitude controls](flightcomputer_att.png){: .left}
 
@@ -86,7 +86,7 @@ CUSTOM
     * HDG: the angle relative to north, in degrees. 0 means to point north, 90 means to point east.
     * RLL: the angle to rotate around the ship's control axis, in degrees. 0 means that the horizon will be at the bottom of the navball. 90 means that the horizon will be on the right side of the navball.
 
-###Executing Maneuver Nodes
+### Executing Maneuver Nodes
 
 Pressing the "EXEC" button causes the ship to wait until it approaches a maneuver node, then slew to the maneuver direction and start the engine for a precalculated amount of time. Once the length of the burn has passed, the flight computer will shut off the engine. Automatic node execution overrides any attitude control commands, and once the execution is done the flight computer switches off. The player may need to schedule post-burn commands such as KILL or toggle SAS to keep the ship pointed.
 
@@ -98,7 +98,7 @@ Unlike most commands, EXEC ignores manual delays -- the time of the burn is set 
 
 ![IMAGE: a simple example of a manual burn](manualburn.png){: .right}
 
-###Manual Burns
+### Manual Burns
 
 Automatic node execution is convenient, but has a few limitations: it needs a well-defined maneuver node, making it difficult to do small velocity corrections, and it ignores any nodes after the first. For more control over burns, players may set the burn parameters by hand.
 
