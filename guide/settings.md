@@ -68,6 +68,9 @@ The settings are as follows:
 `ThrottleTimeWarp` (default = True)
 : If set, the flight computer will automatically come out of time warp a few seconds before executing a queued command. If unset, the player is responsible for making sure the craft is not in time warp during scheduled actions.
 
+`ThrottleZeroOnNoConnection` (default = True)
+: If true, the flight computer cuts the thrust if you have no connection to mission control.
+
 ##Appendix: Root Range Model
 
 In the root range model, the minimum distance to achieve a link depends on the ranges of both antennas. The following table shows the ranges for each pair of RemoteTech antennas, assuming `RangeMultiplier = 0.5`.
