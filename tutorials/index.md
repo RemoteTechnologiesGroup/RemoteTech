@@ -11,47 +11,47 @@ extra_css: tutorials
 **UNDER CONSTRUCTION:** Please watch your step!
 {: .alert .alert-danger}
 
-#RemoteTech Tutorials
+# RemoteTech Tutorials
 
 {% include toc.html %}
 
-##Getting Started
+## Getting Started
 
 ![](firstsat/ascent_path.png)
 
-###[Launching Your First Satellite](firstsat/)
+### [Launching Your First Satellite](firstsat/)
 
-##Setting Up Satellite Constellations
+## Setting Up Satellite Constellations
 
 ![](comsats/thumbnail.png)
 
-###[General Satellite Design Tips](comsats/)
+### [General Satellite Design Tips](comsats/)
 
-###Kessler Network
+### Kessler Network
 
 ![](c16network/single_final.png)
 
-###[Medium-Altitude Omni Network](c16network/)
+### [Medium-Altitude Omni Network](c16network/)
 
-###Cloverleaf Network
+### Cloverleaf Network
 
 ![](keo/multi_final.png)
 
-###["Realistic" Keosynchronous Relay](keo/)
+### ["Realistic" Keosynchronous Relay](keo/)
 
-##Long-Range Communications
+## Long-Range Communications
 
 ![](long_range/thumbnail.png)
 
-###[Interplanetary Relay Networks](long_range/)
+### [Interplanetary Relay Networks](long_range/)
 
-###Active Vessel Do's and Don'ts
+### Active Vessel Do's and Don'ts
 
-##Using the Flight Computer Effectively
+## Using the Flight Computer Effectively
 
-###Planetary Orbital Insertion
+### Planetary Orbital Insertion
 
 ![](reentry/thumbnail.png)
 
-###[Kerbin Re-Entry](reentry/)
+### [Kerbin Re-Entry](reentry/)
 
