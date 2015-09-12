@@ -7,13 +7,13 @@ extra_css: overview
 
 {% include banner.html %}
 
-#Playing RemoteTech
+# Playing RemoteTech
 
 {% include toc.html %}
 
 To play RemoteTech, not only must you manage the antennas on your current ship, selecting the right antenna(s) for the right situation, but you must also manage your overall communications network, ensuring that every craft has a link to Mission Control when it needs it.
 
-##Connection Status
+## Connection Status
 
 ![IMAGE: new time quadrant, with connection status below the mission clock and the computer icon below it](compicon.png){: .left}
 
@@ -23,7 +23,7 @@ The second element is a colored calculator icon -- green for a [working connecti
 
 ![IMAGE: target selection window](targetselector.png){: .right}
 
-##Antenna Configuration
+## Antenna Configuration
 
 With the exception of the Reflectron DP-10, all antennas start deactivated, both to save power and to protect the more delicate antennas from the rigors of launch. To activate an antenna (or to deactivate an unneeded one), right click on the antenna, then click "Activate" (or "Deactivate"). Antennas can also be activated or deactivated using action groups, or preset by right-clicking on them in the VAB. Activating an antenna counts as a command: you **cannot** activate an antenna unless you have an on-board crew, a working connection through another antenna, or an attached launch clamp. Deactivate your last antenna at your peril!
 
@@ -33,7 +33,7 @@ You do not need to place your satellite in any special orientation to use a dish
 
 If necessary, you can send an EVA to open, close, or retarget an antenna from the outside. This is usually the only way to restore contact with a probe whose antennas are all shut down. Simply float up to the antenna, right click on it, and select the command you want to force.
 
-##The Map View
+## The Map View
 {: .spacer}
 
 RemoteTech adds an overlay to the map view to display the state of your communication network. The overlay may be toggled with the buttons located on the lower right: 
@@ -57,7 +57,7 @@ The Kerbal Space Center and any remote command stations will be marked on the ma
 
 RemoteTech also adds one button to the right side of the map view, below the planet info/ship crew button. Clicking this button will open a list of ships in the game; clicking on any ship on the list will center the map view on that ship.
 
-##Connection Rules
+## Connection Rules
 
 To have a [working connection](../../#connections) to the Kerbal Space Center (KSC) or a [remote command station](../../#command-stations), there must be an unbroken chain of links between satellites and between a satellite and the command center. If multiple paths through the network are available, RemoteTech will always choose the shortest, minimizing [signal delay](../comp/#signal-delay). There is no limit to the number of links in the chain, but *all* links must be valid to establish a connection. An example with three links is shown below.
 
@@ -69,11 +69,11 @@ To have a [working connection](../../#connections) to the Kerbal Space Center (K
 
 A link will be formed between two satellites if, and only if, three conditions are met. For the purposes of these rules, Mission Control at the Kerbal Space Center (KSC) is considered a grounded satellite with a [special omnidirectional antenna](../parts/#omnidirectional-antennas).
 
-###Line of Sight
+### Line of Sight
 
 The first condition is that there must not be a planet or moon blocking the line of sight between the two satellites. Line of sight calculations assume all planets are perfect spheres, so mountains and other terrain will not affect line of sight.
 
-###Range
+### Range
 
 The second condition is that *both* satellites must have an antenna that can reach as far as the other satellite. A special case is that a link to KSC is impossible unless the satellite establishing the link is within [75,000 km](../parts/#omnidirectional-antennas) of Kerbin. Any connections from farther out will need to go through at least one relay.
 
@@ -81,7 +81,7 @@ The second condition is that *both* satellites must have an antenna that can rea
 
 Advanced players can choose to use the more complex root range model, enabled in the [RemoteTech settings](../../modders/settings/#alternative-rules). The model allows connections between a long-range and a short-range antenna at longer distances than connections between two short-range antennas but shorter distances than connections between two long-range angennas.
 
-###Targeting
+### Targeting
 
 The third, and most complex, condition applies only to dish antennas. To establish a link, a dish with sufficient range must be *targeted* at the other satellite, either directly or indirectly. If the other satellite is also trying to connect through a dish rather than an omnidirectional antenna, it must target the first satellite as well. There is no automatic targeting, as this would effectively make dishes act like omnidirectional antennas.
 

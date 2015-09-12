@@ -7,11 +7,11 @@ extra_css: antennas
 
 {% include banner.html %}
 
-#List of Parts
+# List of Parts
 
 {% include toc.html %}
 
-##Probe Cores
+## Probe Cores
 
 All stock, B9, and FASA probe cores serve as [signal processors](../../#signal-processors). In addition, the [RC-L01 Remote Guidance Unit](http://wiki.kerbalspaceprogram.com/wiki/RC-L01_Remote_Guidance_Unit) can serve as a [command station](../../#command-stations), provided a crew of 6 or more kerbals is available to split the jobs of running the ship and monitoring nearby probes. The crew can be anywhere on the ship; it does not have to be in a particular part. The RC-L01 still acts as a probe core and a signal processor, whether or not a crew is on board.
 
@@ -19,7 +19,7 @@ After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wik
 
 The probe cores are otherwise unchanged from their [stock versions](http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods).
 
-##Omnidirectional Antennas
+## Omnidirectional Antennas
 
 {::comment}
 Yes, the non-breaking spaces are necessary. Without them, when printing the table on a narrow screen, browsers won't be smart enough to realize that notes is the only column that word-wraps well, and will try to create eye-wrenching entries like 2500
@@ -37,7 +37,7 @@ KSC Mission Control |      |                 |      | 75,000&nbsp;km |          
 
 <!--All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.-->
 
-###Reflectron DP-10
+### Reflectron DP-10
 
 <div class="antenna" markdown="1">
 
@@ -75,7 +75,7 @@ Reach                                 | Any line of sight to KSC Mission Control
 
 </div>
 
-###Communotron 16
+### Communotron 16
 
 <div class="antenna" markdown="1">
 
@@ -116,7 +116,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 </div>
 
-###CommTech EXP-VR-2T
+### CommTech EXP-VR-2T
 
 <div class="antenna" markdown="1">
 
@@ -157,7 +157,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 </div>
 
-###Communotron 32
+### Communotron 32
 
 <div class="antenna" markdown="1">
 
@@ -198,7 +198,7 @@ Minimum safe altitude at 2300 m/s   | 35 km
 
 </div>
 
-##Dish Antennas
+## Dish Antennas
 
 {::comment}
 Yes, the non-breaking spaces are necessary. Without them, when printing the table on a narrow screen, browsers won't be smart enough to realize that notes is the only column that word-wraps well, and will try to create eye-wrenching entries like 2500
@@ -218,7 +218,7 @@ Antenna           | Cost | Mass            | Drag | Cone | Range          | Powe
 **Warning:** the Reflectron SS-5 and Reflectron LL-5 are legacy parts included for backward compatibility. Do not use these parts in new spacecraft, as they will be removed in an upcoming release of RemoteTech.
 {: .alert}
 
-###Comms DTS-M1
+### Comms DTS-M1
 
 <div class="antenna" markdown="1">
 
@@ -262,7 +262,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 </div>
 
-###Reflectron KR-7
+### Reflectron KR-7
 
 <div class="antenna" markdown="1">
 
@@ -303,7 +303,7 @@ Cone covers keosynchronous orbit at | 16,000 km
 
 </div>
 
-###Communotron 88-88
+### Communotron 88-88
 
 <div class="antenna" markdown="1">
 
@@ -347,7 +347,7 @@ Minimum safe altitude at 2300 m/s   | 32 km
 
 </div>
 
-###Reflectron KR-14
+### Reflectron KR-14
 
 <div class="antenna" markdown="1">
 
@@ -388,7 +388,7 @@ Cone covers keosynchronous orbit at | 9,900,000 km
 
 </div>
 
-###CommTech-1
+### CommTech-1
 
 <div class="antenna" markdown="1">
 
@@ -431,7 +431,7 @@ Cone covers keosynchronous orbit at | 66,000,000 km
 
 </div>
 
-###Reflectron GX-128
+### Reflectron GX-128
 
 <div class="antenna" markdown="1">
 
