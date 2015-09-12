@@ -57,6 +57,11 @@ namespace RemoteTech.FlightComputer
             }
         }
 
+        /// <summary>
+        /// Returns true to keep the throttle on the current position without a connection, otherwise false
+        /// </summary>
+        public bool KeepThrottleNoConnect { get { return !RTSettings.Instance.ThrottleZeroOnNoConnection; } }
+
         public double TotalDelay { get; set; }
         public ITargetable DelayedTarget { get; set; }
         public TargetCommand lastTarget = null;
@@ -100,6 +105,7 @@ namespace RemoteTech.FlightComputer
             pid = new PIDControllerV2(0, 0, 0, 1, -1);
             initPIDParameters();
             lastAct = Vector3d.zero;
+            lastTarget = TargetCommand.WithTarget(null);
 
             var attitude = AttitudeCommand.Off();
             mActiveCommands[attitude.Priority] = attitude;
@@ -207,9 +213,28 @@ namespace RemoteTech.FlightComputer
             updatePIDParameters();
 
             // Send updates for Target
-            if (FlightGlobals.fetch.VesselTarget != DelayedTarget && (mCommandQueue.FindLastIndex(c => (lastTarget = c as TargetCommand) != null)) == -1)
+            if (Vessel == FlightGlobals.ActiveVessel && FlightGlobals.fetch.VesselTarget != lastTarget.Target)
             {
                 Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
+                UpdateLastTarget();
+            }
+        }
+
+        private void UpdateLastTarget()
+        {
+            int lastTargetIndex = mCommandQueue.FindLastIndex(c => (c is TargetCommand));
+            if (lastTargetIndex >= 0)
+            {
+                lastTarget = mCommandQueue[lastTargetIndex] as TargetCommand;
+            }
+            else if (mActiveCommands.ContainsKey(lastTarget.Priority) &&
+                     mActiveCommands[lastTarget.Priority] is TargetCommand)
+            {
+                lastTarget = mActiveCommands[lastTarget.Priority] as TargetCommand;
+            }
+            else
+            {
+                lastTarget = TargetCommand.WithTarget(null);
             }
         }
 
@@ -218,11 +243,19 @@ namespace RemoteTech.FlightComputer
             DelayedFlightCtrlState dfs = new DelayedFlightCtrlState(fs);
             dfs.TimeStamp += Delay;
             mFlightCtrlQueue.Enqueue(dfs);
+
         }
 
         private void PopFlightCtrl(FlightCtrlState fcs, ISatellite sat)
         {
             FlightCtrlState delayed = new FlightCtrlState();
+
+            // Keep the throttle on no connection
+            if(this.KeepThrottleNoConnect == true)
+            {
+                delayed.mainThrottle = fcs.mainThrottle;
+            }
+
             while (mFlightCtrlQueue.Count > 0 && mFlightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
             {
                 delayed = mFlightCtrlQueue.Dequeue().State;
@@ -277,6 +310,7 @@ namespace RemoteTech.FlightComputer
                             ), true);
                         }
                         mCommandQueue.Remove(dc);
+                        UpdateLastTarget();
                     }
                 }
             }
@@ -302,7 +336,7 @@ namespace RemoteTech.FlightComputer
         {
             if (!SignalProcessor.IsMaster) return;
 
-            if (!InputAllowed)
+            if (!InputAllowed && this.KeepThrottleNoConnect == false)
             {
                 fcs.Neutralize();
             }
@@ -473,6 +507,7 @@ namespace RemoteTech.FlightComputer
                     }
                 }
             }
+            UpdateLastTarget();
         }
 
         /// <summary>

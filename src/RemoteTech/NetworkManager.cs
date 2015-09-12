@@ -227,7 +227,9 @@ namespace RemoteTech
         [Persistent] private Color MarkColor = new Color(0.996078f, 0, 0, 1);
         [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
 
-        bool ISatellite.Powered { get { return true; } }
+        private bool AntennaActivated = true;
+
+        bool ISatellite.Powered { get { return this.AntennaActivated; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
         Guid ISatellite.Guid { get { return mGuid; } }
@@ -262,5 +264,13 @@ namespace RemoteTech
             return Name;
         }
 
+        /// <summary>
+        /// Used currently for debug purposes only. This method can be used to shut down the mission control
+        /// </summary>
+        /// <param name="powerswitch">true=Missioncontrol on, false=MissionControl off</param>
+        public void togglePower(bool powerswitch)
+        {
+            this.AntennaActivated = powerswitch;
+        }
     }
 }
