@@ -6,7 +6,7 @@ navbar: false
 
 {% include banner.html %}
 
-#Launching Your First Satellite
+# Launching Your First Satellite
 
 {% include toc.html %}
 
@@ -17,13 +17,13 @@ To play this tutorial, you should already know how to launch non-RemoteTech rock
 * how to keep control of unmanned rockets from liftoff to orbit
 * how to plan pre-network missions around your limited line of sight to KSC.
 
-##Requirements
+## Requirements
 
 You must have researched [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control), which unlocks the Stayputnik probe core and the [Reflectron DP-10](../../guide/parts/#reflectron-dp-10) omnidirectional antenna. Researching [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Electrics), which unlocks solar panels, is recommended but not required.
 
 This tutorial does not require any mods other than RemoteTech.
 
-##Overview
+## Overview
 
 To control a probe or satellite from the ground, you need a reliable communications link over which to send commands to mission control. In a mature space program, a network of commsats will help you relay transmissions in any direction, but you don't have that luxury at the start of the game. So how do you launch and control the very satellites that are supposed to help you do the controlling?
 
@@ -33,20 +33,20 @@ Fortunately, getting into a stable orbit before you lose control doesn't demand 
 
 ![A satellite must have an antenna, a probe core, and a power supply](design.png "Basic satellite design"){: .left}
 
-##Satellite Design
+## Satellite Design
 
 As for any KSP probe, you will need a probe core, a battery, and (once you have the tech) solar panels. Double-check that you have enough panel and battery capacity to cover the energy needs of your antenna(s), since RemoteTech antennas use a lot more power than the stock versions.
 
 At low tech levels you have access to only three antennas: the [Communotron 16](../../guide/parts/#communotron-16), the [Reflectron DP-10](../../guide/parts/#reflectron-dp-10), and the [Comms DTS-M1](../../guide/parts/#comms-dts-m1). Of these three, the Reflectron DP-10 is the only one that can work in Kerbin's lower atmosphere without breaking off, so you *must* include it on the satellite (several atmosphere-safe dishes become available later in the tech tree). The other two antennas are [optional](#high-powered-antennas) for low enough orbits.
 
-##Launch
+## Launch
 {: .spacer}
 
 The DP-10 is unique among RemoteTech antennas in that it is automatically switched on at mission start, so you don't need to do any fine-tuning on the pad.
 
 Your launch trajectory is important. Were fuel efficiency your only concern, you would want a long, flat launch path to build up speed, and some mods (particularly Ferram Aerospace Research) encourage this. Unfortunately, a path like that means you won't reach orbit until you are out of sight of Mission Control, and therefore out of contact. There are two ways to avoid this, depending on your play style: [following a steep launch path](#method-1-steep-ascent) or [using the flight computer](#method-2-flight-computer). A steep launch requires fewer RemoteTech-specific skills but is less efficient (and may lead to a broken rocket while playing FAR), while the flight computer gives you the freedom to build and launch your rocket how you like but requires you to pick up more advanced skills right away.
 
-###Method 1: Steep Ascent
+### Method 1: Steep Ascent
 
 Make sure you take care of all maneuvers before you pass out of contact. This means tuning your launch trajectory so that you finish your final burn less than 280 km (27&deg; longitude) downrange of KSC. Some trial and error may be necessary if you're used to shallower launches, but the traditional 45&deg; ascent path should work.
 
@@ -61,7 +61,7 @@ If you have solar panels, deploy them as soon as you are out of the atmosphere, 
 
 ![IMAGE: Flight computer panel after queuing everything](comp_preburn.png){: .left}
 
-###Method 2: Flight Computer
+### Method 2: Flight Computer
 
 Launch however you usually do. Once you are coasting to apoapsis, set a maneuver node to represent the final burn to reach orbit. Then, open the flight computer by clicking on the calculator icon below the mission clock, followed by ">>" to open the command queue. Click "GRD+" to tell the ship to face prograde (at least, until it gets out of the atmosphere), then click "EXEC" to tell it to execute the maneuver node. 
 
@@ -71,14 +71,14 @@ Then open each panel by right-clicking or using an action group, as in normal KS
 
 The final queue should look something like this picture (the "Toggle SAS" command is [optional](#post-burn-attitude-control)).
 
-##The End
+## The End
 {: .spacer}
 
 That's it! You now have a basic satellite in orbit around Kerbin. Every time it passes over KSC, you can send or schedule more commands. Or you can just leave it where it is, happily beeping away.
 
-#Optional Steps
+## Optional Steps
 
-##High-Powered Antennas
+### High-Powered Antennas
 
 The DP-10's main disadvantage is its 500 km range. If your satellite will never go above 150 km, this is more than adequate -- any time you have a line of sight to Mission Control, you will be in range. For ever-higher orbits, you will only be in range in an ever-narrower circle centered on Mission Control.
 
@@ -88,7 +88,7 @@ If you have the Comms DTS-M1, right-click on it while on the launchpad, then cli
 
 If you have an antenna other than the DP-10, you will need to activate it in flight. You can do this either by right-clicking on the antenna and clicking "activate", or by binding it to an action group in the VAB. All RemoteTech antennas are safe to use above 35 km, so you should be able to deploy the antenna while still in line of sight to KSC. An alternate strategy is to bind the antenna to an action group together with the satellite's solar panels, and trigger the group to deploy everything once you leave the atmosphere.
 
-##Post-Burn Attitude Control
+### Post-Burn Attitude Control
 
 If you are [using the flight computer to get into orbit](#method-2-flight-computer), the computer will turn off attitude control at the end of the burn, which will leave the satellite slowly tumbling. If you like, you can add a command to maintain attitude after the burn. 
 
