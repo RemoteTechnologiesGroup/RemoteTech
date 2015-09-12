@@ -57,6 +57,11 @@ namespace RemoteTech.FlightComputer
             }
         }
 
+        /// <summary>
+        /// Returns true to keep the throttle on the current position without a connection, otherwise false
+        /// </summary>
+        public bool KeepThrottleNoConnect { get { return !RTSettings.Instance.ThrottleZeroOnNoConnection; } }
+
         public double TotalDelay { get; set; }
         public ITargetable DelayedTarget { get; set; }
         public TargetCommand lastTarget = null;
@@ -238,11 +243,19 @@ namespace RemoteTech.FlightComputer
             DelayedFlightCtrlState dfs = new DelayedFlightCtrlState(fs);
             dfs.TimeStamp += Delay;
             mFlightCtrlQueue.Enqueue(dfs);
+
         }
 
         private void PopFlightCtrl(FlightCtrlState fcs, ISatellite sat)
         {
             FlightCtrlState delayed = new FlightCtrlState();
+
+            // Keep the throttle on no connection
+            if(this.KeepThrottleNoConnect == true)
+            {
+                delayed.mainThrottle = fcs.mainThrottle;
+            }
+
             while (mFlightCtrlQueue.Count > 0 && mFlightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
             {
                 delayed = mFlightCtrlQueue.Dequeue().State;
@@ -323,7 +336,7 @@ namespace RemoteTech.FlightComputer
         {
             if (!SignalProcessor.IsMaster) return;
 
-            if (!InputAllowed)
+            if (!InputAllowed && this.KeepThrottleNoConnect == false)
             {
                 fcs.Neutralize();
             }
