@@ -31,6 +31,7 @@ namespace RemoteTech
         [Persistent] public RangeModel.RangeModel RangeModelType = RangeModel.RangeModel.Standard;
         [Persistent] public double MultipleAntennaMultiplier = 0.0;
         [Persistent] public bool ThrottleTimeWarp = true;
+        [Persistent] public bool ThrottleZeroOnNoConnection = true;
         [Persistent] public bool HideGroundStationsBehindBody = false;
         [Persistent] public Color DishConnectionColor = XKCDColors.Amber;
         [Persistent] public Color OmniConnectionColor = XKCDColors.BrownGrey;
