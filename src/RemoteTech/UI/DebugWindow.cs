@@ -10,7 +10,7 @@ namespace RemoteTech.UI
 
         public DebugWindow()
             : base(new Guid("B17930C0-EDE6-4299-BE78-D975EAD1986B"), "RemoteTech DebugWindow",
-                   new Rect(Screen.width / 2 - 250, Screen.height / 2 - 175, 500, 350), WindowAlign.Floating)
+                   new Rect(Screen.width / 2 - 250, Screen.height / 2 - 225, 500, 450), WindowAlign.Floating)
         {
             this.mSavePosition = true;
             this.initializeDebugMenue();
@@ -34,6 +34,8 @@ namespace RemoteTech.UI
         private int currentDebugMenue = 0;
         /// <summary>List of all menue items</summary>
         private List<string> debugMenueItems = new List<string>();
+
+        private int deactivatedMissionControls = 0;
 
         /// API Input fields
         private string HasFlightComputerGuidInput = "";
@@ -97,9 +99,19 @@ namespace RemoteTech.UI
 
                 #region Draw debug log
                 // Draw a 100 height debug-console at the bottom of the debug-window
-                GUILayout.BeginVertical(GUILayout.Height(100));
+                GUILayout.BeginVertical(GUILayout.Height(150));
                 this.drawRTDebugLogEntrys();
                 GUILayout.EndVertical();
+                // Draw the clear log button
+                // Clear Logs Button
+                GUILayout.BeginHorizontal();
+                {
+                    var pushFontsize = GUI.skin.button.fontSize;
+                    GUI.skin.button.fontSize = 12;
+                    RTUtil.Button(new GUIContent("Clear Logs in " + this.currentLogLevel.ToString(), "tbd."), () => RTLog.RTLogList[this.currentLogLevel].Clear());
+                    GUI.skin.button.fontSize = pushFontsize;
+                }
+                GUILayout.EndHorizontal();
                 #endregion
             }
             GUILayout.EndVertical();
@@ -225,6 +237,16 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
 
+            // ThrottleZeroOnNoConnection
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Throttle Zero: ", GUILayout.Width(firstColWidth));
+                int throttleZeroNoConnection = (settings.ThrottleZeroOnNoConnection) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.ThrottleZeroOnNoConnection = true; }, throttleZeroNoConnection, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.ThrottleZeroOnNoConnection = false; }, throttleZeroNoConnection, 0);
+            }
+            GUILayout.EndHorizontal();
+
             // HideGroundStationsBehindBody 
             GUILayout.BeginHorizontal();
             {
@@ -232,6 +254,15 @@ namespace RemoteTech.UI
                 int hideGroundStationsBehindBody = (settings.HideGroundStationsBehindBody) ? 1 : 0;
                 RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.HideGroundStationsBehindBody = true; }, hideGroundStationsBehindBody, 1);
                 RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.HideGroundStationsBehindBody = false; }, hideGroundStationsBehindBody, 0);
+            }
+            GUILayout.EndHorizontal();
+
+            // Deaktivate Mission Control 
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("Deactivate KSC: ", GUILayout.Width(firstColWidth));
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(false); }; deactivatedMissionControls = 1; }, deactivatedMissionControls, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(true); }; deactivatedMissionControls = 0; }, deactivatedMissionControls, 0);
             }
             GUILayout.EndHorizontal();
 
