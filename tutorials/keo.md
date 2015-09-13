@@ -6,7 +6,7 @@ navbar: false
 
 {% include banner.html %}
 
-#Creating a Keosynchronous Satellite Network
+# Creating a Keosynchronous Satellite Network
 
 {% include toc.html %}
 
@@ -20,7 +20,7 @@ To play this tutorial, you should know how to design rockets to specific perform
 
 The tutorial gives two methods for creating a KEO network. [Separate launches](#method-1-separate-launches) have an easier rocket design and less specific orbit requirements, but are more tedious and familiarity with KSP's rendezvous-planning system. A [single launch](#method-2-single-launcher) is faster, but requires skill in both rocket design and orbital maneuvers. Many thanks to Elan for the idea!
 
-##Overview
+## Overview
 
 One of the first steps in playing with RemoteTech is creating a network of communications satellites. While you can carry out [low-orbit missions](../firstsat/) without any infrastructure, as you get farther and farther from Kerbin it will become increasingly difficult to get a direct connection to Mission Control. A well-designed network is one that lets you communicate from anywhere you want to go (which, in the early game, will be Kerbin's sphere of influence) and that doesn't require a lot of fine-tuning once you've set it up. 
 
@@ -28,13 +28,13 @@ While more difficult to set up than an [omni-based network](../c16network/), a k
 
 But perhaps the best reason to build a keosynchronous network is because, as of Kerbal Space Program 0.24, you can get *paid* for launching synchronous satellites.
 
-##Requirements
+## Requirements
 
 For technology requirements, see the [General Satellite Design tutorial](../comsats/).
 
 This tutorial assumes you have at least one mod that gives you orbital periods in-game. In order of decreasing precision, the best choices are Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb. The screenshots all use Kerbal Engineer, since that's the mod I'm most familiar with.
 
-###Satellite Design
+### Satellite Design
 
 In terms of the payload guidelines from the [General Satellite Design tutorial](../comsats/), we need antennas for communication with the surface and with each satellite's siblings.
 
@@ -50,13 +50,13 @@ In keosynchronous orbit, a satellite will experience up to 1200&nbsp;seconds of 
 
 Ensure your satellite has an option for making very low-thrust burns (either RCS or a light engine).
 
-##Method 1: Separate Launches
+## Method 1: Separate Launches
 
 This method requires a rocket with at least 5615 m/s of delta-V to both reach and circularize at keostationary altitudes.
 
 ![Set antenna targets from the map view by clicking the lower right icon, then choosing a dish, followed by its target](single_1_setup.png "Setting up targets"){: .right}
 
-###First Satellite
+### First Satellite
 
 Begin by launching your satellite into low Kerbin orbit. If you are using the Comms DTS-M1 as your Kerbin communication antenna, target it at Mission Control (not Kerbin) to maintain contact whenever your satellite is above the horizon.
 
@@ -81,7 +81,7 @@ Once you are approaching apoapsis (and are in contact with KSC, thanks to your c
 
 Once you've achieved your final orbit, you're done. If you're using a dish antenna to contact the KSC, switch its target to Kerbin to use cone mode. This will let the remaining satellites in the network benefit from your first satellite's superior coverage.
 
-###Remaining Satellites
+### Remaining Satellites
 {: .spacer}
 
 ![Image showing how the map view should look before the second satellite's transfer burn](single_2_align.png "A good transfer burn for the second of three satellites: apoapsis at KEO altitude, and 6000 km from the first satellite"){: .right}
@@ -100,13 +100,13 @@ Once you are happy with your orbit, double-check that all dishes have the target
 
 ![Screenshot of a stacked satellite launcher](multi_rocket.png "Stack of four satellites"){: .right}
 
-##Method 2: Single Launcher
+## Method 2: Single Launcher
 
 For this method, you want to stack all your satellites on top of your rocket, with a stack separator (NOT a decoupler, unless you want it permanently attached to one of your satellites) between each. Configure your staging so that the satellites are released from top to bottom.
 
 Use a rocket with at least 5400 m/s of delta-V, not including any fuel in the satellites, for reaching a transfer orbit. Make sure each satellite has at least 435 m/s for circularizing into keosynchronous equatorial orbit (KEO).
 
-###Transfer orbit 1
+### Transfer orbit 1
 
 Begin by launching into an elliptical orbit with an apoapsis of 2870&nbsp;km (it doesn't have to be exact). If you are using the [Comms DTS-M1](../../guide/parts/#comms-dts-m1) as your Kerbin communication antenna, target an antenna on *each* of the satellites at Mission Control (not Kerbin) to maintain contact whenever your satellite is above the horizon. Setting up the antennas while coasting upward means less chances for a costly mistake when you start detaching satellites.
 
@@ -122,11 +122,11 @@ Once you've achieved your final orbit, all that's left is setting up the antenna
 
 ![An example of a transfer orbit](multi_xfer.png "A 4.5-hour transfer orbit immediately after releasing the first satellite"){: .left}
 
-###Transfer orbit 2
+### Transfer orbit 2
 
 Switch back to the rocket, which should still be close to apoapsis, and burn prograde until the orbital period rises to 4 hours (for a 3-satellite network; 1225&nbsp;km periapsis) or 4.5 hours (for a 4-satellite network; 1658&nbsp;km periapsis). Up to a minute of error won't matter, since you only need to worry about the drift over 3-4 orbits.
 
-###Deployment
+### Deployment
 
 The rocket's orbital period is set so that it will next return to apoapsis 120&deg; (for a 3-satellite network) or 90&deg; (for a 4-satellite network) behind the satellite you just launched. Every time the rocket approaches apoapsis, release another satellite. If you are using dishes rather than the [Communotron 32](../../guide/parts/#communotron-32) to set up connections between keostationary satellites, you need to take care with the dish targets, especially if you have not yet researched [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wiki/Unmanned_Tech) (which unlocks a 3&nbsp;km omni antenna for all probe cores).
 
@@ -151,7 +151,7 @@ Circularize the satellite's orbit at apoapsis. This time, your goal is to get **
 
 Once you release the second-to-last satellite, the rocket and the final satellite will be essentially the same thing. Have the first satellite in the sequence and the rocket/final satellite point dishes at each other, completing a ring of connections.
 
-##Appendix: Orbit Tolerances
+## Appendix: Orbit Tolerances
 
 The precision with which you need to match the periods of your KEO satellites depends on how much drift between satellites you're willing to tolerate:
 
@@ -163,9 +163,9 @@ Period Error | Drift Rate             | Time to drift 20&deg;
 5    seconds | 0.083&deg; per orbit   | 60 Earth days (240 Kerbin days)
 {: .data}
 
-#Optional Steps
+# Optional Steps
 
-##Save File Tweaking
+## Save File Tweaking
 
 It is nearly impossible to give two satellites exactly the same orbital period, because the period will change whenever the satellite rotates (for example, to keep facing the sun over the course of the year). For the last word in satellite synchronization, you may wish to edit your save file. Some RemoteTech players see this as essential to get around game engine limitations, others see it as cheating. You will have to decide for yourself.
 
