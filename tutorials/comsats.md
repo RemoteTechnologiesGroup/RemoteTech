@@ -6,7 +6,7 @@ navbar: false
 
 {% include banner.html %}
 
-#Creating Communications Satellites
+# Creating Communications Satellites
 
 {% include toc.html %}
 
@@ -18,7 +18,7 @@ To follow this tutorial, you should be familiar with the basic rules of RemoteTe
 * how to minimize the number of antennas needed to support specific types of missions
 * the design trade-offs between all-purpose or more specialized satellites
 
-##Overview
+## Overview
 
 In the early game, when all you have is a few satellites in low Kerbin orbit or traveling to the Mun or Minmus, almost any satellite network will do. Once they start launching more satellites and sending interplanetary probes, however, some players get bogged down in the tasks of launching replacement comsats or juggling dishes.
 
@@ -26,9 +26,9 @@ Fortunately, much of the trouble can be avoided with a little planning. Pick a r
 
 It certainly beats having a single-dish satellite that must be micromanaged for every mission.
 
-##Planning
+## Planning
 
-###Research
+### Research
 
 To create a viable communications satellite, you need at least the following technologies:
 
@@ -37,7 +37,7 @@ To create a viable communications satellite, you need at least the following tec
 
 If you want to communicate with interplanetary probes, you will have to wait until you develop [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics) or [Electronics](http://wiki.kerbalspaceprogram.com/wiki/Electronics), which give you access to long-range dishes.
 
-###Payload
+### Payload
 
 The number and type of antennas on your satellite will depend on where you want it to relay transmissions: a satellite that needs to single-handedly contact any point in the system is going to be much larger and more complex than one that serves as an intermediary between two other relays. Location matters, too: a satellite in orbit around Kerbin will need more antennas than one around the Mun, or around Eeloo.
 
@@ -63,13 +63,13 @@ Communication with deep-space missions
 
 **Remember: pick the right antenna for the right job, and don't bother with roles that are already taken by another (current or planned) satellite.**
 
-##Design
+## Design
 
 Once you know what dishes you need, you're ready to start working in the VAB.
 
 ![plot of orbital dark time vs. height above Kerbin](kerbin_darkness.png){:.right}
 
-###Power Use
+### Power Use
 
 RemoteTech antennas consume a large amount of power. Ensure you have enough solar panels or RTG's to power all your antennas. Unlike in the stock game, you can't just take for granted that you have enough electricity.
 
@@ -79,7 +79,7 @@ The time for orbits around Kerbin is plotted on the right, as a function of orbi
 
 **Example:** a brute-force approach to a late-game interplanetary satellite might feature 1 Communotron 32, 2 Comms DTS-M1's, 3 Communotron 88-88's, 2 Reflectron KR-14's, 3 CommTech-1's. This monstrosity will consume 15 ElectricCharge per second. If placed in KEO, it will need storage for 18,000 units of charge!
 
-###Station-Keeping
+### Station-Keeping
 {:.spacer}
 
 If your satellite constellation requires extremely precise positioning, you may with to include RCS thrusters or a light engine on your satellite. Ion engines are excellent choices for station keeping because their low thrust gives you very fine control over your orbit.

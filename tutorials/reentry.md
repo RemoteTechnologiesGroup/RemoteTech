@@ -6,7 +6,7 @@ navbar: false
 
 {% include banner.html %}
 
-#Re-Entry Using the Flight Computer
+# Re-Entry Using the Flight Computer
 
 {% include toc.html %}
 
@@ -16,7 +16,7 @@ To play this tutorial, you should know how to set up and use action groups, how 
 
 * how to schedule complex tasks using the flight computer
 
-##Requirements
+## Requirements
 
 You must have researched [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control), which unlocks basic probe technologies.
 
@@ -24,7 +24,7 @@ Following this tutorial does not *require* any mods other than RemoteTech, but t
 
 Some mods will make the instructions in this tutorial easier to follow. Vessel Orbital Information Display, Kerbal Engineer Redux, and MechJeb will let you see the time to periapsis from the flight screen, not just the map view, making it easier to schedule actions in the flight computer. RealChutes and Smart Parts will let you replace timing-based triggers with altitude-based ones, taking a lot of the guesswork out of the re-entry sequence.
 
-##Overview
+## Overview
 
 Even in the simplified physics of Kerbal Space Program, landing can be a challenge. Start up your engines too late, or discover a steep mountain right in your flight path, and you may come to a much more sudden stop than you intended. Landing is one of the hardest parts of flight to automate because you may need to make intelligent decisions in real time -- and real time is not something you're allowed when playing RemoteTech.
 
@@ -32,7 +32,7 @@ Fortunately, when landing on a body with an atmosphere things are much easier. P
 
 Most of this tutorial is in the form of a checklist to follow before you enter the atmosphere and/or go out of contact with Mission Control. By the time you switch to atmospheric mode, you'll have made all the decisions you need to. At that point, it's just a matter of letting the flight computer do its job. And maybe watching the flames.
 
-##Satellite Design
+## Satellite Design
 
 ![IMAGE: assumed staging sequence](staging.png){: .left}
 
@@ -42,16 +42,16 @@ If, instead, you are using only antennas that break in atmosphere, you should bi
 
 This tutorial assumes you are using the default Deadly Reentry staging sequence: one stage to drop the engine, and a final stage to both drop the heat shield and deploy parachutes. Adapt the instructions to custom staging as appropriate.
 
-##Pre-Reentry
+## Pre-Reentry
 {: .spacer}
 
 Set up your re-entry trajectory as usual. When you are about 5 minutes away from atmospheric entry, open the flight computer by clicking on the calculator icon in the upper left corner of the screen, then clicking ">>" in the window that pops up.
 
-###Attitude Control
+### Attitude Control
 
 Point your heat shield into the airflow by clicking "GRD-", followed by "SRF". The flight computer mode should read "surface retrograde". Unlike SAS, which loves to fight with parachutes, this is a safe attitude all the way from atmospheric entry to touchdown.
 
-###Timing
+### Timing
 
 The most difficult part of an automated re-entry is knowing when re-entry heating begins and ends. This depends on both the angle of your approach and on whether you are using stock aerodynamics or Ferram Aerospace Research (FAR). If you have FAR installed, then your tonnage also matters: heavier spacecraft slow to safe speeds later than light spacecraft. You may need to experiment with the timing for new spacecraft or for other planets (quicksave is your friend).
 
@@ -69,7 +69,7 @@ From Mun to 30&nbsp;km periapsis |                    | +1:15
 
 ![IMAGE: pre-reentry flight queue with parachutes](preflight_1.png){:.right}
 
-###Parachutes
+### Parachutes
 
 Your highest priority should be scheduling parachute deployment (and the simultaneous heat shield separation). Use the table above to pick a time just after major heating ends. Once you've decided when you want to deploy parachutes, type in the scheduled time (minus, say, 10-20 seconds) in the box in the lower right corner of the screen and hit enter. Feel free to pause the game while you do the math.
 
@@ -77,24 +77,24 @@ Wait until the time to periapsis advances by your 10-20 second margin, then hit 
 
 **Example:** if your orbit should hit periapsis in 8:53, and you want to deploy parachutes 1:00 before periapsis, type "7m40s" into the text box and hit enter. Wait until the time to periapsis equals 8:40, then hit the staging key to schedule the parachute stage.
 
-###Engine Jettison
+### Engine Jettison
 
 When you load a game or switch vessels, Kerbal Space Program will sometimes reset the ship's staging state to "prelaunch", and sometimes not. Because the staging indicator does not work in RemoteTech, you can't tell when this has happened and when it hasn't. Therefore, it's safest to jettison the engine manually, in real time. If the first staging key press doesn't jettison the engine (instead taking you from prelaunch to the engine stage), the second will. Once you've jettisoned the engine, you *know* that the next staging command will deploy parachutes, as intended.
 
 ![IMAGE: image of probe parachuting down, with a deployed antenna](chute.png "Benefits of a good re-entry queue."){:.left}
 
-###Final Steps
+### Final Steps
 
 Retract any solar panels just before you hit the atmosphere, and any non-atmospheric antennas before you reach 40 km. If you are out of radio contact at atmosphere entry you will need to schedule the retraction(s) with the flight computer, just like with the [parachutes](#parachutes). The time at which you hit the atmosphere depends on your trajectory -- 8-10 minutes before periapsis if entering from LKO, 4-5 minutes before periapsis if entering from high orbit, and 1-2 minutes before periapsis if returning from the Mun.
 
 Good luck, and see you on the other side!
 
-#Optional Steps
+# Optional Steps
 {: .spacer}
 
 ![IMAGE: full pre-reentry flight queue](preflight_2.png){:.left}
 
-##Antenna Deployment
+## Antenna Deployment
 
 Most antennas can't be deployed in the lower atmosphere unless the ship is going less than 100 m/s (70 m/s for the [Communotron 32](../../guide/parts/#communotron-32)). If you rely on such an antenna for communication, you won't be able to use it until well after parachute (pre)deployment. 
 
