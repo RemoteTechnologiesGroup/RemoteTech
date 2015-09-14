@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using UnityEngine;
 
 namespace RemoteTech
@@ -14,14 +11,21 @@ namespace RemoteTech
         {
             get
             {
-                return mInstance = mInstance ?? Settings.Load();
+                if(mInstance is Settings && mInstance.settingsLoaded)
+                {
+                    return mInstance;
+                }
+                else
+                {
+                    return mInstance = Settings.Load();
+                }
             }
         }
     }
 
     public class Settings
     {
-        public Dictionary<String, Rect> savedWindowPositions = new Dictionary<String, Rect>();
+        [Persistent] public bool RemoteTechEnabled = true;
         [Persistent] public float ConsumptionMultiplier = 1.0f;
         [Persistent] public float RangeMultiplier = 1.0f;
         [Persistent] public String ActiveVesselGuid = "35b89a0d664c43c6bec8d0840afc97b2";
@@ -36,18 +40,40 @@ namespace RemoteTech
         [Persistent] public Color DishConnectionColor = XKCDColors.Amber;
         [Persistent] public Color OmniConnectionColor = XKCDColors.BrownGrey;
         [Persistent] public Color ActiveConnectionColor = XKCDColors.ElectricLime;
-
         [Persistent(collectionIndex="STATION")]
         public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
+
+        /// <summary>
+        /// Trigger to force a reloading of the settings if a selected save is running.
+        /// </summary>
+        public bool settingsLoaded = false;
+        public bool firstStart = false;
+
+        /// <summary>
+        /// Temp Variable for all the Window Positions for each instance.
+        /// </summary>
+        public Dictionary<String, Rect> savedWindowPositions = new Dictionary<String, Rect>();
+
         /// <summary>
         /// Backup config node
         /// </summary>
         private ConfigNode backupNode;
 
-
+        /// <summary>
+        /// Returns the current RemoteTech_Settings full path. The path will be empty
+        /// if no save is loaded or the game is a training mission
+        /// </summary>
         private static String File
         {
-            get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/RemoteTech_Settings.cfg"; }
+            get {
+
+                if(HighLogic.CurrentGame == null || RTUtil.IsGameScenario)
+                {
+                    return "";
+                }
+
+                return KSPUtil.ApplicationRootPath + "/saves/" + HighLogic.SaveFolder + "/RemoteTech_Settings.cfg";
+            }
         }
 
         /// <summary>
@@ -57,27 +83,35 @@ namespace RemoteTech
         {
             try
             {
-                ConfigNode details = new ConfigNode("RemoteTechSettings");
-                ConfigNode.CreateConfigFromObject(this, 0, details);
-                ConfigNode save = new ConfigNode();
-                save.AddNode(details);
-                save.Save(File);
+                String settingsFile = Settings.File;
+
+                // only save the settings if the file name is not empty (=not loading screen or training)
+                if(!String.IsNullOrEmpty(settingsFile))
+                {
+                    ConfigNode details = new ConfigNode("RemoteTechSettings");
+                    ConfigNode.CreateConfigFromObject(this, 0, details);
+                    ConfigNode save = new ConfigNode();
+                    save.AddNode(details);
+                    save.Save(Settings.File);
+                }
             }
             catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message); }
         }
 
         /// <summary>
-        /// Stores the MapFilter Value for overriding with third party settings
+        /// Stores the MapFilter, ActiveVesselGuid and RemoteTechEnabled Value for overriding
+        /// with third party settings
         /// </summary>
         public void backupFields()
         {
             backupNode = new ConfigNode();
             backupNode.AddValue("MapFilter", MapFilter);
             backupNode.AddValue("ActiveVesselGuid", ActiveVesselGuid);
+            backupNode.AddValue("RemoteTechEnabled", RemoteTechEnabled);
         }
 
         /// <summary>
-        /// Restores the backuped values
+        /// Restores the backuped values from backupFields()
         /// </summary>
         public void restoreBackups()
         {
@@ -92,13 +126,31 @@ namespace RemoteTech
         {
             // Create a new settings object
             Settings settings = new Settings();
+
+            // Disable RemoteTech on Training missions
+            if (RTUtil.IsGameScenario)
+            {
+                settings.RemoteTechEnabled = false;
+            }
+
+            // skip loading if we are on the loading screen
+            // and return the default object and also for
+            // scenario games.
+            if (string.IsNullOrEmpty(Settings.File))
+            {
+                return settings;
+            }
+
+            settings.settingsLoaded = true;
+
             // try to load from the base settings.cfg
-            ConfigNode load = ConfigNode.Load(File);
+            ConfigNode load = ConfigNode.Load(Settings.File);
 
             if (load == null)
             {
                 // write new base file to the rt folder
                 settings.Save();
+                settings.firstStart = true;
             }
             else
             {

@@ -29,7 +29,8 @@ namespace RemoteTech
 
         public void Start()
         {
-            if (Instance != null)
+            // Destroy the Core instance if != null or if Remotetech is disabled
+            if (Instance != null || !RTSettings.Instance.RemoteTechEnabled)
             {
                 Destroy(this);
                 return;
@@ -220,6 +221,31 @@ namespace RemoteTech
             FilterOverlay.OnExitMapView();
             FocusOverlay.OnExitMapView();
             base.OnDestroy();
+        }
+    }
+
+    [KSPAddon(KSPAddon.Startup.MainMenu, false)]
+    public class RTMainMenu : MonoBehaviour
+    {
+        public void Start()
+        {
+            // Set the loaded trigger to false, this we will load a new
+            // settings after selecting a save game. This is necessary
+            // for switching between saves without shutting down the ksp
+            // instance.
+            RTSettings.Instance.settingsLoaded = false;
+        }
+    }
+
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+    public class RTSpaceCentre : MonoBehaviour
+    {
+        public void Start()
+        {
+            if (RTSettings.Instance.firstStart)
+            {
+                // open here the option dialog for the first start
+            }
         }
     }
 }
