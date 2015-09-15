@@ -120,6 +120,7 @@
     <Compile Include="UI\IFragment.cs" />
     <Compile Include="UI\FilterOverlay.cs" />
     <Compile Include="UI\NetworkLine.cs" />
+    <Compile Include="UI\OptionWindow.cs" />
     <Compile Include="UI\QueueFragment.cs" />
     <Compile Include="UI\RoverFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
