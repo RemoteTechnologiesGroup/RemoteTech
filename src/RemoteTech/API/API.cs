@@ -1,5 +1,4 @@
-﻿using RemoteTech.Modules;
-using RemoteTech.RangeModel;
+﻿using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,12 @@ namespace RemoteTech.API
 {
     public static class API
     {
+        public static bool IsRemoteTechEnabled()
+        {
+            if (RTCore.Instance == null) return true;
+            return false;
+        }
+
         public static bool HasLocalControl(Guid id)
         {
             var vessel = RTUtil.GetVesselById(id);            

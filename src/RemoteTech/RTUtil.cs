@@ -27,6 +27,17 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// True if the current running game is a SCENARIO or SCENARIO_NON_RESUMABLE, otherwise false
+        /// </summary>
+        public static bool IsGameScenario
+        {
+            get
+            {
+                return (HighLogic.CurrentGame != null && (HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO || HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO_NON_RESUMABLE));
+            }
+        }
+
         public static readonly String[]
             DistanceUnits = { "", "k", "M", "G", "T" },
             ClassDescripts = {  "Short-Planetary (SP)",
