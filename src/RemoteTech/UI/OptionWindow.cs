@@ -68,6 +68,13 @@ namespace RemoteTech.UI
         public override void Hide()
         {
             RTSettings.Instance.Save();
+
+            // Set the AppLauncherbutton to false
+            if(RemoteTech.RTSpaceCentre.LauncherButton != null)
+            {
+                RemoteTech.RTSpaceCentre.LauncherButton.SetFalse();
+            }
+
             base.Hide();
         }
         
@@ -94,7 +101,7 @@ namespace RemoteTech.UI
             }
             GUILayout.EndVertical();
 
-            if(GUILayout.Button("Save"))
+            if(GUILayout.Button("Close"))
             {
                 this.Hide();
             }
@@ -125,7 +132,7 @@ namespace RemoteTech.UI
             };
 
             // initial Textures
-            RTUtil.LoadImage(out this.mTexHeadline, "OptionHeadline.png");
+            RTUtil.LoadImage(out this.mTexHeadline, "headline.jpg");
             // Visual style colors
             this.loadColorTexture(out this.mVSColorDish, this.mSettings.DishConnectionColor);
             this.loadColorTexture(out this.mVSColorOmni, this.mSettings.OmniConnectionColor);
@@ -216,7 +223,7 @@ namespace RemoteTech.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Space(20);
-            GUILayout.Label("You need some help with RemoteTech?\nLook on our online manuell or if you can't find your answer, there are many users on our forum thread.(Browser opens on click)", this.mGuiRunningText);
+            GUILayout.Label("You need some help with RemoteTech?\nLook on our online manuell or if you can't find your answer, than post your question on our thread.(Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
                 if(GUILayout.Button("Online manuell"))
@@ -352,7 +359,7 @@ namespace RemoteTech.UI
             GUILayout.EndScrollView();
             GUILayout.Space(10);
 
-            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations always shown" : "Ground stations are hidden behind body");
+            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations always shown" : "Ground stations are hidden behind bodys");
             GUILayout.Label("If true, ground stations occulued by the body they’re on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.", this.mGuiHintText);
         }
 
@@ -365,7 +372,7 @@ namespace RemoteTech.UI
             this.mSettings.ThrottleTimeWarp = GUILayout.Toggle(this.mSettings.ThrottleTimeWarp, (this.mSettings.ThrottleTimeWarp) ? "RemoteTech will throttle timewarp" : "RemoteTech will not throttle timewarp");
             GUILayout.Label("If set, the flight computer will automatically come out of time warp a few seconds before executing a queued command. If unset, the player is responsible for making sure the craft is not in time warp during scheduled actions.", this.mGuiHintText);
 
-            this.mSettings.ThrottleZeroOnNoConnection = GUILayout.Toggle(this.mSettings.ThrottleZeroOnNoConnection, (this.mSettings.ThrottleZeroOnNoConnection) ? "Throttles to zero on no connection" : "Keeps the throttle on no connection");
+            this.mSettings.ThrottleZeroOnNoConnection = GUILayout.Toggle(this.mSettings.ThrottleZeroOnNoConnection, (this.mSettings.ThrottleZeroOnNoConnection) ? "Throttle to zero on no connection" : "Keeps the throttle on no connection");
             GUILayout.Label("If true, the flight computer cuts the thrust (not on boosters) if you have no connection to mission control.", this.mGuiHintText);
         }
 

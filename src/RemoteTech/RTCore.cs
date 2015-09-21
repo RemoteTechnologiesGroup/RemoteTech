@@ -212,14 +212,20 @@ namespace RemoteTech
         public new void Start()
         {
             base.Start();
-            FilterOverlay.OnEnterMapView();
-            FocusOverlay.OnEnterMapView();
+            if(RTCore.Instance != null)
+            {
+                FilterOverlay.OnEnterMapView();
+                FocusOverlay.OnEnterMapView();
+            }
         }
 
         private new void OnDestroy()
         {
-            FilterOverlay.OnExitMapView();
-            FocusOverlay.OnExitMapView();
+            if (RTCore.Instance != null)
+            {
+                FilterOverlay.OnExitMapView();
+                FocusOverlay.OnExitMapView();
+            }
             base.OnDestroy();
         }
     }
@@ -234,58 +240,6 @@ namespace RemoteTech
             // for switching between saves without shutting down the ksp
             // instance.
             RTSettings.Instance.settingsLoaded = false;
-        }
-    }
-
-    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-    public class RTSpaceCentre : MonoBehaviour
-    {
-        /// <summary>todo</summary>
-        private OptionWindow OptionWindow;
-
-        /// <summary>
-        /// todo
-        /// </summary>
-        public void Start()
-        {
-            // create the option window
-            this.OptionWindow = new OptionWindow();
-
-            if (RTSettings.Instance.firstStart)
-            {
-                // open here the option dialog for the first start
-                RTLog.Notify("First start of RemoteTech!");
-                this.openOptionWindow();
-            }
-        }
-
-        /// <summary>
-        /// todo
-        /// </summary>
-        private void openOptionWindow()
-        {
-            this.OptionWindow.Show();
-        }
-
-        /// <summary>
-        /// todo
-        /// </summary>
-        public void OnGUI()
-        {
-            Action windows = delegate { };
-            foreach (var window in AbstractWindow.Windows.Values)
-            {
-                windows += window.Draw;
-            }
-            windows.Invoke();
-        }
-
-        /// <summary>
-        /// todo
-        /// </summary>
-        public void OnDestroy()
-        {
-            this.OptionWindow.Hide();
         }
     }
 }
