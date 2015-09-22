@@ -128,15 +128,15 @@ namespace RemoteTech
             return settings;
         }
 
-		public void AddBaseStation(string name, double latitude, double longitude, double height, int body, Color markcolor)
+		public void AddBaseStation(string name, double latitude, double longitude, double height, int body)
 		{
-			RTLog.Notify ("Trying to add basestation({0})", name, RTLogLevel.LVL1);
+			RTLog.Notify ("Trying to add groundstation({0})", name, RTLogLevel.LVL1);
 			MissionControlSatellite m = new MissionControlSatellite ();
-			m.SetDetails (name, latitude, longitude, height, body, markcolor);
+			m.SetDetails (name, latitude, longitude, height, body);
 
 			GroundStations.Add(m);
 			RTLog.Notify ("Last entry in missioncontrolsatellites[]= {0}", GroundStations.Last (), RTLogLevel.LVL1);
-			this.Save ();
+			Save ();
 		}
     }
 }

@@ -252,23 +252,21 @@ namespace RemoteTech
 		 * Simple getter + setter. 
 		 * For being able to add groundstations.
 		 */
-		public void SetDetails(String name, double lat, double longi, double height, int body, Color mark)
+		public void SetDetails(String name, double lat, double longi, double height, int body)
 		{
 			this.Name = name;
 			this.Latitude = lat;
 			this.Longitude = longi;
 			this.Height = height;
 			this.Body = body;
-			this.MarkColor = mark;
 			this.mGuid = System.Guid.NewGuid ();
 			this.Guid = this.mGuid.ToString ();
-
-
 		}
 
 		public String GetDetails()
 		{
-			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}, markcolor={5}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body, this.MarkColor);		}
+			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}, markcolor={5}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body, this.MarkColor);
+		}
 
 
 

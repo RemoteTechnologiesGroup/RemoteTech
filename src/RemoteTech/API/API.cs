@@ -170,5 +170,18 @@ namespace RemoteTech.API
 
             return false;
         }
+
+		public static bool AddBaseStation(string name, double latitude, double longitude, double height, int body)
+		{
+			RTLog.Notify ("Trying to add groundstation: {0}", name , RTLogLevel.API);
+			RTSettings.Instance.AddBaseStation(name, latitude, longitude, height, body);
+			if (RTSettings.Instance.GroundStations.Last().ToString() != name)
+			{
+				RTLog.Notify ("Error adding groundstation", RTLogLevel.API);
+				return false;	
+			}
+			RTLog.Notify ("Added groundstation{0}", name, RTLogLevel.API);
+			return true;
+		}
     }
 }
