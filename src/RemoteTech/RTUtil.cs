@@ -139,11 +139,7 @@ namespace RemoteTech
         {
             String timeindicator = "sec";
 
-            if(consumption > 1)
-            {
-                // keep the values in seconds
-            }
-            else
+            if(consumption < 1)
             {
                 // minutes
                 consumption *= 60;
