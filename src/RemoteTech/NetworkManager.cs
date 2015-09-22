@@ -74,7 +74,7 @@ namespace RemoteTech
                 }
                 catch (Exception e) // Already exists.
                 {
-                    RTLog.Notify("A ground station cannot be loaded: " + e.Message);
+					RTLog.Notify("A ground station cannot be loaded: " + e.Message, RTLogLevel.LVL1);
                 }
             }
 
@@ -225,7 +225,7 @@ namespace RemoteTech
         [Persistent] private double Height = 75.0f;
         [Persistent] private int Body = 1;
         [Persistent] private Color MarkColor = new Color(0.996078f, 0, 0, 1);
-        [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
+		[Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
 
         bool ISatellite.Powered { get { return true; } }
         bool ISatellite.Visible { get { return true; } }
@@ -247,6 +247,30 @@ namespace RemoteTech
         {
             mGuid = new Guid(Guid);
         }
+
+		/*
+		 * Simple getter + setter. 
+		 * For being able to add groundstations.
+		 */
+		public void SetDetails(String name, double lat, double longi, double height, int body, Color mark)
+		{
+			this.Name = name;
+			this.Latitude = lat;
+			this.Longitude = longi;
+			this.Height = height;
+			this.Body = body;
+			this.MarkColor = mark;
+			this.mGuid = System.Guid.NewGuid ();
+			this.Guid = this.mGuid.ToString ();
+
+
+		}
+
+		public String GetDetails()
+		{
+			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}, markcolor={5}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body, this.MarkColor);		}
+
+
 
         void IPersistenceLoad.PersistenceLoad()
         {

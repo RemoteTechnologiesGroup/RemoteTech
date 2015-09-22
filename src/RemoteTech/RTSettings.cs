@@ -37,15 +37,15 @@ namespace RemoteTech
         [Persistent] public Color ActiveConnectionColor = XKCDColors.ElectricLime;
 
         [Persistent(collectionIndex="STATION")]
-        public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
-        /// <summary>
+		/// <summary>void Vessel.SetPosition 
+		public List<MissionControlSatellite> GroundStations = new List<MissionControlSatellite> {new MissionControlSatellite() };
         /// Backup config node
         /// </summary>
         private ConfigNode backupNode;
 
 
-        private static String File
-        {
+        private static String File 
+		{
             get { return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/RemoteTech_Settings.cfg"; }
         }
 
@@ -55,14 +55,14 @@ namespace RemoteTech
         public void Save()
         {
             try
-            {
+			{RTLog.Notify ("FlightComputer: Dispose", RTLogLevel.LVL1);
                 ConfigNode details = new ConfigNode("RemoteTechSettings");
                 ConfigNode.CreateConfigFromObject(this, 0, details);
                 ConfigNode save = new ConfigNode();
                 save.AddNode(details);
                 save.Save(File);
             }
-            catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message); }
+			catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message, RTLogLevel.LVL1); }
         }
 
         /// <summary>
@@ -127,5 +127,16 @@ namespace RemoteTech
 
             return settings;
         }
+
+		public void AddBaseStation(string name, double latitude, double longitude, double height, int body, Color markcolor)
+		{
+			RTLog.Notify ("Trying to add basestation({0})", name, RTLogLevel.LVL1);
+			MissionControlSatellite m = new MissionControlSatellite ();
+			m.SetDetails (name, latitude, longitude, height, body, markcolor);
+
+			GroundStations.Add(m);
+			RTLog.Notify ("Last entry in missioncontrolsatellites[]= {0}", GroundStations.Last (), RTLogLevel.LVL1);
+			this.Save ();
+		}
     }
 }
