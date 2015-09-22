@@ -35,6 +35,7 @@ namespace RemoteTech
                 // open here the option dialog for the first start
                 RTLog.Notify("First start of RemoteTech!");
                 this.OptionWindow.Show();
+                RTSettings.Instance.firstStart = false;
             }
         }
 
