@@ -446,26 +446,18 @@ namespace RemoteTech
             return cachedField.Field = getter();
         }
 
-        // Thanks Fractal_UK!
+        
         public static bool IsTechUnlocked(string techid)
         {
             if (techid.Equals("None")) return true;
             try
             {
-                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) return true;
-                string persistentfile = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/persistent.sfs";
-                ConfigNode config = ConfigNode.Load(persistentfile);
-                ConfigNode gameconf = config.GetNode("GAME");
-                ConfigNode[] scenarios = gameconf.GetNodes("SCENARIO");
-                foreach (ConfigNode scenario in scenarios.Where(s=> s.GetValue("name") != "ResearchAndDevelopment"))
-                {
-                    ConfigNode[] techs = scenario.GetNodes("Tech");
-                    if (techs.Any(technode => technode.GetValue("id") == techid))
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                var availablePart = PartLoader.LoadedPartsList.Where(part => part.name.Contains(techid)).First();
+                if (availablePart == null) return false;
+
+                bool researched = ResearchAndDevelopment.PartModelPurchased(availablePart);
+
+                return researched;
             }
             catch (Exception)
             {

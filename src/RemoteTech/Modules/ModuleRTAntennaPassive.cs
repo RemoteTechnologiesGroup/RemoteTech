@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEngine;
 
 namespace RemoteTech.Modules
 {
@@ -27,7 +25,7 @@ namespace RemoteTech.Modules
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
         private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
-        private bool Unlocked { get { return ResearchAndDevelopment.GetTechnologyState(TechRequired) == RDTech.State.Available || TechRequired.Equals("None"); } }
+        private bool Unlocked { get { return RTUtil.IsTechUnlocked("RTPassiveAntennaTech"); } }
 
         [KSPField]
         public bool
@@ -71,8 +69,6 @@ namespace RemoteTech.Modules
             RTPacketResourceCost = 0.0f;
 
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
-//        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
-//        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
 
@@ -250,31 +246,6 @@ namespace RemoteTech.Modules
         public override string ToString()
         {
             return String.Format("ModuleRTAntennaPassive(Name: {0}, Guid: {1}, Omni: {2})", Name, mRegisteredId, Omni);
-        }
-    }
-
-    [KSPAddon(KSPAddon.Startup.EditorAny, false)]
-    public class ModuleRTAntennaPassive_ReloadPartInfo : MonoBehaviour
-    {
-        public void Start()
-        {
-            StartCoroutine(RefreshPartInfo());
-        }
-
-        private IEnumerator RefreshPartInfo()
-        {
-            yield return null;
-            foreach (var ap in PartLoader.LoadedPartsList.Where(ap => ap.partPrefab.Modules != null && ap.partPrefab.Modules.Contains("ModuleRTAntennaPassive")))
-            {
-                var new_info = new StringBuilder();
-                foreach (PartModule pm in ap.partPrefab.Modules)
-                {
-                    var info = pm.GetInfo();
-                    new_info.Append(info);
-                    if (info != String.Empty) new_info.AppendLine();
-                }
-                ap.moduleInfo = new_info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
-            }
         }
     }
 }
