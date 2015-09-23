@@ -137,7 +137,16 @@ namespace RemoteTech
 
         public static String FormatConsumption(double consumption)
         {
-            return consumption.ToString("F2") + " charge/s";
+            String timeindicator = "sec";
+
+            if(consumption < 1)
+            {
+                // minutes
+                consumption *= 60;
+                timeindicator = "min";
+            }
+            
+            return String.Format("{0:F2}/{1}.", consumption, timeindicator);
         }
 
         public static String FormatSI(double value, String unit)

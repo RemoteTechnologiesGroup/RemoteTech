@@ -141,7 +141,7 @@ namespace RemoteTech.Modules
             }
             if (ShowEditor_EnergyReq && EnergyCost > 0)
             {
-                info.AppendFormat("Energy req.: {0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
+                info.AppendFormat("ElectricCharge: {0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
             }
 
             if (ShowEditor_DishAngle && CanTarget)
