@@ -25,6 +25,7 @@ namespace RemoteTech
 
         public FilterOverlay FilterOverlay { get; protected set; }
         public FocusOverlay FocusOverlay { get; protected set; }
+        public ManeuverNodeOverlay ManeuverNodeOverlay { get; protected set; }
         public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
 
         public void Start()
@@ -47,6 +48,7 @@ namespace RemoteTech
 
             FilterOverlay = new FilterOverlay();
             FocusOverlay = new FocusOverlay();
+            ManeuverNodeOverlay = new ManeuverNodeOverlay();
             TimeWarpDecorator = new TimeWarpDecorator();
 
             FlightUIPatcher.Patch();
@@ -214,8 +216,9 @@ namespace RemoteTech
             base.Start();
             if(RTCore.Instance != null)
             {
-                FilterOverlay.OnEnterMapView();
-                FocusOverlay.OnEnterMapView();
+                base.FilterOverlay.OnEnterMapView();
+                base.FocusOverlay.OnEnterMapView();
+                base.ManeuverNodeOverlay.OnEnterMapView();
             }
         }
 
@@ -223,8 +226,9 @@ namespace RemoteTech
         {
             if (RTCore.Instance != null)
             {
-                FilterOverlay.OnExitMapView();
-                FocusOverlay.OnExitMapView();
+                base.FilterOverlay.OnExitMapView();
+                base.FocusOverlay.OnExitMapView();
+                base.ManeuverNodeOverlay.OnExitMapView();
             }
             base.OnDestroy();
         }

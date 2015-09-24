@@ -71,6 +71,25 @@ namespace RemoteTech.FlightComputer.Commands
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="computer">FlightComputer instance of the computer of the vessel.</param>
+        private void AbortManeuver(FlightComputer computer)
+        {
+            computer.Vessel.patchedConicSolver.RemoveManeuverNode(this.Node);
+            RTUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
+
+            if (computer.hasManeuverCommands())
+            {
+                computer.Enqueue(AttitudeCommand.ManeuverNode(), true, true, true);
+            }
+            else
+            {
+                computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+            }
+        }
+
+        /// <summary>
         /// Executes the maneuver burn for the configured maneuver node.
         /// </summary>
         /// <param name="computer">FlightComputer instance of the computer of the vessel the ManeuverCommand is for.</param>
@@ -80,8 +99,8 @@ namespace RemoteTech.FlightComputer.Commands
         {
             // Halt the command if we reached our target or were command to abort by the previous tick
             if (this.RemainingDelta <= 0.01 || this.abortOnNextExecute)
-            {    
-                computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+            {
+                this.AbortManeuver(computer);
                 return true;
             }
 
@@ -136,7 +155,7 @@ namespace RemoteTech.FlightComputer.Commands
                 && this.RemainingDelta < 1.0)   // be safe that we do not abort the command to early
             {
                 // Aborting because deltaV was rising again!
-                computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+                this.AbortManeuver(computer);
                 return true;
             }
 

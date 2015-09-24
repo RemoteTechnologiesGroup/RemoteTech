@@ -120,6 +120,7 @@
     <Compile Include="UI\FocusOverlay.cs" />
     <Compile Include="UI\FocusFragment.cs" />
     <Compile Include="UI\FlightComputerWindow.cs" />
+    <Compile Include="UI\ManeuverNodeOverlay.cs" />
     <Compile Include="UI\NetworkCone.cs" />
     <Compile Include="UI\EZGUIPointerDisablePatcher.cs" />
     <Compile Include="UI\FlightUIPatcher.cs" />
