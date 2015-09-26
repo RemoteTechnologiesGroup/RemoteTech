@@ -120,6 +120,7 @@
     <Compile Include="UI\FocusOverlay.cs" />
     <Compile Include="UI\FocusFragment.cs" />
     <Compile Include="UI\FlightComputerWindow.cs" />
+    <Compile Include="UI\ManeuverNodeOverlay.cs" />
     <Compile Include="UI\NetworkCone.cs" />
     <Compile Include="UI\EZGUIPointerDisablePatcher.cs" />
     <Compile Include="UI\FlightUIPatcher.cs" />
@@ -180,6 +181,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\gitpagessat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\buttons_fc_add.png" />
+    <EmbeddedResource Include="Resources\buttons_fc_add_hover.png" />
+    <EmbeddedResource Include="Resources\buttons_fc_del.png" />
+    <EmbeddedResource Include="Resources\buttons_fc_del_hover.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
