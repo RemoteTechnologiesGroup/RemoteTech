@@ -16,11 +16,11 @@ namespace RemoteTech.UI
 
         public ManeuverNodeOverlay()
         {
-            mManeuverNodeButtonAdd = GUITextureButtonFactory.CreateFromFilename("maneuverAddBtn.png", "maneuverAddBtnHover.png", "maneuverAddBtn.png", "maneuverAddBtn.png");
+            mManeuverNodeButtonAdd = GUITextureButtonFactory.CreateFromFilename("buttons_fc_add.png", "buttons_fc_add_hover.png", "buttons_fc_add_hover.png", "buttons_fc_add_hover.png");
             mManeuverNodeButtonAdd.fixedHeight = mManeuverNodeButtonAdd.fixedWidth = 0;
             mManeuverNodeButtonAdd.stretchHeight = mManeuverNodeButtonAdd.stretchWidth = true;
 
-            mManeuverNodeButtonDelete = GUITextureButtonFactory.CreateFromFilename("maneuverDeleteBtn.png", "maneuverDeleteBtnHover.png", "maneuverDeleteBtn.png", "maneuverDeleteBtn.png");
+            mManeuverNodeButtonDelete = GUITextureButtonFactory.CreateFromFilename("buttons_fc_del.png", "buttons_fc_del_hover.png", "buttons_fc_del.png", "buttons_fc_del.png");
             mManeuverNodeButtonDelete.fixedHeight = mManeuverNodeButtonDelete.fixedWidth = 0;
             mManeuverNodeButtonDelete.stretchHeight = mManeuverNodeButtonDelete.stretchWidth = true;
 
@@ -59,7 +59,7 @@ namespace RemoteTech.UI
         {
             mShowOverlay = true;
         }
-
+        
         /// <summary>
         /// Draws the RT add node to queue on the maneuver gizmo
         /// </summary>
@@ -85,6 +85,7 @@ namespace RemoteTech.UI
                     // Loop maneuvers
                     for (var i = 0; i < pCS.maneuverNodes.Count; i++)
                     {
+                        float btnWidth = 23.0f;
                         ManeuverNode node = pCS.maneuverNodes[i];
                         
                         // node has an attached gizmo?
@@ -95,19 +96,19 @@ namespace RemoteTech.UI
 
                         // We are on the right gizmo but no buttons are visible so skip the rest
                         if (!gizmoDeleteBtn.renderer.isVisible)
+                        {
                             continue;
-
+                        }
+                        
                         Vector3 screenCoord = gizmo.camera.WorldToScreenPoint(gizmo.transform.position);
                         Vector3 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
-                        double dist = Math.Sqrt(Math.Pow(screenCenter.x - screenCoord.x, 2.0) + Math.Pow(screenCenter.y - screenCoord.y, 2.0));
+                        
+                        //double dist = Math.Sqrt(Math.Pow(screenCenter.x - screenCoord.x, 2.0) + Math.Pow(screenCenter.y - screenCoord.y, 2.0));
+                        //double btnDim = 20.0f + (8.0f * ((1.2f / screenCenter.magnitude) * Math.Abs(dist)));
+                        //btnDim = 1.0f * gizmoDeleteBtn.transform.lossyScale.x;
 
-                        double btnDim = 18.0f + (8.0f * ((1.2f / screenCenter.magnitude) * Math.Abs(dist)));
-
-                        //btnDim = btnDim * lossyScale;
-                        Rect screenPos = new Rect(screenCoord.x - (float)btnDim - 7.0f,
-                                                  Screen.height - screenCoord.y - (float)btnDim - 3.0f,
-                                                  (float)btnDim, (float)btnDim);
-
+                        Rect screenPos = new Rect(screenCoord.x - btnWidth - 5.0f, Screen.height - screenCoord.y - btnWidth, btnWidth, btnWidth);
+                        
                         GUIStyle maneuverCtrl = mManeuverNodeButtonAdd;
                         bool nodeAlreadyQueued = flightComputer.hasManeuverCommandByNode(node);
 

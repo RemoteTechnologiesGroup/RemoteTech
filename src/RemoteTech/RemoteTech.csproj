@@ -182,6 +182,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\gitpagessat.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\buttons_fc_add.png" />
+    <EmbeddedResource Include="Resources\buttons_fc_add_hover.png" />
+    <EmbeddedResource Include="Resources\buttons_fc_del.png" />
+    <EmbeddedResource Include="Resources\buttons_fc_del_hover.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
   </Target>
