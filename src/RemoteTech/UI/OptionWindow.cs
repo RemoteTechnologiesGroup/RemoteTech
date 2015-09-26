@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace RemoteTech.UI
     {
         #region Member
         /// <summary>Defines the option window width</summary>
-        const uint WINDOW_WIDTH = 400;
+        const uint WINDOW_WIDTH = 430;
         /// <summary>Defines the option window height</summary>
         const uint WINDOW_HEIGHT = 300;
 
@@ -17,16 +18,22 @@ namespace RemoteTech.UI
         public enum OPTION_MENUS
         {
             Start = 0,
+            Presets,
             WorldScale,
             AlternativeRules,
             VisualStyle,
-            Miscellaneous
+            Miscellaneous,
+            Cheats
         }
         
         /// <summary>Small gray hint text color</summary>
         private GUIStyle mGuiHintText;
         /// <summary>Small white running text color</summary>
         private GUIStyle mGuiRunningText;
+        /// <summary>Textstyle for list entrys</summary>
+        private GUIStyle mGuiListText;
+        /// <summary>Button style for list entrys</summary>
+        private GUIStyle mGuiListButton;
         /// <summary>Texture to represent the dish color</summary>
         private Texture2D mVSColorDish;
         /// <summary>Texture to represent the omni color</summary>
@@ -127,6 +134,17 @@ namespace RemoteTech.UI
 
             this.mGuiRunningText = new GUIStyle(HighLogic.Skin.label)
             {
+                fontSize = 13,
+                normal = { textColor = Color.white }
+            };
+
+            this.mGuiListText = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 12,
+            };
+
+            this.mGuiListButton = new GUIStyle(HighLogic.Skin.button)
+            {
                 fontSize = 12,
                 normal = { textColor = Color.white }
             };
@@ -193,6 +211,16 @@ namespace RemoteTech.UI
                                 this.drawMiscellaneousContent();
                                 break;
                             }
+                        case OPTION_MENUS.Presets:
+                            {
+                                this.drawPresetsContent();
+                                break;
+                            }
+                        case OPTION_MENUS.Cheats:
+                            {
+                                this.drawCheatContent();
+                                break;
+                            }
                         case OPTION_MENUS.Start:
                         default:
                             {
@@ -214,7 +242,7 @@ namespace RemoteTech.UI
             GUILayout.Space(10);
             GUILayout.Label("Use the small menu buttons above to navigate through the different options.", this.mGuiRunningText);
 
-            GUILayout.Space(20);
+            GUILayout.Space(15);
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(90);
@@ -222,7 +250,7 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(20);
+            GUILayout.Space(15);
             GUILayout.Label("You need some help with RemoteTech?\nLook on our online manuell or if you can't find your answer, than post your question on our thread.(Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
@@ -359,7 +387,7 @@ namespace RemoteTech.UI
             GUILayout.EndScrollView();
             GUILayout.Space(10);
 
-            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations always shown" : "Ground stations are hidden behind bodys");
+            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations are hidden behind bodys" : "Ground stations always shown");
             GUILayout.Label("If true, ground stations occulued by the body they’re on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.", this.mGuiHintText);
         }
 
@@ -374,6 +402,53 @@ namespace RemoteTech.UI
 
             this.mSettings.ThrottleZeroOnNoConnection = GUILayout.Toggle(this.mSettings.ThrottleZeroOnNoConnection, (this.mSettings.ThrottleZeroOnNoConnection) ? "Throttle to zero on no connection" : "Keeps the throttle on no connection");
             GUILayout.Label("If true, the flight computer cuts the thrust (not on boosters) if you have no connection to mission control.", this.mGuiHintText);
+        }
+
+        /// <summary>
+        /// Draws the content of the Presets section
+        /// </summary>
+        private void drawPresetsContent()
+        {
+            GUILayout.Label("Other mods can deliver their own RemoteTech_Settings.cfg and override config values. Here you can see what presets we've loaded:", this.mGuiRunningText);
+            GUILayout.Space(15);
+
+            List<String> presetList = this.mSettings.PreSets;
+            for(int i=presetList.Count-1;i>=0;i--)
+            {
+                String FolderName = presetList[i].Replace("/RemoteTechSettings", ".cfg").Trim();
+                GUILayout.BeginHorizontal("box", GUILayout.MaxHeight(15));
+                {
+                    GUILayout.Space(15);
+                    GUILayout.Label("- "+FolderName, this.mGuiListText, GUILayout.ExpandWidth(true));
+                    if(GUILayout.Button("Reload", this.mGuiListButton, GUILayout.Width(50), GUILayout.Height(20)))
+                    {
+                        RTLog.Notify("Reload cfg {0}", RTLogLevel.LVL3, presetList[i]);
+                        this.mSettings.PreSets.RemoveAt(i);
+                        RTSettings.ReloadSettings();
+                    }
+                }
+                GUILayout.EndHorizontal();
+            }
+
+            // Reload all button
+            if (presetList.Count >= 2)
+            {
+                if (GUILayout.Button("Reload All", this.mGuiListButton))
+                {
+                    this.mSettings.PreSets.Clear();
+                    RTSettings.ReloadSettings();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Draws the content of the Cheat section
+        /// </summary>
+        private void drawCheatContent()
+        {
+            GUILayout.Space(10);
+            this.mSettings.ControlAntennaWithoutConnection = GUILayout.Toggle(this.mSettings.ControlAntennaWithoutConnection, (this.mSettings.ControlAntennaWithoutConnection) ? "No Connection needed to control antennas" : "Connection is needed to control antennas");
+            GUILayout.Label("You can activate or deactivate antennas even without a connection to ksc.", this.mGuiHintText);
         }
 
         /// <summary>

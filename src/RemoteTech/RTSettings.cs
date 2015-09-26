@@ -11,7 +11,7 @@ namespace RemoteTech
         {
             get
             {
-                if(mInstance is Settings && mInstance.settingsLoaded)
+                if (mInstance is Settings && mInstance.settingsLoaded)
                 {
                     return mInstance;
                 }
@@ -20,6 +20,21 @@ namespace RemoteTech
                     return mInstance = Settings.Load();
                 }
             }
+        }
+
+        /// <summary>
+        /// Saves the Settings, kills the current instance and creates a new instance.
+        /// </summary>
+        /// <returns>Reloaded Settings</returns>
+        public static Settings ReloadSettings()
+        {
+            if (RTSettings.mInstance != null)
+            {
+                RTSettings.mInstance.Save();
+            }
+
+            RTSettings.mInstance = null;
+            return RTSettings.Instance;
         }
     }
 
@@ -37,13 +52,16 @@ namespace RemoteTech
         [Persistent] public double MultipleAntennaMultiplier = 0.0;
         [Persistent] public bool ThrottleTimeWarp = true;
         [Persistent] public bool ThrottleZeroOnNoConnection = true;
-        [Persistent] public bool HideGroundStationsBehindBody = false;
+        [Persistent] public bool HideGroundStationsBehindBody = true;
+        [Persistent] public bool ControlAntennaWithoutConnection = false;
         [Persistent] public Color DishConnectionColor = XKCDColors.Amber;
         [Persistent] public Color OmniConnectionColor = XKCDColors.BrownGrey;
         [Persistent] public Color ActiveConnectionColor = XKCDColors.ElectricLime;
         [Persistent] public Color RemoteStationColorDot = new Color(0.996078f, 0, 0, 1);
-        [Persistent(collectionIndex="STATION")]
+        [Persistent(collectionIndex = "STATION")]
         public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
+        [Persistent(collectionIndex = "PRESETS")]
+        public List<String> PreSets = new List<String>();
 
         /// <summary>
         /// Trigger to force a reloading of the settings if a selected save is running.
@@ -67,9 +85,10 @@ namespace RemoteTech
         /// </summary>
         private static String File
         {
-            get {
+            get
+            {
 
-                if(HighLogic.CurrentGame == null || RTUtil.IsGameScenario)
+                if (HighLogic.CurrentGame == null || RTUtil.IsGameScenario)
                 {
                     return "";
                 }
@@ -88,7 +107,7 @@ namespace RemoteTech
                 String settingsFile = Settings.File;
 
                 // only save the settings if the file name is not empty (=not loading screen or training)
-                if(!String.IsNullOrEmpty(settingsFile))
+                if (!String.IsNullOrEmpty(settingsFile))
                 {
                     ConfigNode details = new ConfigNode("RemoteTechSettings");
                     ConfigNode.CreateConfigFromObject(this, 0, details);
@@ -167,19 +186,30 @@ namespace RemoteTech
                 ConfigNode.LoadObjectFromConfig(settings, load);
             }
 
+            bool presetsLoaded = false;
             // Prefer to load from GameDatabase, to allow easier user customization
             UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
             foreach (UrlDir.UrlConfig curSet in configList)
             {
                 // only third party files
-                if (!curSet.url.Equals("RemoteTech/RemoteTech_Settings/RemoteTechSettings"))
+                if (!curSet.url.Equals("RemoteTech/RemoteTech_Settings/RemoteTechSettings") && !settings.PreSets.Contains(curSet.url))
                 {
+                    settings.PreSets.Add(curSet.url);
                     RTLog.Notify("Override RTSettings with configs from {0}", curSet.url);
                     settings.backupFields();
                     ConfigNode.LoadObjectFromConfig(settings, curSet.config);
                     settings.restoreBackups();
+
+                    // trigger to save the settings again
+                    presetsLoaded = true;
                 }
             }
+
+            if (presetsLoaded)
+            {
+                settings.Save();
+            }
+
 
             return settings;
         }

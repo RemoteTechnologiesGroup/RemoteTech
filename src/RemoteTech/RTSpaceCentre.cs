@@ -58,6 +58,7 @@ namespace RemoteTech
         public void OnDestroy()
         {
             this.OptionWindow.Hide();
+            this.OptionWindow = null;   // deinit
 
             if (RTSpaceCentre.LauncherButton != null)
             {
