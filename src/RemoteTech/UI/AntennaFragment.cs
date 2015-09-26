@@ -223,7 +223,7 @@ namespace RemoteTech.UI
             mSelection = new Entry()
             {
                 Text = "No Target",
-                Guid = Guid.Empty,
+                Guid = new Guid(RTSettings.Instance.NoTargetGuid),
                 Color = Color.white,
                 Depth = 0,
             };

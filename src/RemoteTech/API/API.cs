@@ -1,4 +1,5 @@
 ﻿using RemoteTech.RangeModel;
+﻿using RemoteTech.Modules;
 using RemoteTech.SimpleTypes;
 using System;
 using System.Collections.Generic;
@@ -93,6 +94,58 @@ namespace RemoteTech.API
             var antennaModules = part.Modules.OfType<IAntenna>();
 
             return antennaModules.Any(m => m.Connected);
+        }
+
+        public static Guid GetAntennaTarget(Part part) {
+            ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
+
+            if (module == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return module.Target;
+        }
+
+        public static void SetAntennaTarget(Part part, Guid id) {
+            ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
+
+            if (module == null)
+            {
+                throw new ArgumentException();
+            }
+
+            module.Target = id;
+        }
+
+        public static IEnumerable<string> GetGroundStations()
+        {
+            return RTSettings.Instance.GroundStations.Select(s => ((ISatellite)s).Name);
+        }
+
+        public static Guid GetGroundStationGuid(String name)
+        {
+            ISatellite groundStation = Array.Find(RTSettings.Instance.GroundStations, s => ((ISatellite)s).Name.Equals(name));
+
+            if (groundStation == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return groundStation.Guid;
+        }
+
+        public static Guid GetCelestialBodyGuid(CelestialBody celestialBody)
+        {
+            return RTUtil.Guid(celestialBody);
+        }
+
+        public static Guid GetNoTargetGuid() {
+            return new Guid(RTSettings.Instance.NoTargetGuid);
+        }
+
+        public static Guid GetActiveVesselGuid() {
+            return new Guid(RTSettings.Instance.ActiveVesselGuid);
         }
 
         public static double GetShortestSignalDelay(Guid id)
