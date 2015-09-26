@@ -101,7 +101,7 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Stores the MapFilter, ActiveVesselGuid and RemoteTechEnabled Value for overriding
+        /// Stores the MapFilter, ActiveVesselGuid, NoTargetGuid and RemoteTechEnabled Value for overriding
         /// with third party settings
         /// </summary>
         public void backupFields()
@@ -109,6 +109,7 @@ namespace RemoteTech
             backupNode = new ConfigNode();
             backupNode.AddValue("MapFilter", MapFilter);
             backupNode.AddValue("ActiveVesselGuid", ActiveVesselGuid);
+            backupNode.AddValue("NoTargetGuid", NoTargetGuid);
             backupNode.AddValue("RemoteTechEnabled", RemoteTechEnabled);
         }
 
