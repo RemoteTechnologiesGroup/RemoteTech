@@ -409,7 +409,7 @@ namespace RemoteTech.UI
         /// </summary>
         private void drawPresetsContent()
         {
-            GUILayout.Label("Some other mods can deliver an own RemoteTech_Settings.cfg and override your configs. Here you can see what presets we've loaded from other mods:", this.mGuiRunningText);
+            GUILayout.Label("Other mods can deliver their own RemoteTech_Settings.cfg and override config values. Here you can see what presets we've loaded:", this.mGuiRunningText);
             GUILayout.Space(15);
 
             List<String> presetList = this.mSettings.PreSets;
