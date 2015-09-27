@@ -1,5 +1,6 @@
 ﻿using RemoteTech.UI;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech
@@ -22,6 +23,33 @@ namespace RemoteTech
             // create the option window
             this.OptionWindow = new OptionWindow();
             
+            GameEvents.onLevelWasLoaded.Add(onLevelWasLoaded);
+            RTSettings.OnSettingsChanged.Add(OnRTSettingsChanged);
+            GameEvents.OnUpgradeableObjLevelChange.Add(OnUpgradeableObjLevelChange);
+        }
+
+        /// <summary>
+        /// Callback-Event when a Upgradeable object (TrackingStation) has changed
+        /// </summary>
+        private void OnUpgradeableObjLevelChange(Upgradeables.UpgradeableObject obj, int lvl)
+        {
+            if (obj.name.Equals("TrackingStation"))
+            {
+                RTLog.Notify("OnUpgradeableObjLevelChange {0} - lvl: {1}", RTLogLevel.LVL4, obj.name, lvl);
+                this.reloadUpgradableAntennas(lvl+1);
+            }
+        }
+
+        /// <summary>
+        /// Callback-Event when the RTSettings are changed
+        /// </summary>
+        private void OnRTSettingsChanged()
+        {
+            this.reloadUpgradableAntennas();
+        }
+
+        private void onLevelWasLoaded(GameScenes scene)
+        {
             if (ApplicationLauncher.Ready)
             {
                 RTUtil.LoadImage(out this.RtOptionBtn, "gitpagessat.png");
@@ -30,12 +58,27 @@ namespace RemoteTech
                                                                                         (Texture)this.RtOptionBtn);
             }
 
-            if (RTSettings.Instance.firstStart)
+            if (scene == GameScenes.SPACECENTER)
             {
-                // open here the option dialog for the first start
-                RTLog.Notify("First start of RemoteTech!");
-                this.OptionWindow.Show();
-                RTSettings.Instance.firstStart = false;
+                if (RTSettings.Instance.firstStart)
+                {
+                    // open here the option dialog for the first start
+                    RTLog.Notify("First start of RemoteTech!");
+                    this.OptionWindow.Show();
+                    RTSettings.Instance.firstStart = false;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Loop all the ground stations to applie antenna upgrades
+        /// </summary>
+        /// <param name="techlvl">lvl to set the antennas range</param>
+        private void reloadUpgradableAntennas(int techlvl = 0)
+        {
+            foreach ( var satellite in RTSettings.Instance.GroundStations)
+            {
+                satellite.reloadUpgradeableAntennas(techlvl);
             }
         }
 
@@ -57,6 +100,10 @@ namespace RemoteTech
         /// </summary>
         public void OnDestroy()
         {
+            RTSettings.OnSettingsChanged.Remove(OnRTSettingsChanged);
+            GameEvents.onLevelWasLoaded.Remove(onLevelWasLoaded);
+            GameEvents.OnUpgradeableObjLevelChange.Remove(OnUpgradeableObjLevelChange);
+
             this.OptionWindow.Hide();
             this.OptionWindow = null;   // deinit
 

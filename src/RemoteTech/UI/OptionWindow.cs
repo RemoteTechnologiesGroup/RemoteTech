@@ -111,6 +111,7 @@ namespace RemoteTech.UI
             if(GUILayout.Button("Close"))
             {
                 this.Hide();
+                RTSettings.OnSettingsChanged.Fire();
             }
             
             base.Window(uid);
@@ -389,6 +390,12 @@ namespace RemoteTech.UI
 
             this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations are hidden behind bodys" : "Ground stations always shown");
             GUILayout.Label("If true, ground stations occulued by the body they’re on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.", this.mGuiHintText);
+
+            this.mSettings.HideGroundStationsOnDistance = GUILayout.Toggle(this.mSettings.HideGroundStationsOnDistance, (this.mSettings.HideGroundStationsOnDistance) ? "Ground stations are hidden on a defined distance" : "Ground stations always shown");
+            GUILayout.Label("If true, ground stations would be invisible on a defined distance to the mapview camera.", this.mGuiHintText);
+
+            this.mSettings.ShowMouseOverInfoGroundStations = GUILayout.Toggle(this.mSettings.ShowMouseOverInfoGroundStations, (this.mSettings.ShowMouseOverInfoGroundStations) ? "Mouseover of ground stations enabled" : "Mouseover of ground stations disabled");
+            GUILayout.Label("If enabled you can get some usefull informations of a ground station by moving the mouse over it on the map view / tracking station", this.mGuiHintText);
         }
 
         /// <summary>
@@ -402,6 +409,10 @@ namespace RemoteTech.UI
 
             this.mSettings.ThrottleZeroOnNoConnection = GUILayout.Toggle(this.mSettings.ThrottleZeroOnNoConnection, (this.mSettings.ThrottleZeroOnNoConnection) ? "Throttle to zero on no connection" : "Keeps the throttle on no connection");
             GUILayout.Label("If true, the flight computer cuts the thrust (not on boosters) if you have no connection to mission control.", this.mGuiHintText);
+
+            this.mSettings.UpgradeableMissionControlAntennas = GUILayout.Toggle(this.mSettings.UpgradeableMissionControlAntennas, (this.mSettings.UpgradeableMissionControlAntennas) ? "MissionControl antennas are upgradeable": "MissionControl antennas are not upgradeable");
+            GUILayout.Label("If this option is activated, the mission controll ground station would be upgradable with the tracking center.", this.mGuiHintText);
+            
         }
 
         /// <summary>

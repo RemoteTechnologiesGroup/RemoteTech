@@ -250,6 +250,14 @@ namespace RemoteTech
             mGuid = new Guid(Guid);
         }
 
+        public void reloadUpgradeableAntennas(int techlvl = 0)
+        {
+            foreach (var antenna in Antennas)
+            {
+                antenna.reloadUpgradeableAntennas(techlvl);
+            }
+        }
+
         void IPersistenceLoad.PersistenceLoad()
         {
             foreach (var antenna in Antennas)
