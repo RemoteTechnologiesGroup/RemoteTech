@@ -35,7 +35,7 @@ namespace RemoteTech
         {
             if (obj.name.Equals("TrackingStation"))
             {
-                RTLog.Notify("OnUpgradeableObjLevelChange {0} - lvl: {1}", RTLogLevel.LVL4, obj.name, lvl);
+                RTLog.Verbose("OnUpgradeableObjLevelChange {0} - lvl: {1}", RTLogLevel.LVL4, obj.name, lvl);
                 this.reloadUpgradableAntennas(lvl+1);
             }
         }
