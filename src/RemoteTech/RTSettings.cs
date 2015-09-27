@@ -6,6 +6,10 @@ namespace RemoteTech
 {
     public class RTSettings
     {
+        public static EventVoid OnSettingsChanged = new EventVoid("OnSettingsChanged");
+        public static EventVoid OnSettingsLoaded = new EventVoid("OnSettingsLoaded");
+        public static EventVoid OnSettingsSaved = new EventVoid("OnSettingsSaved");
+
         private static Settings mInstance;
         public static Settings Instance
         {
@@ -54,6 +58,10 @@ namespace RemoteTech
         [Persistent] public bool ThrottleZeroOnNoConnection = true;
         [Persistent] public bool HideGroundStationsBehindBody = true;
         [Persistent] public bool ControlAntennaWithoutConnection = false;
+        [Persistent] public bool UpgradeableMissionControlAntennas = true;
+        [Persistent] public bool HideGroundStationsOnDistance = true;
+        [Persistent] public bool ShowMouseOverInfoGroundStations = true;
+        [Persistent] public float DistanceToHideGroundStations = 3e7f;
         [Persistent] public Color DishConnectionColor = XKCDColors.Amber;
         [Persistent] public Color OmniConnectionColor = XKCDColors.BrownGrey;
         [Persistent] public Color ActiveConnectionColor = XKCDColors.ElectricLime;
@@ -114,6 +122,8 @@ namespace RemoteTech
                     ConfigNode save = new ConfigNode();
                     save.AddNode(details);
                     save.Save(Settings.File);
+
+                    RTSettings.OnSettingsSaved.Fire();
                 }
             }
             catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message); }
@@ -209,7 +219,7 @@ namespace RemoteTech
             {
                 settings.Save();
             }
-
+            RTSettings.OnSettingsLoaded.Fire();
 
             return settings;
         }
