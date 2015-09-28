@@ -162,6 +162,7 @@ namespace RemoteTech.FlightComputer
             if (pos < 0)
             {
                 mCommandQueue.Insert(~pos, cmd);
+                cmd.CommandEnqueued(this);
                 orderCommandList();
             }
         }

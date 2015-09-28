@@ -6,8 +6,11 @@ namespace RemoteTech.FlightComputer.Commands
 {
     public class ManeuverCommand : AbstractCommand
     {
-        // Index id of this maneuver node from patchedConicSolver.maneuverNodes list
+        /// <summary>Index id of this maneuver node from patchedConicSolver.maneuverNodes list</summary>
         [Persistent] public int NodeIndex;
+        /// <summary></summary>
+        [Persistent] public string KaCItemId = String.Empty;
+
         public double OriginalDelta;
         public double RemainingTime;
         public double RemainingDelta;
@@ -76,17 +79,13 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">FlightComputer instance of the computer of the vessel.</param>
         private void AbortManeuver(FlightComputer computer)
         {
-            computer.Vessel.patchedConicSolver.RemoveManeuverNode(this.Node);
             RTUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
-
-            if (computer.hasManeuverCommands())
+            if (computer.Vessel.patchedConicSolver != null)
             {
-                computer.Enqueue(AttitudeCommand.ManeuverNode(), true, true, true);
+                computer.Vessel.patchedConicSolver.RemoveManeuverNode(this.Node);
             }
-            else
-            {
-                computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
-            }
+            // enqueue kill rot
+            computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
         }
 
         /// <summary>
@@ -241,6 +240,44 @@ namespace RemoteTech.FlightComputer.Commands
             if (this.NodeIndex >= 0)
             {
                 base.Save(n, fc);
+            }
+        }
+
+        /// <summary>
+        /// This method will be triggerd right after the command was enqueued to
+        /// the flight computer list.
+        /// </summary>
+        /// <param name="computer">Current flightcomputer</param>
+        public override void CommandEnqueued(FlightComputer computer)
+        {
+            string KaCAddonLabel = String.Empty;
+            double timetoexec = (this.TimeStamp + this.ExtraDelay) - 180;
+
+            if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
+            {
+                KaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
+
+                if (RTCore.Instance != null && RTCore.Instance.kacAddon != null)
+                {
+                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Maneuver, KaCAddonLabel, timetoexec);
+                }
+            }
+
+            // also add a maneuver node command to the queue
+            computer.Enqueue(AttitudeCommand.ManeuverNode(timetoexec), true, true, true);
+        }
+
+        /// <summary>
+        /// This method will be triggerd after deleting a command from the list.
+        /// </summary>
+        /// <param name="computer">Current flight computer</param>
+        public override void CommandCanceled(FlightComputer computer)
+        {
+            // Cancel also the kac entry
+            if (this.KaCItemId != String.Empty && RTCore.Instance != null && RTCore.Instance.kacAddon != null)
+            {
+                RTCore.Instance.kacAddon.DeleteAlarm(this.KaCItemId);
+                this.KaCItemId = String.Empty;
             }
         }
     }

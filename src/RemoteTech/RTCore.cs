@@ -18,6 +18,7 @@ namespace RemoteTech
 
         /// Addons
         public AddOns.ControlLockAddon ctrlLockAddon { get; protected set; }
+        public AddOns.KerbalAlarmClockAddon kacAddon { get; protected set; }
 
         public event Action OnFrameUpdate = delegate { };
         public event Action OnPhysicsUpdate = delegate { };
@@ -40,6 +41,7 @@ namespace RemoteTech
             Instance = this;
 
             ctrlLockAddon = new AddOns.ControlLockAddon();
+            kacAddon = new AddOns.KerbalAlarmClockAddon();
 
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();
@@ -116,6 +118,10 @@ namespace RemoteTech
             if (Network != null) Network.Dispose();
             if (Satellites != null) Satellites.Dispose();
             if (Antennas != null) Antennas.Dispose();
+
+            // addons
+            if (ctrlLockAddon != null) ctrlLockAddon = null;
+            if (kacAddon != null) kacAddon = null;
 
             Instance = null;
         }
