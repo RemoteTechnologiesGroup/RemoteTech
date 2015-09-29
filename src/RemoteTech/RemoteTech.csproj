@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddOns\ControlLockAPI.cs" />
+    <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />

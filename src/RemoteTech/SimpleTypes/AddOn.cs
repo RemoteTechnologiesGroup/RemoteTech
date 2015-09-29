@@ -9,10 +9,11 @@ namespace RemoteTech.SimpleTypes
     {
         private bool loaded = false;
         /// <summary>Holds the current assembly type</summary>
-        private Type assemblyType;
+        protected Type assemblyType;
         /// <summary>Binding flags for invoking the methods</summary>
-        private BindingFlags bFlags = BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static;
-
+        protected BindingFlags bFlags = BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static;
+        /// <summary>Instance object for invoking instance methods</summary>
+        protected object instance;
         /// <summary>Assemlby loaded?</summary>
         public bool assemblyLoaded { get { return this.loaded; } }
 
@@ -42,21 +43,21 @@ namespace RemoteTech.SimpleTypes
         {
             if(this.assemblyLoaded)
             {
+                // look 1 call behind to get the name of the method who is called
+                StackTrace st = new StackTrace();
+                StackFrame sf = st.GetFrame(1);
+
                 try
                 {
-                    // look 1 call behind to get the name of the method who is called
-                    StackTrace st = new StackTrace();
-                    StackFrame sf = st.GetFrame(1);
-
                     // invoke the method
-                    var result = assemblyType.InvokeMember(sf.GetMethod().Name, bFlags, null, null, parameters);
-                    RTLog.Verbose("AddOn.InvokeResult for {0} is '{1}'", RTLogLevel.Assembly, sf.GetMethod().Name, result);
+                    var result = assemblyType.InvokeMember(sf.GetMethod().Name, this.bFlags, null, this.instance, parameters);
+                    RTLog.Verbose("AddOn.InvokeResult for {0} with instance: {1} is '{2}'", RTLogLevel.Assembly, sf.GetMethod().Name, this.instance, result);
 
                     return result;
                 }
                 catch (Exception ex)
                 {
-                    RTLog.Verbose("Exception from {0}", RTLogLevel.Assembly, ex);
+                    RTLog.Verbose("AddOn.InvokeException for {0} with instance: {1} is '{2}'", RTLogLevel.Assembly, sf.GetMethod().Name, this.instance, ex);
                 }
             }
 

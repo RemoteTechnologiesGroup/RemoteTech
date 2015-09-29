@@ -412,7 +412,9 @@ namespace RemoteTech.UI
 
             this.mSettings.UpgradeableMissionControlAntennas = GUILayout.Toggle(this.mSettings.UpgradeableMissionControlAntennas, (this.mSettings.UpgradeableMissionControlAntennas) ? "MissionControl antennas are upgradeable": "MissionControl antennas are not upgradeable");
             GUILayout.Label("If this option is activated, the mission controll ground station would be upgradable with the tracking center.", this.mGuiHintText);
-            
+
+            this.mSettings.AutoInsertKaCAlerts = GUILayout.Toggle(this.mSettings.AutoInsertKaCAlerts, (this.mSettings.AutoInsertKaCAlerts) ? "Auto insert alarms to KaC" : "No alarm inserts to KaC");
+            GUILayout.Label("If this option is activated, the flight computer will automatically insert an alarm to the Kerbal Alarm Clock (KaC) mod for burn and maneuver commands. The alarm will be triggered three minutes before the command executes.", this.mGuiHintText);
         }
 
         /// <summary>
