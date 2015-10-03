@@ -128,15 +128,38 @@ namespace RemoteTech
             return settings;
         }
 
-		public void AddBaseStation(string name, double latitude, double longitude, double height, int body)
+		public bool AddGroundStation(string name, double latitude, double longitude, double height, int body)
 		{
 			RTLog.Notify ("Trying to add groundstation({0})", name, RTLogLevel.LVL1);
 			MissionControlSatellite m = new MissionControlSatellite ();
 			m.SetDetails (name, latitude, longitude, height, body);
 
 			GroundStations.Add(m);
-			RTLog.Notify ("Last entry in missioncontrolsatellites[]= {0}", GroundStations.Last (), RTLogLevel.LVL1);
-			Save ();
+			if (GroundStations.Last () == m)
+			{
+				RTLog.Notify ("Last entry in missioncontrolsatellites[]= {0}", GroundStations.Last (), RTLogLevel.LVL1);
+				Save ();
+				return true;
+			}
+			return false;
+		}
+
+		public bool RemoveGroundStation(string name, int body)
+		{
+			RTLog.Notify ("Trying to remove groundstation({0})", name, RTLogLevel.LVL1);
+			for (int i = GroundStations.Count - 1; i >= 0; i--)
+			{
+				if (GroundStations [i].GetName () == name && GroundStations [i].GetBody () == body)
+				{
+					RTLog.Notify ("Removing:\"{0}\"", GroundStations[i].GetName (), RTLogLevel.LVL1);
+					GroundStations.RemoveAt (i);
+					RTLog.Notify ("Removed", RTLogLevel.LVL1);
+					Save ();
+					return true;
+				}		
+					
+			}
+			return false;
 		}
     }
 }

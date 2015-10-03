@@ -268,7 +268,15 @@ namespace RemoteTech
 			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}, markcolor={5}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body, this.MarkColor);
 		}
 
+		public String GetName ()
+		{
+			return this.Name;
+		}
 
+		public int GetBody()
+		{
+			return this.Body;
+		}
 
         void IPersistenceLoad.PersistenceLoad()
         {
