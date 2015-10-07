@@ -265,7 +265,7 @@ namespace RemoteTech
 
 		public String GetDetails()
 		{
-			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}, markcolor={5}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body, this.MarkColor);
+			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body);
 		}
 
 		public String GetName ()

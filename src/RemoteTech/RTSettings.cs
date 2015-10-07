@@ -159,6 +159,7 @@ namespace RemoteTech
 				}		
 					
 			}
+			RTLog.Notify ("Cannot find station:  {0}, at body {1}", name, body, RTLogLevel.LVL1);
 			return false;
 		}
     }

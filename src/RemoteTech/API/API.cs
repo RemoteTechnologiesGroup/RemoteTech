@@ -192,7 +192,7 @@ namespace RemoteTech.API
 				RTLog.Notify ("Removed groundstation{0}", name, RTLogLevel.API);
 				return true;
 			} else {
-				RTLog.Notify ("Error removing groundstation", RTLogLevel.API);
+				RTLog.Notify ("Cannot find groundstation{0}", name, RTLogLevel.API);
 				return false;
 			}
 		}
