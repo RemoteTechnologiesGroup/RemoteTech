@@ -134,6 +134,15 @@ namespace RemoteTech
 			MissionControlSatellite m = new MissionControlSatellite ();
 			m.SetDetails (name, latitude, longitude, height, body);
 
+			for (int i = GroundStations.Count - 1; i >= 0; i--)
+			{
+				if (GroundStations[i].GetDetails ()== m.GetDetails ())
+				{
+					RTLog.Notify ("Groundstation already exists!", RTLogLevel.LVL1);
+					return false;
+				}
+			}
+
 			GroundStations.Add(m);
 			if (GroundStations.Last () == m)
 			{
@@ -146,12 +155,17 @@ namespace RemoteTech
 
 		public bool RemoveGroundStation(string name, int body)
 		{
-			RTLog.Notify ("Trying to remove groundstation({0})", name, RTLogLevel.LVL1);
+			RTLog.Notify ("Trying to remove groundstation {0}", name, RTLogLevel.LVL1);
+			if (name == GroundStations.First().GetName () && body == 1)
+			{
+				RTLog.Notify ("Unable to remove KSP Mission Control", RTLogLevel.LVL1);
+				return false;
+			}
 			for (int i = GroundStations.Count - 1; i >= 0; i--)
 			{
 				if (GroundStations [i].GetName () == name && GroundStations [i].GetBody () == body)
 				{
-					RTLog.Notify ("Removing:\"{0}\"", GroundStations[i].GetName (), RTLogLevel.LVL1);
+					RTLog.Notify ("Removing {0} ", GroundStations[i].GetName (), RTLogLevel.LVL1);
 					GroundStations.RemoveAt (i);
 					RTLog.Notify ("Removed", RTLogLevel.LVL1);
 					Save ();
@@ -159,7 +173,7 @@ namespace RemoteTech
 				}		
 					
 			}
-			RTLog.Notify ("Cannot find station:  {0}, at body {1}", name, body, RTLogLevel.LVL1);
+			RTLog.Notify ("Cannot find station {0}, at body {1}", name, body, RTLogLevel.LVL1);
 			return false;
 		}
     }

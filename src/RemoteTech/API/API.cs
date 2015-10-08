@@ -173,10 +173,10 @@ namespace RemoteTech.API
 
 		public static bool AddGroundStation(string name, double latitude, double longitude, double height, int body)
 		{
-			RTLog.Notify ("Trying to add groundstation: {0}", name , RTLogLevel.API);
+			RTLog.Notify ("Trying to add groundstation {0}", name , RTLogLevel.API);
 			if(RTSettings.Instance.AddGroundStation(name, latitude, longitude, height, body))
 			{
-				RTLog.Notify ("Added groundstation{0}", name, RTLogLevel.API);
+				RTLog.Notify ("Added groundstation {0}", name, RTLogLevel.API);
 				return true;	
 			} else {
 				RTLog.Notify ("Error adding groundstation", RTLogLevel.API);
@@ -186,13 +186,13 @@ namespace RemoteTech.API
 
 		public static bool RemoveGroundStation(string name, int body)
 		{
-			RTLog.Notify ("Trying to remove groundstation: {0}", name , RTLogLevel.API);
+			RTLog.Notify ("Trying to remove groundstation {0}", name , RTLogLevel.API);
 			if (RTSettings.Instance.RemoveGroundStation (name, body)) 
 			{
-				RTLog.Notify ("Removed groundstation{0}", name, RTLogLevel.API);
+				RTLog.Notify ("Removed groundstation {0}", name, RTLogLevel.API);
 				return true;
 			} else {
-				RTLog.Notify ("Cannot find groundstation{0}", name, RTLogLevel.API);
+				RTLog.Notify ("Error removing groundstation {0}", name, RTLogLevel.API);
 				return false;
 			}
 		}
