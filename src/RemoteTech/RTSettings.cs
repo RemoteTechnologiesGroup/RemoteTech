@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech
@@ -68,7 +69,8 @@ namespace RemoteTech
         [Persistent] public Color ActiveConnectionColor = XKCDColors.ElectricLime;
         [Persistent] public Color RemoteStationColorDot = new Color(0.996078f, 0, 0, 1);
         [Persistent(collectionIndex = "STATION")]
-        public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
+        public List<MissionControlSatellite> GroundStations = new List<MissionControlSatellite>() { new MissionControlSatellite() };
+        //public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
         [Persistent(collectionIndex = "PRESETS")]
         public List<String> PreSets = new List<String>();
 
@@ -127,7 +129,7 @@ namespace RemoteTech
                     RTSettings.OnSettingsSaved.Fire();
                 }
             }
-            catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: " + e.Message); }
+            catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: {0}", RTLogLevel.LVL1, e.Message); }
         }
 
         /// <summary>
@@ -223,6 +225,60 @@ namespace RemoteTech
             RTSettings.OnSettingsLoaded.Fire();
 
             return settings;
+        }
+
+        /// <summary>
+        /// Adds a new ground station to the list and returns a new guid id for
+        /// a successfull new station otherwise a Guid.Empty will be returned.
+        /// </summary>
+        /// <param name="name">Name of the ground station</param>
+        /// <param name="latitude">latitude position</param>
+        /// <param name="longitude">longitude position</param>
+        /// <param name="height">height from asl</param>
+        /// <param name="body">Referencebody 1=Kerbin etc...</param>
+        public Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
+        {
+            RTLog.Notify("Trying to add groundstation({0})", RTLogLevel.LVL1, name);
+
+            MissionControlSatellite newGroundStation = new MissionControlSatellite();
+            newGroundStation.SetDetails(name, latitude, longitude, height, body);
+
+            // Already on the list?
+            var foundsat = this.GroundStations.Where(ms => ms.GetDetails().Equals(newGroundStation.GetDetails())).FirstOrDefault();
+            if (foundsat != null)
+            {
+                RTLog.Notify("Groundstation already exists!", RTLogLevel.LVL1);
+                return Guid.Empty;
+            }
+
+            this.GroundStations.Add(newGroundStation);
+            this.Save();
+
+            return newGroundStation.mGuid;
+        }
+
+        /// <summary>
+        /// Removes a ground station from the list by its unique <paramref name="stationid"/>.
+        /// Returns true for a successfull removed station, otherwise false
+        /// </summary>
+        /// <param name="stationid">Unique ground station id</param>
+        public bool RemoveGroundStation(Guid stationid)
+        {
+            RTLog.Notify("Trying to remove groundstation {0}", RTLogLevel.LVL1, stationid);
+
+            for (int i = this.GroundStations.Count - 1; i >= 0; i--)
+            {
+                if (this.GroundStations[i].mGuid.Equals(stationid))
+                {
+                    RTLog.Notify("Removing {0} ", RTLogLevel.LVL1, GroundStations[i].GetName());
+                    this.GroundStations.RemoveAt(i);
+                    this.Save();
+                    return true;
+                }
+            }
+
+            RTLog.Notify("Cannot find station {0}", RTLogLevel.LVL1, stationid);
+            return false;
         }
     }
 }
