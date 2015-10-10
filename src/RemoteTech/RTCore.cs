@@ -50,7 +50,6 @@ namespace RemoteTech
 
             FilterOverlay = new FilterOverlay();
             FocusOverlay = new FocusOverlay();
-            ManeuverNodeOverlay = new ManeuverNodeOverlay();
             TimeWarpDecorator = new TimeWarpDecorator();
 
             FlightUIPatcher.Patch();
@@ -111,7 +110,8 @@ namespace RemoteTech
 
         public void OnDestroy()
         {
-            if (FocusOverlay != null) FocusOverlay.Dispose(); 
+            if (FocusOverlay != null) FocusOverlay.Dispose();
+            if (ManeuverNodeOverlay != null) ManeuverNodeOverlay.Dispose();
             if (FilterOverlay != null) FilterOverlay.Dispose();
             if (FilterOverlay != null) FilterOverlay.Dispose();
             if (Renderer != null) Renderer.Detach();
@@ -210,6 +210,7 @@ namespace RemoteTech
     {
         public new void Start()
         {
+            base.ManeuverNodeOverlay = new ManeuverNodeOverlay();
             base.Start();
         }
     }
