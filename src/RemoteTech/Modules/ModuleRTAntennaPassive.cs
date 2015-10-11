@@ -11,7 +11,7 @@ namespace RemoteTech.Modules
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return vessel.id; } }
         public bool Powered { get { return Activated; } }
-        public bool Connected { get { return RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this)); } }
+        public bool Connected { get { return (RTCore.Instance != null && RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this))); } }
         public bool Activated { get { return Unlocked; } set { return; } }
         public bool Animating { get { return false; } }
 
@@ -88,15 +88,18 @@ namespace RemoteTech.Modules
         public virtual void SetState(bool state)
         {
             IsRTActive = state;
-            var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
-            if (mTransmitter == null && route_home)
+            if(RTCore.Instance != null)
             {
-                AddTransmitter();
-            }
-            else if (!route_home && mTransmitter != null)
-            {
-                RemoveTransmitter();
+                var satellite = RTCore.Instance.Network[Guid];
+                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+                if (mTransmitter == null && route_home)
+                {
+                    AddTransmitter();
+                }
+                else if (!route_home && mTransmitter != null)
+                {
+                    RemoveTransmitter();
+                }
             }
         }
 
@@ -230,7 +233,7 @@ namespace RemoteTech.Modules
 
         private void OnVesselModified(Vessel v)
         {
-            if ((mRegisteredId != vessel.id))
+            if (RTCore.Instance != null && mRegisteredId != vessel.id)
             {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
                 mRegisteredId = vessel.id;

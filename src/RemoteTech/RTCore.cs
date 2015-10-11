@@ -210,8 +210,21 @@ namespace RemoteTech
     {
         public new void Start()
         {
-            base.ManeuverNodeOverlay = new ManeuverNodeOverlay();
             base.Start();
+            if (RTCore.Instance != null)
+            {
+                base.ManeuverNodeOverlay = new ManeuverNodeOverlay();
+                base.ManeuverNodeOverlay.OnEnterMapView();
+            }
+        }
+
+        private new void OnDestroy()
+        {
+            if (RTCore.Instance != null)
+            {
+                base.ManeuverNodeOverlay.OnExitMapView();
+            }
+            base.OnDestroy();
         }
     }
 
@@ -225,7 +238,6 @@ namespace RemoteTech
             {
                 base.FilterOverlay.OnEnterMapView();
                 base.FocusOverlay.OnEnterMapView();
-                base.ManeuverNodeOverlay.OnEnterMapView();
             }
         }
 
@@ -235,7 +247,6 @@ namespace RemoteTech
             {
                 base.FilterOverlay.OnExitMapView();
                 base.FocusOverlay.OnExitMapView();
-                base.ManeuverNodeOverlay.OnExitMapView();
             }
             base.OnDestroy();
         }
