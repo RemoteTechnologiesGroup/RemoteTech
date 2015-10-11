@@ -175,12 +175,14 @@ namespace RemoteTech.FlightComputer
 
         public void OnUpdate()
         {
+            if (RTCore.Instance == null) return;
             if (!SignalProcessor.IsMaster) return;
             PopCommand();
         }
 
         public void OnFixedUpdate()
         {
+            if (RTCore.Instance == null) return;
             if (Vessel == null)
             {
                 Vessel = SignalProcessor.Vessel;

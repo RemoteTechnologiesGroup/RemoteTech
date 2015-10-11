@@ -26,6 +26,7 @@ namespace RemoteTech.Modules
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
         {
+            RTLog.Notify("ModuleRTDataTransmitter::OnLoad");
             foreach (ConfigNode data in node.GetNodes("CommsData"))
             {
                 scienceDataQueue.Add(new ScienceData(data));
@@ -38,16 +39,19 @@ namespace RemoteTech.Modules
         // Compatible with ModuleDataTransmitter
         public override void OnSave(ConfigNode node)
         {
+            RTLog.Notify("ModuleRTDataTransmitter::OnSave");
             scienceDataQueue.ForEach(d => d.Save(node.AddNode("CommsData")));
         }
        
         bool IScienceDataTransmitter.CanTransmit()
         {
+            RTLog.Notify("ModuleRTDataTransmitter::CanTransmit");
             return true;
         }
 
         void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue, Callback callback)
         {
+            RTLog.Notify("ModuleRTDataTransmitter::TransmitData(2p)");
             scienceDataQueue.AddRange(dataQueue);
             if (!isBusy)
             {
@@ -61,6 +65,7 @@ namespace RemoteTech.Modules
 
         void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue)
         {
+            RTLog.Notify("ModuleRTDataTransmitter::TransmitData(1p)");
             scienceDataQueue.AddRange(dataQueue);
             if (!isBusy)
             {
@@ -70,6 +75,7 @@ namespace RemoteTech.Modules
 
         private IEnumerator Transmit(Callback callback = null)
         {
+            RTLog.Notify("ModuleRTDataTransmitter::Transmit");
             var msg = new ScreenMessage(String.Format("[{0}]: Starting Transmission...", part.partInfo.title), 4f, ScreenMessageStyle.UPPER_LEFT);
             var msgStatus = new ScreenMessage(String.Empty, 4.0f, ScreenMessageStyle.UPPER_LEFT);
             ScreenMessages.PostScreenMessage(msg);

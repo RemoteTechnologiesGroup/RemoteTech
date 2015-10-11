@@ -39,7 +39,10 @@ namespace RemoteTech.AddOns
         {
             // change the bindings
             this.bFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod;
-            this.loadInstance();
+            if (this.assemblyLoaded)
+            {
+                this.loadInstance();
+            }
         }
 
         private void loadInstance()
