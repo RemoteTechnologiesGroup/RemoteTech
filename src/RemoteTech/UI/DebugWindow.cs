@@ -10,7 +10,7 @@ namespace RemoteTech.UI
 
         public DebugWindow()
             : base(new Guid("B17930C0-EDE6-4299-BE78-D975EAD1986B"), "RemoteTech DebugWindow",
-                   new Rect(Screen.width / 2 - 250, Screen.height / 2 - 175, 500, 350), WindowAlign.Floating)
+                   new Rect(Screen.width / 2 - 250, Screen.height / 2 - 225, 500, 450), WindowAlign.Floating)
         {
             this.mSavePosition = true;
             this.initializeDebugMenue();
@@ -34,6 +34,8 @@ namespace RemoteTech.UI
         private int currentDebugMenue = 0;
         /// <summary>List of all menue items</summary>
         private List<string> debugMenueItems = new List<string>();
+
+        private int deactivatedMissionControls = 0;
 
         /// API Input fields
         private string HasFlightComputerGuidInput = "";
@@ -97,9 +99,19 @@ namespace RemoteTech.UI
 
                 #region Draw debug log
                 // Draw a 100 height debug-console at the bottom of the debug-window
-                GUILayout.BeginVertical(GUILayout.Height(100));
+                GUILayout.BeginVertical(GUILayout.Height(150));
                 this.drawRTDebugLogEntrys();
                 GUILayout.EndVertical();
+                // Draw the clear log button
+                // Clear Logs Button
+                GUILayout.BeginHorizontal();
+                {
+                    var pushFontsize = GUI.skin.button.fontSize;
+                    GUI.skin.button.fontSize = 12;
+                    RTUtil.Button(new GUIContent("Clear Logs in " + this.currentLogLevel.ToString(), "tbd."), () => RTLog.RTLogList[this.currentLogLevel].Clear());
+                    GUI.skin.button.fontSize = pushFontsize;
+                }
+                GUILayout.EndHorizontal();
                 #endregion
             }
             GUILayout.EndVertical();
@@ -178,60 +190,12 @@ namespace RemoteTech.UI
             GUI.skin.label.fontSize = 12;
             GUI.skin.button.fontSize = 12;
 
-            // Enable SignalDelay
+            // Deaktivate Mission Control 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("Enable Signal Delay: ", GUILayout.Width(firstColWidth));
-                int enabledSignalDelay = (settings.EnableSignalDelay) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.EnableSignalDelay = true; }, enabledSignalDelay, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.EnableSignalDelay = false; }, enabledSignalDelay, 0);
-            }
-            GUILayout.EndHorizontal();
-
-            // Consumption Multiplier
-            GUILayout.BeginHorizontal();
-            {
-                string label = string.Format("Consumption Multiplier: ({0})", settings.ConsumptionMultiplier);
-                GUILayout.Label(label, GUILayout.Width(firstColWidth));
-                settings.ConsumptionMultiplier = GUILayout.HorizontalSlider(settings.ConsumptionMultiplier, 0, 2);
-            }
-            GUILayout.EndHorizontal();
-
-            // Range Multiplier
-            GUILayout.BeginHorizontal();
-            {
-                string label = string.Format("Range Multiplier: ({0})", settings.RangeMultiplier);
-                GUILayout.Label(label, GUILayout.Width(firstColWidth));
-                settings.RangeMultiplier = GUILayout.HorizontalSlider(settings.RangeMultiplier, 0, 2);
-            }
-            GUILayout.EndHorizontal();
-
-            // Speed of light
-            GUILayout.BeginHorizontal();
-            {
-                string label = string.Format("Speed of light: ({0})", settings.SpeedOfLight);
-                GUILayout.Label(label, GUILayout.Width(firstColWidth));
-                settings.SpeedOfLight = GUILayout.HorizontalSlider(settings.SpeedOfLight, 100000, 300000000);
-            }
-            GUILayout.EndHorizontal();
-
-            // ThrottleTimeWarp
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.Label("Throttle TimeWarp: ", GUILayout.Width(firstColWidth));
-                int throttleTimeWarp = (settings.ThrottleTimeWarp) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.ThrottleTimeWarp = true; }, throttleTimeWarp, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.ThrottleTimeWarp = false; }, throttleTimeWarp, 0);
-            }
-            GUILayout.EndHorizontal();
-
-            // HideGroundStationsBehindBody 
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.Label("Hide Station behind body: ", GUILayout.Width(firstColWidth));
-                int hideGroundStationsBehindBody = (settings.HideGroundStationsBehindBody) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { settings.HideGroundStationsBehindBody = true; }, hideGroundStationsBehindBody, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { settings.HideGroundStationsBehindBody = false; }, hideGroundStationsBehindBody, 0);
+                GUILayout.Label("Deactivate KSC: ", GUILayout.Width(firstColWidth));
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(false); }; deactivatedMissionControls = 1; }, deactivatedMissionControls, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(true); }; deactivatedMissionControls = 0; }, deactivatedMissionControls, 0);
             }
             GUILayout.EndHorizontal();
 
@@ -278,7 +242,6 @@ namespace RemoteTech.UI
             // switch to the API Debug log
             this.currentLogLevel = RTLogLevel.API;
 
-            // API.HasFlightComputer
             #region API.HasFlightComputer
             GUILayout.BeginHorizontal();
             {
@@ -490,7 +453,7 @@ namespace RemoteTech.UI
                 {
                     var pushFontStyle = GUI.skin.label.fontStyle;
                     // active vessel, make bold
-                    if (FlightGlobals.ActiveVessel.id == vessel.id)
+                    if (FlightGlobals.ActiveVessel != null && FlightGlobals.ActiveVessel.id == vessel.id)
                     {
                         GUI.skin.label.fontStyle = FontStyle.Bold;
                     }
@@ -502,6 +465,7 @@ namespace RemoteTech.UI
                 GUILayout.EndHorizontal();
             }
             #endregion
+
             // draw the Ground stations
             #region Ground stations
             foreach (var stations in RTCore.Instance.Network.GroundStations)

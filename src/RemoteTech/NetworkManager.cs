@@ -225,9 +225,11 @@ namespace RemoteTech
         [Persistent] private double Height = 75.0f;
         [Persistent] private int Body = 1;
         [Persistent] private Color MarkColor = new Color(0.996078f, 0, 0, 1);
-		[Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
+        [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
 
-        bool ISatellite.Powered { get { return true; } }
+        private bool AntennaActivated = true;
+
+        bool ISatellite.Powered { get { return this.AntennaActivated; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
         Guid ISatellite.Guid { get { return mGuid; } }
@@ -239,15 +241,22 @@ namespace RemoteTech
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         Color ISatellite.MarkColor { get { return MarkColor; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
-        private Guid mGuid;
+        public Guid mGuid { get; private set; }
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 
         public MissionControlSatellite()
         {
-            mGuid = new Guid(Guid);
+            this.mGuid = new Guid(Guid);
         }
 
+        public void reloadUpgradeableAntennas(int techlvl = 0)
+        {
+            foreach (var antenna in this.Antennas)
+            {
+                antenna.reloadUpgradeableAntennas(techlvl);
+            }
+        }
 		/*
 		 * Simple getter + setter. 
 		 * For being able to add groundstations.
@@ -267,16 +276,11 @@ namespace RemoteTech
 		{
 			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body);
 		}
-
-		public String GetName ()
-		{
-			return this.Name;
-		}
-
-		public int GetBody()
-		{
-			return this.Body;
-		}
+        
+        public String GetName()
+        {
+            return this.Name;
+        }
 
         void IPersistenceLoad.PersistenceLoad()
         {
@@ -292,5 +296,13 @@ namespace RemoteTech
             return Name;
         }
 
+        /// <summary>
+        /// Used currently for debug purposes only. This method can be used to shut down the mission control
+        /// </summary>
+        /// <param name="powerswitch">true=Missioncontrol on, false=MissionControl off</param>
+        public void togglePower(bool powerswitch)
+        {
+            this.AntennaActivated = powerswitch;
+        }
     }
 }

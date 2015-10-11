@@ -133,5 +133,17 @@ namespace RemoteTech.FlightComputer.Commands
 
             return command;
         }
+
+        /// <summary>
+        /// This method will be triggerd right after the command was enqueued to
+        /// the flight computer list.
+        /// </summary>
+        /// <param name="computer">Current flightcomputer</param>
+        public virtual void CommandEnqueued(FlightComputer computer) { }
+        /// <summary>
+        /// This method will be triggerd after deleting a command from the list.
+        /// </summary>
+        /// <param name="computer">Current flight computer</param>
+        public virtual void CommandCanceled(FlightComputer computer) { }
     }
 }

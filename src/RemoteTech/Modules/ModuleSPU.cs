@@ -68,8 +68,7 @@ namespace RemoteTech.Modules
         {
             if (!ShowEditor_Type) return String.Empty;
             return IsRTCommandStation 
-                ? String.Format("Remote Command capable ({0}+ crew)", RTCommandMinCrew) 
-                : "Remote Control capable";
+                ? String.Format("Remote Command capable <color=#00FFFF>({0}+ crew)</color>", RTCommandMinCrew) : "Remote Control capable";
         }
 
         public override void OnStart(StartState state)
@@ -192,6 +191,12 @@ namespace RemoteTech.Modules
                     {
                         vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
                     }
+                }
+                else if (e.listParent.part.Modules.OfType<IAntenna>().Any() &&
+                         !e.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
+                         RTSettings.Instance.ControlAntennaWithoutConnection)
+                {
+                    e.Invoke();
                 }
                 else
                 {

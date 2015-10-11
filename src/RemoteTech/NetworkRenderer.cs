@@ -47,6 +47,9 @@ namespace RemoteTech
         public bool ShowRange { get { return (Filter & MapFilter.Sphere) == MapFilter.Sphere; } }
         public bool ShowCone  { get { return (Filter & MapFilter.Cone)   == MapFilter.Cone; } }
 
+        public GUIStyle smallStationText;
+        public GUIStyle smallStationHead;
+
         static NetworkRenderer()
         {
             RTUtil.LoadImage(out mTexMark, "mark.png");
@@ -64,6 +67,18 @@ namespace RemoteTech
             RTCore.Instance.Network.OnLinkAdd += renderer.OnLinkAdd;
             RTCore.Instance.Network.OnLinkRemove += renderer.OnLinkRemove;
             RTCore.Instance.Satellites.OnUnregister += renderer.OnSatelliteUnregister;
+
+            renderer.smallStationHead = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 12
+            };
+
+            renderer.smallStationText = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 10,
+                normal = { textColor = Color.white }
+            };
+
             return renderer;
         }
 
@@ -87,13 +102,17 @@ namespace RemoteTech
                     if (MapView.MapCamera.transform.InverseTransformPoint(worldPos).z < 0f) continue;
                     Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(worldPos);
                     var screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
+                    
+                    // Hide the current ISatellite if it is behind its body
+                    if (RTSettings.Instance.HideGroundStationsBehindBody && IsOccluded(s.Position, s.Body))
+                        showOnMapview = false;
 
-                    if (s is MissionControlSatellite && RTSettings.Instance.HideGroundStationsBehindBody)
-                    {
-                        // Hide the current ISatellite if it is behind its body
-                        if (IsOccluded(s.Position, s.Body))
-                            showOnMapview = false;
-                    }
+                    if (RTSettings.Instance.HideGroundStationsOnDistance && !IsOccluded(s.Position, s.Body) && this.IsCamDistanceToWide(s.Position))
+                        showOnMapview = false;
+
+                    // orbiting remote stations are always shown
+                    if(s.isVessel && !s.parentVessel.Landed)
+                        showOnMapview = true;
 
                     if (showOnMapview)
                     {
@@ -103,6 +122,51 @@ namespace RemoteTech
                         // draw the mark.png
                         GUI.DrawTexture(screenRect, mTexMark, ScaleMode.ScaleToFit, true);
                         GUI.color = pushColor;
+
+                        // Show Mouse over informations to the ground station
+                        if (RTSettings.Instance.ShowMouseOverInfoGroundStations && s is MissionControlSatellite && screenRect.ContainsMouse())
+                        {
+                            Rect headline = screenRect;
+                            Vector2 nameDim = this.smallStationHead.CalcSize(new GUIContent(s.Name));
+
+                            headline.x -= nameDim.x + 10;
+                            headline.y -= 3;
+                            headline.width = nameDim.x;
+                            headline.height = 14;
+                            // draw headline of the station
+                            GUI.Label(headline, s.Name, this.smallStationHead);
+
+                            // loop antennas
+                            String antennaRanges = String.Empty;
+                            foreach (var antenna in s.Antennas)
+                            {
+                                if(antenna.Omni > 0)
+                                {
+                                    antennaRanges += "Omni: "+ RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;
+                                }
+                                if (antenna.Dish > 0)
+                                {
+                                    antennaRanges += "Dish: " + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;
+                                }
+                            }
+
+                            if(!antennaRanges.Equals(String.Empty))
+                            {
+                                Rect antennas = screenRect;
+                                GUIContent content = new GUIContent(antennaRanges);
+
+                                Vector2 antennaDim = this.smallStationText.CalcSize(content);
+                                float maxHeight = this.smallStationText.CalcHeight(content, antennaDim.x);
+
+                                antennas.y += headline.height - 3;
+                                antennas.x -= antennaDim.x + 10;
+                                antennas.width = antennaDim.x;
+                                antennas.height = maxHeight;
+
+                                // draw antenna infos of the station
+                                GUI.Label(antennas, antennaRanges, this.smallStationText);
+                            }
+                        }
                     }
                 }
             }
@@ -118,6 +182,24 @@ namespace RemoteTech
 
             if (Vector3d.Angle(camPos - loc, body.position - loc) > 90) { return false; }
             return true;
+        }
+
+        /// <summary>
+        /// Calculates the distance between the camera position and the ground station, and
+        /// returns true if the distance is >= DistanceToHideGroundStations from the settings file.
+        /// </summary>
+        /// <param name="loc">Position of the ground station</param>
+        /// <returns>True if the distance is to wide, otherwise false</returns>
+        private bool IsCamDistanceToWide(Vector3d loc)
+        {
+            Vector3d camPos = ScaledSpace.ScaledToLocalSpace(PlanetariumCamera.Camera.transform.position);
+            float distance = Vector3.Distance(camPos, loc);
+            
+            // distance to wide?
+            if(distance >= RTSettings.Instance.DistanceToHideGroundStations)
+                return true;
+
+            return false;
         }
 
         private void UpdateNetworkCones()

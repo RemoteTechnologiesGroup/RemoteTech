@@ -1,3 +1,15 @@
+Version 1.6.8
+========================================
+Released September 12, 2015
+
+General
+--------------------
+- Added a new value to RTSettings to keep the throttle on connection loose (ThrottleZeroOnNoConnection=True or False)
+- Clean up vessel target handling (thx to geoffromer)
+- Added Asteroid Day antennas (thx to phroggster)
+- Added NovaPunch antennas (thx to blnk2007)
+
+
 Version 1.6.7
 ========================================
 Released June 25, 2015

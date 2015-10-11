@@ -172,7 +172,7 @@ namespace RemoteTech.FlightComputer.Commands
             };
         }
 
-        public static AttitudeCommand ManeuverNode()
+        public static AttitudeCommand ManeuverNode(double timetoexec = 0)
         {
             return new AttitudeCommand()
             {
@@ -181,7 +181,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Frame = ReferenceFrame.Maneuver,
                 Orientation = Quaternion.identity,
                 Altitude = Single.NaN,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = (timetoexec == 0) ? RTUtil.GameTime:timetoexec,
             };
         }
 

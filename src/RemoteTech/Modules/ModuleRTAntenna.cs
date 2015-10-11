@@ -90,7 +90,8 @@ namespace RemoteTech.Modules
             IsRTAntenna = true,
             IsRTActive = false,
             IsRTPowered = false,
-            IsRTBroken = false;
+            IsRTBroken = false,
+            IsNonRetractable = false;
 
         [KSPField(isPersistant = true)]
         public double RTDishCosAngle = 1.0f;
@@ -139,10 +140,6 @@ namespace RemoteTech.Modules
             {
                 info.AppendFormat("Dish range: {0} / {1}", RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
             }
-            if (ShowEditor_EnergyReq && EnergyCost > 0)
-            {
-                info.AppendFormat("Energy req.: {0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
-            }
 
             if (ShowEditor_DishAngle && CanTarget)
             {
@@ -151,12 +148,23 @@ namespace RemoteTech.Modules
 
             if (IsRTActive)
             {
-                info.AppendLine("Activated by default");
+                info.AppendLine("<color=#89929B>Activated by default</color>");
             }
 
             if (MaxQ > 0)
             {
-                info.AppendLine("Snaps under high dynamic pressure");
+                info.AppendLine("<b><color=#FDA401>Snaps under high dynamic pressure</color></b>");
+            }
+
+            if (this.IsNonRetractable)
+            {
+                info.AppendLine("<b><color=#FDA401>Antenna is not retractable</color></b>");
+            }
+
+            if (ShowEditor_EnergyReq && EnergyCost > 0)
+            {
+                info.AppendLine().Append("<b><color=#99ff00ff>Requires:</color></b>").AppendLine();
+                info.AppendFormat("<b>ElectricCharge: </b>{0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
             }
 
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
@@ -172,6 +180,13 @@ namespace RemoteTech.Modules
             Events["EventClose"].guiActive = Events["EventClose"].active = 
             Events["EventEditorClose"].guiActiveEditor =
             Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
+
+            // deactivate event close if this antenna is non retractable
+            if (this.IsNonRetractable)
+            {
+                Events["EventClose"].guiActive = false;
+                Events["EventClose"].active = false;
+            }
 
             UpdateContext();
             StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
@@ -309,6 +324,13 @@ namespace RemoteTech.Modules
             Events["EventToggle"].guiName = ActionToggleName;
             Events["EventTarget"].guiActive = (Mode1DishRange > 0);
             Events["EventTarget"].active = Events["EventTarget"].guiActive;
+
+            // deactivate action close and toggle if this antenna is non retractable
+            if (this.IsNonRetractable)
+            {
+                Actions["ActionClose"].active = false;
+                Actions["ActionToggle"].active = false;
+            }
 
             Fields["GUI_OmniRange"].guiActive = (Mode1OmniRange > 0) && ShowGUI_OmniRange;
             Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0) && ShowGUI_DishRange;

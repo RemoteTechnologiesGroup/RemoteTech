@@ -57,6 +57,11 @@ namespace RemoteTech.FlightComputer
             }
         }
 
+        /// <summary>
+        /// Returns true to keep the throttle on the current position without a connection, otherwise false
+        /// </summary>
+        public bool KeepThrottleNoConnect { get { return !RTSettings.Instance.ThrottleZeroOnNoConnection; } }
+
         public double TotalDelay { get; set; }
         public ITargetable DelayedTarget { get; set; }
         public TargetCommand lastTarget = null;
@@ -100,6 +105,7 @@ namespace RemoteTech.FlightComputer
             pid = new PIDControllerV2(0, 0, 0, 1, -1);
             initPIDParameters();
             lastAct = Vector3d.zero;
+            lastTarget = TargetCommand.WithTarget(null);
 
             var attitude = AttitudeCommand.Off();
             mActiveCommands[attitude.Priority] = attitude;
@@ -156,6 +162,7 @@ namespace RemoteTech.FlightComputer
             if (pos < 0)
             {
                 mCommandQueue.Insert(~pos, cmd);
+                cmd.CommandEnqueued(this);
                 orderCommandList();
             }
         }
@@ -207,9 +214,28 @@ namespace RemoteTech.FlightComputer
             updatePIDParameters();
 
             // Send updates for Target
-            if (FlightGlobals.fetch.VesselTarget != DelayedTarget && (mCommandQueue.FindLastIndex(c => (lastTarget = c as TargetCommand) != null)) == -1)
+            if (Vessel == FlightGlobals.ActiveVessel && FlightGlobals.fetch.VesselTarget != lastTarget.Target)
             {
                 Enqueue(TargetCommand.WithTarget(FlightGlobals.fetch.VesselTarget));
+                UpdateLastTarget();
+            }
+        }
+
+        private void UpdateLastTarget()
+        {
+            int lastTargetIndex = mCommandQueue.FindLastIndex(c => (c is TargetCommand));
+            if (lastTargetIndex >= 0)
+            {
+                lastTarget = mCommandQueue[lastTargetIndex] as TargetCommand;
+            }
+            else if (mActiveCommands.ContainsKey(lastTarget.Priority) &&
+                     mActiveCommands[lastTarget.Priority] is TargetCommand)
+            {
+                lastTarget = mActiveCommands[lastTarget.Priority] as TargetCommand;
+            }
+            else
+            {
+                lastTarget = TargetCommand.WithTarget(null);
             }
         }
 
@@ -218,11 +244,19 @@ namespace RemoteTech.FlightComputer
             DelayedFlightCtrlState dfs = new DelayedFlightCtrlState(fs);
             dfs.TimeStamp += Delay;
             mFlightCtrlQueue.Enqueue(dfs);
+
         }
 
         private void PopFlightCtrl(FlightCtrlState fcs, ISatellite sat)
         {
             FlightCtrlState delayed = new FlightCtrlState();
+
+            // Keep the throttle on no connection
+            if(this.KeepThrottleNoConnect == true)
+            {
+                delayed.mainThrottle = fcs.mainThrottle;
+            }
+
             while (mFlightCtrlQueue.Count > 0 && mFlightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
             {
                 delayed = mFlightCtrlQueue.Dequeue().State;
@@ -277,6 +311,7 @@ namespace RemoteTech.FlightComputer
                             ), true);
                         }
                         mCommandQueue.Remove(dc);
+                        UpdateLastTarget();
                     }
                 }
             }
@@ -302,7 +337,7 @@ namespace RemoteTech.FlightComputer
         {
             if (!SignalProcessor.IsMaster) return;
 
-            if (!InputAllowed)
+            if (!InputAllowed && this.KeepThrottleNoConnect == false)
             {
                 fcs.Neutralize();
             }
@@ -473,6 +508,7 @@ namespace RemoteTech.FlightComputer
                     }
                 }
             }
+            UpdateLastTarget();
         }
 
         /// <summary>
@@ -509,6 +545,56 @@ namespace RemoteTech.FlightComputer
             FlightNode.AddNode(Commands);
 
             n.AddNode(FlightNode);
+        }
+
+        /// <summary>
+        /// Returns true if we've min. one Maneuvercommand on the queue
+        /// </summary>
+        public bool hasManeuverCommands()
+        {
+            if (mCommandQueue.Count <= 0) return false;
+
+            // look for ManeuverCommands
+            var maneuverFound = this.mCommandQueue.Where(command => command is ManeuverCommand).FirstOrDefault();
+            if (maneuverFound == null) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Looks for the passed <paramref name="node"/> on the command
+        /// queue and returns true if the node is already on the list.
+        /// </summary>
+        /// <param name="node">Node to search in the queued commands</param>
+        public bool hasManeuverCommandByNode(ManeuverNode node)
+        {
+            if (mCommandQueue.Count <= 0) return false;
+
+            // look for ManeuverCommands
+            var maneuverFound = this.mCommandQueue.Where(command => (command is ManeuverCommand && ((ManeuverCommand)command).Node == node)).FirstOrDefault();
+            if (maneuverFound == null) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Triggers a CancelCommand for the given <paramref name="node"/>
+        /// </summary>
+        /// <param name="node">Node to cancel from the queue</param>
+        public void removeManeuverCommandByNode(ManeuverNode node)
+        {
+            if (mCommandQueue.Count <= 0) return;
+
+            // look for ManeuverCommands
+            for(int i = this.mCommandQueue.Count-1; i>= 0; i--)
+            {
+                if(this.mCommandQueue[i] is ManeuverCommand && ((ManeuverCommand)this.mCommandQueue[i]).Node == node )
+                {
+                    // remove Node
+                    this.Enqueue(CancelCommand.WithCommand((ManeuverCommand)this.mCommandQueue[i]));
+                    return;
+                }
+            }
         }
     }
 }
