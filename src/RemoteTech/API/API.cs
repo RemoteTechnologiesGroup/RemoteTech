@@ -243,8 +243,11 @@ namespace RemoteTech.API
 			RTLog.Notify ("Trying to remove groundstation {0}", RTLogLevel.API, stationid);
 
             // do not allow to remove the default mission control
-            if (stationid.ToString().Equals("5105f5a9d62841c6ad4b21154e8fc488"))
-                return false;
+			if (stationid.ToString ("N").Equals ("5105f5a9d62841c6ad4b21154e8fc488")) 
+			{
+				RTLog.Notify ("Cannot remove KSC Mission Control!", RTLogLevel.API);
+				return false;
+			}
 
             return RTSettings.Instance.RemoveGroundStation(stationid);
         }
