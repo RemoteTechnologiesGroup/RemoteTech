@@ -125,14 +125,14 @@ namespace RemoteTech.API
 
         public static Guid GetGroundStationGuid(String name)
         {
-            ISatellite groundStation = Array.Find(RTSettings.Instance.GroundStations, s => ((ISatellite)s).Name.Equals(name));
+            MissionControlSatellite groundStation = RTSettings.Instance.GroundStations.Where(station => station.GetName().Equals(name)).FirstOrDefault();
 
             if (groundStation == null)
             {
-                throw new ArgumentException();
+                return Guid.Empty;
             }
 
-            return groundStation.Guid;
+            return groundStation.mGuid;
         }
 
         public static Guid GetCelestialBodyGuid(CelestialBody celestialBody)
@@ -228,6 +228,28 @@ namespace RemoteTech.API
             }
 
             return false;
+        }
+
+		public static Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
+		{
+			RTLog.Notify ("Trying to add groundstation {0}", RTLogLevel.API, name);
+            Guid newStationId = RTSettings.Instance.AddGroundStation(name, latitude, longitude, height, body);
+
+            return newStationId;
+		}
+
+		public static bool RemoveGroundStation(Guid stationid)
+		{
+			RTLog.Notify ("Trying to remove groundstation {0}", RTLogLevel.API, stationid);
+
+            // do not allow to remove the default mission control
+			if (stationid.ToString ("N").Equals ("5105f5a9d62841c6ad4b21154e8fc488")) 
+			{
+				RTLog.Notify ("Cannot remove KSC Mission Control!", RTLogLevel.API);
+				return false;
+			}
+
+            return RTSettings.Instance.RemoveGroundStation(stationid);
         }
     }
 }
