@@ -426,6 +426,12 @@ namespace RemoteTech.UI
             GUILayout.Space(15);
 
             List<String> presetList = this.mSettings.PreSets;
+
+            if(this.mSettings.PreSets.Count <= 0)
+            {
+                GUILayout.Label("- no presets found", this.mGuiRunningText);
+            }
+
             for(int i=presetList.Count-1;i>=0;i--)
             {
                 String FolderName = presetList[i].Replace("/RemoteTechSettings", ".cfg").Trim();

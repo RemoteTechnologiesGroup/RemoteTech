@@ -192,6 +192,7 @@ namespace RemoteTech.API
         //exposed method called by other mods, passing a ConfigNode to RemoteTech
         public static bool QueueCommandToFlightComputer(ConfigNode externalData)
         {
+            if (RTCore.Instance == null) return false;
             //check we were actually passed a config node
             if (externalData == null) return false;
             // check our min values

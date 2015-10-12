@@ -70,7 +70,6 @@ namespace RemoteTech
         [Persistent] public Color RemoteStationColorDot = new Color(0.996078f, 0, 0, 1);
         [Persistent(collectionIndex = "STATION")]
         public List<MissionControlSatellite> GroundStations = new List<MissionControlSatellite>() { new MissionControlSatellite() };
-        //public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
         [Persistent(collectionIndex = "PRESETS")]
         public List<String> PreSets = new List<String>();
 
@@ -202,17 +201,20 @@ namespace RemoteTech
             bool presetsLoaded = false;
             // Prefer to load from GameDatabase, to allow easier user customization
             UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            // find the default_settings from remote tech to load as the first settings
+            UrlDir.UrlConfig defConfig = Array.Find(configList, cl => cl.url.Equals("RemoteTech/Default_Settings/RemoteTechSettings") && !settings.PreSets.Contains(cl.url));
+            if(defConfig != null)
+            {
+                RTLog.Notify("Load default remotetech settings", RTLogLevel.LVL1);
+                settings = Settings.LoadPreset(settings, defConfig);
+            }
+
             foreach (UrlDir.UrlConfig curSet in configList)
             {
                 // only third party files
                 if (!curSet.url.Equals("RemoteTech/RemoteTech_Settings/RemoteTechSettings") && !settings.PreSets.Contains(curSet.url))
                 {
-                    settings.PreSets.Add(curSet.url);
-                    RTLog.Notify("Override RTSettings with configs from {0}", curSet.url);
-                    settings.backupFields();
-                    ConfigNode.LoadObjectFromConfig(settings, curSet.config);
-                    settings.restoreBackups();
-
+                    settings = Settings.LoadPreset(settings, curSet);
                     // trigger to save the settings again
                     presetsLoaded = true;
                 }
@@ -228,6 +230,19 @@ namespace RemoteTech
         }
 
         /// <summary>
+        /// Load a preset config into the remotetech settings object.
+        /// </summary>
+        private static Settings LoadPreset(Settings settings, UrlDir.UrlConfig curSet)
+        {
+            settings.PreSets.Add(curSet.url);
+            RTLog.Notify("Override RTSettings with configs from {0}", curSet.url);
+            settings.backupFields();
+            ConfigNode.LoadObjectFromConfig(settings, curSet.config);
+            settings.restoreBackups();
+
+            return settings;
+        }
+
         /// Adds a new ground station to the list and returns a new guid id for
         /// a successfull new station otherwise a Guid.Empty will be returned.
         /// </summary>

@@ -20,7 +20,7 @@ namespace RemoteTech.SimpleTypes
 
         protected AddOn(string assemblyName, string assemblyType)
         {
-            RTLog.Notify("Connecting with {0} ...", RTLogLevel.Assembly, assemblyName);
+            RTLog.Verbose("Connecting with {0} ...", RTLogLevel.Assembly, assemblyName);
 
             var loadedAssembly = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name.Equals(assemblyName));
             if (loadedAssembly != null)
