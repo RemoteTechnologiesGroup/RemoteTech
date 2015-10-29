@@ -4,6 +4,8 @@ using RemoteTech.SimpleTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WrappedEvent = RemoteTech.FlightComputer.UIPartActionMenuPatcher.WrappedEvent;
+
 
 namespace RemoteTech.API
 {
@@ -250,6 +252,20 @@ namespace RemoteTech.API
 			}
 
             return RTSettings.Instance.RemoveGroundStation(stationid);
+        }
+
+        // this method provides a workaround for issue #437, it may be possible to remove it in the future
+        public static void InvokeOriginalEvent(BaseEvent e)
+        {
+            if (e is WrappedEvent)
+            {
+                WrappedEvent wrappedEvent = e as WrappedEvent;
+                wrappedEvent.InvokeOriginalEvent();
+            }
+            else
+            {
+                e.Invoke();
+            }
         }
     }
 }
