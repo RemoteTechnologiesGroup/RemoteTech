@@ -64,6 +64,22 @@ namespace RemoteTech.FlightComputer
             }
         }
 
+        public class WrappedEvent : BaseEvent
+        {
+            private BaseEvent originalEvent;
+
+            public WrappedEvent(BaseEvent originalEvent, BaseEventList baseParentList, string name, BaseEventDelegate baseActionDelegate)
+                : base(baseParentList, name, baseActionDelegate)
+            {
+                this.originalEvent = originalEvent;
+            }
+
+            public void InvokeOriginalEvent()
+            {
+                originalEvent.Invoke();
+            }
+        }
+
         private class Wrapper
         {
             private Action<BaseEvent, bool> mPassthrough;
@@ -82,7 +98,7 @@ namespace RemoteTech.FlightComputer
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);
                 Wrapper wrapper = new Wrapper(original, passthrough, ignore_delay);
-                BaseEvent new_event = new BaseEvent(original.listParent, original.name, wrapper.Invoke);
+                BaseEvent new_event = new WrappedEvent(original, original.listParent, original.name, wrapper.Invoke);
                 new_event.OnLoad(cn);
 
                 return new_event;
