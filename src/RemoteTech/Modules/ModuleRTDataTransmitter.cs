@@ -46,15 +46,6 @@ namespace RemoteTech.Modules
             return true;
         }
 
-        void IScienceDataTransmitter.TransmitData(List<ScienceData> dataQueue, Callback callback)
-        {
-            scienceDataQueue.AddRange(dataQueue);
-            if (!isBusy)
-            {
-                StartCoroutine(Transmit(callback));
-            }
-        }
-
         float IScienceDataTransmitter.DataRate { get { return PacketSize / PacketInterval; } }
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
         bool IScienceDataTransmitter.IsBusy() { return isBusy; }
@@ -96,7 +87,7 @@ namespace RemoteTech.Modules
                     RTLog.Notify("Changing RnDCommsStream timeout from {0} to {1}", PacketInterval, x64PacketInterval);
 
                     commStream = new RnDCommsStream(subject, scienceData.dataAmount, x64PacketInterval,
-                                            scienceData.transmitValue, ResearchAndDevelopment.Instance);
+                                            scienceData.transmitValue, false, ResearchAndDevelopment.Instance);
                 }
                 //StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
                 float power = 0;
@@ -128,7 +119,6 @@ namespace RemoteTech.Modules
                         msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
                         ScreenMessages.PostScreenMessage(msg, true);
                         GUIStatus = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
-
                     }
                     yield return new WaitForSeconds(PacketInterval);
                 }
