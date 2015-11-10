@@ -1,3 +1,13 @@
+Version 1.6.9
+========================================
+Released November 10, 2015
+
+General
+--------------------
+- KSP 1.0.5 update
+- Small kOS update for invoking events
+
+
 Version 1.6.8
 ========================================
 Released September 12, 2015
