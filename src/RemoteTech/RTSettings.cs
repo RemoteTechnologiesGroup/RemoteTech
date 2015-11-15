@@ -36,6 +36,7 @@ namespace RemoteTech
         [Persistent] public Color DishConnectionColor = XKCDColors.Amber;
         [Persistent] public Color OmniConnectionColor = XKCDColors.BrownGrey;
         [Persistent] public Color ActiveConnectionColor = XKCDColors.ElectricLime;
+        [Persistent] public bool ControlAntennaWithoutConnection = true;
 
         [Persistent(collectionIndex="STATION")]
         public MissionControlSatellite[] GroundStations = new MissionControlSatellite[] { new MissionControlSatellite() };
