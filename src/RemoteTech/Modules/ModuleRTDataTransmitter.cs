@@ -126,6 +126,7 @@ namespace RemoteTech.Modules
             }
             isBusy = false;
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
+            GameEvents.OnTriggeredDataTransmission.Fire(scienceData);
             ScreenMessages.PostScreenMessage(msg, true);
             if (callback != null) callback.Invoke();
             GUIStatus = "Idle";
