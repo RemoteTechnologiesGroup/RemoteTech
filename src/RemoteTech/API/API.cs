@@ -1,5 +1,5 @@
+﻿using RemoteTech.RangeModel;
 ﻿using RemoteTech.Modules;
-using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,12 @@ namespace RemoteTech.API
 {
     public static class API
     {
+        public static bool IsRemoteTechEnabled()
+        {
+            if (RTCore.Instance == null) return true;
+            return false;
+        }
+
         public static bool HasLocalControl(Guid id)
         {
             var vessel = RTUtil.GetVesselById(id);            
@@ -90,6 +96,58 @@ namespace RemoteTech.API
             return antennaModules.Any(m => m.Connected);
         }
 
+        public static Guid GetAntennaTarget(Part part) {
+            ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
+
+            if (module == null)
+            {
+                throw new ArgumentException();
+            }
+
+            return module.Target;
+        }
+
+        public static void SetAntennaTarget(Part part, Guid id) {
+            ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
+
+            if (module == null)
+            {
+                throw new ArgumentException();
+            }
+
+            module.Target = id;
+        }
+
+        public static IEnumerable<string> GetGroundStations()
+        {
+            return RTSettings.Instance.GroundStations.Select(s => ((ISatellite)s).Name);
+        }
+
+        public static Guid GetGroundStationGuid(String name)
+        {
+            MissionControlSatellite groundStation = RTSettings.Instance.GroundStations.Where(station => station.GetName().Equals(name)).FirstOrDefault();
+
+            if (groundStation == null)
+            {
+                return Guid.Empty;
+            }
+
+            return groundStation.mGuid;
+        }
+
+        public static Guid GetCelestialBodyGuid(CelestialBody celestialBody)
+        {
+            return RTUtil.Guid(celestialBody);
+        }
+
+        public static Guid GetNoTargetGuid() {
+            return new Guid(RTSettings.Instance.NoTargetGuid);
+        }
+
+        public static Guid GetActiveVesselGuid() {
+            return new Guid(RTSettings.Instance.ActiveVesselGuid);
+        }
+
         public static double GetShortestSignalDelay(Guid id)
         {
             if (RTCore.Instance == null) return double.PositiveInfinity;
@@ -134,6 +192,7 @@ namespace RemoteTech.API
         //exposed method called by other mods, passing a ConfigNode to RemoteTech
         public static bool QueueCommandToFlightComputer(ConfigNode externalData)
         {
+            if (RTCore.Instance == null) return false;
             //check we were actually passed a config node
             if (externalData == null) return false;
             // check our min values
@@ -169,6 +228,28 @@ namespace RemoteTech.API
             }
 
             return false;
+        }
+
+		public static Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
+		{
+			RTLog.Notify ("Trying to add groundstation {0}", RTLogLevel.API, name);
+            Guid newStationId = RTSettings.Instance.AddGroundStation(name, latitude, longitude, height, body);
+
+            return newStationId;
+		}
+
+		public static bool RemoveGroundStation(Guid stationid)
+		{
+			RTLog.Notify ("Trying to remove groundstation {0}", RTLogLevel.API, stationid);
+
+            // do not allow to remove the default mission control
+			if (stationid.ToString ("N").Equals ("5105f5a9d62841c6ad4b21154e8fc488")) 
+			{
+				RTLog.Notify ("Cannot remove KSC Mission Control!", RTLogLevel.API);
+				return false;
+			}
+
+            return RTSettings.Instance.RemoveGroundStation(stationid);
         }
     }
 }

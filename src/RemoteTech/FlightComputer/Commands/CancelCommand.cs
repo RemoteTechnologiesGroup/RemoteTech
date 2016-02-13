@@ -99,6 +99,7 @@ namespace RemoteTech.FlightComputer.Commands
             ICommand searchCmd = computer.QueuedCommands.Where(cmd => cmd.CmdGuid == cmdGuid).FirstOrDefault();
             if (searchCmd != null)
             {
+                searchCmd.CommandCanceled(computer);
                 computer.Remove(searchCmd);
                 return true;
             }

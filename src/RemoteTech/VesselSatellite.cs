@@ -36,7 +36,7 @@ namespace RemoteTech
 
         public Color MarkColor
         {
-            get { return new Color(0.996078f, 0, 0, 1); }
+            get { return RTSettings.Instance.RemoteStationColorDot; }
         }
 
         public List<ISignalProcessor> SignalProcessors { get; set; }

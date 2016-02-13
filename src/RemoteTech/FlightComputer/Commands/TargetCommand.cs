@@ -26,14 +26,6 @@ namespace RemoteTech.FlightComputer.Commands
         public override bool Pop(FlightComputer f)
         {
             f.DelayedTarget = Target;
-            f.lastTarget = this;
-
-            if (Target != null && Target != FlightGlobals.fetch.VesselTarget)
-            {
-                // Switch the vessels target
-                FlightGlobals.fetch.SetVesselTarget(Target);
-            }
-
             return true;
         }
 

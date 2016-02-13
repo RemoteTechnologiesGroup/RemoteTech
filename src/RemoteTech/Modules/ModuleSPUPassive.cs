@@ -36,8 +36,11 @@ namespace RemoteTech.Modules
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
-                mRegisteredId = vessel.id; 
-                RTCore.Instance.Satellites.Register(vessel, this);
+                mRegisteredId = vessel.id;
+                if(RTCore.Instance != null)
+                {
+                    RTCore.Instance.Satellites.Register(vessel, this);
+                } 
             }
         }
 
@@ -68,7 +71,7 @@ namespace RemoteTech.Modules
 
         public void OnVesselModified(Vessel v)
         {
-            if ((mRegisteredId != vessel.id))
+            if (RTCore.Instance != null && mRegisteredId != vessel.id)
             {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
                 mRegisteredId = vessel.id; 

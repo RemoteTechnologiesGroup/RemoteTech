@@ -27,6 +27,17 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// True if the current running game is a SCENARIO or SCENARIO_NON_RESUMABLE, otherwise false
+        /// </summary>
+        public static bool IsGameScenario
+        {
+            get
+            {
+                return (HighLogic.CurrentGame != null && (HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO || HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO_NON_RESUMABLE));
+            }
+        }
+
         public static readonly String[]
             DistanceUnits = { "", "k", "M", "G", "T" },
             ClassDescripts = {  "Short-Planetary (SP)",
@@ -126,7 +137,16 @@ namespace RemoteTech
 
         public static String FormatConsumption(double consumption)
         {
-            return consumption.ToString("F2") + " charge/s";
+            String timeindicator = "sec";
+
+            if(consumption < 1)
+            {
+                // minutes
+                consumption *= 60;
+                timeindicator = "min";
+            }
+            
+            return String.Format("{0:F2}/{1}.", consumption, timeindicator);
         }
 
         public static String FormatSI(double value, String unit)
@@ -426,26 +446,18 @@ namespace RemoteTech
             return cachedField.Field = getter();
         }
 
-        // Thanks Fractal_UK!
+        
         public static bool IsTechUnlocked(string techid)
         {
             if (techid.Equals("None")) return true;
             try
             {
-                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) return true;
-                string persistentfile = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/persistent.sfs";
-                ConfigNode config = ConfigNode.Load(persistentfile);
-                ConfigNode gameconf = config.GetNode("GAME");
-                ConfigNode[] scenarios = gameconf.GetNodes("SCENARIO");
-                foreach (ConfigNode scenario in scenarios.Where(s=> s.GetValue("name") != "ResearchAndDevelopment"))
-                {
-                    ConfigNode[] techs = scenario.GetNodes("Tech");
-                    if (techs.Any(technode => technode.GetValue("id") == techid))
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                var availablePart = PartLoader.LoadedPartsList.Where(part => part.name.Contains(techid)).First();
+                if (availablePart == null) return false;
+
+                bool researched = ResearchAndDevelopment.PartModelPurchased(availablePart);
+
+                return researched;
             }
             catch (Exception)
             {
