@@ -122,11 +122,11 @@ namespace RemoteTech.Modules
                     }
                     yield return new WaitForSeconds(PacketInterval);
                 }
+                GameEvents.OnTriggeredDataTransmission.Fire(scienceData);
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
             isBusy = false;
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
-            GameEvents.OnTriggeredDataTransmission.Fire(scienceData);
             ScreenMessages.PostScreenMessage(msg, true);
             if (callback != null) callback.Invoke();
             GUIStatus = "Idle";
