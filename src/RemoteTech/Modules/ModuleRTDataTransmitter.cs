@@ -91,7 +91,7 @@ namespace RemoteTech.Modules
                 }
                 //StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
                 float power = 0;
-                while (packets > 0)
+                while (packets > 1)
                 {
                     power += part.RequestResource("ElectricCharge", PacketResourceCost - power);
                     if (power >= PacketResourceCost * 0.95)
