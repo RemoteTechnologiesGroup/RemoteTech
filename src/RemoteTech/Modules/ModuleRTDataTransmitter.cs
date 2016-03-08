@@ -80,7 +80,7 @@ namespace RemoteTech.Modules
                 int packets = Mathf.CeilToInt(scienceData.dataAmount / PacketSize);
                 if (ResearchAndDevelopment.Instance != null)
                 {
-                  // pre calculate the time interval - fix for x64 systems
+                    // pre calculate the time interval - fix for x64 systems
                     // workaround for issue #136
                     float time1 = Time.time;
                     yield return new WaitForSeconds(PacketInterval);
