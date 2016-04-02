@@ -117,7 +117,7 @@ namespace RemoteTech.Modules
                     else
                     {
                         msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
-                        ScreenMessages.PostScreenMessage(msg, true);
+                        ScreenMessages.PostScreenMessage(msg);
                         GUIStatus = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
                     }
                     yield return new WaitForSeconds(PacketInterval);
@@ -126,7 +126,7 @@ namespace RemoteTech.Modules
             }
             isBusy = false;
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
-            ScreenMessages.PostScreenMessage(msg, true);
+            ScreenMessages.PostScreenMessage(msg);
             if (callback != null) callback.Invoke();
             GUIStatus = "Idle";
         }

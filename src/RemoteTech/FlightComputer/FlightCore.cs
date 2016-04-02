@@ -124,7 +124,7 @@ namespace RemoteTech.FlightComputer
         /// <returns>True if there are enough propellant to perform</returns>
         public static bool hasPropellant(System.Collections.Generic.List<Propellant> propellants)
         {
-            if (CheatOptions.InfiniteFuel) return true;
+            if (CheatOptions.InfinitePropellant) return true;
 
             foreach (var props in propellants)
             {

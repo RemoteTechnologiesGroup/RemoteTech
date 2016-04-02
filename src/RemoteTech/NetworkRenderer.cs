@@ -85,7 +85,7 @@ namespace RemoteTech
                     bool showOnMapview = true;
                     var worldPos = ScaledSpace.LocalToScaledSpace(s.Position);
                     if (MapView.MapCamera.transform.InverseTransformPoint(worldPos).z < 0f) continue;
-                    Vector3 pos = MapView.MapCamera.camera.WorldToScreenPoint(worldPos);
+                    Vector3 pos = PlanetariumCamera.Camera.WorldToScreenPoint(worldPos);
                     var screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
 
                     if (s is MissionControlSatellite && RTSettings.Instance.HideGroundStationsBehindBody)
