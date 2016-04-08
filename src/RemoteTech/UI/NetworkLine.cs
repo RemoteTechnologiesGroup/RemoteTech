@@ -62,7 +62,7 @@ namespace RemoteTech.UI
 
         private void UpdateMesh(BidirectionalEdge<ISatellite> edge)
         {
-            var camera = MapView.MapCamera.camera;
+            var camera = PlanetariumCamera.Camera;
 
             var start = camera.WorldToScreenPoint(ScaledSpace.LocalToScaledSpace(edge.A.Position));
             var end = camera.WorldToScreenPoint(ScaledSpace.LocalToScaledSpace(edge.B.Position));

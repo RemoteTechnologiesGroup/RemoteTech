@@ -26,7 +26,7 @@ namespace RemoteTech.Modules
         }
         public FlightComputer.FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel { get { return vessel; } }
-        public bool IsMaster { get { return Satellite != null && Satellite.SignalProcessor == this; } }
+        public bool IsMaster { get { return Satellite != null && (object)Satellite.SignalProcessor == this; } }
 
         private VesselSatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
 

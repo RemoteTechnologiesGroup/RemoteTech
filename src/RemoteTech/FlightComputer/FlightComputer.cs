@@ -279,7 +279,7 @@ namespace RemoteTech.FlightComputer
                         while ((2 * TimeWarp.deltaTime + 1.0) > (Math.Max(dc.TimeStamp - RTUtil.GameTime, 0) + dc.ExtraDelay) && TimeWarp.CurrentRate > 1.0f)
                         {
                             TimeWarp.SetRate(TimeWarp.CurrentRateIndex - 1, true);
-                            ScreenMessages.PostScreenMessage(message, true);
+                            ScreenMessages.PostScreenMessage(message);
                         }
                     }
                 }
@@ -306,8 +306,7 @@ namespace RemoteTech.FlightComputer
                         } else {
                             string message = String.Format ("[Flight Computer]: Out of power, cannot run \"{0}\" on schedule.", dc.ShortName);
                             ScreenMessages.PostScreenMessage(new ScreenMessage(
-                                message, 4.0f, ScreenMessageStyle.UPPER_LEFT
-                            ), true);
+                                message, 4.0f, ScreenMessageStyle.UPPER_LEFT));
                         }
                         mCommandQueue.Remove(dc);
                         UpdateLastTarget();

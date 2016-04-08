@@ -18,8 +18,8 @@ namespace RemoteTech.FlightComputer.Commands
             if (ActionGroup == KSPActionGroup.Stage && !(f.Vessel == FlightGlobals.ActiveVessel && FlightInputHandler.fetch.stageLock))
             {
                 Staging.ActivateNextStage();
-                ResourceDisplay.Instance.Refresh();
-            }
+				KSP.UI.Screens.ResourceDisplay.Instance.Refresh();
+			}
             if (ActionGroup == KSPActionGroup.RCS && f.Vessel == FlightGlobals.ActiveVessel)
             {
                 FlightInputHandler.fetch.rcslock = !FlightInputHandler.RCSLock;
