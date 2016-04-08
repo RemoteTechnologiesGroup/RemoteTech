@@ -7,37 +7,39 @@ namespace RemoteTech.UI
 {
     public class FilterOverlay : IFragment, IDisposable
     {
-        private static class Texture
+        private class Texture
         {
-            public static readonly Texture2D Background;
-            public static readonly Texture2D BackgroundLeft;
-            public static readonly Texture2D NoPath;
-            public static readonly Texture2D Path;
-            public static readonly Texture2D NoOmniDish;
-            public static readonly Texture2D Dish;
-            public static readonly Texture2D Omni;
-            public static readonly Texture2D OmniDish;
-            public static readonly Texture2D NoCone;
-            public static readonly Texture2D Cone;
+			public Texture2D Background;
+			public Texture2D BackgroundLeft;
+			public Texture2D NoPath;
+			public Texture2D Path;
+			public Texture2D NoOmniDish;
+			public Texture2D Dish;
+			public Texture2D Omni;
+			public Texture2D OmniDish;
+			public Texture2D NoCone;
+			public Texture2D Cone;
 
-            static Texture()
-            {
-                RTUtil.LoadImage(out Background, "texBackground.png");
-                RTUtil.LoadImage(out BackgroundLeft, "texBackground_left.png");
-                RTUtil.LoadImage(out NoPath, "texNoPath.png");
-                RTUtil.LoadImage(out Path, "texPath.png");
-                RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish.png");
-                RTUtil.LoadImage(out Dish, "texDish.png");
-                RTUtil.LoadImage(out Omni, "texOmni.png");
-                RTUtil.LoadImage(out OmniDish, "texOmniDish.png");
-                RTUtil.LoadImage(out NoCone, "texNoCone.png");
-                RTUtil.LoadImage(out Cone, "texCone.png");
-            }
-        }
+			public void CreateTextures()
+			{
+				RTUtil.LoadImage(out Background, "texBackground");
+				RTUtil.LoadImage(out BackgroundLeft, "texBackground_left");
+				RTUtil.LoadImage(out NoPath, "texNoPath");
+				RTUtil.LoadImage(out Path, "texPath");
+				RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish");
+				RTUtil.LoadImage(out Dish, "texDish");
+				RTUtil.LoadImage(out Omni, "texOmni");
+				RTUtil.LoadImage(out OmniDish, "texOmniDish");
+				RTUtil.LoadImage(out NoCone, "texNoCone");
+				RTUtil.LoadImage(out Cone, "texCone");
+			}
+		}
 
         private SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
         private AntennaFragment mAntennaFragment = new AntennaFragment(null);
-        private TargetInfoWindow mTargetInfos;
+		private Texture mTextures = new Texture();
+
+		private TargetInfoWindow mTargetInfos;
         private bool mEnabled;
         private bool mShowOverlay = true;
         private bool onTrackingStation { get { return (HighLogic.LoadedScene == GameScenes.TRACKSTATION); } }
@@ -48,44 +50,52 @@ namespace RemoteTech.UI
         public static GUIStyle ButtonRed;
         public static GUIStyle ButtonYellow;
 
-        private Rect Position
+		private static UnityEngine.UI.Image mImg = null;
+
+		private Rect Position
         {
             get
             {
-                int posX = Screen.width - Texture.Background.width;
+				float posX = Screen.width - mTextures.Background.width;
+				float posY = Screen.height - mTextures.Background.height;
 
-                // mirror to the left side on the tracking station
-                if (this.onTrackingStation)
-                {
-                    posX = 200;
-                }
+				// mirror to the left side on the tracking station
+				if (this.onTrackingStation)
+				{
+					// New side bar location checking... if someone finds a better method for this please fix
+					if (mImg == null)
+						mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
 
-                return new Rect(posX,
-                                Screen.height - Texture.Background.height,
-                                Texture.Background.width,
-                                Texture.Background.height);
-            }
+					posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+				}
+
+				return new Rect(posX, posY,
+								mTextures.Background.width,
+								mTextures.Background.height);
+			}
         }
 
         private Rect PositionSatellite
         {
             get
             {
-                var width = 350;
-                var height = 350;
-                var posX = Screen.width - width;
+				float width = 350;
+				float height = 350;
+				float posX = Screen.width - width;
 
-                // mirror to the left side on the tracking station
-                if (this.onTrackingStation)
-                {
-                    posX = 200;
-                }
+				// mirror to the left side on the tracking station
+				if (this.onTrackingStation)
+				{
 
-                return new Rect(posX,
-                                Screen.height - height,
-                                width,
-                                height);
-            }
+					// Same new side bar checking... if someone finds a better method for this please fix
+					if (mImg == null)
+						mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
+					posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+				}
+
+				return new Rect(posX, Screen.height - height,
+								width, height);
+			}
         }
 
         private Rect PositionAntenna
@@ -116,9 +126,9 @@ namespace RemoteTech.UI
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & MapFilter.Path) == MapFilter.Path)
-                    return Texture.Path;
+                    return mTextures.Path;
                 else
-                    return Texture.NoPath;
+                    return mTextures.NoPath;
             }
         }
 
@@ -128,9 +138,9 @@ namespace RemoteTech.UI
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & MapFilter.Cone) == MapFilter.Cone)
-                    return Texture.Cone;
+                    return mTextures.Cone;
                 else
-                    return Texture.NoCone;
+                    return mTextures.NoCone;
             }
         }
 
@@ -140,13 +150,13 @@ namespace RemoteTech.UI
             {
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & (MapFilter.Omni | MapFilter.Dish)) == (MapFilter.Omni | MapFilter.Dish))
-                    return Texture.OmniDish;
+                    return mTextures.OmniDish;
                 else if ((mask & MapFilter.Omni) == MapFilter.Omni)
-                    return Texture.Omni;
+                    return mTextures.Omni;
                 else if ((mask & MapFilter.Dish) == MapFilter.Dish)
-                    return Texture.Dish;
+                    return mTextures.Dish;
                 else
-                    return Texture.NoOmniDish;
+                    return mTextures.NoOmniDish;
             }
         }
 
@@ -177,12 +187,13 @@ namespace RemoteTech.UI
 
         public FilterOverlay()
         {
-            // loading styles
-            Button = GUITextureButtonFactory.CreateFromFilename("texButton.png");
-            ButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray.png");
-            ButtonGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen.png");
-            ButtonRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed.png");
-            ButtonYellow = GUITextureButtonFactory.CreateFromFilename("texButtonYellow.png");
+			// loading styles
+			mTextures.CreateTextures();
+			Button = GUITextureButtonFactory.CreateFromFilename("texButton");
+            ButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray");
+            ButtonGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen");
+            ButtonRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed");
+            ButtonYellow = GUITextureButtonFactory.CreateFromFilename("texButtonYellow");
 
             GameEvents.onPlanetariumTargetChanged.Add(OnChangeTarget);
             GameEvents.onHideUI.Add(OnHideUI);
@@ -296,10 +307,10 @@ namespace RemoteTech.UI
 
             
             // Switch the background from map view to tracking station
-            Texture2D backgroundImage = Texture.Background;
+            Texture2D backgroundImage = mTextures.Background;
             if(this.onTrackingStation)
             {
-                backgroundImage = Texture.BackgroundLeft;
+                backgroundImage = mTextures.BackgroundLeft;
             }
 
             // Draw Toolbar
@@ -338,7 +349,7 @@ namespace RemoteTech.UI
 
         private void OnChangeTarget(MapObject mo)
         {
-            if (mo != null && mo.type == MapObject.MapObjectType.VESSEL)
+            if (mo != null && mo.type == MapObject.ObjectType.Vessel)
             {
                 mSatelliteFragment.Satellite = RTCore.Instance.Satellites[mo.vessel];
             }

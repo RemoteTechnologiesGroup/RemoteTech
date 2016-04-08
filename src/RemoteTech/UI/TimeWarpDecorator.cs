@@ -2,6 +2,7 @@
 using System.Linq;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
+using KSP.UI;
 
 namespace RemoteTech.UI
 {
@@ -11,10 +12,16 @@ namespace RemoteTech.UI
         /// Craped Timewarpobject from stock
         /// </summary>
         private TimeWarp mTimewarpObject;
-        /// <summary>
-        /// Delay-Text style
-        /// </summary>
-        private GUIStyle mTextStyle;
+
+		/// <summary>
+		/// Image for position access
+		/// </summary>
+		private UnityEngine.UI.Image mTimewarpImage;
+
+		/// <summary>
+		/// Delay-Text style
+		/// </summary>
+		private GUIStyle mTextStyle;
 
         /// <summary>
         /// Green Flightcomputer button
@@ -91,9 +98,9 @@ namespace RemoteTech.UI
         
         public TimeWarpDecorator()
         {
-            mFlightButtonGreen = GUITextureButtonFactory.CreateFromFilename("texFlightGreen.png","texFlightGreenOver.png","texFlightGreenDown.png","texFlightGreenOver.png");
-            mFlightButtonYellow = GUITextureButtonFactory.CreateFromFilename("texFlightYellow.png","texFlightYellowOver.png","texFlightYellowDown.png","texFlightYellowOver.png");
-            mFlightButtonRed = GUITextureButtonFactory.CreateFromFilename("texFlightRed.png","texFlightRed.png","texFlightRed.png","texFlightRed.png");
+            mFlightButtonGreen = GUITextureButtonFactory.CreateFromFilename("texFlightGreen","texFlightGreenOver","texFlightGreenDown","texFlightGreenOver");
+            mFlightButtonYellow = GUITextureButtonFactory.CreateFromFilename("texFlightYellow","texFlightYellowOver","texFlightYellowDown","texFlightYellowOver");
+            mFlightButtonRed = GUITextureButtonFactory.CreateFromFilename("texFlightRed","texFlightRed","texFlightRed","texFlightRed");
 
             mFlightButtonGreen.fixedHeight = mFlightButtonGreen.fixedWidth = 0;
             mFlightButtonYellow.fixedHeight = mFlightButtonYellow.fixedWidth = 0;
@@ -105,8 +112,13 @@ namespace RemoteTech.UI
             // Crap timewarp object
             mTimewarpObject = TimeWarp.fetch;
 
-            // objects on this scene?
-            if (mTimewarpObject == null || mTimewarpObject.timeQuadrantTab == null)
+			// Get the image for positioning the decorator
+			GameObject go = GameObject.Find("TimeQuadrant");
+			if (go)
+				mTimewarpImage = go.GetComponent<UnityEngine.UI.Image>();
+
+			// objects on this scene?
+			if (mTimewarpObject == null || mTimewarpObject.timeQuadrantTab == null)
             {
                 // to skip the draw calls
                 mTimewarpObject = null;
@@ -117,11 +129,8 @@ namespace RemoteTech.UI
             mTextStyle = new GUIStyle(text.textStyle);
             mTextStyle.fontSize = (int)(text.textSize * ScreenSafeUI.PixelRatio);
 
-            // Put the draw function to the DrawQueue
-            RenderingManager.AddToPostDrawQueue(0, Draw);
-
             // create the Background
-            RTUtil.LoadImage(out mTexBackground, "TimeQuadrantFcStatus.png");
+            RTUtil.LoadImage(out mTexBackground, "TimeQuadrantFcStatus");
         }
 
         /// <summary>
@@ -133,37 +142,37 @@ namespace RemoteTech.UI
             if (mTimewarpObject == null)
                 return;
 
+			Vector2 screenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
+		
+			float scale = GameSettings.UI_SCALE;
+			float topLeftTotimeQuadrant = Screen.height - (screenCoord.y - (mTimewarpImage.preferredHeight * scale));
+			float texBackgroundHeight = (mTexBackground.height * 0.7f) * scale;
+			float texBackgroundWidth = (mTexBackground.width * 0.8111f) * scale;
 
-            Vector2 screenCoord = ScreenSafeUI.referenceCam.WorldToScreenPoint(mTimewarpObject.timeQuadrantTab.transform.position);
-            float scale = ScreenSafeUI.VerticalRatio * 900.0f / Screen.height;
+			Rect delaytextPosition = new Rect((screenCoord.x + 12.0f) * scale, topLeftTotimeQuadrant + 2 * scale, 50.0f * scale, 20.0f * scale);
 
-            float topLeftTotimeQuadrant = Screen.height - screenCoord.y;
-            float texBackgroundHeight = mTexBackground.height * 0.7f / scale;
-            float texBackgroundWidth = (mTimewarpObject.timeQuadrantTab.renderer.material.mainTexture.width * 0.8111f) / scale;
+			// calc the position under the timewarp object
+			Rect pos = new Rect(screenCoord.x,
+								topLeftTotimeQuadrant,
+								texBackgroundWidth, texBackgroundHeight);
 
+			// draw the image
+			GUI.DrawTexture(pos, mTexBackground);
 
-            Rect delaytextPosition = new Rect(12.0f / scale, topLeftTotimeQuadrant + texBackgroundHeight - 1, 50.0f / scale, 20.0f / scale);
-                        
-            // calc the position under the timewarp object
-            Rect pos = new Rect(mTimewarpObject.transform.position.x,
-                                topLeftTotimeQuadrant + texBackgroundHeight - 3.0f,
-                                texBackgroundWidth, texBackgroundHeight);
+			// draw the delay-text
+			GUI.Label(delaytextPosition, DisplayText, mTextStyle);
 
-            // draw the image
-            GUI.DrawTexture(pos, mTexBackground);
-            // draw the delay-text
-            GUI.Label(delaytextPosition, DisplayText, mTextStyle);
+			// draw the flightcomputer button to the right relative to the delaytext position
+			Rect btnPos = new Rect((pos.x + 130.0f) * scale, topLeftTotimeQuadrant + 2 * scale, 21.0f * scale, 21.0f * scale);
 
-            // draw the flightcomputer button to the right relativ to the delaytext position
-            delaytextPosition.width = 21.0f / scale;
-            delaytextPosition.x += 125 / scale;
-
-            if (GUI.Button(delaytextPosition, "", ButtonStyle))
-            {
-                var satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
-                if (satellite == null || satellite.SignalProcessor.FlightComputer == null) return;
-                satellite.SignalProcessor.FlightComputer.Window.Show();
-            }
-        }
+			GUILayout.BeginArea(btnPos);
+			if (GUILayout.Button("", ButtonStyle))
+			{
+				var satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
+				if (satellite == null || satellite.SignalProcessor.FlightComputer == null) return;
+				satellite.SignalProcessor.FlightComputer.Window.Show();
+			}
+			GUILayout.EndArea();
+		}
     }
 }

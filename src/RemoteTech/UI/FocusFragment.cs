@@ -34,7 +34,7 @@ namespace RemoteTech.UI
                             scaledMovement.name = sat.Name;
                             scaledMovement.transform.parent = ScaledSpace.Instance.transform;
                             scaledMovement.vessel = vessel;
-                            scaledMovement.type = MapObject.MapObjectType.VESSEL;
+                            scaledMovement.type = MapObject.ObjectType.Vessel;
 
                             var success = PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(scaledMovement));
                             PlanetariumCamera.fetch.targets.Remove(scaledMovement);
