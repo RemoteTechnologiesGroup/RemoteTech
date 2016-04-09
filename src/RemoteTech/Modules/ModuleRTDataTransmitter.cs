@@ -122,6 +122,7 @@ namespace RemoteTech.Modules
                     }
                     yield return new WaitForSeconds(PacketInterval);
                 }
+                GameEvents.OnTriggeredDataTransmission.Fire(scienceData, vessel);
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
             isBusy = false;
