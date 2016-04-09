@@ -35,7 +35,7 @@ namespace RemoteTech.UI
 			satellite = RTUtil.LoadImage("texSatellite");
 
 			// New AppLauncher Button instead of floating satellite button
-			var actives = KSP.UI.Screens.ApplicationLauncher.AppScenes.TRACKSTATION;
+			var actives = KSP.UI.Screens.ApplicationLauncher.AppScenes.TRACKSTATION | KSP.UI.Screens.ApplicationLauncher.AppScenes.MAPVIEW;
 			mButton = KSP.UI.Screens.ApplicationLauncher.Instance.AddModApplication(OnButtonDown, OnButtonUp, null, null, null, null, actives, satellite);
 			mButtonImg = mButton.GetComponent<UnityEngine.UI.Image>();
 
