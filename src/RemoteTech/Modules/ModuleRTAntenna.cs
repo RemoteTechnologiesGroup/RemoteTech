@@ -498,12 +498,12 @@ namespace RemoteTech.Modules
             if (vessel == null) return;
             if (!vessel.HoldPhysics && vessel.atmDensity > 0 && MaxQ > 0 && (!this.CanAnimate || this.AnimOpen)) {
                 if (GetDynamicPressure() > MaxQ && GetShieldedState() == false) {
-                    // Express flight clock in stockalike formatting
-                    string timestamp = RTUtil.FormatTimestamp (FlightLogger.met_years, FlightLogger.met_days, 
-                                           FlightLogger.met_hours, FlightLogger.met_mins, FlightLogger.met_secs);
-                    FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.", 
-                        timestamp, part.partInfo.title));
-                    MaxQ = -1.0f;
+					
+					// TODO: Make sure this formatting is correct, the new method isn't tested too well right now.
+					// Express flight clock in stockalike formatting
+					FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.",
+						KSPUtil.dateTimeFormatter.PrintTimeStamp(FlightLogger.met, true, true), part.partInfo.title));
+					MaxQ = -1.0f;
                     part.decouple(0.0f);
                 }
             }

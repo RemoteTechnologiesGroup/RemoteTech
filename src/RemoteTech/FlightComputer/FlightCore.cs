@@ -124,7 +124,7 @@ namespace RemoteTech.FlightComputer
         /// <returns>True if there are enough propellant to perform</returns>
         public static bool hasPropellant(System.Collections.Generic.List<Propellant> propellants)
         {
-            if (CheatOptions.InfiniteFuel) return true;
+            if (CheatOptions.InfinitePropellant) return true;
 
             foreach (var props in propellants)
             {
@@ -194,11 +194,11 @@ namespace RemoteTech.FlightComputer
             normFactor.z = (torque.z != 0 ? momentOfInertia.z / torque.z : 0.0);
             normFactor = SwapYZ(normFactor);
 
-            // Find out the real shorter way to turn were we want to.
-            // Thanks to HoneyFox
+			// Find out the real shorter way to turn were we want to.
+			// Thanks to HoneyFox
 
-            Vector3d tgtLocalUp = vesselReference.transform.rotation.Inverse() * target * Vector3d.forward;
-            Vector3d curLocalUp = Vector3d.up;
+			Vector3d tgtLocalUp = vesselReference.transform.rotation.Inverse() * target * Vector3d.forward;
+			Vector3d curLocalUp = Vector3d.up;
 
             double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
             var rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
@@ -340,7 +340,7 @@ namespace RemoteTech.FlightComputer
         public static Vector3d GetStoppingAngle(Vessel vessel, Vector3d torque)
         {
             var momentOfInertia = GetTrueMoI(vessel);
-            var angularVelocity = Quaternion.Inverse(vessel.transform.rotation) * vessel.rigidbody.angularVelocity;
+            var angularVelocity = Quaternion.Inverse(vessel.transform.rotation) * vessel.angularVelocity;
             var angularMomentum = Vector3d.Scale(angularVelocity, momentOfInertia);
 
             // Adapted from MechJeb master on June 27, 2014

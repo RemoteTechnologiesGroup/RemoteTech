@@ -6,30 +6,21 @@ namespace RemoteTech.SimpleTypes
     public static class GUITextureButtonFactory
     {
 
-        public static GUIStyle CreateFromFilename(String normal)
-        {
-            Texture2D[] tex = new Texture2D[4];
-            RTUtil.LoadImage(out tex[0], normal);
-            RTUtil.LoadImage(out tex[1], normal);
-            RTUtil.LoadImage(out tex[2], normal);
-            RTUtil.LoadImage(out tex[3], normal);
+		// Replaced with new texture handling mechanics.
+		public static GUIStyle CreateFromFilename(String normal)
+		{
+			Texture2D tex = RTUtil.LoadImage(normal);
+			return CreateFromTextures(tex, tex, tex, tex);
+		}
 
-            return CreateFromTextures(tex[0], tex[1], tex[2], tex[3]);
-        }
+		// Replaced with new texture handling mechanics.
+		public static GUIStyle CreateFromFilename(String normal, String hover, String active, String focus)
+		{
+			return CreateFromTextures(RTUtil.LoadImage(normal), RTUtil.LoadImage(hover),
+				RTUtil.LoadImage(active), RTUtil.LoadImage(focus));
+		}
 
-        public static GUIStyle CreateFromFilename(String normal, String hover, String active,
-                                                                               String focus)
-        {
-            Texture2D[] tex = new Texture2D[4];
-            RTUtil.LoadImage(out tex[0], normal);
-            RTUtil.LoadImage(out tex[1], hover);
-            RTUtil.LoadImage(out tex[2], active);
-            RTUtil.LoadImage(out tex[3], focus);
-
-            return CreateFromTextures(tex[0], tex[1], tex[2], tex[3]);
-        }
-
-        private static GUIStyle CreateFromTextures(Texture2D texNormal, Texture2D texHover,
+		private static GUIStyle CreateFromTextures(Texture2D texNormal, Texture2D texHover,
                                                    Texture2D texActive, Texture2D texFocus)
         {
             return new GUIStyle()

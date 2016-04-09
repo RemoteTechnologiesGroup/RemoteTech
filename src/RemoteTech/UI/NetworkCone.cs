@@ -64,7 +64,7 @@ namespace RemoteTech.UI
 
         private void UpdateMesh(Vector3d center, IAntenna dish)
         {
-            var camera = MapView.MapCamera.camera;
+            var camera = PlanetariumCamera.Camera;
 
             Vector3d antennaPos = ScaledSpace.LocalToScaledSpace(RTCore.Instance.Network[dish.Guid].Position);
             Vector3d planetPos = ScaledSpace.LocalToScaledSpace(center);
