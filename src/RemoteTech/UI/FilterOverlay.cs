@@ -305,6 +305,8 @@ namespace RemoteTech.UI
                 backgroundImage = mTextures.BackgroundLeft;
             }
 
+
+            // TODO: Fix scaling issues and reference proper textures
             // Draw Toolbar
             GUILayout.BeginArea(Position, backgroundImage);
             {
@@ -324,13 +326,13 @@ namespace RemoteTech.UI
                     else
                     {
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button(TextureComButton, Button))
+                        if (GUILayout.Button(TextureComButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickCompath();
-                        if (GUILayout.Button(TextureReachButton, Button))
+                        if (GUILayout.Button(TextureReachButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickReach();
-                        if (GUILayout.Button(TextureTypeButton, Button))
+                        if (GUILayout.Button(TextureTypeButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickType();
-                        if (GUILayout.Button("", StyleStatusButton))
+                        if (GUILayout.Button("", StyleStatusButton, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickStatus();
                     }
                 }
