@@ -19,6 +19,7 @@ namespace RemoteTech.UI
             public Texture2D OmniDish;
             public Texture2D NoCone;
             public Texture2D Cone;
+            public Texture2D SatButton;
 
             public void CreateTextures()
             {
@@ -32,6 +33,7 @@ namespace RemoteTech.UI
                 RTUtil.LoadImage(out OmniDish, "texOmniDish");
                 RTUtil.LoadImage(out NoCone, "texNoCone");
                 RTUtil.LoadImage(out Cone, "texCone");
+                RTUtil.LoadImage(out SatButton, "texButtonGray");
             }
         }
 
@@ -306,33 +308,34 @@ namespace RemoteTech.UI
             }
 
 
-            // TODO: Fix scaling issues and reference proper textures
+            // TODO: Fix textures
             // Draw Toolbar
-            GUILayout.BeginArea(Position, backgroundImage);
+            GUI.DrawTexture(Position, backgroundImage);
+            GUILayout.BeginArea(Position);
             {
                 GUILayout.BeginHorizontal();
                 {
                     if (this.onTrackingStation)
                     {
-                        if (GUILayout.Button("", StyleStatusButton, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button("", StyleStatusButton, GUILayout.Width(mTextures.SatButton.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.SatButton.height * GameSettings.UI_SCALE)))
                             OnClickStatus();
-                        if (GUILayout.Button(TextureTypeButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button(TextureTypeButton, Button, GUILayout.Width(mTextures.OmniDish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.OmniDish.height * GameSettings.UI_SCALE)))
                             OnClickType();
-                        if (GUILayout.Button(TextureReachButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button(TextureReachButton, Button, GUILayout.Width(mTextures.Cone.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Cone.height * GameSettings.UI_SCALE)))
                             OnClickReach();
-                        if (GUILayout.Button(TextureComButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button(TextureComButton, Button, GUILayout.Width(mTextures.Path.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Path.height * GameSettings.UI_SCALE)))
                             OnClickCompath();
                     }
                     else
                     {
                         GUILayout.FlexibleSpace();
-                        if (GUILayout.Button(TextureComButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button(TextureComButton, Button, GUILayout.Width(mTextures.Path.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Path.height * GameSettings.UI_SCALE)))
                             OnClickCompath();
-                        if (GUILayout.Button(TextureReachButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button(TextureReachButton, Button, GUILayout.Width(mTextures.Cone.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Cone.height * GameSettings.UI_SCALE)))
                             OnClickReach();
-                        if (GUILayout.Button(TextureTypeButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button(TextureTypeButton, Button, GUILayout.Width(mTextures.OmniDish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.OmniDish.height * GameSettings.UI_SCALE)))
                             OnClickType();
-                        if (GUILayout.Button("", StyleStatusButton, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
+                        if (GUILayout.Button("", StyleStatusButton, GUILayout.Width(mTextures.SatButton.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.SatButton.height * GameSettings.UI_SCALE)))
                             OnClickStatus();
                     }
                 }
