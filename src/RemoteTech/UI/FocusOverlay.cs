@@ -24,12 +24,12 @@ namespace RemoteTech.UI
 				var rect = new Rect(0, 0, 250, 500);
                 if(HighLogic.LoadedSceneIsFlight)
                 {
-                    rect.y = Screen.height - (pos.y * scale);
+                    rect.y = Screen.height - pos.y;
                     rect.x = pos.x - rect.width - 10.0f;
                 }
                 else
                 {
-                    rect.y = Screen.height - (pos.y * scale) - 10.0f - rect.height;
+                    rect.y = Screen.height - pos.y - 10.0f - rect.height;
                     rect.x = pos.x + (mButtonImg.rectTransform.rect.width * scale) - rect.width;
                 }				
 
