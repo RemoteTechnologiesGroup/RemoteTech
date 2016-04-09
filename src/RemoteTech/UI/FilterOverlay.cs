@@ -9,37 +9,37 @@ namespace RemoteTech.UI
     {
         private class Texture
         {
-			public Texture2D Background;
-			public Texture2D BackgroundLeft;
-			public Texture2D NoPath;
-			public Texture2D Path;
-			public Texture2D NoOmniDish;
-			public Texture2D Dish;
-			public Texture2D Omni;
-			public Texture2D OmniDish;
-			public Texture2D NoCone;
-			public Texture2D Cone;
+            public Texture2D Background;
+            public Texture2D BackgroundLeft;
+            public Texture2D NoPath;
+            public Texture2D Path;
+            public Texture2D NoOmniDish;
+            public Texture2D Dish;
+            public Texture2D Omni;
+            public Texture2D OmniDish;
+            public Texture2D NoCone;
+            public Texture2D Cone;
 
-			public void CreateTextures()
-			{
-				RTUtil.LoadImage(out Background, "texBackground");
-				RTUtil.LoadImage(out BackgroundLeft, "texBackground_left");
-				RTUtil.LoadImage(out NoPath, "texNoPath");
-				RTUtil.LoadImage(out Path, "texPath");
-				RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish");
-				RTUtil.LoadImage(out Dish, "texDish");
-				RTUtil.LoadImage(out Omni, "texOmni");
-				RTUtil.LoadImage(out OmniDish, "texOmniDish");
-				RTUtil.LoadImage(out NoCone, "texNoCone");
-				RTUtil.LoadImage(out Cone, "texCone");
-			}
-		}
+            public void CreateTextures()
+            {
+                RTUtil.LoadImage(out Background, "texBackground");
+                RTUtil.LoadImage(out BackgroundLeft, "texBackground_left");
+                RTUtil.LoadImage(out NoPath, "texNoPath");
+                RTUtil.LoadImage(out Path, "texPath");
+                RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish");
+                RTUtil.LoadImage(out Dish, "texDish");
+                RTUtil.LoadImage(out Omni, "texOmni");
+                RTUtil.LoadImage(out OmniDish, "texOmniDish");
+                RTUtil.LoadImage(out NoCone, "texNoCone");
+                RTUtil.LoadImage(out Cone, "texCone");
+            }
+        }
 
         private SatelliteFragment mSatelliteFragment = new SatelliteFragment(null);
         private AntennaFragment mAntennaFragment = new AntennaFragment(null);
-		private Texture mTextures = new Texture();
+        private Texture mTextures = new Texture();
 
-		private TargetInfoWindow mTargetInfos;
+        private TargetInfoWindow mTargetInfos;
         private bool mEnabled;
         private bool mShowOverlay = true;
         private bool onTrackingStation { get { return (HighLogic.LoadedScene == GameScenes.TRACKSTATION); } }
@@ -50,52 +50,49 @@ namespace RemoteTech.UI
         public static GUIStyle ButtonRed;
         public static GUIStyle ButtonYellow;
 
-		private static UnityEngine.UI.Image mImg = null;
+        private static UnityEngine.UI.Image mImg = null;
 
-		private Rect Position
+        private Rect Position
         {
             get
             {
-				float posX = Screen.width - mTextures.Background.width;
-				float posY = Screen.height - mTextures.Background.height;
+                float posX = Screen.width - mTextures.Background.width * GameSettings.UI_SCALE;
+                float posY = Screen.height - mTextures.Background.height * GameSettings.UI_SCALE;
 
-				// mirror to the left side on the tracking station
-				if (this.onTrackingStation)
-				{
-					// New side bar location checking... if someone finds a better method for this please fix
-					if (mImg == null)
-						mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
+                // mirror to the left side on the tracking station
+                if (this.onTrackingStation)
+                {
+                    // New side bar location checking... if someone finds a better method for this please fix
+                    if (mImg == null)
+                        mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
 
-					posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
-				}
+                    posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                }
 
-				return new Rect(posX, posY,
-								mTextures.Background.width,
-								mTextures.Background.height);
-			}
+                return new Rect(posX, posY, mTextures.Background.width * GameSettings.UI_SCALE, mTextures.Background.height * GameSettings.UI_SCALE);
+            }
         }
 
         private Rect PositionSatellite
         {
             get
             {
-				float width = 350;
-				float height = 350;
-				float posX = Screen.width - width;
+                float width = mTextures.Dish.width * GameSettings.UI_SCALE;
+                float height = mTextures.Dish.height * GameSettings.UI_SCALE;
+                float posX = Screen.width - width;
 
-				// mirror to the left side on the tracking station
-				if (this.onTrackingStation)
-				{
+                // mirror to the left side on the tracking station
+                if (this.onTrackingStation)
+                {
 
-					// Same new side bar checking... if someone finds a better method for this please fix
-					if (mImg == null)
-						mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
-					posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
-				}
+                    // Same new side bar checking... if someone finds a better method for this please fix
+                    if (mImg == null)
+                        mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
+                    posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                }
 
-				return new Rect(posX, Screen.height - height,
-								width, height);
-			}
+                return new Rect(posX, Screen.height - height, width, height);
+            }
         }
 
         private Rect PositionAntenna
@@ -103,20 +100,15 @@ namespace RemoteTech.UI
             get
             {
                 var positionSatellite = PositionSatellite;
-                var width = 350;
-                var height = 350;
-                var posX = PositionSatellite.x - width;
+                var posX = positionSatellite.x - positionSatellite.width;
 
                 // mirror to the left side on the tracking station
                 if (this.onTrackingStation)
                 {
-                    posX = PositionSatellite.x + PositionSatellite.width;
+                    posX = positionSatellite.x + positionSatellite.width;
                 }
 
-                return new Rect(posX,
-                                Screen.height - height,
-                                width,
-                                height);
+                return new Rect(posX, Screen.height - positionSatellite.height, positionSatellite.width, positionSatellite.height);
             }
         }
 
@@ -187,9 +179,9 @@ namespace RemoteTech.UI
 
         public FilterOverlay()
         {
-			// loading styles
-			mTextures.CreateTextures();
-			Button = GUITextureButtonFactory.CreateFromFilename("texButton");
+            // loading styles
+            mTextures.CreateTextures();
+            Button = GUITextureButtonFactory.CreateFromFilename("texButton");
             ButtonGray = GUITextureButtonFactory.CreateFromFilename("texButtonGray");
             ButtonGreen = GUITextureButtonFactory.CreateFromFilename("texButtonGreen");
             ButtonRed = GUITextureButtonFactory.CreateFromFilename("texButtonRed");
@@ -202,7 +194,7 @@ namespace RemoteTech.UI
             MapView.OnExitMapView += OnExitMapView;
             /// Add the on mouse over event
             mAntennaFragment.onMouseOverListEntry += showTargetInfo;
-            
+
             WindowAlign targetInfoAlign = WindowAlign.TopLeft;
             if (this.onTrackingStation)
             {
@@ -212,7 +204,7 @@ namespace RemoteTech.UI
 
             /// Create a new Targetinfo window with a fixed position to the antenna fragment
             mTargetInfos = new TargetInfoWindow(PositionAntenna, targetInfoAlign);
-            
+
         }
 
         public void Dispose()
@@ -320,13 +312,13 @@ namespace RemoteTech.UI
                 {
                     if (this.onTrackingStation)
                     {
-                        if (GUILayout.Button("", StyleStatusButton))
+                        if (GUILayout.Button("", StyleStatusButton, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickStatus();
-                        if (GUILayout.Button(TextureTypeButton, Button))
+                        if (GUILayout.Button(TextureTypeButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickType();
-                        if (GUILayout.Button(TextureReachButton, Button))
+                        if (GUILayout.Button(TextureReachButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickReach();
-                        if (GUILayout.Button(TextureComButton, Button))
+                        if (GUILayout.Button(TextureComButton, Button, GUILayout.Width(mTextures.Dish.width * GameSettings.UI_SCALE), GUILayout.Height(mTextures.Dish.height * GameSettings.UI_SCALE)))
                             OnClickCompath();
                     }
                     else

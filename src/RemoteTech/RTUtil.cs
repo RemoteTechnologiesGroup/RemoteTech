@@ -16,15 +16,15 @@ namespace RemoteTech
         /// <summary>This time member is needed to debounce the RepeatButton</summary>
         private static double TimeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? RTUtil.GameTime : 0;
 
-		/// <summary>
-		/// Automatically finds the proper texture directory from the dll location. Assumes the dll is in the proper location of GameData/RemoteTech/Plugins/
-		/// </summary>
-		private static string TextureDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Name + "/Textures/";
+        /// <summary>
+        /// Automatically finds the proper texture directory from the dll location. Assumes the dll is in the proper location of GameData/RemoteTech/Plugins/
+        /// </summary>
+        private static string TextureDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Name + "/Textures/";
 
-		/// <summary>
-		/// Returns the current AssemplyFileVersion from AssemblyInfos.cs
-		/// </summary>
-		public static string Version
+        /// <summary>
+        /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
+        /// </summary>
+        public static string Version
         {
             get
             {
@@ -373,33 +373,33 @@ namespace RemoteTech
                 Screen.height - Input.mousePosition.y));
         }
 
-		// Replaces old manual method with unity style texture loading
-		public static void LoadImage(out Texture2D texture, String fileName)
-		{
-			string str = TextureDirectory + fileName;
-			if (GameDatabase.Instance.ExistsTexture(str))
-				texture = GameDatabase.Instance.GetTexture(str, false);
-			else
-			{
-				UnityEngine.Debug.Log("Cannot Find Texture: " + str);
-				texture = Texture2D.blackTexture;
-			}
-		}
+        // Replaces old manual method with unity style texture loading
+        public static void LoadImage(out Texture2D texture, String fileName)
+        {
+            string str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                texture = GameDatabase.Instance.GetTexture(str, false);
+            else
+            {
+                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
+                texture = Texture2D.blackTexture;
+            }
+        }
 
-		// New method for ease of use
-		public static Texture2D LoadImage(String fileName)
-		{
-			string str = TextureDirectory + fileName;
-			if (GameDatabase.Instance.ExistsTexture(str))
-				return GameDatabase.Instance.GetTexture(str, false);
-			else
-			{
-				UnityEngine.Debug.Log("Cannot Find Texture: " + str);
-				return Texture2D.blackTexture;
-			}
-		}
+        // New method for ease of use
+        public static Texture2D LoadImage(String fileName)
+        {
+            string str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                return GameDatabase.Instance.GetTexture(str, false);
+            else
+            {
+                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
+                return Texture2D.blackTexture;
+            }
+        }
 
-		public static IEnumerable<Transform> FindTransformsWithCollider(Transform input)
+        public static IEnumerable<Transform> FindTransformsWithCollider(Transform input)
         {
             if (input.GetComponent<Collider>() != null)
             {

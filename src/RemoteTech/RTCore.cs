@@ -27,10 +27,10 @@ namespace RemoteTech
         public FocusOverlay FocusOverlay { get; protected set; }
         public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
 
-		// New for handling the F2 GUI Hiding
-		private bool mGUIVisible = true;
+        // New for handling the F2 GUI Hiding
+        private bool mGUIVisible = true;
 
-		public void Start()
+        public void Start()
         {
             if (Instance != null)
             {
@@ -51,11 +51,11 @@ namespace RemoteTech
             FocusOverlay = new FocusOverlay();
             TimeWarpDecorator = new TimeWarpDecorator();
 
-			// Handling new F2 GUI Hiding
-			GameEvents.onShowUI.Add(UIOn);
-			GameEvents.onHideUI.Add(UIOff);
+            // Handling new F2 GUI Hiding
+            GameEvents.onShowUI.Add(UIOn);
+            GameEvents.onHideUI.Add(UIOff);
 
-			FlightUIPatcher.Patch();
+            FlightUIPatcher.Patch();
 
             RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
 
@@ -66,18 +66,18 @@ namespace RemoteTech
             }
         }
 
-		// F2 GUI Hiding functionality
-		public void UIOn()
-		{
-			mGUIVisible = true;
-		}
+        // F2 GUI Hiding functionality
+        public void UIOn()
+        {
+            mGUIVisible = true;
+        }
 
-		public void UIOff()
-		{
-			mGUIVisible = false;
-		}
+        public void UIOff()
+        {
+            mGUIVisible = false;
+        }
 
-		public void Update()
+        public void Update()
         {
             OnFrameUpdate.Invoke();
 
@@ -109,25 +109,25 @@ namespace RemoteTech
             OnPhysicsUpdate.Invoke();
         }
 
-		// Updated for new GUI Draw handling
+        // Updated for new GUI Draw handling
         public void OnGUI()
         {
-			if (!mGUIVisible)
-				return;
+            if (!mGUIVisible)
+                return;
 
-			if (TimeWarpDecorator != null)
-				TimeWarpDecorator.Draw();
+            if (TimeWarpDecorator != null)
+                TimeWarpDecorator.Draw();
 
-			GUI.depth = 0;
-			OnGuiUpdate.Invoke();
+            GUI.depth = 0;
+            OnGuiUpdate.Invoke();
 
-			Action windows = delegate { };
-			foreach (var window in AbstractWindow.Windows.Values)
-			{
-				windows += window.Draw;
-			}
-			windows.Invoke();
-		}
+            Action windows = delegate { };
+            foreach (var window in AbstractWindow.Windows.Values)
+            {
+                windows += window.Draw;
+            }
+            windows.Invoke();
+        }
 
         public void OnDestroy()
         {
@@ -139,11 +139,11 @@ namespace RemoteTech
             if (Satellites != null) Satellites.Dispose();
             if (Antennas != null) Antennas.Dispose();
 
-			// Remove GUI stuff
-			GameEvents.onShowUI.Remove(UIOn);
-			GameEvents.onHideUI.Remove(UIOff);
+            // Remove GUI stuff
+            GameEvents.onShowUI.Remove(UIOn);
+            GameEvents.onHideUI.Remove(UIOff);
 
-			Instance = null;
+            Instance = null;
         }
 
         private void ReleaseLocks()
