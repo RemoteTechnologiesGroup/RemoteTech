@@ -1,5 +1,5 @@
 ﻿using System;
-using RemoteTech.SimpleTypes;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -12,7 +12,14 @@ namespace RemoteTech.UI
 
         private KSP.UI.Screens.ApplicationLauncherButton mButton;
         private UnityEngine.UI.Image mButtonImg;
+        private List<TrackingButton> mTrackButtonListener = new List<TrackingButton>();
 
+        private struct TrackingButton
+        {
+            public UnityEngine.Events.UnityAction<bool> cb;
+            public KSP.UI.Screens.TrackingStationWidget button;
+        }
+ 
         private Rect PositionFrame
         {
             get
@@ -47,8 +54,22 @@ namespace RemoteTech.UI
             mButton = KSP.UI.Screens.ApplicationLauncher.Instance.AddModApplication(OnButtonDown, OnButtonUp, null, null, null, null, actives, satellite);
             mButtonImg = mButton.GetComponent<UnityEngine.UI.Image>();
 
+            // Adds a click listener to all the tracking station objects
+            var TSWList = UnityEngine.Object.FindObjectsOfType<KSP.UI.Screens.TrackingStationWidget>();
+            foreach (var tsw in TSWList)
+            {
+                if(tsw)
+                {
+                    var tb = new TrackingButton();
+                    tb.button = tsw;
+                    tb.cb = (bool st) => { mFocus.setSelection(tb.button.vessel); };
+                    tsw.toggle.onValueChanged.AddListener(tb.cb);
+                    mTrackButtonListener.Add(tb);
+                }                
+            }
+
             MapView.OnEnterMapView += OnEnterMapView;
-            MapView.OnExitMapView += OnExitMapView;
+            MapView.OnExitMapView += OnExitMapView;            
         }
 
         public void Dispose()
@@ -58,6 +79,12 @@ namespace RemoteTech.UI
 
             // Remove button on destroy
             KSP.UI.Screens.ApplicationLauncher.Instance.RemoveModApplication(mButton);
+            foreach (var tb in mTrackButtonListener)
+            {
+                if(tb.button)
+                    tb.button.toggle.onValueChanged.RemoveListener(tb.cb);
+            }
+            mTrackButtonListener.Clear();
         }
 
         public void OnEnterMapView()

@@ -6,15 +6,18 @@ namespace RemoteTech.UI
     public class FocusFragment : IFragment
     {
         private Vector2 mScrollPosition = Vector2.zero;
-        private VesselSatellite mSelection = null;
-
+        private Vessel mSelection = null;
         public void Draw()
         {
             mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, AbstractWindow.Frame);
             {
+               
                 Color pushColor = GUI.contentColor;
                 TextAnchor pushAlign = GUI.skin.button.alignment;
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
+
+                var TSWList = UnityEngine.Object.FindObjectsOfType<KSP.UI.Screens.TrackingStationWidget>();
+
                 foreach (VesselSatellite sat in RTCore.Instance.Satellites)
                 {
                     if ((sat.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(sat.parentVessel)) || FlightGlobals.ActiveVessel == sat.parentVessel)
@@ -23,27 +26,43 @@ namespace RemoteTech.UI
                     }
 
                     String text = sat.Name.Truncate(25);
-                    RTUtil.StateButton(text, mSelection == sat ? 1 : 0, 1, s =>
+                    RTUtil.StateButton(text, mSelection == sat.parentVessel ? 1 : 0, 1, s =>
                     {
-                        mSelection = (s > 0) ? sat : null;
+                        mSelection = (s > 0) ? sat.parentVessel : null;
                         if (mSelection != null)
                         {
-                            Vessel vessel = sat.SignalProcessor.Vessel;
-                            ScaledMovement scaledMovement = new GameObject().AddComponent<ScaledMovement>();
-                            scaledMovement.tgtRef = vessel.transform;
-                            scaledMovement.name = sat.Name;
-                            scaledMovement.transform.parent = ScaledSpace.Instance.transform;
-                            scaledMovement.vessel = vessel;
-                            scaledMovement.type = MapObject.ObjectType.Vessel;
+                            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+                            {
+                                foreach (var tsw in TSWList)
+                                {
+                                    if (tsw.vessel == sat.parentVessel)
+                                    {
+                                        tsw.toggle.isOn = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Vessel vessel = sat.parentVessel;
+                                ScaledMovement scaledMovement = new GameObject().AddComponent<ScaledMovement>();
+                                scaledMovement.tgtRef = vessel.transform;
+                                scaledMovement.name = sat.Name;
+                                scaledMovement.transform.parent = ScaledSpace.Instance.transform;
+                                scaledMovement.vessel = vessel;
+                                scaledMovement.type = MapObject.ObjectType.Vessel;
 
-                            var success = PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(scaledMovement));
-                            PlanetariumCamera.fetch.targets.Remove(scaledMovement);
-                            this.resetTarget();
+                                var success = PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(scaledMovement));
+                                PlanetariumCamera.fetch.targets.Remove(scaledMovement);
+                                this.resetTarget();
+                            }
                         }
                         else
                         {
-                            // go back to the active vessel
-                            PlanetariumCamera.fetch.SetTarget(this.resetTarget());
+                            if (HighLogic.LoadedScene != GameScenes.TRACKSTATION)
+                            {
+                                // go back to the active vessel
+                                PlanetariumCamera.fetch.SetTarget(this.resetTarget());
+                            }                               
                         }
                     });
                 }
@@ -61,6 +80,15 @@ namespace RemoteTech.UI
         {
             // reset the selection set before
             mSelection = null;
+        }
+
+        /// <summary>
+        /// This method sets the selection of the focus overlay.
+        /// Should be called when a tracking station button is clicked
+        /// </summary>
+        public void setSelection(Vessel v)
+        {
+            mSelection = v;
         }
 
         /// <summary>
