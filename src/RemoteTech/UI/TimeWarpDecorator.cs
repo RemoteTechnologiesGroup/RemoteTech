@@ -9,11 +9,6 @@ namespace RemoteTech.UI
     public class TimeWarpDecorator
     {
         /// <summary>
-        /// Craped Timewarpobject from stock
-        /// </summary>
-        private TimeWarp mTimewarpObject;
-
-        /// <summary>
         /// Image for position access
         /// </summary>
         private UnityEngine.UI.Image mTimewarpImage;
@@ -109,8 +104,8 @@ namespace RemoteTech.UI
             mFlightButtonYellow.stretchHeight = mFlightButtonYellow.stretchWidth = true;
             mFlightButtonRed.stretchHeight = mFlightButtonRed.stretchWidth = true;
 
-            // Crap timewarp object
-            mTimewarpObject = TimeWarp.fetch;
+            // create the Background
+            RTUtil.LoadImage(out mTexBackground, "TimeQuadrantFcStatus");
 
             // Get the image for positioning the decorator
             GameObject go = GameObject.Find("TimeQuadrant");
@@ -118,19 +113,17 @@ namespace RemoteTech.UI
                 mTimewarpImage = go.GetComponent<UnityEngine.UI.Image>();
 
             // objects on this scene?
-            if (mTimewarpObject == null || mTimewarpObject.timeQuadrantTab == null)
+            if (mTimewarpImage == null)
             {
-                // to skip the draw calls
-                mTimewarpObject = null;
                 return;
             }
 
-            var text = mTimewarpObject.timeQuadrantTab.transform.FindChild("MET timer").GetComponent<ScreenSafeGUIText>();
-            mTextStyle = new GUIStyle(text.textStyle);
-            mTextStyle.fontSize = (int)(text.textSize * ScreenSafeUI.PixelRatio);
-
-            // create the Background
-            RTUtil.LoadImage(out mTexBackground, "TimeQuadrantFcStatus");
+            if(TimeWarp.fetch != null && TimeWarp.fetch.timeQuadrantTab != null)
+            {
+                var text = TimeWarp.fetch.timeQuadrantTab.transform.FindChild("MET timer").GetComponent<ScreenSafeGUIText>();
+                mTextStyle = new GUIStyle(text.textStyle);
+                mTextStyle.fontSize = (int)(text.textSize * ScreenSafeUI.PixelRatio);
+            }         
         }
 
         /// <summary>
@@ -139,7 +132,7 @@ namespace RemoteTech.UI
         public void Draw()
         {
             // no drawing without timewarp object
-            if (mTimewarpObject == null)
+            if (mTimewarpImage == null)
                 return;
 
             Vector2 screenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
