@@ -40,7 +40,7 @@ namespace RemoteTech.Modules
         {
             scienceDataQueue.ForEach(d => d.Save(node.AddNode("CommsData")));
         }
-       
+
         bool IScienceDataTransmitter.CanTransmit()
         {
             return true;
@@ -73,7 +73,10 @@ namespace RemoteTech.Modules
                 var scienceData = scienceDataQueue[0];
                 var dataAmount = scienceData.dataAmount;
                 scienceDataQueue.RemoveAt(0);
+                scienceData.triggered = true;
                 var subject = ResearchAndDevelopment.GetSubjectByID(scienceData.subjectID);
+                if (subject == null)
+                    subject = new ScienceSubject("", "", 1, 0, 0);
                 int packets = Mathf.CeilToInt(scienceData.dataAmount / PacketSize);
                 if (ResearchAndDevelopment.Instance != null)
                 {
@@ -122,6 +125,7 @@ namespace RemoteTech.Modules
                     }
                     yield return new WaitForSeconds(PacketInterval);
                 }
+                GameEvents.OnTriggeredDataTransmission.Fire(scienceData, vessel, false);
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
             isBusy = false;
