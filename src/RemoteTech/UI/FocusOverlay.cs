@@ -6,63 +6,58 @@ namespace RemoteTech.UI
 {
     public class FocusOverlay : IFragment, IDisposable
     {
-        private static class Texture
-        {
-            public static readonly Texture2D Satellite;
-
-            static Texture()
-            {
-                RTUtil.LoadImage(out Satellite, "texSatellite.png");
-            }
-        }
-        
         private FocusFragment mFocus = new FocusFragment();
-        private bool mEnabled;
-        private bool mShowOverlay = true;
-        public static GUIStyle Button;
+        private bool mShowOverlay = false;
+        private Texture2D satellite;
 
-        private Rect PositionButton
-        {
-            get
-            {
-                if (!KnowledgeBase.Instance) return new Rect(0, 0, 0, 0);
-                var position = KnowledgeBase.Instance.KnowledgeContainer.transform.position;
-                var position2 = UIManager.instance.rayCamera.WorldToScreenPoint(position);
-                var rect = new Rect(position2.x + 154,
-                                250 - 1 * 31,
-                                Texture.Satellite.width,
-                                Texture.Satellite.height);
-                return rect;
-            }
-        }
+        private KSP.UI.Screens.ApplicationLauncherButton mButton;
+        private UnityEngine.UI.Image mButtonImg;
 
         private Rect PositionFrame
         {
             get
             {
+                float scale = GameSettings.UI_SCALE;
+
+                var pos = KSP.UI.UIMainCamera.Camera.WorldToScreenPoint(mButtonImg.rectTransform.position);
+
                 var rect = new Rect(0, 0, 250, 500);
-                rect.y = PositionButton.y;
-                rect.x = PositionButton.x - 5 - rect.width;
+                if (HighLogic.LoadedSceneIsFlight)
+                {
+                    rect.y = Screen.height - pos.y;
+                    rect.x = pos.x - rect.width - 10.0f;
+                }
+                else
+                {
+                    rect.y = Screen.height - pos.y - 10.0f - rect.height;
+                    rect.x = pos.x + (mButtonImg.rectTransform.rect.width * scale) - rect.width;
+                }
+
                 return rect;
             }
         }
 
         public FocusOverlay()
         {
-            Button = GUITextureButtonFactory.CreateFromFilename("texKnowledgeNormal.png", "texKnowledgeHover.png", "texKnowledgeActive.png", "texKnowledgeHover.png");
+            // Load texture on create, removal of the old Textures class
+            satellite = RTUtil.LoadImage("texSatellite");
+
+            // New AppLauncher Button instead of floating satellite button
+            var actives = KSP.UI.Screens.ApplicationLauncher.AppScenes.TRACKSTATION | KSP.UI.Screens.ApplicationLauncher.AppScenes.MAPVIEW;
+            mButton = KSP.UI.Screens.ApplicationLauncher.Instance.AddModApplication(OnButtonDown, OnButtonUp, null, null, null, null, actives, satellite);
+            mButtonImg = mButton.GetComponent<UnityEngine.UI.Image>();
 
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
-            GameEvents.onHideUI.Add(OnHideUI);
-            GameEvents.onShowUI.Add(OnShowUI);
         }
 
         public void Dispose()
         {
             MapView.OnEnterMapView -= OnEnterMapView;
             MapView.OnExitMapView -= OnExitMapView;
-            GameEvents.onHideUI.Remove(OnHideUI);
-            GameEvents.onShowUI.Remove(OnShowUI);
+
+            // Remove button on destroy
+            KSP.UI.Screens.ApplicationLauncher.Instance.RemoveModApplication(mButton);
         }
 
         public void OnEnterMapView()
@@ -76,36 +71,27 @@ namespace RemoteTech.UI
             RTCore.Instance.OnGuiUpdate -= Draw;
         }
 
-        private void OnHideUI()
+        // Button states for applauncher
+        private void OnButtonUp()
         {
             mShowOverlay = false;
         }
 
-        private void OnShowUI()
+        private void OnButtonDown()
         {
             mShowOverlay = true;
         }
 
+        // Fixed drawing mechanics
         public void Draw()
         {
             if (!mShowOverlay) return;
-            GUI.depth = 0;
-            GUI.skin = HighLogic.Skin;
 
-            GUILayout.BeginArea(PositionButton);
+            GUILayout.BeginArea(PositionFrame);
             {
-                mEnabled = GUILayout.Toggle(mEnabled, Texture.Satellite, Button);
+                mFocus.Draw();
             }
             GUILayout.EndArea();
-
-            if (mEnabled)
-            {
-                GUILayout.BeginArea(PositionFrame);
-                {
-                    mFocus.Draw();
-                }
-                GUILayout.EndArea();
-            }
         }
     }
 }

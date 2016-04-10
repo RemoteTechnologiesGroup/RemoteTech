@@ -124,7 +124,7 @@ namespace RemoteTech.FlightComputer
         /// <returns>True if there are enough propellant to perform</returns>
         public static bool hasPropellant(System.Collections.Generic.List<Propellant> propellants)
         {
-            if (CheatOptions.InfiniteFuel) return true;
+            if (CheatOptions.InfinitePropellant) return true;
 
             foreach (var props in propellants)
             {
@@ -221,7 +221,7 @@ namespace RemoteTech.FlightComputer
             err.Scale(normFactor);
 
             // angular velocity:
-            Vector3d omega = SwapYZ(vessel.angularVelocity);
+            Vector3d omega = SwapYZ(vessel.GetComponent<Rigidbody>().angularVelocity);
             omega.Scale(normFactor);
 
             Vector3d pidAction = fc.pid.Compute(err, omega);
@@ -340,7 +340,7 @@ namespace RemoteTech.FlightComputer
         public static Vector3d GetStoppingAngle(Vessel vessel, Vector3d torque)
         {
             var momentOfInertia = GetTrueMoI(vessel);
-            var angularVelocity = Quaternion.Inverse(vessel.transform.rotation) * vessel.rigidbody.angularVelocity;
+            var angularVelocity = Quaternion.Inverse(vessel.transform.rotation) * vessel.GetComponent<Rigidbody>().angularVelocity;
             var angularMomentum = Vector3d.Scale(angularVelocity, momentOfInertia);
 
             // Adapted from MechJeb master on June 27, 2014
