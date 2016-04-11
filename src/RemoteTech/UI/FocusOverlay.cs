@@ -12,9 +12,9 @@ namespace RemoteTech.UI
 
         private KSP.UI.Screens.ApplicationLauncherButton mButton;
         private UnityEngine.UI.Image mButtonImg;
-        private List<TrackingButton> mTrackButtonListener = new List<TrackingButton>();
+        public List<TrackingButton> mTrackButtonListener = new List<TrackingButton>();
 
-        private struct TrackingButton
+        public struct TrackingButton
         {
             public UnityEngine.Events.UnityAction<bool> cb;
             public KSP.UI.Screens.TrackingStationWidget button;
@@ -44,6 +44,36 @@ namespace RemoteTech.UI
             }
         }
 
+        public void RebuildTrackingListeners()
+        {
+            // Remove and clear just in case
+            RemoveTrackingListeners();
+
+            // Adds a click listener to all the tracking station objects
+            var TSWList = UnityEngine.Object.FindObjectsOfType<KSP.UI.Screens.TrackingStationWidget>();
+            foreach (var tsw in TSWList)
+            {
+                if (tsw)
+                {
+                    var tb = new TrackingButton();
+                    tb.button = tsw;
+                    tb.cb = (bool st) => { mFocus.setSelection(tb.button.vessel); };
+                    tsw.toggle.onValueChanged.AddListener(tb.cb);
+                    mTrackButtonListener.Add(tb);
+                }
+            }
+        }
+
+        public void RemoveTrackingListeners()
+        {
+            foreach (var tb in mTrackButtonListener)
+            {
+                if (tb.button)
+                    tb.button.toggle.onValueChanged.RemoveListener(tb.cb);
+            }
+            mTrackButtonListener.Clear();
+        }
+
         public FocusOverlay()
         {
             // Load texture on create, removal of the old Textures class
@@ -54,22 +84,10 @@ namespace RemoteTech.UI
             mButton = KSP.UI.Screens.ApplicationLauncher.Instance.AddModApplication(OnButtonDown, OnButtonUp, null, null, null, null, actives, satellite);
             mButtonImg = mButton.GetComponent<UnityEngine.UI.Image>();
 
-            // Adds a click listener to all the tracking station objects
-            var TSWList = UnityEngine.Object.FindObjectsOfType<KSP.UI.Screens.TrackingStationWidget>();
-            foreach (var tsw in TSWList)
-            {
-                if(tsw)
-                {
-                    var tb = new TrackingButton();
-                    tb.button = tsw;
-                    tb.cb = (bool st) => { mFocus.setSelection(tb.button.vessel); };
-                    tsw.toggle.onValueChanged.AddListener(tb.cb);
-                    mTrackButtonListener.Add(tb);
-                }                
-            }
+            RebuildTrackingListeners();
 
             MapView.OnEnterMapView += OnEnterMapView;
-            MapView.OnExitMapView += OnExitMapView;            
+            MapView.OnExitMapView += OnExitMapView;
         }
 
         public void Dispose()
@@ -79,23 +97,53 @@ namespace RemoteTech.UI
 
             // Remove button on destroy
             KSP.UI.Screens.ApplicationLauncher.Instance.RemoveModApplication(mButton);
-            foreach (var tb in mTrackButtonListener)
-            {
-                if(tb.button)
-                    tb.button.toggle.onValueChanged.RemoveListener(tb.cb);
-            }
-            mTrackButtonListener.Clear();
+            RemoveTrackingListeners();
+        }
+
+        // Rebuilds the tracking buttons only when a vessel is removed/terminated/recovered
+        // Feels really hacky tracking button fix - find better solution
+        public void Update()
+        {
+            RebuildTrackingListeners();
+            RTCore.Instance.OnFrameUpdate -= Update;
+        }
+       
+        public void OnVDestroy(Vessel v)
+        {
+            RTCore.Instance.OnFrameUpdate += Update;
+        }
+        public void OnVRecover(ProtoVessel v, bool t)
+        {
+            RTCore.Instance.OnFrameUpdate += Update;
+        }
+        public void OnVTerminate(ProtoVessel v)
+        {
+            RTCore.Instance.OnFrameUpdate += Update;
         }
 
         public void OnEnterMapView()
         {
             RTCore.Instance.OnGuiUpdate += Draw;
             mFocus.resetSelection();
+
+            if(HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+            {
+                GameEvents.onVesselRecovered.Add(OnVRecover);
+                GameEvents.onVesselDestroy.Add(OnVDestroy);
+                GameEvents.onVesselTerminated.Add(OnVTerminate);
+            }            
         }
 
         public void OnExitMapView()
         {
             RTCore.Instance.OnGuiUpdate -= Draw;
+
+            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+            {
+                GameEvents.onVesselRecovered.Remove(OnVRecover);
+                GameEvents.onVesselDestroy.Remove(OnVDestroy);
+                GameEvents.onVesselTerminated.Remove(OnVTerminate);
+            }            
         }
 
         // Button states for applauncher
