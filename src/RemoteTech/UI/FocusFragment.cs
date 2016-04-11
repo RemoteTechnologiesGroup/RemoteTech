@@ -7,6 +7,8 @@ namespace RemoteTech.UI
     {
         private Vector2 mScrollPosition = Vector2.zero;
         private Vessel mSelection = null;
+        private Vessel mLastVessel = null;
+
         public void Draw()
         {
             mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, AbstractWindow.Frame);
@@ -54,6 +56,20 @@ namespace RemoteTech.UI
                                 var success = PlanetariumCamera.fetch.SetTarget(PlanetariumCamera.fetch.AddTarget(scaledMovement));
                                 PlanetariumCamera.fetch.targets.Remove(scaledMovement);
                                 this.resetTarget();
+
+                                if(mLastVessel != vessel)
+                                {
+                                    if(mLastVessel)
+                                    {
+                                        mLastVessel.DetachPatchedConicsSolver();
+                                        mLastVessel.orbitRenderer.isFocused = false;
+                                    }                                    
+
+                                    vessel.AttachPatchedConicsSolver();
+                                    vessel.orbitRenderer.isFocused = true;
+                                    vessel.orbitRenderer.drawIcons = OrbitRenderer.DrawIcons.OBJ;
+                                    mLastVessel = vessel;
+                                }
                             }
                         }
                         else
