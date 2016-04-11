@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -110,15 +111,15 @@ namespace RemoteTech.UI
        
         public void OnVDestroy(Vessel v)
         {
-            RTCore.Instance.OnFrameUpdate += Update;
+            RTCore.Instance.AddOnceOnFrameUpdate(Update);
         }
         public void OnVRecover(ProtoVessel v, bool t)
         {
-            RTCore.Instance.OnFrameUpdate += Update;
+            RTCore.Instance.AddOnceOnFrameUpdate(Update);
         }
         public void OnVTerminate(ProtoVessel v)
         {
-            RTCore.Instance.OnFrameUpdate += Update;
+            RTCore.Instance.AddOnceOnFrameUpdate(Update);
         }
 
         public void OnEnterMapView()
