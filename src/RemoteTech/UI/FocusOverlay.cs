@@ -111,15 +111,18 @@ namespace RemoteTech.UI
        
         public void OnVDestroy(Vessel v)
         {
-            RTCore.Instance.AddOnceOnFrameUpdate(Update);
+            if(HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+                RTCore.Instance.AddOnceOnFrameUpdate(Update);
         }
         public void OnVRecover(ProtoVessel v, bool t)
         {
-            RTCore.Instance.AddOnceOnFrameUpdate(Update);
+            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+                RTCore.Instance.AddOnceOnFrameUpdate(Update);
         }
         public void OnVTerminate(ProtoVessel v)
         {
-            RTCore.Instance.AddOnceOnFrameUpdate(Update);
+            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+                RTCore.Instance.AddOnceOnFrameUpdate(Update);
         }
 
         public void OnEnterMapView()
@@ -127,24 +130,18 @@ namespace RemoteTech.UI
             RTCore.Instance.OnGuiUpdate += Draw;
             mFocus.resetSelection();
 
-            if(HighLogic.LoadedScene == GameScenes.TRACKSTATION)
-            {
-                GameEvents.onVesselRecovered.Add(OnVRecover);
-                GameEvents.onVesselDestroy.Add(OnVDestroy);
-                GameEvents.onVesselTerminated.Add(OnVTerminate);
-            }            
+            GameEvents.onVesselRecovered.Add(OnVRecover);
+            GameEvents.onVesselDestroy.Add(OnVDestroy);
+            GameEvents.onVesselTerminated.Add(OnVTerminate);
         }
 
         public void OnExitMapView()
         {
             RTCore.Instance.OnGuiUpdate -= Draw;
 
-            if (HighLogic.LoadedScene == GameScenes.TRACKSTATION)
-            {
-                GameEvents.onVesselRecovered.Remove(OnVRecover);
-                GameEvents.onVesselDestroy.Remove(OnVDestroy);
-                GameEvents.onVesselTerminated.Remove(OnVTerminate);
-            }            
+            GameEvents.onVesselRecovered.Remove(OnVRecover);
+            GameEvents.onVesselDestroy.Remove(OnVDestroy);
+            GameEvents.onVesselTerminated.Remove(OnVTerminate);
         }
 
         // Button states for applauncher
