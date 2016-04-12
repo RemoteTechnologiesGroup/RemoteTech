@@ -23,6 +23,13 @@ namespace RemoteTech
         public event Action OnPhysicsUpdate = delegate { };
         public event Action OnGuiUpdate = delegate { };
 
+        // Prevent duplicate calls
+        public void AddOnceOnFrameUpdate(Action d)
+        {
+            if (!Instance.OnFrameUpdate.GetInvocationList().Contains(d))
+                Instance.OnFrameUpdate += d;
+        }
+
         public FilterOverlay FilterOverlay { get; protected set; }
         public FocusOverlay FocusOverlay { get; protected set; }
         public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
