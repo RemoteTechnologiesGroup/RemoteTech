@@ -1,3 +1,14 @@
+Version 1.6.10
+========================================
+Released April 12, 2016
+
+General
+--------------------
+
+- KSP 1.1.0 update
+- Science transmission fixed
+
+
 Version 1.6.9
 ========================================
 Released November 10, 2015
