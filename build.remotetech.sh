@@ -4,6 +4,8 @@ SRCDIR=src/RemoteTech
 
 if [ ! -f "$SRCDIR/Assembly-CSharp-firstpass.dll" ] \
    || [ ! -f "$SRCDIR/Assembly-CSharp.dll" ] \
+   || [ ! -f "$SRCDIR/KSPUtil.dll" ] \
+   || [ ! -f "$SRCDIR/UnityEngine.UI.dll" ] \
    || [ ! -f "$SRCDIR/UnityEngine.dll" ];
 then
    if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ]; then
@@ -14,7 +16,7 @@ then
 
    if [[ ! -f dlls.zip ]]; then
       echo "Need to get dependency .dll's"
-      wget -O dlls.zip "https://www.dropbox.com/s/ubryvrhp2mzkyvl/dll_1.05.zip?dl=1"
+      wget -O dlls.zip "https://docs.google.com/a/atteo.com/uc?authuser=0&id=0B7ey9r52itVxUVB3eWxpTDhpWlk&export=download"
    fi
    
    if [ -z "$ZIPPASSWORD" ]; then
