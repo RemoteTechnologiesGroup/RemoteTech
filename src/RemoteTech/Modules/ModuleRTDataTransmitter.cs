@@ -40,7 +40,7 @@ namespace RemoteTech.Modules
         {
             scienceDataQueue.ForEach(d => d.Save(node.AddNode("CommsData")));
         }
-       
+
         bool IScienceDataTransmitter.CanTransmit()
         {
             return true;
@@ -73,7 +73,10 @@ namespace RemoteTech.Modules
                 var scienceData = scienceDataQueue[0];
                 var dataAmount = scienceData.dataAmount;
                 scienceDataQueue.RemoveAt(0);
+                scienceData.triggered = true;
                 var subject = ResearchAndDevelopment.GetSubjectByID(scienceData.subjectID);
+                if (subject == null)
+                    subject = new ScienceSubject("", "", 1, 0, 0);
                 int packets = Mathf.CeilToInt(scienceData.dataAmount / PacketSize);
                 if (ResearchAndDevelopment.Instance != null)
                 {
@@ -106,7 +109,7 @@ namespace RemoteTech.Modules
                         msgStatus.message = String.Format("[{0}]: Uploading Data... {1}", part.partInfo.title, progress.ToString("P0"));
                         RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
                             scienceData.title, (PacketSize / PacketInterval).ToString("0.00"), packets, scienceDataQueue.Count);
-                        ScreenMessages.PostScreenMessage(msgStatus, true);
+                        ScreenMessages.PostScreenMessage(msgStatus);
 
                         // if we've a defined callback parameter so skip to stream each packet
                         if (commStream != null && callback == null)
@@ -117,16 +120,17 @@ namespace RemoteTech.Modules
                     else
                     {
                         msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
-                        ScreenMessages.PostScreenMessage(msg, true);
+                        ScreenMessages.PostScreenMessage(msg);
                         GUIStatus = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
                     }
                     yield return new WaitForSeconds(PacketInterval);
                 }
+                GameEvents.OnTriggeredDataTransmission.Fire(scienceData, vessel, false);
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
             isBusy = false;
             msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
-            ScreenMessages.PostScreenMessage(msg, true);
+            ScreenMessages.PostScreenMessage(msg);
             if (callback != null) callback.Invoke();
             GUIStatus = "Idle";
         }

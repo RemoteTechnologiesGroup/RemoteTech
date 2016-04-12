@@ -15,6 +15,12 @@ namespace RemoteTech
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
         /// <summary>This time member is needed to debounce the RepeatButton</summary>
         private static double TimeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? RTUtil.GameTime : 0;
+
+        /// <summary>
+        /// Automatically finds the proper texture directory from the dll location. Assumes the dll is in the proper location of GameData/RemoteTech/Plugins/
+        /// </summary>
+        private static string TextureDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Name + "/Textures/";
+
         /// <summary>
         /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
         /// </summary>
@@ -367,41 +373,35 @@ namespace RemoteTech
                 Screen.height - Input.mousePosition.y));
         }
 
+        // Replaces old manual method with unity style texture loading
         public static void LoadImage(out Texture2D texture, String fileName)
         {
-            try 
+            string str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                texture = GameDatabase.Instance.GetTexture(str, false);
+            else
             {
-                Assembly myAssembly = Assembly.GetExecutingAssembly();
-                Stream resStream = myAssembly.GetManifestResourceStream("RemoteTech.Resources." + fileName);
-
-                if (resStream.Length <= 0) {
-                    RTLog.Notify("LoadImageFromRessource({0}) failed", fileName);
-                    throw new Exception("No ImageRessource found");
-                }
-
-                RTLog.Notify("LoadImageFromRessource({0}) success", fileName);
-                // create a byte array from the stream ressource
-                var imageStream = new byte[resStream.Length];
-                resStream.Read(imageStream, 0, (int)resStream.Length);
-                // apply the image stream to a new Texture2D object
-                texture = new Texture2D(4, 4, TextureFormat.ARGB32, false);
-                texture.LoadImage(imageStream);
-
-                //TODO: this is unused
-                imageStream = null;
-                resStream.Close();
+                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
+                texture = Texture2D.blackTexture;
             }
-            catch (Exception)
+        }
+
+        // New method for ease of use
+        public static Texture2D LoadImage(String fileName)
+        {
+            string str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                return GameDatabase.Instance.GetTexture(str, false);
+            else
             {
-                texture = new Texture2D(32, 32);
-                texture.SetPixels32(Enumerable.Repeat((Color32) Color.magenta, 32 * 32).ToArray());
-                texture.Apply();
+                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
+                return Texture2D.blackTexture;
             }
         }
 
         public static IEnumerable<Transform> FindTransformsWithCollider(Transform input)
         {
-            if (input.collider != null)
+            if (input.GetComponent<Collider>() != null)
             {
                 yield return input;
             }
@@ -491,7 +491,7 @@ namespace RemoteTech
 
             if (MapView.MapIsEnabled) {
                 //Use Scaled camera and don't attempt physics raycast if in map view.
-                Ray ray = ScaledCamera.Instance.camera.ScreenPointToRay(Input.mousePosition);
+                Ray ray = ScaledCamera.Instance.galaxyCamera.ScreenPointToRay(Input.mousePosition);
                 origin = ScaledSpace.ScaledToLocalSpace(ray.origin);
                 dir = ray.direction.normalized;
             } else {

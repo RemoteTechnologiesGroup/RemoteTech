@@ -1,9 +1,11 @@
 ModuleManager
 =============
 
+
 Original (c) from Ialdabaoth ( https://github.com/Ialdabaoth )
 
 Modified by // Modifications by // Maintained by sarbian ( https://github.com/sarbian )
+
 
 The original licence requirement was:
 
@@ -16,6 +18,15 @@ under a CC share-alike license. Anyone is free to do anything they like with Mod
 
 ---
 
+
 THIS IS NOT THE ORIGINAL MODULEMANAGER CODE.
 
 Do not bother Ialdabaoth about any problems with it.
+
+## Dependencies
+
+- mono resgen2
+  - Fedora: `sudo dnf install mono-devel`
+- Mono C# Compiler
+  - Fedora: `sudo ln -s /usr/bin/mcs /usr/bin/gmcs`
+

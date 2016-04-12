@@ -157,7 +157,7 @@ namespace RemoteTech.FlightComputer
         private bool Turn(RemoteTech.FlightComputer.Commands.DriveCommand dc, FlightCtrlState fs)
         {
             Delta = Math.Abs(Quaternion.Angle(mRoverRot, mVessel.ReferenceTransform.rotation));
-            DeltaT = Delta / mVessel.angularVelocity.magnitude;
+            DeltaT = Delta / mVessel.GetComponent<Rigidbody>().angularVelocity.magnitude;
             if (Delta < dc.target) {
                 fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
                 fs.wheelSteer = dc.steering;

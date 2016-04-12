@@ -23,9 +23,19 @@ namespace RemoteTech
         public event Action OnPhysicsUpdate = delegate { };
         public event Action OnGuiUpdate = delegate { };
 
+        // Prevent duplicate calls
+        public void AddOnceOnFrameUpdate(Action d)
+        {
+            if (!Instance.OnFrameUpdate.GetInvocationList().Contains(d))
+                Instance.OnFrameUpdate += d;
+        }
+
         public FilterOverlay FilterOverlay { get; protected set; }
         public FocusOverlay FocusOverlay { get; protected set; }
         public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
+
+        // New for handling the F2 GUI Hiding
+        private bool mGUIVisible = true;
 
         public void Start()
         {
@@ -48,6 +58,10 @@ namespace RemoteTech
             FocusOverlay = new FocusOverlay();
             TimeWarpDecorator = new TimeWarpDecorator();
 
+            // Handling new F2 GUI Hiding
+            GameEvents.onShowUI.Add(UIOn);
+            GameEvents.onHideUI.Add(UIOff);
+
             FlightUIPatcher.Patch();
 
             RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
@@ -57,6 +71,17 @@ namespace RemoteTech
                 Satellites.RegisterProto(vessel);
                 Antennas.RegisterProtos(vessel);
             }
+        }
+
+        // F2 GUI Hiding functionality
+        public void UIOn()
+        {
+            mGUIVisible = true;
+        }
+
+        public void UIOff()
+        {
+            mGUIVisible = false;
         }
 
         public void Update()
@@ -91,8 +116,15 @@ namespace RemoteTech
             OnPhysicsUpdate.Invoke();
         }
 
+        // Updated for new GUI Draw handling
         public void OnGUI()
         {
+            if (!mGUIVisible)
+                return;
+
+            if (TimeWarpDecorator != null)
+                TimeWarpDecorator.Draw();
+
             GUI.depth = 0;
             OnGuiUpdate.Invoke();
 
@@ -113,6 +145,10 @@ namespace RemoteTech
             if (Network != null) Network.Dispose();
             if (Satellites != null) Satellites.Dispose();
             if (Antennas != null) Antennas.Dispose();
+
+            // Remove GUI stuff
+            GameEvents.onShowUI.Remove(UIOn);
+            GameEvents.onHideUI.Remove(UIOff);
 
             Instance = null;
         }

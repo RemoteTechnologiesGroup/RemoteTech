@@ -6,27 +6,18 @@ namespace RemoteTech.SimpleTypes
     public static class GUITextureButtonFactory
     {
 
+        // Replaced with new texture handling mechanics.
         public static GUIStyle CreateFromFilename(String normal)
         {
-            Texture2D[] tex = new Texture2D[4];
-            RTUtil.LoadImage(out tex[0], normal);
-            RTUtil.LoadImage(out tex[1], normal);
-            RTUtil.LoadImage(out tex[2], normal);
-            RTUtil.LoadImage(out tex[3], normal);
-
-            return CreateFromTextures(tex[0], tex[1], tex[2], tex[3]);
+            Texture2D tex = RTUtil.LoadImage(normal);
+            return CreateFromTextures(tex, tex, tex, tex);
         }
 
-        public static GUIStyle CreateFromFilename(String normal, String hover, String active,
-                                                                               String focus)
+        // Replaced with new texture handling mechanics.
+        public static GUIStyle CreateFromFilename(String normal, String hover, String active, String focus)
         {
-            Texture2D[] tex = new Texture2D[4];
-            RTUtil.LoadImage(out tex[0], normal);
-            RTUtil.LoadImage(out tex[1], hover);
-            RTUtil.LoadImage(out tex[2], active);
-            RTUtil.LoadImage(out tex[3], focus);
-
-            return CreateFromTextures(tex[0], tex[1], tex[2], tex[3]);
+            return CreateFromTextures(RTUtil.LoadImage(normal), RTUtil.LoadImage(hover),
+                RTUtil.LoadImage(active), RTUtil.LoadImage(focus));
         }
 
         private static GUIStyle CreateFromTextures(Texture2D texNormal, Texture2D texHover,
@@ -52,8 +43,6 @@ namespace RemoteTech.SimpleTypes
                 wordWrap = true,
                 clipping = TextClipping.Clip,
                 contentOffset = new Vector2(0, 0),
-                fixedWidth = texNormal.width,
-                fixedHeight = texNormal.height,
                 stretchWidth = false,
                 stretchHeight = false,
                 font = null,
