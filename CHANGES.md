@@ -1,3 +1,12 @@
+Version 1.6.11
+========================================
+Released April 13, 2016
+
+General
+--------------------
+
+- Fix RT build process - invalid .zip contained some extra files and caused bugs
+
 Version 1.6.10
 ========================================
 Released April 12, 2016
