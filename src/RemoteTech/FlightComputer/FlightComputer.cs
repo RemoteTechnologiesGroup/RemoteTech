@@ -162,6 +162,7 @@ namespace RemoteTech.FlightComputer
             if (pos < 0)
             {
                 mCommandQueue.Insert(~pos, cmd);
+                cmd.CommandEnqueued(this);
                 orderCommandList();
             }
         }
@@ -174,12 +175,14 @@ namespace RemoteTech.FlightComputer
 
         public void OnUpdate()
         {
+            if (RTCore.Instance == null) return;
             if (!SignalProcessor.IsMaster) return;
             PopCommand();
         }
 
         public void OnFixedUpdate()
         {
+            if (RTCore.Instance == null) return;
             if (Vessel == null)
             {
                 Vessel = SignalProcessor.Vessel;
@@ -543,6 +546,56 @@ namespace RemoteTech.FlightComputer
             FlightNode.AddNode(Commands);
 
             n.AddNode(FlightNode);
+        }
+
+        /// <summary>
+        /// Returns true if we've min. one Maneuvercommand on the queue
+        /// </summary>
+        public bool hasManeuverCommands()
+        {
+            if (mCommandQueue.Count <= 0) return false;
+
+            // look for ManeuverCommands
+            var maneuverFound = this.mCommandQueue.Where(command => command is ManeuverCommand).FirstOrDefault();
+            if (maneuverFound == null) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Looks for the passed <paramref name="node"/> on the command
+        /// queue and returns true if the node is already on the list.
+        /// </summary>
+        /// <param name="node">Node to search in the queued commands</param>
+        public bool hasManeuverCommandByNode(ManeuverNode node)
+        {
+            if (mCommandQueue.Count <= 0) return false;
+
+            // look for ManeuverCommands
+            var maneuverFound = this.mCommandQueue.Where(command => (command is ManeuverCommand && ((ManeuverCommand)command).Node == node)).FirstOrDefault();
+            if (maneuverFound == null) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Triggers a CancelCommand for the given <paramref name="node"/>
+        /// </summary>
+        /// <param name="node">Node to cancel from the queue</param>
+        public void removeManeuverCommandByNode(ManeuverNode node)
+        {
+            if (mCommandQueue.Count <= 0) return;
+
+            // look for ManeuverCommands
+            for(int i = this.mCommandQueue.Count-1; i>= 0; i--)
+            {
+                if(this.mCommandQueue[i] is ManeuverCommand && ((ManeuverCommand)this.mCommandQueue[i]).Node == node )
+                {
+                    // remove Node
+                    this.Enqueue(CancelCommand.WithCommand((ManeuverCommand)this.mCommandQueue[i]));
+                    return;
+                }
+            }
         }
     }
 }

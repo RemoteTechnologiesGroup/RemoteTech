@@ -82,15 +82,13 @@ namespace RemoteTech.UI
                 }
                 GUILayout.EndHorizontal();
 
-                // Disabled RoverComputer
-                // We will add this feature on a later release
-                //
-                //if (GUI.Button(new Rect(2, 2, 16, 16), "<")) {
-                //    Tab--;
-                //}
-                //if (GUI.Button(new Rect(16, 2, 16, 16), ">")) {
-                //    Tab++;
-                //}
+                // RoverComputer
+                if (GUI.Button(new Rect(2, 2, 16, 16), "<")) {
+                    Tab--;
+                }
+                if (GUI.Button(new Rect(16, 2, 16, 16), ">")) {
+                    Tab++;
+                }
 
                 if (mQueueEnabled) {
                     mQueue.Draw();

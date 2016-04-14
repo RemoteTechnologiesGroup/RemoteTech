@@ -15,6 +15,7 @@ namespace RemoteTech.Modules
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return mRegisteredId; } }
         public bool Powered { get { return IsRTPowered; } }
+        public bool Connected { get { return (RTCore.Instance != null && RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this))); } }
         public bool Activated { get { return IsRTActive; } set { SetState(value); } }
         public bool CanAnimate { get { return mDeployFxModules.Count > 0; } }
         public bool AnimClosed { get { return mDeployFxModules.Any(fx => fx.GetScalar <= 0.1f                        ); } }
@@ -22,6 +23,7 @@ namespace RemoteTech.Modules
         public bool AnimOpen   { get { return mDeployFxModules.Any(fx =>                         fx.GetScalar >= 0.9f); } }
 
         public bool CanTarget { get { return Mode1DishRange != -1.0f; } }
+
         public Guid Target
         {
             get { return RTAntennaTarget; }
@@ -88,7 +90,8 @@ namespace RemoteTech.Modules
             IsRTAntenna = true,
             IsRTActive = false,
             IsRTPowered = false,
-            IsRTBroken = false;
+            IsRTBroken = false,
+            IsNonRetractable = false;
 
         [KSPField(isPersistant = true)]
         public double RTDishCosAngle = 1.0f;
@@ -118,6 +121,7 @@ namespace RemoteTech.Modules
         {
             Off,
             Operational,
+            Connected,
             NoResources,
             Malfunction,
         }
@@ -136,10 +140,6 @@ namespace RemoteTech.Modules
             {
                 info.AppendFormat("Dish range: {0} / {1}", RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
             }
-            if (ShowEditor_EnergyReq && EnergyCost > 0)
-            {
-                info.AppendFormat("Energy req.: {0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
-            }
 
             if (ShowEditor_DishAngle && CanTarget)
             {
@@ -148,12 +148,23 @@ namespace RemoteTech.Modules
 
             if (IsRTActive)
             {
-                info.AppendLine("Activated by default");
+                info.AppendLine("<color=#89929B>Activated by default</color>");
             }
 
             if (MaxQ > 0)
             {
-                info.AppendLine("Snaps under high dynamic pressure");
+                info.AppendLine("<b><color=#FDA401>Snaps under high dynamic pressure</color></b>");
+            }
+
+            if (this.IsNonRetractable)
+            {
+                info.AppendLine("<b><color=#FDA401>Antenna is not retractable</color></b>");
+            }
+
+            if (ShowEditor_EnergyReq && EnergyCost > 0)
+            {
+                info.AppendLine().Append("<b><color=#99ff00ff>Requires:</color></b>").AppendLine();
+                info.AppendFormat("<b>ElectricCharge: </b>{0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
             }
 
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
@@ -170,6 +181,13 @@ namespace RemoteTech.Modules
             Events["EventEditorClose"].guiActiveEditor =
             Events["OverrideClose"].guiActiveUnfocused = IsRTActive && !IsRTBroken;
 
+            // deactivate event close if this antenna is non retractable
+            if (this.IsNonRetractable)
+            {
+                Events["EventClose"].guiActive = false;
+                Events["EventClose"].active = false;
+            }
+
             UpdateContext();
             StartCoroutine(SetFXModules_Coroutine(mDeployFxModules, IsRTActive ? 1.0f : 0.0f));
 
@@ -185,6 +203,9 @@ namespace RemoteTech.Modules
                 {
                     RemoveTransmitter();
                 }
+            }
+            else {
+                AddTransmitter();
             }
         }
 
@@ -307,6 +328,13 @@ namespace RemoteTech.Modules
             Events["EventTarget"].guiActive = (Mode1DishRange > 0);
             Events["EventTarget"].active = Events["EventTarget"].guiActive;
 
+            // deactivate action close and toggle if this antenna is non retractable
+            if (this.IsNonRetractable)
+            {
+                Actions["ActionClose"].active = false;
+                Actions["ActionToggle"].active = false;
+            }
+
             Fields["GUI_OmniRange"].guiActive = (Mode1OmniRange > 0) && ShowGUI_OmniRange;
             Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0) && ShowGUI_DishRange;
             Fields["GUI_EnergyReq"].guiActive = (EnergyCost > 0) && ShowGUI_EnergyReq;
@@ -386,7 +414,7 @@ namespace RemoteTech.Modules
             float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
             if (resourceAmount < resourceRequest * 0.9) return State.NoResources;
             
-            return State.Operational;
+            return Connected ? State.Connected : State.Operational;
         }
 
         private void FixedUpdate()
@@ -399,6 +427,10 @@ namespace RemoteTech.Modules
                     break;
                 case State.Operational:
                     GUI_Status = Mode1Name;
+                    IsRTPowered = true;
+                    break;
+                case State.Connected:
+                    GUI_Status = "Connected";
                     IsRTPowered = true;
                     break;
                 case State.NoResources:
@@ -569,7 +601,7 @@ namespace RemoteTech.Modules
 
         private void OnVesselModified(Vessel v)
         {
-            if ((mRegisteredId != vessel.id))
+            if (RTCore.Instance != null && mRegisteredId != vessel.id)
             {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
                 mRegisteredId = vessel.id;

@@ -18,6 +18,7 @@ namespace RemoteTech
 
         /// Addons
         public AddOns.ControlLockAddon ctrlLockAddon { get; protected set; }
+        public AddOns.KerbalAlarmClockAddon kacAddon { get; protected set; }
 
         public event Action OnFrameUpdate = delegate { };
         public event Action OnPhysicsUpdate = delegate { };
@@ -32,6 +33,7 @@ namespace RemoteTech
 
         public FilterOverlay FilterOverlay { get; protected set; }
         public FocusOverlay FocusOverlay { get; protected set; }
+        public ManeuverNodeOverlay ManeuverNodeOverlay { get; protected set; }
         public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
 
         // New for handling the F2 GUI Hiding
@@ -39,7 +41,8 @@ namespace RemoteTech
 
         public void Start()
         {
-            if (Instance != null)
+            // Destroy the Core instance if != null or if Remotetech is disabled
+            if (Instance != null || !RTSettings.Instance.RemoteTechEnabled)
             {
                 Destroy(this);
                 return;
@@ -48,6 +51,7 @@ namespace RemoteTech
             Instance = this;
 
             ctrlLockAddon = new AddOns.ControlLockAddon();
+            kacAddon = new AddOns.KerbalAlarmClockAddon();
 
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();
@@ -138,7 +142,8 @@ namespace RemoteTech
 
         public void OnDestroy()
         {
-            if (FocusOverlay != null) FocusOverlay.Dispose(); 
+            if (FocusOverlay != null) FocusOverlay.Dispose();
+            if (ManeuverNodeOverlay != null) ManeuverNodeOverlay.Dispose();
             if (FilterOverlay != null) FilterOverlay.Dispose();
             if (FilterOverlay != null) FilterOverlay.Dispose();
             if (Renderer != null) Renderer.Detach();
@@ -149,6 +154,10 @@ namespace RemoteTech
             // Remove GUI stuff
             GameEvents.onShowUI.Remove(UIOn);
             GameEvents.onHideUI.Remove(UIOff);
+
+			// addons
+            if (ctrlLockAddon != null) ctrlLockAddon = null;
+            if (kacAddon != null) kacAddon = null;
 
             Instance = null;
         }
@@ -238,6 +247,20 @@ namespace RemoteTech
         public new void Start()
         {
             base.Start();
+            if (RTCore.Instance != null)
+            {
+                base.ManeuverNodeOverlay = new ManeuverNodeOverlay();
+                base.ManeuverNodeOverlay.OnEnterMapView();
+            }
+        }
+
+        private new void OnDestroy()
+        {
+            if (RTCore.Instance != null)
+            {
+                base.ManeuverNodeOverlay.OnExitMapView();
+            }
+            base.OnDestroy();
         }
     }
 
@@ -247,15 +270,34 @@ namespace RemoteTech
         public new void Start()
         {
             base.Start();
-            FilterOverlay.OnEnterMapView();
-            FocusOverlay.OnEnterMapView();
+            if(RTCore.Instance != null)
+            {
+                base.FilterOverlay.OnEnterMapView();
+                base.FocusOverlay.OnEnterMapView();
+            }
         }
 
         private new void OnDestroy()
         {
-            FilterOverlay.OnExitMapView();
-            FocusOverlay.OnExitMapView();
+            if (RTCore.Instance != null)
+            {
+                base.FilterOverlay.OnExitMapView();
+                base.FocusOverlay.OnExitMapView();
+            }
             base.OnDestroy();
+        }
+    }
+
+    [KSPAddon(KSPAddon.Startup.MainMenu, false)]
+    public class RTMainMenu : MonoBehaviour
+    {
+        public void Start()
+        {
+            // Set the loaded trigger to false, this we will load a new
+            // settings after selecting a save game. This is necessary
+            // for switching between saves without shutting down the ksp
+            // instance.
+            RTSettings.Instance.settingsLoaded = false;
         }
     }
 }

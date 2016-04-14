@@ -74,7 +74,7 @@ namespace RemoteTech
                 }
                 catch (Exception e) // Already exists.
                 {
-                    RTLog.Notify("A ground station cannot be loaded: " + e.Message);
+					RTLog.Notify("A ground station cannot be loaded: " + e.Message, RTLogLevel.LVL1);
                 }
             }
 
@@ -241,13 +241,45 @@ namespace RemoteTech
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         Color ISatellite.MarkColor { get { return MarkColor; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
-        private Guid mGuid;
+        public Guid mGuid { get; private set; }
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 
         public MissionControlSatellite()
         {
-            mGuid = new Guid(Guid);
+            this.mGuid = new Guid(Guid);
+        }
+
+        public void reloadUpgradeableAntennas(int techlvl = 0)
+        {
+            foreach (var antenna in this.Antennas)
+            {
+                antenna.reloadUpgradeableAntennas(techlvl);
+            }
+        }
+		/*
+		 * Simple getter + setter. 
+		 * For being able to add groundstations.
+		 */
+		public void SetDetails(String name, double lat, double longi, double height, int body)
+		{
+			this.Name = name;
+			this.Latitude = lat;
+			this.Longitude = longi;
+			this.Height = height;
+			this.Body = body;
+			this.mGuid = System.Guid.NewGuid ();
+			this.Guid = this.mGuid.ToString ();
+		}
+
+		public String GetDetails()
+		{
+			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body);
+		}
+        
+        public String GetName()
+        {
+            return this.Name;
         }
 
         void IPersistenceLoad.PersistenceLoad()

@@ -20,5 +20,8 @@ namespace RemoteTech.FlightComputer.Commands
         /// 
         void Save(ConfigNode n, FlightComputer fc);
         bool Load(ConfigNode n, FlightComputer fc);
+        ///
+        void CommandEnqueued(FlightComputer computer);
+        void CommandCanceled(FlightComputer computer);
     }
 }

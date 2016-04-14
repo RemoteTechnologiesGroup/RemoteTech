@@ -17,7 +17,6 @@ namespace RemoteTech.UI
         /// Delay-Text style
         /// </summary>
         private GUIStyle mTextStyle;
-
         /// <summary>
         /// Green Flightcomputer button
         /// </summary>
@@ -79,12 +78,12 @@ namespace RemoteTech.UI
                 {
                     return mFlightButtonRed;
                 }
-                else if (vs.HasLocalControl)
-                {
-                    return mFlightButtonYellow;
-                }
+
                 else if (vs.Connections.Any())
                 {
+                    if (vs.HasLocalControl)
+                        return mFlightButtonYellow;
+
                     return mFlightButtonGreen;
                 }
                 return mFlightButtonRed;
@@ -153,6 +152,12 @@ namespace RemoteTech.UI
             GUI.DrawTexture(pos, mTexBackground);
 
             // draw the delay-text
+            mTextStyle.normal.textColor = new Color(0.56078f, 0.10196f, 0.07450f);
+            if (this.mVessel != null && this.mVessel.Connections.Any())
+            {
+                mTextStyle.normal.textColor = XKCDColors.GreenApple;
+            }
+
             GUI.Label(delaytextPosition, DisplayText, mTextStyle);
 
             // draw the flightcomputer button to the right relative to the delaytext position

@@ -35,6 +35,8 @@ namespace RemoteTech.UI
         /// <summary>Callback trigger for the change in the posistion</summary>
         public Action onPositionChanged = delegate { };
         public Rect backupPosition;
+        /// <summary>todo</summary>
+        protected bool mCloseButton = true;
 
         static AbstractWindow()
         {
@@ -129,7 +131,7 @@ namespace RemoteTech.UI
 
             Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
             
-            if (Title != null)
+            if (Title != null && this.mCloseButton)
             {
                 if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
                 {
