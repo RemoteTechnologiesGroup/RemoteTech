@@ -198,11 +198,6 @@ namespace RemoteTech.UI
             mAntennaFragment.onMouseOverListEntry += showTargetInfo;
 
             WindowAlign targetInfoAlign = WindowAlign.TopLeft;
-            if (this.onTrackingStation)
-            {
-                // switch to the other side if we are at the trackingStation
-                targetInfoAlign = WindowAlign.TopRight;
-            }
 
             /// Create a new Targetinfo window with a fixed position to the antenna fragment
             mTargetInfos = new TargetInfoWindow(PositionAntenna, targetInfoAlign);
