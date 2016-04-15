@@ -27,6 +27,10 @@ namespace RemoteTech
             GameEvents.onLevelWasLoaded.Add(onLevelWasLoaded);
             RTSettings.OnSettingsChanged.Add(OnRTSettingsChanged);
             GameEvents.OnUpgradeableObjLevelChange.Add(OnUpgradeableObjLevelChange);
+            RtOptionBtn = RTUtil.LoadImage("gitpagessat");
+            RTSpaceCentre.LauncherButton = ApplicationLauncher.Instance.AddModApplication(this.OptionWindow.toggleWindow, null, null, null, null, null,
+                                                                                    ApplicationLauncher.AppScenes.SPACECENTER,
+                                                                                    this.RtOptionBtn);
         }
 
         /// <summary>
@@ -51,14 +55,6 @@ namespace RemoteTech
 
         private void onLevelWasLoaded(GameScenes scene)
         {
-            if (ApplicationLauncher.Ready)
-            {
-                RTUtil.LoadImage(out this.RtOptionBtn, "gitpagessat.png");
-                RTSpaceCentre.LauncherButton = ApplicationLauncher.Instance.AddModApplication(this.OptionWindow.toggleWindow, null, null, null, null, null,
-                                                                                        ApplicationLauncher.AppScenes.SPACECENTER,
-                                                                                        (Texture)this.RtOptionBtn);
-            }
-
             if (scene == GameScenes.SPACECENTER)
             {
                 if (RTSettings.Instance.firstStart)
