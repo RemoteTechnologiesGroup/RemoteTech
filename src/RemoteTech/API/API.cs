@@ -13,7 +13,7 @@ namespace RemoteTech.API
     {
         public static bool IsRemoteTechEnabled()
         {
-            if (RTCore.Instance == null) return true;
+            if (RTCore.Instance != null) return true;
             return false;
         }
 
