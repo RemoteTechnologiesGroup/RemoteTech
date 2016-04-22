@@ -10,6 +10,7 @@ namespace RemoteTech.UI
         private FocusFragment mFocus = new FocusFragment();
         private bool mShowOverlay = false;
         private Texture2D satellite;
+        private bool inMapView = false;
 
         private KSP.UI.Screens.ApplicationLauncherButton mButton;
         private UnityEngine.UI.Image mButtonImg;
@@ -96,6 +97,12 @@ namespace RemoteTech.UI
             MapView.OnEnterMapView -= OnEnterMapView;
             MapView.OnExitMapView -= OnExitMapView;
 
+            if (inMapView) 
+            {
+                // to let it clean up stuff, because we don't receive this event any more
+                OnExitMapView();
+            }
+
             // Remove button on destroy
             KSP.UI.Screens.ApplicationLauncher.Instance.RemoveModApplication(mButton);
             RemoveTrackingListeners();
@@ -127,6 +134,7 @@ namespace RemoteTech.UI
 
         public void OnEnterMapView()
         {
+            inMapView = true;
             RTCore.Instance.OnGuiUpdate += Draw;
             mFocus.resetSelection();
 
@@ -137,6 +145,7 @@ namespace RemoteTech.UI
 
         public void OnExitMapView()
         {
+            inMapView = false;
             RTCore.Instance.OnGuiUpdate -= Draw;
 
             GameEvents.onVesselRecovered.Remove(OnVRecover);
