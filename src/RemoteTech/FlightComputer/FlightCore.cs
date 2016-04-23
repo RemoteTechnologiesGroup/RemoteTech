@@ -176,58 +176,110 @@ namespace RemoteTech.FlightComputer
             // Add support for roll-less targets later -- Starstrider42
             bool fixedRoll = !ignoreRoll;
             Vessel vessel = fc.Vessel;
-            Vector3d momentOfInertia = GetTrueMoI(vessel);
+            Vector3d momentOfInertia = vessel.MOI;
             Transform vesselReference = vessel.GetTransform();
+            Vector3d torque = GetTorque(vessel, c.mainThrottle);
 
-            //---------------------------------------
-            // Copied almost verbatim from MechJeb master on June 27, 2014 -- Starstrider42
+            // -----------------------------------------------
+            // Copied from MechJeb master on 18.04.2016 with some modifications to adapt to RemoteTech
+
+            Vector3d _axisControl = new Vector3d();
+            _axisControl.x = true ? 1 : 0;
+            _axisControl.y = true ? 1 : 0;
+            _axisControl.z = fixedRoll ? 1 : 0;
+
+            Vector3d inertia = Vector3d.Scale(
+                new Vector3d(vessel.angularMomentum.x, vessel.angularMomentum.y, vessel.angularMomentum.z).Sign(),
+                Vector3d.Scale(
+                    Vector3d.Scale(vessel.angularMomentum, vessel.angularMomentum),
+                    Vector3d.Scale(torque, momentOfInertia).Invert()
+                    )
+                );
+
+            Vector3d TfV = new Vector3d(0.3, 0.3, 0.3);
+
+            double kpFactor = 3;
+            double kiFactor = 6;
+            double kdFactor = 0.5;
+            double kWlimit = 0.15;
+            double deadband = 0.0001;
 
             Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vesselReference.rotation) * target);
 
-            Vector3d torque = GetTorque(vessel, c.mainThrottle);
-            Vector3d spinMargin = GetStoppingAngle(vessel, torque);
+            Vector3d deltaEuler = delta.DeltaEuler();
 
-            // Allow for zero torque around some but not all axes
-            Vector3d normFactor;
-            normFactor.x = (torque.x != 0 ? momentOfInertia.x / torque.x : 0.0);
-            normFactor.y = (torque.y != 0 ? momentOfInertia.y / torque.y : 0.0);
-            normFactor.z = (torque.z != 0 ? momentOfInertia.z / torque.z : 0.0);
-            normFactor = SwapYZ(normFactor);
+            // ( MoI / available torque ) factor:
+            Vector3d NormFactor = Vector3d.Scale(momentOfInertia, torque.Invert()).Reorder(132);
 
             // Find out the real shorter way to turn were we want to.
             // Thanks to HoneyFox
-
-            Vector3d tgtLocalUp = vesselReference.transform.rotation.Inverse() * target * Vector3d.forward;
+            Vector3d tgtLocalUp = vesselReference.rotation.Inverse() * target * Vector3d.forward;
             Vector3d curLocalUp = Vector3d.up;
 
             double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
-            var rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
-            rotDirection = rotDirection.normalized * turnAngle / 180.0f;
+            Vector2d rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
+            rotDirection = rotDirection.normalized * turnAngle / 180.0;
 
-            var err = new Vector3d(
+            // And the lowest roll
+            // Thanks to Crzyrndm
+            Vector3 normVec = Vector3.Cross(target * Vector3.forward, vesselReference.up);
+            Quaternion targetDeRotated = Quaternion.AngleAxis((float)turnAngle, normVec) * target;
+            float rollError = Vector3.Angle(vesselReference.right, targetDeRotated * Vector3.right) * Math.Sign(Vector3.Dot(targetDeRotated * Vector3.right, vesselReference.forward));
+
+            var error = new Vector3d(
                 -rotDirection.y * Math.PI,
                 rotDirection.x * Math.PI,
-                fixedRoll ?
-                    ((delta.eulerAngles.z > 180) ?
-                        (delta.eulerAngles.z - 360.0F) :
-                        delta.eulerAngles.z) * Math.PI / 180.0F
-                    : 0F
-            );
+                rollError * Mathf.Deg2Rad
+                );
 
-            err += SwapYZ(spinMargin);
-            err = new Vector3d(Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
+            error.Scale(_axisControl);
+
+            Vector3d err = error + inertia.Reorder(132) / 2d;
+            err = new Vector3d(
+                Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.y)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.z)));
-            err.Scale(normFactor);
+
+            err.Scale(NormFactor);
 
             // angular velocity:
-            Vector3d omega = SwapYZ(vessel.GetComponent<Rigidbody>().angularVelocity);
-            omega.Scale(normFactor);
+            Vector3d omega;
+            omega.x = vessel.angularVelocity.x;
+            omega.y = vessel.angularVelocity.z; // y <=> z
+            omega.z = vessel.angularVelocity.y; // z <=> y
+            omega.Scale(NormFactor);
 
-            Vector3d pidAction = fc.pid.Compute(err, omega);
+            //if (Tf_autoTune)
+            //    tuneTf(torque);
 
-            // low pass filter, wf = 1/Tf:
-            Vector3d act = fc.lastAct + (pidAction - fc.lastAct) * (1 / ((fc.Tf / TimeWarp.fixedDeltaTime) + 1));
+            Vector3d invTf = TfV.Invert();
+            fc.pid.Kd = kdFactor * invTf;
+
+            fc.pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * fc.pid.Kd;
+            fc.pid.Kp.Scale(invTf);
+
+            fc.pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * fc.pid.Kp;
+            fc.pid.Ki.Scale(invTf);
+
+            fc.pid.intAccum = fc.pid.intAccum.Clamp(-5, 5);
+
+            // angular velocity limit:
+            var Wlimit = new Vector3d(Math.Sqrt(NormFactor.x * Math.PI * kWlimit),
+                                       Math.Sqrt(NormFactor.y * Math.PI * kWlimit),
+                                       Math.Sqrt(NormFactor.z * Math.PI * kWlimit));
+
+            Vector3d pidAction = fc.pid.Compute(err, omega, Wlimit);
+
+            // deadband
+            pidAction.x = Math.Abs(pidAction.x) >= deadband ? pidAction.x : 0.0;
+            pidAction.y = Math.Abs(pidAction.y) >= deadband ? pidAction.y : 0.0;
+            pidAction.z = Math.Abs(pidAction.z) >= deadband ? pidAction.z : 0.0;
+
+            // low pass filter,  wf = 1/Tf:
+            Vector3d act = fc.lastAct;
+            act.x += (pidAction.x - fc.lastAct.x) * (1.0 / ((TfV.x / TimeWarp.fixedDeltaTime) + 1.0));
+            act.y += (pidAction.y - fc.lastAct.y) * (1.0 / ((TfV.y / TimeWarp.fixedDeltaTime) + 1.0));
+            act.z += (pidAction.z - fc.lastAct.z) * (1.0 / ((TfV.z / TimeWarp.fixedDeltaTime) + 1.0));
             fc.lastAct = act;
 
             // end MechJeb import
@@ -279,78 +331,6 @@ namespace RemoteTech.FlightComputer
                 }
                 return ret;
             }
-        }
-
-        /// <summary>
-        /// Returns a more accurate moment of inertia than Vessel.findLocalMOI()
-        /// </summary>
-        // Copied from MechJeb master on June 27, 2014
-        // TODO: cache moment if inertia and update only when ship mass changes?
-        private static Vector3d GetTrueMoI(Vessel vessel)
-        {
-            var inertiaTensor = new Matrix3x3();
-            var centerOfMass = vessel.findWorldCenterOfMass();
-
-            foreach (Part p in vessel.parts)
-            {
-                if (p.Rigidbody == null) continue;
-
-                //Compute the contributions to the vessel inertia tensor due to the part inertia tensor
-                Vector3d principalMoments = p.Rigidbody.inertiaTensor;
-                Quaternion princAxesRot = Quaternion.Inverse(vessel.GetTransform().rotation) * p.transform.rotation * p.Rigidbody.inertiaTensorRotation;
-                Quaternion invPrincAxesRot = Quaternion.Inverse(princAxesRot);
-
-                for (int i = 0; i < 3; i++)
-                {
-                    Vector3d iHat = Vector3d.zero;
-                    iHat[i] = 1;
-                    for (int j = 0; j < 3; j++)
-                    {
-                        Vector3d jHat = Vector3d.zero;
-                        jHat[j] = 1;
-                        inertiaTensor[i, j] += Vector3d.Dot(iHat, princAxesRot * Vector3d.Scale(principalMoments, invPrincAxesRot * jHat));
-                    }
-                }
-
-                //Compute the contributions to the vessel inertia tensor due to the part mass and position
-                double partMass = p.mass + p.GetResourceMass();
-                Vector3 partPosition = vessel.GetTransform().InverseTransformDirection(p.Rigidbody.worldCenterOfMass - centerOfMass);
-
-                for (int i = 0; i < 3; i++)
-                {
-                    inertiaTensor[i, i] += partMass * partPosition.sqrMagnitude;
-
-                    for (int j = 0; j < 3; j++)
-                    {
-                        inertiaTensor[i, j] += -partMass * partPosition[i] * partPosition[j];
-                    }
-                }
-            }
-
-            return new Vector3d(inertiaTensor[0, 0], inertiaTensor[1, 1], inertiaTensor[2, 2]);
-        }
-
-        /// <summary>
-        /// Calculates how far a ship can rotate before its rotation stops.
-        /// </summary>
-        /// <returns>A vector equal to the stopping angle, in radians, around the (pitch, roll, yaw) axes. 
-        /// If it is impossible to stop the ship along one axis, returns 0 for that axis.</returns>
-        /// <param name="vessel">The ship whose rotation needs to be stopped.</param>
-        /// <param name="torque">The torque that can be applied to the ship.</param>
-        public static Vector3d GetStoppingAngle(Vessel vessel, Vector3d torque)
-        {
-            var momentOfInertia = GetTrueMoI(vessel);
-            var angularVelocity = Quaternion.Inverse(vessel.transform.rotation) * vessel.GetComponent<Rigidbody>().angularVelocity;
-            var angularMomentum = Vector3d.Scale(angularVelocity, momentOfInertia);
-
-            // Adapted from MechJeb master on June 27, 2014
-            Vector3d retVar;
-            retVar.x = (torque.x != 0.0 ? angularMomentum.x * angularMomentum.x / (torque.x * momentOfInertia.x) : 0.0);
-            retVar.y = (torque.y != 0.0 ? angularMomentum.y * angularMomentum.y / (torque.y * momentOfInertia.y) : 0.0);
-            retVar.z = (torque.z != 0.0 ? angularMomentum.z * angularMomentum.z / (torque.z * momentOfInertia.z) : 0.0);
-            retVar.Scale(Sign(angularMomentum));
-
-            return retVar / 2;
         }
 
         /// <summary>
