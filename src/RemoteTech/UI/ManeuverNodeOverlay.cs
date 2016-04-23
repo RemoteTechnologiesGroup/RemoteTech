@@ -16,11 +16,11 @@ namespace RemoteTech.UI
 
         public ManeuverNodeOverlay()
         {
-            mManeuverNodeButtonAdd = GUITextureButtonFactory.CreateFromFilename("buttons_fc_add.png", "buttons_fc_add_hover.png", "buttons_fc_add_hover.png", "buttons_fc_add_hover.png");
+            mManeuverNodeButtonAdd = GUITextureButtonFactory.CreateFromFilename("buttons_fc_add", "buttons_fc_add_hover", "buttons_fc_add_hover", "buttons_fc_add_hover");
             mManeuverNodeButtonAdd.fixedHeight = mManeuverNodeButtonAdd.fixedWidth = 0;
             mManeuverNodeButtonAdd.stretchHeight = mManeuverNodeButtonAdd.stretchWidth = true;
 
-            mManeuverNodeButtonDelete = GUITextureButtonFactory.CreateFromFilename("buttons_fc_del.png", "buttons_fc_del_hover.png", "buttons_fc_del.png", "buttons_fc_del.png");
+            mManeuverNodeButtonDelete = GUITextureButtonFactory.CreateFromFilename("buttons_fc_del", "buttons_fc_del_hover", "buttons_fc_del", "buttons_fc_del");
             mManeuverNodeButtonDelete.fixedHeight = mManeuverNodeButtonDelete.fixedWidth = 0;
             mManeuverNodeButtonDelete.stretchHeight = mManeuverNodeButtonDelete.stretchWidth = true;
 
@@ -117,8 +117,9 @@ namespace RemoteTech.UI
                         {
                             maneuverCtrl = mManeuverNodeButtonDelete;
                         }
+                        GUILayout.BeginArea(screenPos);
 
-                        if (GUI.Button(screenPos, "", maneuverCtrl))
+                        if (GUILayout.Button("", maneuverCtrl))
                         {
                             if (!nodeAlreadyQueued)
                             {
@@ -129,6 +130,8 @@ namespace RemoteTech.UI
                                 flightComputer.removeManeuverCommandByNode(node);
                             }
                         }
+                        GUILayout.EndArea();
+
                     }
                 }
             }
