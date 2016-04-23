@@ -211,7 +211,7 @@ namespace RemoteTech.FlightComputer
             // ( MoI / available torque ) factor:
             Vector3d NormFactor = Vector3d.Scale(momentOfInertia, torque.Invert()).Reorder(132);
 
-            // Find out the real shorter way to turn were we wan to.
+            // Find out the real shorter way to turn were we want to.
             // Thanks to HoneyFox
             Vector3d tgtLocalUp = vesselReference.rotation.Inverse() * target * Vector3d.forward;
             Vector3d curLocalUp = Vector3d.up;
