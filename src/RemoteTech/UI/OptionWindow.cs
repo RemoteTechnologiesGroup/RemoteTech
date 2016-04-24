@@ -151,7 +151,7 @@ namespace RemoteTech.UI
             };
 
             // initial Textures
-            RTUtil.LoadImage(out this.mTexHeadline, "headline.jpg");
+            mTexHeadline = RTUtil.LoadImage("headline");
             // Visual style colors
             this.loadColorTexture(out this.mVSColorDish, this.mSettings.DishConnectionColor);
             this.loadColorTexture(out this.mVSColorOmni, this.mSettings.OmniConnectionColor);
