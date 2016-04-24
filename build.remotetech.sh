@@ -11,7 +11,7 @@ then
    if [ "$TRAVIS_SECURE_ENV_VARS" = "false" ]; then
       # this should only happen for pull requests
       echo "Unable to build as the env vars have not been set. Can't decrypt the zip."
-      exit 0; # can't decide if this should error
+      exit 1; # can't decide if this should error
    fi
 
    if [[ ! -f dlls.zip ]]; then
