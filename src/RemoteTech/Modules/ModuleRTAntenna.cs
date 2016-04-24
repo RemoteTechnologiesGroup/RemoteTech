@@ -116,6 +116,7 @@ namespace RemoteTech.Modules
         private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
+        private int killCounter;
 
         private enum State
         {
@@ -532,7 +533,15 @@ namespace RemoteTech.Modules
             {
                 if (GetDynamicPressure() > MaxQ && GetShieldedState() == false)
                 {
+                    // See https://github.com/RemoteTechnologiesGroup/RemoteTech/issues/528
+                    killCounter++;
+                }
+                else
+                {
+                    killCounter = 0;
+                }
 
+                if (killCounter > 2) {
                     // TODO: Make sure this formatting is correct, the new method isn't tested too well right now.
                     // Express flight clock in stockalike formatting
                     FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.",
@@ -540,6 +549,10 @@ namespace RemoteTech.Modules
                     MaxQ = -1.0f;
                     part.decouple(0.0f);
                 }
+            }
+            else
+            {
+                killCounter = 0;
             }
         }
 
