@@ -85,7 +85,7 @@ namespace RemoteTech.FlightComputer.Commands
                 computer.Vessel.patchedConicSolver.RemoveManeuverNode(this.Node);
             }
             // enqueue kill rot
-            computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+            computer.Enqueue(AttitudeCommand.Off(), true, true, true);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace RemoteTech.FlightComputer.Commands
             // In case we would overpower with 100% thrust, calculate how much we actually need and set it.
             if (computer.Vessel.acceleration.magnitude > this.RemainingDelta)
             {
-                // Formula which leads to this: a = ( vE – vS ) / dT
+                // Formula which leads to this: a = ( vE â€“ vS ) / dT
                 this.throttle = this.RemainingDelta / computer.Vessel.acceleration.magnitude;
             }
                 
