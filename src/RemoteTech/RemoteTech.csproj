@@ -78,7 +78,7 @@
     <Compile Include="FlightComputer\FlightCore.cs" />
     <Compile Include="FlightComputer\Commands\ICommand.cs" />
     <Compile Include="FlightComputer\Commands\TargetCommand.cs" />
-    <Compile Include="FlightComputer\PIDControllerV2.cs" />
+    <Compile Include="FlightComputer\PIDControllerV3.cs" />
     <Compile Include="Modules\MissionControlAntenna.cs" />
     <Compile Include="Modules\ProtoSignalProcessor.cs" />
     <Compile Include="RangeModel\RangeModel.cs" />

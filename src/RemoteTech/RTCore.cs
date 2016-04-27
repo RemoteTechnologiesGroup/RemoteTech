@@ -145,7 +145,6 @@ namespace RemoteTech
             if (FocusOverlay != null) FocusOverlay.Dispose();
             if (ManeuverNodeOverlay != null) ManeuverNodeOverlay.Dispose();
             if (FilterOverlay != null) FilterOverlay.Dispose();
-            if (FilterOverlay != null) FilterOverlay.Dispose();
             if (Renderer != null) Renderer.Detach();
             if (Network != null) Network.Dispose();
             if (Satellites != null) Satellites.Dispose();

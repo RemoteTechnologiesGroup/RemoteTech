@@ -151,7 +151,7 @@ namespace RemoteTech.UI
             };
 
             // initial Textures
-            RTUtil.LoadImage(out this.mTexHeadline, "headline.jpg");
+            mTexHeadline = RTUtil.LoadImage("headline");
             // Visual style colors
             this.loadColorTexture(out this.mVSColorDish, this.mSettings.DishConnectionColor);
             this.loadColorTexture(out this.mVSColorOmni, this.mSettings.OmniConnectionColor);
@@ -252,10 +252,10 @@ namespace RemoteTech.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Space(15);
-            GUILayout.Label("You need some help with RemoteTech?\nLook on our online manuell or if you can't find your answer, than post your question on our thread.(Browser opens on click)", this.mGuiRunningText);
+            GUILayout.Label("Need some help with RemoteTech?\nLook on our online manual or if you can't find your answer, than post your question on our thread. (Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
-                if(GUILayout.Button("Online manuell"))
+                if(GUILayout.Button("Online manual"))
                 {
                     Application.OpenURL("http://remotetechnologiesgroup.github.io/RemoteTech/");
                 }
@@ -291,7 +291,7 @@ namespace RemoteTech.UI
             GUILayout.Label("If set, then all commands sent to RemoteTech-compatible probe cores will be delayed, depending on the distance to the probe and the SpeedOfLight. If unset, then all commands will be executed instantaneously, so long as there is a connection of any length between the probe and Mission Control.", this.mGuiHintText);
 
             GUILayout.Label("Range Model type", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
-            GUILayout.Label("This setting controls how the game determines whether two antennas are in range of each other. Read more on our online manuell about the difference for each rule.", this.mGuiHintText);
+            GUILayout.Label("This setting controls how the game determines whether two antennas are in range of each other. Read more on our online manual about the difference for each rule.", this.mGuiHintText);
             GUILayout.BeginHorizontal();
             {
                 RTUtil.FakeStateButton(new GUIContent("Standard"), () => this.mSettings.RangeModelType = RangeModel.RangeModel.Standard, (int)this.mSettings.RangeModelType, (int)RangeModel.RangeModel.Standard, GUILayout.Height(20));
@@ -389,13 +389,13 @@ namespace RemoteTech.UI
             GUILayout.Space(10);
 
             this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations are hidden behind bodys" : "Ground stations always shown");
-            GUILayout.Label("If true, ground stations occulued by the body they’re on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.", this.mGuiHintText);
+            GUILayout.Label("If true, ground stations occluded by the body they’re on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.", this.mGuiHintText);
 
             this.mSettings.HideGroundStationsOnDistance = GUILayout.Toggle(this.mSettings.HideGroundStationsOnDistance, (this.mSettings.HideGroundStationsOnDistance) ? "Ground stations are hidden on a defined distance" : "Ground stations always shown");
-            GUILayout.Label("If true, ground stations would be invisible on a defined distance to the mapview camera.", this.mGuiHintText);
+            GUILayout.Label("If true, ground stations will be invisible past a defined distance to the mapview camera.", this.mGuiHintText);
 
             this.mSettings.ShowMouseOverInfoGroundStations = GUILayout.Toggle(this.mSettings.ShowMouseOverInfoGroundStations, (this.mSettings.ShowMouseOverInfoGroundStations) ? "Mouseover of ground stations enabled" : "Mouseover of ground stations disabled");
-            GUILayout.Label("If enabled you can get some usefull informations of a ground station by moving the mouse over it on the map view / tracking station", this.mGuiHintText);
+            GUILayout.Label("If enabled you can get some useful informations of a ground station by moving the mouse over it on the map view / tracking station", this.mGuiHintText);
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace RemoteTech.UI
             GUILayout.Label("If true, the flight computer cuts the thrust (not on boosters) if you have no connection to mission control.", this.mGuiHintText);
 
             this.mSettings.UpgradeableMissionControlAntennas = GUILayout.Toggle(this.mSettings.UpgradeableMissionControlAntennas, (this.mSettings.UpgradeableMissionControlAntennas) ? "MissionControl antennas are upgradeable": "MissionControl antennas are not upgradeable");
-            GUILayout.Label("If this option is activated, the mission controll ground station would be upgradable with the tracking center.", this.mGuiHintText);
+            GUILayout.Label("If this option is activated, the mission control ground station would be upgradable with the tracking center.", this.mGuiHintText);
 
             this.mSettings.AutoInsertKaCAlerts = GUILayout.Toggle(this.mSettings.AutoInsertKaCAlerts, (this.mSettings.AutoInsertKaCAlerts) ? "Auto insert alarms to KaC" : "No alarm inserts to KaC");
             GUILayout.Label("If this option is activated, the flight computer will automatically insert an alarm to the Kerbal Alarm Clock (KaC) mod for burn and maneuver commands. The alarm will be triggered three minutes before the command executes.", this.mGuiHintText);

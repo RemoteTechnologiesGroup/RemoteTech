@@ -82,7 +82,7 @@ namespace RemoteTech.FlightComputer.Commands
             RTUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
             if (computer.Vessel.patchedConicSolver != null)
             {
-                computer.Vessel.patchedConicSolver.RemoveManeuverNode(this.Node);
+                Node.RemoveSelf();
             }
             // enqueue kill rot
             computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);

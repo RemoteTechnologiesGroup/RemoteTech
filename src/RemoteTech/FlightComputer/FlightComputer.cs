@@ -79,7 +79,7 @@ namespace RemoteTech.FlightComputer
         public AttitudeCommand currentFlightMode { get { return (mActiveCommands[0] is AttitudeCommand) ? (AttitudeCommand)mActiveCommands[0] : null; } }
 
         // Flight controller parameters from MechJeb, copied from master on June 27, 2014
-        public PIDControllerV2 pid { get; private set; }
+        public PIDControllerV3 pid { get; private set; }
         public Vector3d lastAct { get; set; }
         public double Tf = 0.3;
         public double TfMin = 0.1;
@@ -102,8 +102,8 @@ namespace RemoteTech.FlightComputer
             SignalProcessor = s;
             Vessel = s.Vessel;
             SanctionedPilots = new List<Action<FlightCtrlState>>();
-            pid = new PIDControllerV2(0, 0, 0, 1, -1);
-            initPIDParameters();
+            pid = new PIDControllerV3(Vector3d.zero, Vector3d.zero, Vector3d.zero, 1, -1);
+            setPIDParameters();
             lastAct = Vector3d.zero;
             lastTarget = TargetCommand.WithTarget(null);
 
@@ -357,12 +357,19 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        public void initPIDParameters()
+        public void setPIDParameters() 
         {
-            pid.Kd = kdFactor / Tf;
-            pid.Kp = pid.Kd / (kpFactor * Math.Sqrt(2) * Tf);
-            pid.Ki = pid.Kp / (kiFactor * Math.Sqrt(2) * Tf);
-            pid.intAccum = Vector3.ClampMagnitude(pid.intAccum, 5);
+            Vector3d TfV = new Vector3d(0.3, 0.3, 0.3);
+            Vector3d invTf = TfV.Invert();
+            pid.Kd = kdFactor * invTf;
+
+            pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * pid.Kd;
+            pid.Kp.Scale(invTf);
+
+            pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * pid.Kp;
+            pid.Ki.Scale(invTf);
+
+            pid.intAccum = pid.intAccum.Clamp(-5, 5);
         }
 
         // Calculations of Tf are not safe during FlightComputer constructor
@@ -385,7 +392,7 @@ namespace RemoteTech.FlightComputer
                 Tf = Mathf.Clamp((float)ratio.magnitude / 20f, 2 * TimeWarp.fixedDeltaTime, 1f);
                 Tf = Mathf.Clamp((float)Tf, (float)TfMin, (float)TfMax);
             }
-            initPIDParameters();
+            setPIDParameters();
         }
 
         /// <summary>
