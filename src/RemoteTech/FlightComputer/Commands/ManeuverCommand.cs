@@ -21,7 +21,6 @@ namespace RemoteTech.FlightComputer.Commands
         private double throttle = 1.0f;
         private double lowestDeltaV = 0.0;
         private bool abortOnNextExecute = false;
-        private bool mAbort = false;
 
         public override string Description
         {
@@ -89,8 +88,6 @@ namespace RemoteTech.FlightComputer.Commands
             computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
         }
 
-        public override void Abort() { mAbort = true; }
-
         /// <summary>
         /// Executes the maneuver burn for the configured maneuver node.
         /// </summary>
@@ -99,8 +96,8 @@ namespace RemoteTech.FlightComputer.Commands
         /// <returns>true if the command has finished its work, false otherwise.</returns>
         public override bool Execute(FlightComputer computer, FlightCtrlState ctrlState)
         {
-            // Halt the command if we reached our target or were command to abort by the previous tick or if the command was cancelled 
-            if (this.RemainingDelta <= 0.01 || this.abortOnNextExecute || mAbort)
+            // Halt the command if we reached our target or were command to abort by the previous tick
+            if (this.RemainingDelta <= 0.01 || this.abortOnNextExecute)
             {
                 this.AbortManeuver(computer);
                 return true;
