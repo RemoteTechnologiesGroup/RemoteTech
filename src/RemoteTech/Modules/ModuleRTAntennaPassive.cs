@@ -25,7 +25,7 @@ namespace RemoteTech.Modules
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
         private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
-        private bool Unlocked { get { return RTUtil.IsTechUnlocked(TechRequired); } }
+        public bool Unlocked { get { return RTUtil.IsTechUnlocked(TechRequired); } }
 
         [KSPField]
         public bool

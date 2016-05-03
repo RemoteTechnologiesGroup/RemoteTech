@@ -20,19 +20,19 @@ namespace RemoteTech
 
             List<AvailablePart> loadedParts = PartLoader.LoadedPartsList;
             // find all RT parts
-            IEnumerable<AvailablePart> rtPartList = loadedParts.Where(part => part.partPrefab.Modules != null && (part.partPrefab.Modules.Contains("ModuleRTAntennaPassive") ||
-                                                                                                                  part.partPrefab.Modules.Contains("ModuleRTAntenna") ||
-                                                                                                                  part.partPrefab.Modules.Contains("ModuleSPU") ||
-                                                                                                                  part.partPrefab.Modules.Contains("ModuleSPUPassive")));
+            IEnumerable<AvailablePart> rtPartList = loadedParts.Where(part => part.partPrefab.Modules != null && (part.partPrefab.Modules.Contains<Modules.ModuleRTAntennaPassive>() ||
+                                                                                                                  part.partPrefab.Modules.Contains<Modules.ModuleRTAntenna>() ||
+                                                                                                                  part.partPrefab.Modules.Contains<Modules.ModuleSPU>() ||
+                                                                                                                  part.partPrefab.Modules.Contains<Modules.ModuleSPUPassive>()));
 
-            bool TechPerkResearched = RTUtil.IsTechUnlocked("RTPassiveAntennaTech");
+
 
             foreach (var rtPart in rtPartList)
             {
-                bool partHasTechPerk = rtPart.partPrefab.Modules.Contains("ModuleRTAntennaPassive");
+                bool partHasTechPerk = rtPart.partPrefab.Modules.Contains<Modules.ModuleRTAntennaPassive>();
                 bool techPerkRefreshed = false;
 
-                for (int i = rtPart.moduleInfos.Count - 1; i >= 0; i--)
+                for (int i = rtPart.moduleInfos.Count - 1; i >= 0; --i)
                 {
                     var info = rtPart.moduleInfos[i];
 
@@ -66,7 +66,7 @@ namespace RemoteTech
                 }
 
                 // add a new info block for TechPerk
-                if (techPerkRefreshed == false && partHasTechPerk == true && TechPerkResearched == true)
+                if (techPerkRefreshed == false && partHasTechPerk == true && rtPart.partPrefab.Modules.GetModule<Modules.ModuleRTAntennaPassive>().Unlocked)
                 {
                     rtPart.moduleInfos.Add(this.CreateTechPerkInfoforPart(rtPart.partPrefab));
                 }
