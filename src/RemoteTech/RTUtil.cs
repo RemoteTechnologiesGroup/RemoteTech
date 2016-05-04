@@ -450,19 +450,8 @@ namespace RemoteTech
         public static bool IsTechUnlocked(string techid)
         {
             if (techid.Equals("None")) return true;
-            try
-            {
-                var availablePart = PartLoader.LoadedPartsList.Where(part => part.name.Contains(techid)).First();
-                if (availablePart == null) return false;
-
-                bool researched = ResearchAndDevelopment.PartModelPurchased(availablePart);
-
-                return researched;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return HighLogic.CurrentGame == null || HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX ||
+                ResearchAndDevelopment.GetTechnologyState(techid) == RDTech.State.Available;
         }
         public static string ConstrictNum(string s) {
             return ConstrictNum(s, true);
