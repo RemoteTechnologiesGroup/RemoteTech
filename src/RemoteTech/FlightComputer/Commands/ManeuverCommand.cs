@@ -84,8 +84,8 @@ namespace RemoteTech.FlightComputer.Commands
             {
                 Node.RemoveSelf();
             }
-            // enqueue kill rot
-            computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+            // turn off FC
+            computer.Enqueue(AttitudeCommand.Off(), true, true, true);
         }
 
         /// <summary>
