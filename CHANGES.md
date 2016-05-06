@@ -1,3 +1,58 @@
+Version 1.7.0
+========================================
+Released May 6, 2016
+
+KSP 1.1.2 update
+
+**NOTE:** Most of the features and bug fixes that are included in this release were implemented by Dennis (Peppie23) last year, before he left the project.
+
+General
+--------------------
+- The RemoteTech_Settings.cfg will now be saved under the save game folder
+- Added an OptionWindow
+- Added an AppLauncher Button on the SpaceCenter to open the OptionWindow
+- Added disable/enable option for RemoteTech
+- RemoteTech is now disabled for training missions
+- Remote station dots can now be colored via the settings file (also with the OptionWindow)
+- We replaced the label "Energy req." with "ElectricCharge" for the part info on the editor, to be more stock like
+- Added more colors to the editor part infos (more stock like)
+- Add ManeuverCommands from Node. You can now add more than one maneuver to the flightcomputer directly from the node. Right click the node an click the FC+/FC- Button
+- Merged RemoteTechXF you will find the option to toggle on the Cheat-Tab in the option window
+- Presets added to the Option window
+- The mission control dot on the map view will now be invisible on a defined distance to the camera. See `DistanceToHideGroundStations` on the settings file. This feature can be toggled by the value
+`HideGroundStationsOnDistance` in the option window.
+- I've added a mouse over info box for each mission control dot on the map view. This feature can be toggled by the value `ShowMouseOverInfoGroundStations` in the option window.
+- The default mission control ground station has now three tech level on a career game for the omni antenna. The ranges are: 4Mm, 30Mm and 75Mm
+- ManeuverCommands and BurnCommands will now insert an alarm into KerbalAlarmClock.
+- ManeuverCommands will now automatically insert a HoldManeuver Command
+- Added a new option to activate/deactivate the auto insert to KerbalAlarmClock
+- Implemented a new PID controller to solve some of the steering issues
+- Deployed antennas will now survive Hyperedit orbit changes
+- Sounding Rockets inline probe will now contain a signal processor
+- Near Future Construction Truss Octo Drone will now contain a signal processor
+- FASA Mercury Antenna Cap will now be a RemoteTech antenna
+
+Modders
+--------------------
+- Added a new API Method to check whether RemoteTech is enabled or not `bool IsRemoteTechEnabled()`
+- Added a new API Method to check an individual antenna for connection `bool AntennaHasConnection(Part part)` (thx to tomekpiotrowski)
+- Added a new API Method to get the target from an antenna `Guid GetAntennaTarget(Part part)` (thx to tomekpiotrowski)
+- Added a new API Method to switch the antennas target `void SetAntennaTarget(Part part, Guid id)` (thx to tomekpiotrowski)
+- Added a new API Method to receive all ground stations `IEnumerable<string> GetGroundStations()` (thx to tomekpiotrowski)
+- Added a new API Method to receive a guid from a ground stations name `Guid GetGroundStationGuid(String name)` (thx to tomekpiotrowski)
+- Added a new API Method to get the guid from a celestial body `Guid GetCelestialBodyGuid(CelestialBody celestialBody)` (thx to tomekpiotrowski)
+- Added a new API Method to get the NoTarget guid `Guid GetNoTargetGuid()` (thx to tomekpiotrowski)
+- Added a new API Method to get the ActiveVessel guid `Guid GetActiveVesselGuid()` (thx to tomekpiotrowski)
+- You can now add the value `IsNonRetractable = boolean` to the ModuleRTAntenna section on the part.cfg
+- You can now configure a dish antenna to mission control. All mission control dishes are only pointed to the Active Vessel (thx to jdmj)
+- Ground station antennas can now use the tech level of the tracking station. I've added three new values to the antenna node for a station. Use `UpgradeableOmni`, `UpgradeableDish` and `UpgradeableCosAngle` with a semicolon seperated list of ranges. Example: 4E+06;3.0E+07;7.5E+07
+
+Bugfixes
+--------------------
+- RSS/RO/RP-0 Player will no longer see a required ElectricCharge of 0.00/s for the longAntenna on the editor part info. It's now defined as minutes (~0.09/min)
+- Fixed an issue where the TechPerk is already available only if i researched the node but without purchasing the TechPerk-Part it self and the editor part info will no longer show the TechPerk right from the beginning
+
+
 Version 1.6.11
 ========================================
 Released April 13, 2016
