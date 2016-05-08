@@ -273,27 +273,27 @@ namespace RemoteTech.UI
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label("Signal through bodys: ", GUILayout.Width(firstColWidth));
-                int cheatEVAFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatEVAFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatEVAFuel, 0);
+                int cheatEVAFuel = (CheatOptions.InfiniteEVAFuel) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfiniteEVAFuel = true; }, cheatEVAFuel, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfiniteEVAFuel = false; }, cheatEVAFuel, 0);
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label("Infinite Fuel: ", GUILayout.Width(firstColWidth));
-                int cheatinfiniteFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteFuel, 0);
+                int cheatinfiniteFuel = (CheatOptions.InfiniteFuel) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfiniteFuel = true; }, cheatinfiniteFuel, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfiniteFuel = false; }, cheatinfiniteFuel, 0);
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label("Infinite RCS Fuel: ", GUILayout.Width(firstColWidth));
-                int cheatinfiniteRCSFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteRCSFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteRCSFuel, 0);
+                int cheatinfiniteRCSFuel = (CheatOptions.InfiniteRCS) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfiniteRCS = true; }, cheatinfiniteRCSFuel, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfiniteRCS = false; }, cheatinfiniteRCSFuel, 0);
             }
             GUILayout.EndHorizontal();
 
