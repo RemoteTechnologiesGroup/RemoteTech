@@ -79,7 +79,7 @@ namespace RemoteTech.FlightComputer
         public AttitudeCommand currentFlightMode { get { return (mActiveCommands[0] is AttitudeCommand) ? (AttitudeCommand)mActiveCommands[0] : null; } }
 
         // Flight controller parameters from MechJeb, copied from master on June 27, 2014
-        public PIDControllerV2 pid { get; private set; }
+        public PIDControllerV3 pid { get; private set; }
         public Vector3d lastAct { get; set; }
         public double Tf = 0.3;
         public double TfMin = 0.1;
@@ -102,8 +102,8 @@ namespace RemoteTech.FlightComputer
             SignalProcessor = s;
             Vessel = s.Vessel;
             SanctionedPilots = new List<Action<FlightCtrlState>>();
-            pid = new PIDControllerV2(0, 0, 0, 1, -1);
-            initPIDParameters();
+            pid = new PIDControllerV3(Vector3d.zero, Vector3d.zero, Vector3d.zero, 1, -1);
+            setPIDParameters();
             lastAct = Vector3d.zero;
             lastTarget = TargetCommand.WithTarget(null);
 
@@ -162,6 +162,7 @@ namespace RemoteTech.FlightComputer
             if (pos < 0)
             {
                 mCommandQueue.Insert(~pos, cmd);
+                cmd.CommandEnqueued(this);
                 orderCommandList();
             }
         }
@@ -174,12 +175,14 @@ namespace RemoteTech.FlightComputer
 
         public void OnUpdate()
         {
+            if (RTCore.Instance == null) return;
             if (!SignalProcessor.IsMaster) return;
             PopCommand();
         }
 
         public void OnFixedUpdate()
         {
+            if (RTCore.Instance == null) return;
             if (Vessel == null)
             {
                 Vessel = SignalProcessor.Vessel;
@@ -279,7 +282,7 @@ namespace RemoteTech.FlightComputer
                         while ((2 * TimeWarp.deltaTime + 1.0) > (Math.Max(dc.TimeStamp - RTUtil.GameTime, 0) + dc.ExtraDelay) && TimeWarp.CurrentRate > 1.0f)
                         {
                             TimeWarp.SetRate(TimeWarp.CurrentRateIndex - 1, true);
-                            ScreenMessages.PostScreenMessage(message, true);
+                            ScreenMessages.PostScreenMessage(message);
                         }
                     }
                 }
@@ -306,8 +309,7 @@ namespace RemoteTech.FlightComputer
                         } else {
                             string message = String.Format ("[Flight Computer]: Out of power, cannot run \"{0}\" on schedule.", dc.ShortName);
                             ScreenMessages.PostScreenMessage(new ScreenMessage(
-                                message, 4.0f, ScreenMessageStyle.UPPER_LEFT
-                            ), true);
+                                message, 4.0f, ScreenMessageStyle.UPPER_LEFT));
                         }
                         mCommandQueue.Remove(dc);
                         UpdateLastTarget();
@@ -355,12 +357,19 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        public void initPIDParameters()
+        public void setPIDParameters() 
         {
-            pid.Kd = kdFactor / Tf;
-            pid.Kp = pid.Kd / (kpFactor * Math.Sqrt(2) * Tf);
-            pid.Ki = pid.Kp / (kiFactor * Math.Sqrt(2) * Tf);
-            pid.intAccum = Vector3.ClampMagnitude(pid.intAccum, 5);
+            Vector3d TfV = new Vector3d(0.3, 0.3, 0.3);
+            Vector3d invTf = TfV.Invert();
+            pid.Kd = kdFactor * invTf;
+
+            pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * pid.Kd;
+            pid.Kp.Scale(invTf);
+
+            pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * pid.Kp;
+            pid.Ki.Scale(invTf);
+
+            pid.intAccum = pid.intAccum.Clamp(-5, 5);
         }
 
         // Calculations of Tf are not safe during FlightComputer constructor
@@ -383,7 +392,7 @@ namespace RemoteTech.FlightComputer
                 Tf = Mathf.Clamp((float)ratio.magnitude / 20f, 2 * TimeWarp.fixedDeltaTime, 1f);
                 Tf = Mathf.Clamp((float)Tf, (float)TfMin, (float)TfMax);
             }
-            initPIDParameters();
+            setPIDParameters();
         }
 
         /// <summary>
@@ -544,6 +553,56 @@ namespace RemoteTech.FlightComputer
             FlightNode.AddNode(Commands);
 
             n.AddNode(FlightNode);
+        }
+
+        /// <summary>
+        /// Returns true if we've min. one Maneuvercommand on the queue
+        /// </summary>
+        public bool hasManeuverCommands()
+        {
+            if (mCommandQueue.Count <= 0) return false;
+
+            // look for ManeuverCommands
+            var maneuverFound = this.mCommandQueue.Where(command => command is ManeuverCommand).FirstOrDefault();
+            if (maneuverFound == null) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Looks for the passed <paramref name="node"/> on the command
+        /// queue and returns true if the node is already on the list.
+        /// </summary>
+        /// <param name="node">Node to search in the queued commands</param>
+        public bool hasManeuverCommandByNode(ManeuverNode node)
+        {
+            if (mCommandQueue.Count <= 0) return false;
+
+            // look for ManeuverCommands
+            var maneuverFound = this.mCommandQueue.Where(command => (command is ManeuverCommand && ((ManeuverCommand)command).Node == node)).FirstOrDefault();
+            if (maneuverFound == null) return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Triggers a CancelCommand for the given <paramref name="node"/>
+        /// </summary>
+        /// <param name="node">Node to cancel from the queue</param>
+        public void removeManeuverCommandByNode(ManeuverNode node)
+        {
+            if (mCommandQueue.Count <= 0) return;
+
+            // look for ManeuverCommands
+            for(int i = this.mCommandQueue.Count-1; i>= 0; i--)
+            {
+                if(this.mCommandQueue[i] is ManeuverCommand && ((ManeuverCommand)this.mCommandQueue[i]).Node == node )
+                {
+                    // remove Node
+                    this.Enqueue(CancelCommand.WithCommand((ManeuverCommand)this.mCommandQueue[i]));
+                    return;
+                }
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 	"NAME": "RemoteTech",
 	"URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech/RemoteTech.version",
 	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/CHANGES.md",
-	"DOWNLOAD": "https://kerbalstuff.com/mod/134/RemoteTech",  
+	"DOWNLOAD": "http://spacedock.info/mod/520/RemoteTech",
 	"GITHUB":
 	{
 		"USERNAME": "RemoteTechnologiesGroup",
@@ -11,23 +11,23 @@
 	},
 	"VERSION":{
     "MAJOR":1,
-    "MINOR":6,
-    "PATCH":9,
+    "MINOR":7,
+    "PATCH":0,
     "BUILD":0
   },
   "KSP_VERSION":{
     "MAJOR":1,
-    "MINOR":0,
-    "PATCH":5
+    "MINOR":1,
+    "PATCH":2
   },
   "KSP_VERSION_MIN":{
     "MAJOR":1,
-    "MINOR":0,
-    "PATCH":5
+    "MINOR":1,
+    "PATCH":2
   },
   "KSP_VERSION_MAX":{
     "MAJOR":1,
-    "MINOR":0,
-    "PATCH":5
+    "MINOR":1,
+    "PATCH":2
   }
 }

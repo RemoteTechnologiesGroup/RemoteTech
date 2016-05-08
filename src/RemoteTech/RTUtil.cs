@@ -15,6 +15,12 @@ namespace RemoteTech
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
         /// <summary>This time member is needed to debounce the RepeatButton</summary>
         private static double TimeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? RTUtil.GameTime : 0;
+
+        /// <summary>
+        /// Automatically finds the proper texture directory from the dll location. Assumes the dll is in the proper location of GameData/RemoteTech/Plugins/
+        /// </summary>
+        private static string TextureDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Name + "/Textures/";
+
         /// <summary>
         /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
         /// </summary>
@@ -24,6 +30,17 @@ namespace RemoteTech
             {
                 Assembly executableAssembly = Assembly.GetExecutingAssembly();
                 return "v" + FileVersionInfo.GetVersionInfo(executableAssembly.Location).ProductVersion;
+            }
+        }
+
+        /// <summary>
+        /// True if the current running game is a SCENARIO or SCENARIO_NON_RESUMABLE, otherwise false
+        /// </summary>
+        public static bool IsGameScenario
+        {
+            get
+            {
+                return (HighLogic.CurrentGame != null && (HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO || HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO_NON_RESUMABLE));
             }
         }
 
@@ -126,7 +143,16 @@ namespace RemoteTech
 
         public static String FormatConsumption(double consumption)
         {
-            return consumption.ToString("F2") + " charge/s";
+            String timeindicator = "sec";
+
+            if(consumption < 1)
+            {
+                // minutes
+                consumption *= 60;
+                timeindicator = "min";
+            }
+            
+            return String.Format("{0:F2}/{1}.", consumption, timeindicator);
         }
 
         public static String FormatSI(double value, String unit)
@@ -367,41 +393,35 @@ namespace RemoteTech
                 Screen.height - Input.mousePosition.y));
         }
 
+        // Replaces old manual method with unity style texture loading
         public static void LoadImage(out Texture2D texture, String fileName)
         {
-            try 
+            string str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                texture = GameDatabase.Instance.GetTexture(str, false);
+            else
             {
-                Assembly myAssembly = Assembly.GetExecutingAssembly();
-                Stream resStream = myAssembly.GetManifestResourceStream("RemoteTech.Resources." + fileName);
-
-                if (resStream.Length <= 0) {
-                    RTLog.Notify("LoadImageFromRessource({0}) failed", fileName);
-                    throw new Exception("No ImageRessource found");
-                }
-
-                RTLog.Notify("LoadImageFromRessource({0}) success", fileName);
-                // create a byte array from the stream ressource
-                var imageStream = new byte[resStream.Length];
-                resStream.Read(imageStream, 0, (int)resStream.Length);
-                // apply the image stream to a new Texture2D object
-                texture = new Texture2D(4, 4, TextureFormat.ARGB32, false);
-                texture.LoadImage(imageStream);
-
-                //TODO: this is unused
-                imageStream = null;
-                resStream.Close();
+                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
+                texture = Texture2D.blackTexture;
             }
-            catch (Exception)
+        }
+
+        // New method for ease of use
+        public static Texture2D LoadImage(String fileName)
+        {
+            string str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                return GameDatabase.Instance.GetTexture(str, false);
+            else
             {
-                texture = new Texture2D(32, 32);
-                texture.SetPixels32(Enumerable.Repeat((Color32) Color.magenta, 32 * 32).ToArray());
-                texture.Apply();
+                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
+                return Texture2D.blackTexture;
             }
         }
 
         public static IEnumerable<Transform> FindTransformsWithCollider(Transform input)
         {
-            if (input.collider != null)
+            if (input.GetComponent<Collider>() != null)
             {
                 yield return input;
             }
@@ -426,31 +446,12 @@ namespace RemoteTech
             return cachedField.Field = getter();
         }
 
-        // Thanks Fractal_UK!
+        
         public static bool IsTechUnlocked(string techid)
         {
             if (techid.Equals("None")) return true;
-            try
-            {
-                if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER) return true;
-                string persistentfile = KSPUtil.ApplicationRootPath + "saves/" + HighLogic.SaveFolder + "/persistent.sfs";
-                ConfigNode config = ConfigNode.Load(persistentfile);
-                ConfigNode gameconf = config.GetNode("GAME");
-                ConfigNode[] scenarios = gameconf.GetNodes("SCENARIO");
-                foreach (ConfigNode scenario in scenarios.Where(s=> s.GetValue("name") != "ResearchAndDevelopment"))
-                {
-                    ConfigNode[] techs = scenario.GetNodes("Tech");
-                    if (techs.Any(technode => technode.GetValue("id") == techid))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return HighLogic.CurrentGame == null || HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX ||
+                ResearchAndDevelopment.GetTechnologyState(techid) == RDTech.State.Available;
         }
         public static string ConstrictNum(string s) {
             return ConstrictNum(s, true);
@@ -491,7 +492,7 @@ namespace RemoteTech
 
             if (MapView.MapIsEnabled) {
                 //Use Scaled camera and don't attempt physics raycast if in map view.
-                Ray ray = ScaledCamera.Instance.camera.ScreenPointToRay(Input.mousePosition);
+                Ray ray = ScaledCamera.Instance.galaxyCamera.ScreenPointToRay(Input.mousePosition);
                 origin = ScaledSpace.ScaledToLocalSpace(ray.origin);
                 dir = ray.direction.normalized;
             } else {
@@ -628,6 +629,58 @@ namespace RemoteTech
         {
             return FlightGlobals.Vessels.FirstOrDefault(vessel => vessel.id == vesselid);
         }
+
+        // -----------------------------------------------
+        // Copied from MechJeb master on 18.04.2016
+        public static Vector3d DeltaEuler(this Quaternion delta) 
+        {
+            return new Vector3d(
+                (delta.eulerAngles.x > 180) ? (delta.eulerAngles.x - 360.0F) : delta.eulerAngles.x,
+                -((delta.eulerAngles.y > 180) ? (delta.eulerAngles.y - 360.0F) : delta.eulerAngles.y),
+                (delta.eulerAngles.z > 180) ? (delta.eulerAngles.z - 360.0F) : delta.eulerAngles.z
+                );
+        }
+
+        public static Vector3d Invert(this Vector3d vector) 
+        {
+            return new Vector3d(1 / vector.x, 1 / vector.y, 1 / vector.z);
+        }
+
+        public static Vector3d Reorder(this Vector3d vector, int order) 
+        {
+            switch (order) {
+                case 123:
+                    return new Vector3d(vector.x, vector.y, vector.z);
+                case 132:
+                    return new Vector3d(vector.x, vector.z, vector.y);
+                case 213:
+                    return new Vector3d(vector.y, vector.x, vector.z);
+                case 231:
+                    return new Vector3d(vector.y, vector.z, vector.x);
+                case 312:
+                    return new Vector3d(vector.z, vector.x, vector.y);
+                case 321:
+                    return new Vector3d(vector.z, vector.y, vector.x);
+            }
+            throw new ArgumentException("Invalid order", "order");
+        }
+
+        public static Vector3d Sign(this Vector3d vector) 
+        {
+            return new Vector3d(Math.Sign(vector.x), Math.Sign(vector.y), Math.Sign(vector.z));
+        }
+
+        public static Vector3d Clamp(this Vector3d value, double min, double max) 
+        {
+            return new Vector3d(
+                Clamp(value.x, min, max),
+                Clamp(value.y, min, max),
+                Clamp(value.z, min, max)
+                );
+        }
+
+        // end MechJeb import
+        //---------------------------------------
 
     }
 }

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UnityEngine;
 
 namespace RemoteTech.Modules
 {
@@ -13,6 +11,7 @@ namespace RemoteTech.Modules
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return vessel.id; } }
         public bool Powered { get { return Activated; } }
+        public bool Connected { get { return (RTCore.Instance != null && RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this))); } }
         public bool Activated { get { return Unlocked; } set { return; } }
         public bool Animating { get { return false; } }
 
@@ -26,7 +25,7 @@ namespace RemoteTech.Modules
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
         private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
-        private bool Unlocked { get { return ResearchAndDevelopment.GetTechnologyState(TechRequired) == RDTech.State.Available || TechRequired.Equals("None"); } }
+        public bool Unlocked { get { return RTUtil.IsTechUnlocked(TechRequired); } }
 
         [KSPField]
         public bool
@@ -70,8 +69,6 @@ namespace RemoteTech.Modules
             RTPacketResourceCost = 0.0f;
 
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
-//        private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
-//        private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
 
@@ -91,15 +88,18 @@ namespace RemoteTech.Modules
         public virtual void SetState(bool state)
         {
             IsRTActive = state;
-            var satellite = RTCore.Instance.Network[Guid];
-            bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
-            if (mTransmitter == null && route_home)
+            if(RTCore.Instance != null)
             {
-                AddTransmitter();
-            }
-            else if (!route_home && mTransmitter != null)
-            {
-                RemoveTransmitter();
+                var satellite = RTCore.Instance.Network[Guid];
+                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+                if (mTransmitter == null && route_home)
+                {
+                    AddTransmitter();
+                }
+                else if (!route_home && mTransmitter != null)
+                {
+                    RemoveTransmitter();
+                }
             }
         }
 
@@ -233,7 +233,7 @@ namespace RemoteTech.Modules
 
         private void OnVesselModified(Vessel v)
         {
-            if ((mRegisteredId != vessel.id))
+            if (RTCore.Instance != null && mRegisteredId != vessel.id)
             {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
                 mRegisteredId = vessel.id;
@@ -249,31 +249,6 @@ namespace RemoteTech.Modules
         public override string ToString()
         {
             return String.Format("ModuleRTAntennaPassive(Name: {0}, Guid: {1}, Omni: {2})", Name, mRegisteredId, Omni);
-        }
-    }
-
-    [KSPAddon(KSPAddon.Startup.EditorAny, false)]
-    public class ModuleRTAntennaPassive_ReloadPartInfo : MonoBehaviour
-    {
-        public void Start()
-        {
-            StartCoroutine(RefreshPartInfo());
-        }
-
-        private IEnumerator RefreshPartInfo()
-        {
-            yield return null;
-            foreach (var ap in PartLoader.LoadedPartsList.Where(ap => ap.partPrefab.Modules != null && ap.partPrefab.Modules.Contains("ModuleRTAntennaPassive")))
-            {
-                var new_info = new StringBuilder();
-                foreach (PartModule pm in ap.partPrefab.Modules)
-                {
-                    var info = pm.GetInfo();
-                    new_info.Append(info);
-                    if (info != String.Empty) new_info.AppendLine();
-                }
-                ap.moduleInfo = new_info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
-            }
         }
     }
 }

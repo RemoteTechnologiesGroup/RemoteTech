@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,6 +37,14 @@
       <HintPath>Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>KSPUtil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,9 +55,14 @@
       <HintPath>UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddOns\ControlLockAPI.cs" />
+    <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
@@ -65,7 +78,7 @@
     <Compile Include="FlightComputer\FlightCore.cs" />
     <Compile Include="FlightComputer\Commands\ICommand.cs" />
     <Compile Include="FlightComputer\Commands\TargetCommand.cs" />
-    <Compile Include="FlightComputer\PIDControllerV2.cs" />
+    <Compile Include="FlightComputer\PIDControllerV3.cs" />
     <Compile Include="Modules\MissionControlAntenna.cs" />
     <Compile Include="Modules\ProtoSignalProcessor.cs" />
     <Compile Include="RangeModel\RangeModel.cs" />
@@ -91,7 +104,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\ProtoAntenna.cs" />
     <Compile Include="RTCore.cs" />
+    <Compile Include="RTPartInfoReloader.cs" />
     <Compile Include="RTSettings.cs" />
+    <Compile Include="RTSpaceCentre.cs" />
     <Compile Include="RTUtil.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />
@@ -114,12 +129,13 @@
     <Compile Include="UI\FocusOverlay.cs" />
     <Compile Include="UI\FocusFragment.cs" />
     <Compile Include="UI\FlightComputerWindow.cs" />
+    <Compile Include="UI\ManeuverNodeOverlay.cs" />
     <Compile Include="UI\NetworkCone.cs" />
-    <Compile Include="UI\EZGUIPointerDisablePatcher.cs" />
     <Compile Include="UI\FlightUIPatcher.cs" />
     <Compile Include="UI\IFragment.cs" />
     <Compile Include="UI\FilterOverlay.cs" />
     <Compile Include="UI\NetworkLine.cs" />
+    <Compile Include="UI\OptionWindow.cs" />
     <Compile Include="UI\QueueFragment.cs" />
     <Compile Include="UI\RoverFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
@@ -131,46 +147,5 @@
     <Compile Include="RangeModel\AbstractRangeModel.cs" />
     <Compile Include="NetworkFeedback.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\mark.png" />
-    <EmbeddedResource Include="Resources\texAll.png" />
-    <EmbeddedResource Include="Resources\texBackground.png" />
-    <EmbeddedResource Include="Resources\texButton.png" />
-    <EmbeddedResource Include="Resources\texButtonGray.png" />
-    <EmbeddedResource Include="Resources\texButtonGreen.png" />
-    <EmbeddedResource Include="Resources\texButtonRed.png" />
-    <EmbeddedResource Include="Resources\texButtonYellow.png" />
-    <EmbeddedResource Include="Resources\texDish.png" />
-    <EmbeddedResource Include="Resources\texEmpty.png" />
-    <EmbeddedResource Include="Resources\texFlightGreen.png" />
-    <EmbeddedResource Include="Resources\texFlightGreenDown.png" />
-    <EmbeddedResource Include="Resources\texFlightGreenOver.png" />
-    <EmbeddedResource Include="Resources\texFlightRed.png" />
-    <EmbeddedResource Include="Resources\texFlightRedDown.png" />
-    <EmbeddedResource Include="Resources\texFlightRedOver.png" />
-    <EmbeddedResource Include="Resources\texFlightYellow.png" />
-    <EmbeddedResource Include="Resources\texFlightYellowDown.png" />
-    <EmbeddedResource Include="Resources\texFlightYellowOver.png" />
-    <EmbeddedResource Include="Resources\texKnowledgeActive.png" />
-    <EmbeddedResource Include="Resources\texKnowledgeHover.png" />
-    <EmbeddedResource Include="Resources\texKnowledgeNormal.png" />
-    <EmbeddedResource Include="Resources\texOmni.png" />
-    <EmbeddedResource Include="Resources\texOmniDish.png" />
-    <EmbeddedResource Include="Resources\texPath.png" />
-    <EmbeddedResource Include="Resources\texPlanet.png" />
-    <EmbeddedResource Include="Resources\texSatellite.png" />
-    <EmbeddedResource Include="Resources\TimeQuadrantFcStatus.png" />
-    <EmbeddedResource Include="Resources\texNoCone.png" />
-    <EmbeddedResource Include="Resources\texNoOmniDish.png" />
-    <EmbeddedResource Include="Resources\texNoPath.png" />
-    <EmbeddedResource Include="Resources\texCone.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\texBackground_left.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
 </Project>

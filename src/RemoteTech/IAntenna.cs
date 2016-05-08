@@ -8,6 +8,7 @@ namespace RemoteTech
         Guid Guid { get; }
         bool Activated { get; set; }
         bool Powered { get; }
+        bool Connected { get; }
         bool CanTarget { get; }
         Guid Target { get; set; }
         float Dish { get; }
