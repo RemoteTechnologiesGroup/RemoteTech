@@ -151,7 +151,7 @@ namespace RemoteTech.UI
             };
 
             // initial Textures
-            RTUtil.LoadImage(out this.mTexHeadline, "headline.jpg");
+            mTexHeadline = RTUtil.LoadImage("headline");
             // Visual style colors
             this.loadColorTexture(out this.mVSColorDish, this.mSettings.DishConnectionColor);
             this.loadColorTexture(out this.mVSColorOmni, this.mSettings.OmniConnectionColor);
@@ -252,7 +252,7 @@ namespace RemoteTech.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Space(15);
-            GUILayout.Label("Need some help with RemoteTech?\nLook on our online manual or if you can't find your answer, than post your question on our thread. (Browser opens on click)", this.mGuiRunningText);
+            GUILayout.Label("Need some help with RemoteTech?\nLook on our online manual or if you can't find your answer, then post your question on our thread. (Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
                 if(GUILayout.Button("Online manual"))
@@ -388,14 +388,14 @@ namespace RemoteTech.UI
             GUILayout.EndScrollView();
             GUILayout.Space(10);
 
-            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations are hidden behind bodys" : "Ground stations always shown");
+            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations are hidden behind bodies" : "Ground stations always shown");
             GUILayout.Label("If true, ground stations occluded by the body they’re on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.", this.mGuiHintText);
 
-            this.mSettings.HideGroundStationsOnDistance = GUILayout.Toggle(this.mSettings.HideGroundStationsOnDistance, (this.mSettings.HideGroundStationsOnDistance) ? "Ground stations are hidden on a defined distance" : "Ground stations always shown");
-            GUILayout.Label("If true, ground stations will be invisible past a defined distance to the mapview camera.", this.mGuiHintText);
+            this.mSettings.HideGroundStationsOnDistance = GUILayout.Toggle(this.mSettings.HideGroundStationsOnDistance, (this.mSettings.HideGroundStationsOnDistance) ? "Ground stations are hidden on a defined distance" : "Ground stations are always shown");
+            GUILayout.Label("If true, ground stations will be invisible past a defined distance to the map view camera.", this.mGuiHintText);
 
             this.mSettings.ShowMouseOverInfoGroundStations = GUILayout.Toggle(this.mSettings.ShowMouseOverInfoGroundStations, (this.mSettings.ShowMouseOverInfoGroundStations) ? "Mouseover of ground stations enabled" : "Mouseover of ground stations disabled");
-            GUILayout.Label("If enabled you can get some useful informations of a ground station by moving the mouse over it on the map view / tracking station", this.mGuiHintText);
+            GUILayout.Label("If enabled, you can get some useful information of a ground station by mouseover on the map view / Tracking Station.", this.mGuiHintText);
         }
 
         /// <summary>
@@ -404,14 +404,14 @@ namespace RemoteTech.UI
         private void drawMiscellaneousContent()
         {
             GUILayout.Space(10);
-            this.mSettings.ThrottleTimeWarp = GUILayout.Toggle(this.mSettings.ThrottleTimeWarp, (this.mSettings.ThrottleTimeWarp) ? "RemoteTech will throttle timewarp" : "RemoteTech will not throttle timewarp");
+            this.mSettings.ThrottleTimeWarp = GUILayout.Toggle(this.mSettings.ThrottleTimeWarp, (this.mSettings.ThrottleTimeWarp) ? "RemoteTech will throttle time warp" : "RemoteTech will not throttle time warp");
             GUILayout.Label("If set, the flight computer will automatically come out of time warp a few seconds before executing a queued command. If unset, the player is responsible for making sure the craft is not in time warp during scheduled actions.", this.mGuiHintText);
 
             this.mSettings.ThrottleZeroOnNoConnection = GUILayout.Toggle(this.mSettings.ThrottleZeroOnNoConnection, (this.mSettings.ThrottleZeroOnNoConnection) ? "Throttle to zero on no connection" : "Keeps the throttle on no connection");
-            GUILayout.Label("If true, the flight computer cuts the thrust (not on boosters) if you have no connection to mission control.", this.mGuiHintText);
+            GUILayout.Label("If true, the flight computer cuts the thrust (not solid rocket boosters) if you have no connection to Mission Control.", this.mGuiHintText);
 
-            this.mSettings.UpgradeableMissionControlAntennas = GUILayout.Toggle(this.mSettings.UpgradeableMissionControlAntennas, (this.mSettings.UpgradeableMissionControlAntennas) ? "MissionControl antennas are upgradeable": "MissionControl antennas are not upgradeable");
-            GUILayout.Label("If this option is activated, the mission control ground station would be upgradable with the tracking center.", this.mGuiHintText);
+            this.mSettings.UpgradeableMissionControlAntennas = GUILayout.Toggle(this.mSettings.UpgradeableMissionControlAntennas, (this.mSettings.UpgradeableMissionControlAntennas) ? "Mission Control antennas are upgradeable": "Mission Control antennas are not upgradeable");
+            GUILayout.Label("If this option is activated, the Mission Control ground station would be upgradeable with the Tracking center.", this.mGuiHintText);
 
             this.mSettings.AutoInsertKaCAlerts = GUILayout.Toggle(this.mSettings.AutoInsertKaCAlerts, (this.mSettings.AutoInsertKaCAlerts) ? "Auto insert alarms to KaC" : "No alarm inserts to KaC");
             GUILayout.Label("If this option is activated, the flight computer will automatically insert an alarm to the Kerbal Alarm Clock (KaC) mod for burn and maneuver commands. The alarm will be triggered three minutes before the command executes.", this.mGuiHintText);
@@ -466,8 +466,8 @@ namespace RemoteTech.UI
         private void drawCheatContent()
         {
             GUILayout.Space(10);
-            this.mSettings.ControlAntennaWithoutConnection = GUILayout.Toggle(this.mSettings.ControlAntennaWithoutConnection, (this.mSettings.ControlAntennaWithoutConnection) ? "No Connection needed to control antennas" : "Connection is needed to control antennas");
-            GUILayout.Label("You can activate or deactivate antennas even without a connection to ksc.", this.mGuiHintText);
+            this.mSettings.ControlAntennaWithoutConnection = GUILayout.Toggle(this.mSettings.ControlAntennaWithoutConnection, (this.mSettings.ControlAntennaWithoutConnection) ? "No connection is needed to control antennas" : "Connection is needed to control antennas");
+            GUILayout.Label("You can activate or deactivate antennas even without a connection to Mission Control.", this.mGuiHintText);
         }
 
         /// <summary>
