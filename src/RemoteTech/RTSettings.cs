@@ -63,7 +63,8 @@ namespace RemoteTech
         [Persistent] public bool HideGroundStationsOnDistance = true;
         [Persistent] public bool ShowMouseOverInfoGroundStations = true;
         [Persistent] public bool AutoInsertKaCAlerts = true;
-		[Persistent] public int LeadTime = 180;
+        [Persistent] public int FCLeadTime = 180;
+        [Persistent] public bool FCOffAfterExecute = false;
 		[Persistent] public float DistanceToHideGroundStations = 3e7f;
         [Persistent] public Color DishConnectionColor = XKCDColors.Amber;
         [Persistent] public Color OmniConnectionColor = XKCDColors.BrownGrey;

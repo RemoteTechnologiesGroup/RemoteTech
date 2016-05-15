@@ -84,8 +84,16 @@ namespace RemoteTech.FlightComputer.Commands
             {
                 Node.RemoveSelf();
             }
-            // switch FC to Off after a maneuver is completed (and/or Aborted?) instead of KillRot
-            computer.Enqueue(AttitudeCommand.Off(), true, true, true);
+
+            // Flight Computer mode after execution based on settings
+            if (RTSettings.Instance.FCOffAfterExecute)
+            {
+                computer.Enqueue(AttitudeCommand.Off(), true, true, true);
+            }
+            if (!RTSettings.Instance.FCOffAfterExecute)
+            {
+                computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+            }
         }
 
         /// <summary>
@@ -251,7 +259,7 @@ namespace RemoteTech.FlightComputer.Commands
         public override void CommandEnqueued(FlightComputer computer)
         {
 			string KaCAddonLabel = String.Empty;
-			double timetoexec = (this.TimeStamp + this.ExtraDelay) - RTSettings.Instance.LeadTime;
+			double timetoexec = (this.TimeStamp + this.ExtraDelay) - RTSettings.Instance.FCLeadTime;
 
             if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
             {

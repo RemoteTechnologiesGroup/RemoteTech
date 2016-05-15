@@ -97,9 +97,16 @@ namespace RemoteTech.FlightComputer.Commands
                 finished = (bool)this.callReflectionMember(this.ReflectionExecuteMethod);
                 if (this.AbortCommand)
                 {
-                    // disable FC after aborting this command
-                    computer.Enqueue(AttitudeCommand.Off(), true, true, true);
-                    finished = true;
+                    if (RTSettings.Instance.FCOffAfterExecute)
+                    {
+                        computer.Enqueue(AttitudeCommand.Off(), true, true, true);
+                        finished = true;
+                    }
+                    if (!RTSettings.Instance.FCOffAfterExecute)
+                    {
+                        computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+                        finished = true;
+                    }
                 }
             }
 
