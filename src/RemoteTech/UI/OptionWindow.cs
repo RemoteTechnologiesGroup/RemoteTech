@@ -389,7 +389,7 @@ namespace RemoteTech.UI
             GUILayout.Space(10);
 
             this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground Stations are hidden behind bodies" : "Ground Stations always shown");
-            GUILayout.Label("ON: Ground Stations are occluded by the planet or body, and are not visible behind it.\OFF: Ground Stations are always shown (see range option below).", this.mGuiHintText);
+            GUILayout.Label("ON: Ground Stations are occluded by the planet or body, and are not visible behind it.\nOFF: Ground Stations are always shown (see range option below).", this.mGuiHintText);
 
             this.mSettings.HideGroundStationsOnDistance = GUILayout.Toggle(this.mSettings.HideGroundStationsOnDistance, (this.mSettings.HideGroundStationsOnDistance) ? "Ground Stations are hidden at a defined distance" : "Ground Stations always shown");
             GUILayout.Label("ON: Ground Stations will not be shown past a defined distance to the mapview camera.\nOFF: Ground Stations are shown regardless of distance.", this.mGuiHintText);
