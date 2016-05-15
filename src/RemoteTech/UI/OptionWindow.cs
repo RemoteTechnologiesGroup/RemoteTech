@@ -252,7 +252,7 @@ namespace RemoteTech.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Space(15);
-            GUILayout.Label("Need some help with RemoteTech?\nRead the online manual and tutorials.\nIf you can't find your answer, post in the forum thread.\n(Browser opens on click)", this.mGuiRunningText);
+            GUILayout.Label("Need some help with RemoteTech?  Check out the online manual and tutorials.\nIf you can't find your answer, post in the forum thread.\n(Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
                 if(GUILayout.Button("Online Manual and Tutorials"))
