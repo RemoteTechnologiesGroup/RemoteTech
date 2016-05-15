@@ -82,7 +82,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Executes this command and invokes the <see cref="ReflectionExecuteMethod"/>
         /// on the <see cref="ReflectionType"/>. When this command is aborted the
-        /// fallback commnd is "KillRot".
+        /// fallback commnd is "Off".
         /// </summary>
         /// <param name="computer">Current flightcomputer</param>
         /// <param name="ctrlState">Current FlightCtrlState</param>
@@ -97,8 +97,8 @@ namespace RemoteTech.FlightComputer.Commands
                 finished = (bool)this.callReflectionMember(this.ReflectionExecuteMethod);
                 if (this.AbortCommand)
                 {
-                    // enqueue killRot after aborting this command
-                    computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+                    // disable FC after aborting this command
+                    computer.Enqueue(AttitudeCommand.Off(), true, true, true);
                     finished = true;
                 }
             }

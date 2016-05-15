@@ -84,8 +84,8 @@ namespace RemoteTech.FlightComputer.Commands
             {
                 Node.RemoveSelf();
             }
-            // enqueue kill rot
-            computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+            // switch FC to Off after a maneuver is completed (and/or Aborted?) instead of KillRot
+            computer.Enqueue(AttitudeCommand.Off(), true, true, true);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace RemoteTech.FlightComputer.Commands
         public override bool Execute(FlightComputer computer, FlightCtrlState ctrlState)
         {
             // Halt the command if we reached our target or were command to abort by the previous tick
-            if (this.RemainingDelta <= 0.01 || this.abortOnNextExecute)
+            if (this.RemainingDelta <= 0.1 || this.abortOnNextExecute)
             {
                 this.AbortManeuver(computer);
                 return true;
@@ -250,8 +250,8 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flightcomputer</param>
         public override void CommandEnqueued(FlightComputer computer)
         {
-            string KaCAddonLabel = String.Empty;
-            double timetoexec = (this.TimeStamp + this.ExtraDelay) - 180;
+			string KaCAddonLabel = String.Empty;
+			double timetoexec = (this.TimeStamp + this.ExtraDelay) - RTSettings.Instance.LeadTime;
 
             if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
             {
