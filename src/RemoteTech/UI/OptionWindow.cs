@@ -252,10 +252,10 @@ namespace RemoteTech.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Space(15);
-            GUILayout.Label("Need some help with RemoteTech?\nLook on our online manual or if you can't find your answer, then post your question on our thread. (Browser opens on click)", this.mGuiRunningText);
+            GUILayout.Label("Need some help with RemoteTech?\nRead the online manual and tutorials.  If you can't find your answer, post in the forum thread.  (Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
-                if(GUILayout.Button("Online manual"))
+                if(GUILayout.Button("Online Manual and Tutorials"))
                 {
                     Application.OpenURL("http://remotetechnologiesgroup.github.io/RemoteTech/");
                 }
@@ -273,11 +273,11 @@ namespace RemoteTech.UI
         private void drawWorldScaleContent()
         {
             GUILayout.Label("Consumption Multiplier: (" + this.mSettings.ConsumptionMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
-            GUILayout.Label("If set to a value other than 1, the power consumption of all antennas will be increased or decreased by this factor. Does not affect energy consumption for science transmissions.", this.mGuiHintText);
+            GUILayout.Label("If set to a value other than 1, the power consumption of all antennas will be increased or decreased by this factor.  Does not affect energy consumption for science transmissions.", this.mGuiHintText);
             this.mSettings.ConsumptionMultiplier = GUILayout.HorizontalSlider(this.mSettings.ConsumptionMultiplier, 0, 2);
 
             GUILayout.Label("Range Multiplier: (" + this.mSettings.RangeMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
-            GUILayout.Label("If set to a value other than 1, the range of all antennas will be increased or decreased by this factor. Does not affect Mission Control range.", this.mGuiHintText);
+            GUILayout.Label("If set to a value other than 1, the range of all antennas will be increased or decreased by this factor.  Does not affect Mission Control range.", this.mGuiHintText);
             this.mSettings.RangeMultiplier = GUILayout.HorizontalSlider(this.mSettings.RangeMultiplier, 0, 2);
         }
 
@@ -288,10 +288,10 @@ namespace RemoteTech.UI
         {
             GUILayout.Space(10);
             this.mSettings.EnableSignalDelay = GUILayout.Toggle(this.mSettings.EnableSignalDelay, (this.mSettings.EnableSignalDelay) ? "Signal delay enabled" : "Signal delay disabled");
-            GUILayout.Label("If set, then all commands sent to RemoteTech-compatible probe cores will be delayed, depending on the distance to the probe and the SpeedOfLight. If unset, then all commands will be executed instantaneously, so long as there is a connection of any length between the probe and Mission Control.", this.mGuiHintText);
+            GUILayout.Label("When enabled, all commands sent to RemoteTech-compatible probe cores transmit at the speed of light and are not executed immediately.  When disabled, all commands will be executed immediately, although a working connection to Mission Control is still required.", this.mGuiHintText);
 
-            GUILayout.Label("Range Model type", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
-            GUILayout.Label("This setting controls how the game determines whether two antennas are in range of each other. Read more on our online manual about the difference for each rule.", this.mGuiHintText);
+            GUILayout.Label("Range Model Mode", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
+            GUILayout.Label("This setting controls how the game determines whether two antennas are in range of each other.  Read more on our online manual about the difference for each rule.", this.mGuiHintText);
             GUILayout.BeginHorizontal();
             {
                 RTUtil.FakeStateButton(new GUIContent("Standard"), () => this.mSettings.RangeModelType = RangeModel.RangeModel.Standard, (int)this.mSettings.RangeModelType, (int)RangeModel.RangeModel.Standard, GUILayout.Height(20));
@@ -300,7 +300,7 @@ namespace RemoteTech.UI
             GUILayout.EndHorizontal();
 
             GUILayout.Label("Multiple Antenna Multiplier : (" + this.mSettings.MultipleAntennaMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
-            GUILayout.Label("This setting lets multiple omnidirectional antennas on the same craft act as a single, slightly larger antenna. The default value of 0.0 means that omni antennas do not boost each other; a value of 1.0 means that the effective range of the satellite equals the total range of all omni antennas on board. The effective range scales linearly between these two extremes. This option works with both the Standard and Root range models.", this.mGuiHintText);
+            GUILayout.Label("This setting lets multiple omnidirectional antennas on the same craft act as a single, slightly larger antenna.  The default value of 0.0 means that omni antennas do not boost each other; a value of 1.0 means that the effective range of the satellite equals the total range of all omni antennas on board.  The effective range scales linearly between these two extremes.  This option works with both the Standard and Root range models.", this.mGuiHintText);
             this.mSettings.MultipleAntennaMultiplier = GUILayout.HorizontalSlider((float)this.mSettings.MultipleAntennaMultiplier, 0, 1);
             if(this.mSettings.MultipleAntennaMultiplier <= 0.49)
             {
@@ -388,14 +388,14 @@ namespace RemoteTech.UI
             GUILayout.EndScrollView();
             GUILayout.Space(10);
 
-            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground stations are hidden behind bodies" : "Ground stations always shown");
-            GUILayout.Label("If true, ground stations occluded by the body they’re on will not be displayed. This prevents ground stations on the other side of the planet being visible through the planet itself.", this.mGuiHintText);
+            this.mSettings.HideGroundStationsBehindBody = GUILayout.Toggle(this.mSettings.HideGroundStationsBehindBody, (this.mSettings.HideGroundStationsBehindBody) ? "Ground Stations are hidden behind bodies" : "Ground Stations always shown");
+            GUILayout.Label("When enabled, Ground Stations are occluded by the planet or body, and not visible behind it.  When disabled, Ground Stations are always shown (see range option below).", this.mGuiHintText);
 
-            this.mSettings.HideGroundStationsOnDistance = GUILayout.Toggle(this.mSettings.HideGroundStationsOnDistance, (this.mSettings.HideGroundStationsOnDistance) ? "Ground stations are hidden on a defined distance" : "Ground stations are always shown");
-            GUILayout.Label("If true, ground stations will be invisible past a defined distance to the map view camera.", this.mGuiHintText);
+            this.mSettings.HideGroundStationsOnDistance = GUILayout.Toggle(this.mSettings.HideGroundStationsOnDistance, (this.mSettings.HideGroundStationsOnDistance) ? "Ground Stations are hidden at a defined distance" : "Ground Stations always shown");
+            GUILayout.Label("When enabled, Ground Stations will not be shown past a defined distance to the mapview camera.  When disabled, Ground Stations are shown regardless of distance.", this.mGuiHintText);
 
-            this.mSettings.ShowMouseOverInfoGroundStations = GUILayout.Toggle(this.mSettings.ShowMouseOverInfoGroundStations, (this.mSettings.ShowMouseOverInfoGroundStations) ? "Mouseover of ground stations enabled" : "Mouseover of ground stations disabled");
-            GUILayout.Label("If enabled, you can get some useful information of a ground station by mouseover on the map view / Tracking Station.", this.mGuiHintText);
+            this.mSettings.ShowMouseOverInfoGroundStations = GUILayout.Toggle(this.mSettings.ShowMouseOverInfoGroundStations, (this.mSettings.ShowMouseOverInfoGroundStations) ? "Mouseover of Ground Stations enabled" : "Mouseover of Ground Stations disabled");
+            GUILayout.Label("When enabled, some useful information is shown when you mouseover a Ground Station on the map view or Tracking Station.  When disabled, information isn't shown during mouseover.", this.mGuiHintText);
         }
 
         /// <summary>
@@ -405,16 +405,16 @@ namespace RemoteTech.UI
         {
             GUILayout.Space(10);
             this.mSettings.ThrottleTimeWarp = GUILayout.Toggle(this.mSettings.ThrottleTimeWarp, (this.mSettings.ThrottleTimeWarp) ? "RemoteTech will throttle time warp" : "RemoteTech will not throttle time warp");
-            GUILayout.Label("If set, the flight computer will automatically come out of time warp a few seconds before executing a queued command. If unset, the player is responsible for making sure the craft is not in time warp during scheduled actions.", this.mGuiHintText);
+            GUILayout.Label("When enabled, the flight computer will automatically stop time warp a few seconds before executing a queued command.  When disabled, the player is responsible for controlling time warp during scheduled actions.", this.mGuiHintText);
 
-            this.mSettings.ThrottleZeroOnNoConnection = GUILayout.Toggle(this.mSettings.ThrottleZeroOnNoConnection, (this.mSettings.ThrottleZeroOnNoConnection) ? "Throttle to zero on no connection" : "Keeps the throttle on no connection");
-            GUILayout.Label("If true, the flight computer cuts the thrust (not solid rocket boosters) if you have no connection to Mission Control.", this.mGuiHintText);
+            this.mSettings.ThrottleZeroOnNoConnection = GUILayout.Toggle(this.mSettings.ThrottleZeroOnNoConnection, (this.mSettings.ThrottleZeroOnNoConnection) ? "Throttle to zero on loss of connection" : "Throttle unaffected by loss of connection");
+            GUILayout.Label("When enabled, the flight computer cuts the thrust if you lose connection to Mission Control.  When disabled, the throttle is not adjusted automatically.", this.mGuiHintText);
 
             this.mSettings.UpgradeableMissionControlAntennas = GUILayout.Toggle(this.mSettings.UpgradeableMissionControlAntennas, (this.mSettings.UpgradeableMissionControlAntennas) ? "Mission Control antennas are upgradeable": "Mission Control antennas are not upgradeable");
-            GUILayout.Label("If this option is activated, the Mission Control ground station would be upgradeable with the Tracking center.", this.mGuiHintText);
+            GUILayout.Label("When enabled, Mission Control antenna range is upgraded when the Tracking Center is upgraded.  When disabled, Mission Control antenna range isn't upgradeable.", this.mGuiHintText);
 
-            this.mSettings.AutoInsertKaCAlerts = GUILayout.Toggle(this.mSettings.AutoInsertKaCAlerts, (this.mSettings.AutoInsertKaCAlerts) ? "Auto insert alarms to KaC" : "No alarm inserts to KaC");
-            GUILayout.Label("If this option is activated, the flight computer will automatically insert an alarm to the Kerbal Alarm Clock (KaC) mod for burn and maneuver commands. The alarm will be triggered three minutes before the command executes.", this.mGuiHintText);
+            this.mSettings.AutoInsertKaCAlerts = GUILayout.Toggle(this.mSettings.AutoInsertKaCAlerts, (this.mSettings.AutoInsertKaCAlerts) ? "Alarms added to Kerbal Alarm Clock" : "No alarms added to Kerbal Alarm Clock");
+            GUILayout.Label("When enabled, the flight computer will automatically add alarms to the Kerbal Alarm Clock mod for burn and maneuver commands.  The alarm goes off 3 minutes before the command executes.", this.mGuiHintText);
         }
 
         /// <summary>
@@ -422,7 +422,7 @@ namespace RemoteTech.UI
         /// </summary>
         private void drawPresetsContent()
         {
-            GUILayout.Label("Other mods can deliver their own RemoteTech_Settings.cfg and override config values. Here you can see what presets we've loaded:", this.mGuiRunningText);
+            GUILayout.Label("Other mods can deliver their own RemoteTech_Settings.cfg and override config values.  Here you can see what presets we've loaded:", this.mGuiRunningText);
             GUILayout.Space(15);
 
             List<String> presetList = this.mSettings.PreSets;
@@ -466,8 +466,8 @@ namespace RemoteTech.UI
         private void drawCheatContent()
         {
             GUILayout.Space(10);
-            this.mSettings.ControlAntennaWithoutConnection = GUILayout.Toggle(this.mSettings.ControlAntennaWithoutConnection, (this.mSettings.ControlAntennaWithoutConnection) ? "No connection is needed to control antennas" : "Connection is needed to control antennas");
-            GUILayout.Label("You can activate or deactivate antennas even without a connection to Mission Control.", this.mGuiHintText);
+            this.mSettings.ControlAntennaWithoutConnection = GUILayout.Toggle(this.mSettings.ControlAntennaWithoutConnection, (this.mSettings.ControlAntennaWithoutConnection) ? "No Connection needed to control antennas" : "Connection is needed to control antennas");
+            GUILayout.Label("When enabled, antennas can be activated, deactivated and targeted without a connection.", this.mGuiHintText);
         }
 
         /// <summary>
