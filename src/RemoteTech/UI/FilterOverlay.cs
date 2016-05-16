@@ -79,8 +79,8 @@ namespace RemoteTech.UI
         {
             get
             {
-                float width = mTextures.Dish.width * GameSettings.UI_SCALE;
-                float height = mTextures.Dish.height * GameSettings.UI_SCALE;
+                float width = 350;
+                float height = 350;
                 float posX = Screen.width - width;
 
                 // mirror to the left side on the tracking station
@@ -95,23 +95,26 @@ namespace RemoteTech.UI
 
                 return new Rect(posX, Screen.height - height, width, height);
             }
+
         }
 
         private Rect PositionAntenna
         {
             get
             {
-                var positionSatellite = PositionSatellite;
-                var posX = positionSatellite.x - positionSatellite.width;
+                var width = 350;
+                var height = 350;
+                var posX = PositionSatellite.x - width;
 
                 // mirror to the left side on the tracking station
                 if (this.onTrackingStation)
                 {
-                    posX = positionSatellite.x + positionSatellite.width;
+                    posX = PositionSatellite.x + PositionSatellite.width;
                 }
 
-                return new Rect(posX, Screen.height - positionSatellite.height, positionSatellite.width, positionSatellite.height);
+                return new Rect(posX, Screen.height - height, width, height);
             }
+
         }
 
         private Texture2D TextureComButton
