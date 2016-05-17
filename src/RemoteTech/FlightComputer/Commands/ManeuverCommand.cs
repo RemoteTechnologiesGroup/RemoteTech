@@ -258,8 +258,8 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flightcomputer</param>
         public override void CommandEnqueued(FlightComputer computer)
         {
-			string KaCAddonLabel = String.Empty;
-			double timetoexec = (this.TimeStamp + this.ExtraDelay) - RTSettings.Instance.FCLeadTime;
+            string KaCAddonLabel = String.Empty;
+            double timetoexec = (this.TimeStamp + this.ExtraDelay) - RTSettings.Instance.FCLeadTime;
 
             if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
             {
