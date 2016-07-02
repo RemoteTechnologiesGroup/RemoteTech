@@ -201,11 +201,11 @@ namespace RemoteTech.UI
 
 
             GUILayout.Space(10);
-            GUILayout.Label("Cheat options");
+            GUILayout.Label("Cheat Options");
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("Signal through bodys: ", GUILayout.Width(firstColWidth));
+                GUILayout.Label("Signal Through Bodies: ", GUILayout.Width(firstColWidth));
                 int cheatEVAFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
                 RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatEVAFuel, 1);
                 RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatEVAFuel, 0);
