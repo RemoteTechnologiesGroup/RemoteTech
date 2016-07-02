@@ -1,3 +1,19 @@
+Version 1.7.1
+========================================
+Released July 2, 2016
+
+KSP 1.1.3 update
+
+General
+--------------------
+
+- Updated to work with KSP 1.1.3
+- Updated ModuleManager
+- Fixed tracking station dish button
+- Support for Procedural Probe Cores
+- Wording/typo fixes
+
+
 Version 1.7.0
 ========================================
 Released May 6, 2016
