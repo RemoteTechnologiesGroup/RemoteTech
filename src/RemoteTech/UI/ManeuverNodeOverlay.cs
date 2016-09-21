@@ -92,7 +92,7 @@ namespace RemoteTech.UI
                         if (node.attachedGizmo == null || node.UT < RTUtil.GameTime) continue;
 
                         ManeuverGizmo gizmo = node.attachedGizmo;
-                        ScreenSafeUIButton gizmoDeleteBtn = gizmo.deleteBtn;
+                        UnityEngine.UI.Button gizmoDeleteBtn = gizmo.deleteBtn;
 
                         // We are on the right gizmo but no buttons are visible so skip the rest
 						if (!gizmoDeleteBtn.GetComponent<Renderer>().isVisible)
