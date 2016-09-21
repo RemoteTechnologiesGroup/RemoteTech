@@ -110,7 +110,7 @@ namespace RemoteTech.Modules
 
         private State UpdateControlState()
         {
-            IsRTPowered = part.isControlSource;
+            IsRTPowered = part.isControlSource > Vessel.ControlLevel.NONE;
             if (RTCore.Instance == null)
             {
                 return State.Operational;
