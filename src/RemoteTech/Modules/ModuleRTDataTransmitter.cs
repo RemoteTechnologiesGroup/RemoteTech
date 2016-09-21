@@ -93,9 +93,9 @@ namespace RemoteTech.Modules
                     float x64PacketInterval = (Time.time - time1);
 
                     RTLog.Notify("Changing RnDCommsStream timeout from {0} to {1}", PacketInterval, x64PacketInterval);
-
+                    //TODO (porting to 1.2): check if scienceData.baseTransmitValue alone or with scienceData.transmitBonus
                     commStream = new RnDCommsStream(subject, scienceData.dataAmount, x64PacketInterval,
-                                            scienceData.transmitValue, false, ResearchAndDevelopment.Instance);
+                                            scienceData.baseTransmitValue, false, ResearchAndDevelopment.Instance);
                 }
                 //StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
                 float power = 0;
