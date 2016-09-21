@@ -380,8 +380,8 @@ namespace RemoteTech.FlightComputer
             {
                 Vector3d torque = SteeringHelper.GetTorque(Vessel,
                     Vessel.ctrlState != null ? Vessel.ctrlState.mainThrottle : 0.0f);
-                var CoM = Vessel.findWorldCenterOfMass();
-                var MoI = Vessel.findLocalMOI(CoM);
+                var CoM = Vessel.CoM;
+                var MoI = Vessel.MOI;
 
                 Vector3d ratio = new Vector3d(
                                  torque.x != 0 ? MoI.x / torque.x : 0,
