@@ -51,10 +51,10 @@ namespace RemoteTech.FlightComputer
                                                .First(fi => fi.FieldType == typeof(BaseEvent));
 
                         BaseEventList eventList = originalEvent.listParent;
-                        int listIndex = eventList.IndexOf(originalEvent);
-
+                        int listIndex = eventList.IndexOf(originalEvent);                      
+                        
                         // create the new BaseEvent
-                        BaseEvent hookedEvent = Wrapper.CreateWrapper(originalEvent, pass, ignore_delay);
+                        BaseEvent hookedEvent = Wrapper.CreateWrapper(originalEvent, pass, ignore_delay, (KSPEvent)customAttributes[0]);
                         eventList.RemoveAt(listIndex);
                         eventList.Add(hookedEvent);
 
@@ -68,8 +68,8 @@ namespace RemoteTech.FlightComputer
         {
             private BaseEvent originalEvent;
 
-            public WrappedEvent(BaseEvent originalEvent, BaseEventList baseParentList, string name, BaseEventDelegate baseActionDelegate)
-                : base(baseParentList, name, baseActionDelegate)
+            public WrappedEvent(BaseEvent originalEvent, BaseEventList baseParentList, string name, BaseEventDelegate baseActionDelegate, KSPEvent kspEvent)
+                : base(baseParentList, name, baseActionDelegate, kspEvent)
             {
                 this.originalEvent = originalEvent;
             }
@@ -93,12 +93,12 @@ namespace RemoteTech.FlightComputer
                 mIgnoreDelay = ignore_delay;
             }
 
-            public static BaseEvent CreateWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
+            public static BaseEvent CreateWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay, KSPEvent kspEvent)
             {
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);
                 Wrapper wrapper = new Wrapper(original, passthrough, ignore_delay);
-                BaseEvent new_event = new WrappedEvent(original, original.listParent, original.name, wrapper.Invoke);
+                BaseEvent new_event = new WrappedEvent(original, original.listParent, original.name, wrapper.Invoke, kspEvent);
                 new_event.OnLoad(cn);
 
                 return new_event;
