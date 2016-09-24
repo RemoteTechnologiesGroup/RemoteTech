@@ -66,7 +66,7 @@ namespace RemoteTech
             GameEvents.onShowUI.Add(UIOn);
             GameEvents.onHideUI.Add(UIOff);
 
-            // needed for patch the flight UI
+            // required to patch the flight UI
             GameEvents.onLevelWasLoaded.Add(onLevelWasLoaded);
 
             RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
@@ -92,10 +92,21 @@ namespace RemoteTech
         /// <summary>
         /// Used to be notified when a level is loaded. We use it to patch the flight UI.
         /// Note: when the patch has been done, this function is removed from the callbacks.
+        /// This avoid to clutter the Update() or OnGUI() calls as we only want to execute it once.
         /// </summary>
         /// <param name="gameScene">The current game scene that is loaded.</param>
         public void onLevelWasLoaded(GameScenes gameScene)
         {
+            if(gameScene == GameScenes.SPACECENTER)
+            {
+                if (HighLogic.CurrentGame != null)
+                {
+                    //disable CommNet
+                    UnityEngine.Debug.Log("Disabling CommNet");
+                    HighLogic.CurrentGame.Parameters.Difficulty.EnableCommNet = false;
+                }
+            }
+            // Check if the loaded level is the flight scene
             if(gameScene == GameScenes.FLIGHT)
             {
                 if (FlightGlobals.ready)
