@@ -119,8 +119,11 @@ namespace RemoteTech.UI
                 return;
             }
 
-            var skin = (GUISkin)MonoBehaviour.Instantiate(HighLogic.Skin);
+            // create a style (for the connection / delay text) from the high logic skin label style.
+            var skin = UnityEngine.Object.Instantiate(HighLogic.Skin);
             mTextStyle = new GUIStyle(skin.label);
+            mTextStyle.alignment = TextAnchor.MiddleLeft;
+            mTextStyle.wordWrap = false;
         }
 
         /// <summary>
@@ -149,13 +152,14 @@ namespace RemoteTech.UI
             // draw the image
             GUI.DrawTexture(pos, mTexBackground);
 
-            // draw the delay-text
+            // get color for the delay-text
             mTextStyle.normal.textColor = new Color(0.56078f, 0.10196f, 0.07450f);
             if (this.mVessel != null && this.mVessel.Connections.Any())
             {
                 mTextStyle.normal.textColor = XKCDColors.GreenApple;
             }
 
+            // draw connection / delay text
             GUI.Label(delaytextPosition, DisplayText, mTextStyle);
 
             // draw the flightcomputer button to the right relative to the delaytext position
