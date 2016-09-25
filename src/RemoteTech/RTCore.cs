@@ -70,7 +70,7 @@ namespace RemoteTech
 
             foreach (var vessel in FlightGlobals.Vessels)
             {
-                if (vessel.vesselType > VesselType.Unknown)
+                if ((vessel.vesselType > VesselType.Unknown) && (vessel.vesselType != VesselType.Flag))
                 {
                     Satellites.RegisterProto(vessel);
                     Antennas.RegisterProtos(vessel);
