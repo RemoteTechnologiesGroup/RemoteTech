@@ -66,15 +66,15 @@ namespace RemoteTech
             GameEvents.onShowUI.Add(UIOn);
             GameEvents.onHideUI.Add(UIOff);
 
-            // required to patch the flight UI
-            GameEvents.onLevelWasLoaded.Add(onLevelWasLoaded);
-
             RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
 
             foreach (var vessel in FlightGlobals.Vessels)
             {
-                Satellites.RegisterProto(vessel);
-                Antennas.RegisterProtos(vessel);
+                if (vessel.vesselType > VesselType.Unknown)
+                {
+                    Satellites.RegisterProto(vessel);
+                    Antennas.RegisterProtos(vessel);
+                }
             }
         }
 
@@ -89,35 +89,6 @@ namespace RemoteTech
             mGUIVisible = false;
         }
 
-        /// <summary>
-        /// Used to be notified when a level is loaded. We use it to patch the flight UI.
-        /// Note: when the patch has been done, this function is removed from the callbacks.
-        /// This avoid to clutter the Update() or OnGUI() calls as we only want to execute it once.
-        /// </summary>
-        /// <param name="gameScene">The current game scene that is loaded.</param>
-        public void onLevelWasLoaded(GameScenes gameScene)
-        {
-            if(gameScene == GameScenes.SPACECENTER)
-            {
-                if (HighLogic.CurrentGame != null)
-                {
-                    //disable CommNet
-                    UnityEngine.Debug.Log("Disabling CommNet");
-                    HighLogic.CurrentGame.Parameters.Difficulty.EnableCommNet = false;
-                }
-            }
-            // Check if the loaded level is the flight scene
-            if(gameScene == GameScenes.FLIGHT)
-            {
-                if (FlightGlobals.ready)
-                {
-                    // patch the flight UI
-                    FlightUIPatcher.Patch();
-                    // we need to do the UI patch only once, so we can remove the event callback
-                    GameEvents.onLevelWasLoaded.Remove(onLevelWasLoaded);
-                }
-            }
-        }
 
         public void Update()
         {
@@ -279,6 +250,7 @@ namespace RemoteTech
             base.Start();
             if (RTCore.Instance != null)
             {
+                FlightUIPatcher.Patch();
                 base.ManeuverNodeOverlay = new ManeuverNodeOverlay();
                 base.ManeuverNodeOverlay.OnEnterMapView();
             }
