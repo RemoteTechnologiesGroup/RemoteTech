@@ -13,9 +13,6 @@ namespace RemoteTech.UI
         /// Image for position access
         /// </summary>
         private UnityEngine.UI.Image mTimewarpImage;
-
-        private TMPro.TextMeshProUGUI mText;
-
         /// <summary>
         /// Delay-Text style
         /// </summary>
@@ -122,35 +119,8 @@ namespace RemoteTech.UI
                 return;
             }
 
-            // find the MET display
-            var metDisplay = GameObject.FindObjectOfType<METDisplay>();
-            if (metDisplay == null)
-            {
-                RTLog.Notify("No MET Display");
-                return;
-            }
-
-            // instantiate a new game object and set it to the UI layer.
-            GameObject gameObjText = new GameObject("TextTimeWarpDecorator");
-            gameObjText.layer = LayerMask.NameToLayer("UI");
-
-            // add a rect transform to the game object
-            RectTransform rectTrans = gameObjText.AddComponent<RectTransform>();
-            rectTrans.localScale = new Vector3(1, 1, 1);
-            rectTrans.localPosition.Set(0, 0, 0);
-
-            // add text mesh to game object and set its properties
-            mText = gameObjText.AddComponent<TMPro.TextMeshProUGUI>();
-            mText.fontSize = metDisplay.text.fontSize;
-            mText.font = metDisplay.text.font;
-            mText.fontSharedMaterial = metDisplay.text.fontMaterial;
-            mText.color = metDisplay.text.color;
-            mText.autoSizeTextContainer = true;
-            mText.enableWordWrapping = false;
-            mText.isOverlay = true;            
-
-            // set the MET display as parent of the game object
-            gameObjText.transform.SetParent(metDisplay.transform, false);
+            var skin = (GUISkin)MonoBehaviour.Instantiate(HighLogic.Skin);
+            mTextStyle = new GUIStyle(skin.label);
         }
 
         /// <summary>
@@ -162,11 +132,7 @@ namespace RemoteTech.UI
             if (mTimewarpImage == null)
                 return;
 
-            //RTLog.Notify("mVessel: " + (mVessel == null).ToString());
-            //RTLog.Notify("stats: " + RTCore.Instance.Satellites.ToArray().Length); 
-
-
-             Vector2 screenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
+            Vector2 screenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
 
             float scale = GameSettings.UI_SCALE;
             float topLeftTotimeQuadrant = Screen.height - (screenCoord.y - (mTimewarpImage.preferredHeight * scale));
@@ -184,15 +150,13 @@ namespace RemoteTech.UI
             GUI.DrawTexture(pos, mTexBackground);
 
             // draw the delay-text
-            mText.color = new Color(0.56078f, 0.10196f, 0.07450f);
+            mTextStyle.normal.textColor = new Color(0.56078f, 0.10196f, 0.07450f);
             if (this.mVessel != null && this.mVessel.Connections.Any())
             {
-                mText.color = XKCDColors.GreenApple;
+                mTextStyle.normal.textColor = XKCDColors.GreenApple;
             }
-            
-            //GUI.Label(delaytextPosition, DisplayText, mTextStyle);
-            mText.text = DisplayText;
 
+            GUI.Label(delaytextPosition, DisplayText, mTextStyle);
 
             // draw the flightcomputer button to the right relative to the delaytext position
             Rect btnPos = new Rect((pos.x + 130.0f) * scale, topLeftTotimeQuadrant + 2 * scale, 21.0f * scale, 21.0f * scale);
