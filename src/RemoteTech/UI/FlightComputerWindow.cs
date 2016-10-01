@@ -42,8 +42,8 @@ namespace RemoteTech.UI
         {
             mSavePosition = true;
             mFlightComputer = fc;
-            mAttitude = new AttitudeFragment(fc, () => mQueueEnabled = !mQueueEnabled);
-            mRover = new RoverFragment(fc, () => mQueueEnabled = !mQueueEnabled);
+            mAttitude = new AttitudeFragment(fc, () => OnQueue());
+            mRover = new RoverFragment(fc, () => OnQueue());
             mQueue = new QueueFragment(fc);
             mQueueEnabled = false;
         }
@@ -103,6 +103,20 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
             base.Window(id);
+        }
+
+        private void OnQueue()
+        {
+            mQueueEnabled = !mQueueEnabled;
+            if(mQueueEnabled)
+            {
+                this.Title = "Flight Computer: " + mFlightComputer.Vessel.vesselName.Substring(0, Math.Min(25, mFlightComputer.Vessel.vesselName.Length));
+            }
+            else
+            {
+                this.Title = "Flight Computer";
+            }
+
         }
     }
 }
