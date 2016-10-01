@@ -12,7 +12,7 @@ namespace RemoteTech.UI
         /// <summary>Defines the option window width</summary>
         const uint WINDOW_WIDTH = 430;
         /// <summary>Defines the option window height</summary>
-        const uint WINDOW_HEIGHT = 300;
+        const uint WINDOW_HEIGHT = 320;
 
         /// <summary>Option menu items</summary>
         public enum OPTION_MENUS
@@ -243,7 +243,7 @@ namespace RemoteTech.UI
             GUILayout.Space(10);
             GUILayout.Label("Use the small menu buttons above to navigate through the different options.", this.mGuiRunningText);
 
-            GUILayout.Space(15);
+            GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(90);
@@ -251,7 +251,15 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(15);
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Space(90);
+                this.mSettings.CommNetEnabled = GUILayout.Toggle(this.mSettings.CommNetEnabled, (this.mSettings.CommNetEnabled) ? "CommNet enabled" : "CommNet disabled");
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10);
             GUILayout.Label("Need some help with RemoteTech?  Check out the online manual and tutorials.  If you can't find your answer, post in the forum thread.\n(Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
@@ -424,7 +432,7 @@ namespace RemoteTech.UI
                 GUILayout.Label("- no presets found", this.mGuiRunningText);
             }
 
-            for(int i=presetList.Count-1;i>=0;i--)
+            for(int i = presetList.Count - 1; i >= 0; --i)
             {
                 String FolderName = presetList[i].Replace("/RemoteTechSettings", ".cfg").Trim();
                 GUILayout.BeginHorizontal("box", GUILayout.MaxHeight(15));
