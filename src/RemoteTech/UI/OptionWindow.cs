@@ -301,15 +301,7 @@ namespace RemoteTech.UI
 
             GUILayout.Label("Multiple Antenna Multiplier : (" + this.mSettings.MultipleAntennaMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("Multiple omnidirectional antennas on the same craft work together.\nThe default value of 0 means this is disabled.\nThe largest value of 1.0 sums the range of all omnidirectional antennas to provide a greater effective range.\nThe effective range scales linearly and this option works with both the Standard and Root range models.", this.mGuiHintText);
-            this.mSettings.MultipleAntennaMultiplier = GUILayout.HorizontalSlider((float)this.mSettings.MultipleAntennaMultiplier, 0, 1);
-            if(this.mSettings.MultipleAntennaMultiplier <= 0.49)
-            {
-                this.mSettings.MultipleAntennaMultiplier = 0;
-            }
-            else
-            {
-                this.mSettings.MultipleAntennaMultiplier = 1;
-            }
+            this.mSettings.MultipleAntennaMultiplier = Math.Round(GUILayout.HorizontalSlider((float)mSettings.MultipleAntennaMultiplier, 0, 1), 2);
         }
 
         /// <summary>
