@@ -17,7 +17,14 @@ namespace RemoteTech.FlightComputer.Commands
             f.Vessel.ActionGroups.ToggleGroup(ActionGroup);
             if (ActionGroup == KSPActionGroup.Stage && !(f.Vessel == FlightGlobals.ActiveVessel && FlightInputHandler.fetch.stageLock))
             {
-                KSP.UI.Screens.StageManager.ActivateNextStage();
+                try
+                {
+                    KSP.UI.Screens.StageManager.ActivateNextStage();
+                }
+                catch(Exception ex)
+                {
+                    RTLog.Notify("Exception during ActivateNextStage(): " + ex.Message, RTLogLevel.LVL4);
+                }
                 KSP.UI.Screens.ResourceDisplay.Instance.Refresh();
             }
             if (ActionGroup == KSPActionGroup.RCS && f.Vessel == FlightGlobals.ActiveVessel)
