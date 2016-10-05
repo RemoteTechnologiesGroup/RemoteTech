@@ -118,7 +118,16 @@ namespace RemoteTech.Modules
 
             if (!IsRTPowered)
             {
-                return State.ParentDefect;
+                // check if the part is itself a ModuleCommand
+                var moduleCommand = part.Modules.GetModule<ModuleCommand>();
+                if (moduleCommand != null) {
+                    // it's a module command *and* a ModuleSPU, so in this case it's still RTPowered (controllable)!
+                    // e.g. even if there's no crew in the pod, we should be able to control it because it's a SPU.
+                    IsRTPowered = true;
+                }
+                else  {
+                    return State.ParentDefect;
+                }
             }
 
             if (Satellite == null || !RTCore.Instance.Network[Satellite].Any())
