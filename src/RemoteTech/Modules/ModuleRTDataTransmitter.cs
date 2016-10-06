@@ -119,7 +119,13 @@ namespace RemoteTech.Modules
                         // if we've a defined callback parameter so skip to stream each packet
                         if (commStream != null && callback == null)
                         {
-                            commStream.StreamData(frame, vessel.protoVessel);
+                            // use try / catch to prevent NRE spamming in KSP code when RT is used with other mods.
+                            try  {
+                                commStream.StreamData(frame, vessel.protoVessel);
+                            }
+                            catch(NullReferenceException nre) {
+                                RTLog.Notify("A problem occurred during science transmission: {0}", RTLogLevel.LVL2, nre);
+                            }
                         }
                     }
                     else
