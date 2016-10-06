@@ -50,6 +50,9 @@ namespace RemoteTech
 
             Instance = this;
 
+            // enable or disable KSP CommNet depending on settings.
+            HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = RTSettings.Instance.CommNetEnabled;
+
             ctrlLockAddon = new AddOns.ControlLockAddon();
             kacAddon = new AddOns.KerbalAlarmClockAddon();
 
@@ -66,14 +69,15 @@ namespace RemoteTech
             GameEvents.onShowUI.Add(UIOn);
             GameEvents.onHideUI.Add(UIOff);
 
-            FlightUIPatcher.Patch();
-
             RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
 
             foreach (var vessel in FlightGlobals.Vessels)
             {
-                Satellites.RegisterProto(vessel);
-                Antennas.RegisterProtos(vessel);
+                if ((vessel.vesselType > VesselType.Unknown) && (vessel.vesselType != VesselType.Flag))
+                {
+                    Satellites.RegisterProto(vessel);
+                    Antennas.RegisterProtos(vessel);
+                }
             }
         }
 
@@ -87,6 +91,7 @@ namespace RemoteTech
         {
             mGUIVisible = false;
         }
+
 
         public void Update()
         {
@@ -248,6 +253,7 @@ namespace RemoteTech
             base.Start();
             if (RTCore.Instance != null)
             {
+                FlightUIPatcher.Patch();
                 base.ManeuverNodeOverlay = new ManeuverNodeOverlay();
                 base.ManeuverNodeOverlay.OnEnterMapView();
             }
