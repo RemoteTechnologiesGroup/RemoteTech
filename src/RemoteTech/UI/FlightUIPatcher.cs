@@ -20,8 +20,12 @@ namespace RemoteTech.UI
             var buttons = CollectActionGroupToggleButtons(PatchedActionGroups);
             for (int i = 0; i < buttons.Count; ++i)
             {
+                //Remove default KSP listener (otherwise we can't delay anything)
+                buttons[i].toggle.onToggle.RemoveListener(buttons[i].SetToggle);
+
                 // set our hook
-                buttons[i].toggle.onToggle.AddListener( () => ActivateActionGroup(buttons[i].group) );
+                KSPActionGroup actionGroup = buttons[i].group;
+                buttons[i].toggle.onToggle.AddListener( () => ActivateActionGroup(actionGroup) );
             }
         }
 
@@ -53,9 +57,27 @@ namespace RemoteTech.UI
             }
             else if (satellite == null || (satellite != null && satellite.HasLocalControl))
             {
+                if (!FlightGlobals.ready)
+                    return;
+
                 if (FlightGlobals.ActiveVessel.IsControllable)
                 {
-                    FlightGlobals.ActiveVessel.ActionGroups.ToggleGroup(ag);
+                    // check if EVA or not (as we removed the default KSP listener).
+                    if(!FlightGlobals.ActiveVessel.isEVA)
+                    {
+                        FlightGlobals.ActiveVessel.ActionGroups.ToggleGroup(ag);
+                    }
+                    else // it's an EVA
+                    {
+                        if (ag == KSPActionGroup.RCS)
+                        {
+                            FlightGlobals.ActiveVessel.evaController.ToggleJetpack();
+                        }
+                        else if (ag == KSPActionGroup.Light)
+                        {
+                            FlightGlobals.ActiveVessel.evaController.ToggleLamp();
+                        }
+                    }                   
                 }
             }
         }
