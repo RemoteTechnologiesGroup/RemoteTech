@@ -241,7 +241,10 @@ namespace RemoteTech
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         Color ISatellite.MarkColor { get { return MarkColor; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
+
         public Guid mGuid { get; private set; }
+        public IEnumerable<IAntenna> MissionControlAntennas { get { return Antennas; } }
+
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 

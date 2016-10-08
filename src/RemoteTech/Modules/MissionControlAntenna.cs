@@ -99,5 +99,10 @@ namespace RemoteTech.Modules
         {
             return ((IAntenna)this).Consumption.CompareTo(antenna.Consumption);
         }
+
+        public void SetOmniAntennaRange(float range)
+        {
+            this.Omni = range;
+        }
     }
 }
