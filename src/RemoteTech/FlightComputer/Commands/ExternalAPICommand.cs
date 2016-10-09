@@ -82,7 +82,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Executes this command and invokes the <see cref="ReflectionExecuteMethod"/>
         /// on the <see cref="ReflectionType"/>. When this command is aborted the
-        /// fallback commnd is "Off".
+        /// fallback commnd is "KillRot".
         /// </summary>
         /// <param name="computer">Current flightcomputer</param>
         /// <param name="ctrlState">Current FlightCtrlState</param>
