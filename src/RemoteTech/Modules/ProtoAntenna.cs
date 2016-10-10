@@ -57,7 +57,7 @@ namespace RemoteTech.Modules
             {
                 mDishTarget = new Guid(n.GetValue("RTAntennaTarget"));
             }
-            catch (ArgumentException)
+            catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is OverflowException)
             {
                 mDishTarget = Guid.Empty;
             }
