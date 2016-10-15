@@ -93,9 +93,9 @@ namespace RemoteTech.Modules
                     float x64PacketInterval = (Time.time - time1);
 
                     RTLog.Notify("Changing RnDCommsStream timeout from {0} to {1}", PacketInterval, x64PacketInterval);
-
+                    //TODO (porting to 1.2): check if scienceData.baseTransmitValue alone or with scienceData.transmitBonus
                     commStream = new RnDCommsStream(subject, scienceData.dataAmount, x64PacketInterval,
-                                            scienceData.transmitValue, false, ResearchAndDevelopment.Instance);
+                                            scienceData.baseTransmitValue, false, ResearchAndDevelopment.Instance);
                 }
                 //StartCoroutine(SetFXModules_Coroutine(modules_progress, 0.0f));
                 float power = 0;
@@ -119,7 +119,13 @@ namespace RemoteTech.Modules
                         // if we've a defined callback parameter so skip to stream each packet
                         if (commStream != null && callback == null)
                         {
-                            commStream.StreamData(frame, vessel.protoVessel);
+                            // use try / catch to prevent NRE spamming in KSP code when RT is used with other mods.
+                            try  {
+                                commStream.StreamData(frame, vessel.protoVessel);
+                            }
+                            catch(NullReferenceException nre) {
+                                RTLog.Notify("A problem occurred during science transmission: {0}", RTLogLevel.LVL2, nre);
+                            }
                         }
                     }
                     else

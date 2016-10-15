@@ -111,24 +111,66 @@ namespace RemoteTech.FlightComputer
             mActiveCommands[attitude.Priority] = attitude;
 
             GameEvents.onVesselChange.Add(OnVesselChange);
+            GameEvents.onVesselSwitching.Add(OnVesselSwitching);
+            GameEvents.onGameSceneSwitchRequested.Add(OnSceneSwitchRequested);
 
             mRoverComputer = new RoverComputer();
             mRoverComputer.SetVessel(Vessel);
         }
 
         /// <summary>
-        /// After switching the vessel close the current flightcomputer.
+        /// Called when a game switch is requested: close the current computer.
         /// </summary>
-        public void OnVesselChange(Vessel v)
+        /// <param name="data">data with from and to scenes.</param>
+        private void OnSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> data)
         {
-            Dispose();
+            if (data.to != GameScenes.FLIGHT)
+                this.Dispose();            
         }
 
+        /// <summary>
+        /// Called when there's a vessel switch, switching from `fromVessel` to `toVessel`.
+        /// </summary>
+        /// <param name="fromVessel">The vessel we switch from.</param>
+        /// <param name="toVessel">The vessel we're switching to.</param>
+        private void OnVesselSwitching(Vessel fromVessel, Vessel toVessel)
+        {
+            RTLog.Notify("OnVesselSwitching - from: " + (fromVessel != null ? fromVessel.vesselName : "N/A") + " to: " + toVessel.vesselName);            
+            
+            if(fromVessel != null)
+            {
+                fromVessel.OnFlyByWire -= OnFlyByWirePre;
+                fromVessel.OnFlyByWire -= OnFlyByWirePost;
+            }
+            if(mWindow != null)
+            {
+                mWindow.Hide();
+            }
+        }
+
+        /// <summary>
+        /// After switching the vessel close the current flightcomputer.
+        /// </summary>
+        /// <param name="vessel">The **new** vessel we are changing to.</param>
+        public void OnVesselChange(Vessel vessel)
+        {
+            RTLog.Notify("OnVesselChange - new vessel: " + (vessel != null ? vessel.vesselName : "N/A"));
+            if (mWindow != null)
+            {
+                mWindow.Hide();
+            }
+        }
+
+        /// <summary>
+        /// Called when the flight computer is disposed. This happens when the `ModuleSPU` is destroyed.
+        /// </summary>
         public void Dispose()
         {
             RTLog.Notify("FlightComputer: Dispose");
 
             GameEvents.onVesselChange.Remove(OnVesselChange);
+            GameEvents.onVesselSwitching.Remove(OnVesselSwitching);
+            GameEvents.onGameSceneSwitchRequested.Remove(OnSceneSwitchRequested);
 
             if (Vessel != null)
             {
@@ -380,8 +422,8 @@ namespace RemoteTech.FlightComputer
             {
                 Vector3d torque = SteeringHelper.GetTorque(Vessel,
                     Vessel.ctrlState != null ? Vessel.ctrlState.mainThrottle : 0.0f);
-                var CoM = Vessel.findWorldCenterOfMass();
-                var MoI = Vessel.findLocalMOI(CoM);
+                var CoM = Vessel.CoM;
+                var MoI = Vessel.MOI;
 
                 Vector3d ratio = new Vector3d(
                                  torque.x != 0 ? MoI.x / torque.x : 0,

@@ -12,7 +12,7 @@ namespace RemoteTech.UI
         /// <summary>Defines the option window width</summary>
         const uint WINDOW_WIDTH = 430;
         /// <summary>Defines the option window height</summary>
-        const uint WINDOW_HEIGHT = 300;
+        const uint WINDOW_HEIGHT = 320;
 
         /// <summary>Option menu items</summary>
         public enum OPTION_MENUS
@@ -243,7 +243,7 @@ namespace RemoteTech.UI
             GUILayout.Space(10);
             GUILayout.Label("Use the small menu buttons above to navigate through the different options.", this.mGuiRunningText);
 
-            GUILayout.Space(15);
+            GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(90);
@@ -251,7 +251,15 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(15);
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Space(90);
+                this.mSettings.CommNetEnabled = GUILayout.Toggle(this.mSettings.CommNetEnabled, (this.mSettings.CommNetEnabled) ? "CommNet enabled" : "CommNet disabled");
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10);
             GUILayout.Label("Need some help with RemoteTech?  Check out the online manual and tutorials.  If you can't find your answer, post in the forum thread.\n(Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
@@ -274,11 +282,15 @@ namespace RemoteTech.UI
         {
             GUILayout.Label("Consumption Multiplier: (" + this.mSettings.ConsumptionMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("If set to a value other than 1, the power consumption of all antennas will be increased or decreased by this factor.\nDoes not affect energy consumption for science transmissions.", this.mGuiHintText);
-            this.mSettings.ConsumptionMultiplier = GUILayout.HorizontalSlider(this.mSettings.ConsumptionMultiplier, 0, 2);
+            this.mSettings.ConsumptionMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(this.mSettings.ConsumptionMultiplier, 0, 2), 2);
 
-            GUILayout.Label("Range Multiplier: (" + this.mSettings.RangeMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
-            GUILayout.Label("If set to a value other than 1, the range of all antennas will be increased or decreased by this factor.\nDoes not affect Mission Control range.", this.mGuiHintText);
-            this.mSettings.RangeMultiplier = GUILayout.HorizontalSlider(this.mSettings.RangeMultiplier, 0, 2);
+            GUILayout.Label("Antennas Range Multiplier: (" + this.mSettings.RangeMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
+            GUILayout.Label("If set to a value other than 1, the range of all <b><color=#bada55>antennas</color></b> will be increased or decreased by this factor.\nDoes not affect Mission Control range.", this.mGuiHintText);
+            mSettings.RangeMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(mSettings.RangeMultiplier, 0, 5), 2);
+
+            GUILayout.Label("Mission Control Range Multiplier: (" + mSettings.MissionControlRangeMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
+            GUILayout.Label("If set to a value other than 1, the range of all <b><color=#bada55>Mission Controls</color></b> will be increased or decreased by this factor.\nDoes not affect antennas range.", this.mGuiHintText);
+            mSettings.MissionControlRangeMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(mSettings.MissionControlRangeMultiplier, 0, 5), 2);
         }
 
         /// <summary>
@@ -301,15 +313,7 @@ namespace RemoteTech.UI
 
             GUILayout.Label("Multiple Antenna Multiplier : (" + this.mSettings.MultipleAntennaMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("Multiple omnidirectional antennas on the same craft work together.\nThe default value of 0 means this is disabled.\nThe largest value of 1.0 sums the range of all omnidirectional antennas to provide a greater effective range.\nThe effective range scales linearly and this option works with both the Standard and Root range models.", this.mGuiHintText);
-            this.mSettings.MultipleAntennaMultiplier = GUILayout.HorizontalSlider((float)this.mSettings.MultipleAntennaMultiplier, 0, 1);
-            if(this.mSettings.MultipleAntennaMultiplier <= 0.49)
-            {
-                this.mSettings.MultipleAntennaMultiplier = 0;
-            }
-            else
-            {
-                this.mSettings.MultipleAntennaMultiplier = 1;
-            }
+            this.mSettings.MultipleAntennaMultiplier = Math.Round(GUILayout.HorizontalSlider((float)mSettings.MultipleAntennaMultiplier, 0, 1), 2);
         }
 
         /// <summary>
@@ -432,7 +436,7 @@ namespace RemoteTech.UI
                 GUILayout.Label("- no presets found", this.mGuiRunningText);
             }
 
-            for(int i=presetList.Count-1;i>=0;i--)
+            for(int i = presetList.Count - 1; i >= 0; --i)
             {
                 String FolderName = presetList[i].Replace("/RemoteTechSettings", ".cfg").Trim();
                 GUILayout.BeginHorizontal("box", GUILayout.MaxHeight(15));

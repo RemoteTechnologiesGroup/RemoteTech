@@ -342,7 +342,7 @@ namespace RemoteTech.FlightComputer
         public static Vector3d GetTorque(Vessel vessel, float thrust)
         {
             // Do everything in vessel coordinates
-            var centerOfMass = vessel.findLocalCenterOfMass();
+            var centerOfMass = vessel.CoM;
 
             // Don't assume any particular symmetry for the vessel
             double pitch = 0, roll = 0, yaw = 0;

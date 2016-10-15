@@ -267,5 +267,42 @@ namespace RemoteTech.API
 
             return RTSettings.Instance.RemoveGroundStation(stationid);
         }
+
+        /// <summary>
+        /// Change the Omni range of a ground station.
+        /// Note that this change is temporary. For example it is overridden to the value written in the settings file if the tracking station is upgraded.
+        /// </summary>
+        /// <param name="stationId">The station ID for which to change the antenna range.</param>
+        /// <param name="newRange">The new range in meters.</param>
+        /// <returns>true if the ground station antenna range was changed, false otherwise.</returns>
+        public static bool ChangeGroundStationRange(Guid stationId, float newRange)
+        {
+            RTLog.Notify("Trying to change groundstation {0} Omni range to {1}", RTLogLevel.API, stationId.ToString(), newRange);
+
+            if (RTSettings.Instance == null)
+                return false;
+
+            if(RTSettings.Instance.GroundStations.Count > 0)
+            {
+                MissionControlSatellite groundStation = RTSettings.Instance.GroundStations.First(gs => gs.mGuid == stationId);
+                if (groundStation == null)
+                    return false;
+
+                IEnumerable<IAntenna> antennas = groundStation.MissionControlAntennas.ToArray();
+                if (antennas.Count() > 0)
+                {
+                    // first antenna
+                    IAntenna antenna = antennas.ToArray()[0];
+                    if (antenna is MissionControlAntenna)
+                    {
+                        ((MissionControlAntenna)antenna).SetOmniAntennaRange(newRange);
+                        RTLog.Notify("Ground station Omni range successfuly chaned.", RTLogLevel.API);
+                        return true;
+                    }                    
+                }
+            }
+
+            return false;
+        }
     }
 }

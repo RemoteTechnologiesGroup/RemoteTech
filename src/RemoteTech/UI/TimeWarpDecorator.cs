@@ -3,6 +3,7 @@ using System.Linq;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 using KSP.UI;
+using KSP.UI.Screens.Flight;
 
 namespace RemoteTech.UI
 {
@@ -12,7 +13,6 @@ namespace RemoteTech.UI
         /// Image for position access
         /// </summary>
         private UnityEngine.UI.Image mTimewarpImage;
-
         /// <summary>
         /// Delay-Text style
         /// </summary>
@@ -109,20 +109,22 @@ namespace RemoteTech.UI
             // Get the image for positioning the decorator
             GameObject go = GameObject.Find("TimeQuadrant");
             if (go)
+            {
                 mTimewarpImage = go.GetComponent<UnityEngine.UI.Image>();
+            }
 
             // objects on this scene?
-            if (mTimewarpImage == null)
+            if (mTimewarpImage == null || TimeWarp.fetch == null)
             {
                 return;
             }
 
-            if(TimeWarp.fetch != null && TimeWarp.fetch.timeQuadrantTab != null)
-            {
-                var text = TimeWarp.fetch.timeQuadrantTab.transform.FindChild("MET timer").GetComponent<ScreenSafeGUIText>();
-                mTextStyle = new GUIStyle(text.textStyle);
-                mTextStyle.fontSize = (int)(text.textSize * ScreenSafeUI.PixelRatio);
-            }         
+            // create a style (for the connection / delay text) from the high logic skin label style.
+            var skin = UnityEngine.Object.Instantiate(HighLogic.Skin);
+            mTextStyle = new GUIStyle(skin.label);
+            mTextStyle.alignment = TextAnchor.MiddleLeft;
+            mTextStyle.wordWrap = false;
+            mTextStyle.font = skin.font;
         }
 
         /// <summary>
@@ -134,30 +136,32 @@ namespace RemoteTech.UI
             if (mTimewarpImage == null)
                 return;
 
-            Vector2 screenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
+            Vector2 timeWarpImageScreenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
 
-            float scale = GameSettings.UI_SCALE;
-            float topLeftTotimeQuadrant = Screen.height - (screenCoord.y - (mTimewarpImage.preferredHeight * scale));
+            float scale = GameSettings.UI_SCALE_TIME * GameSettings.UI_SCALE;
+            float topLeftTotimeQuadrant = Screen.height - (timeWarpImageScreenCoord.y - (mTimewarpImage.preferredHeight * scale));
             float texBackgroundHeight = (mTexBackground.height * 0.7f) * scale;
             float texBackgroundWidth = (mTexBackground.width * 0.8111f) * scale;
 
-            Rect delaytextPosition = new Rect((screenCoord.x + 12.0f) * scale, topLeftTotimeQuadrant + 2 * scale, 50.0f * scale, 20.0f * scale);
+            Rect delaytextPosition = new Rect((timeWarpImageScreenCoord.x + 12.0f) * scale, topLeftTotimeQuadrant + 2 * scale, 50.0f * scale, 20.0f * scale);
 
             // calc the position under the timewarp object
-            Rect pos = new Rect(screenCoord.x,
+            Rect pos = new Rect(timeWarpImageScreenCoord.x,
                                 topLeftTotimeQuadrant,
                                 texBackgroundWidth, texBackgroundHeight);
 
             // draw the image
             GUI.DrawTexture(pos, mTexBackground);
 
-            // draw the delay-text
+            // get color for the delay-text
             mTextStyle.normal.textColor = new Color(0.56078f, 0.10196f, 0.07450f);
             if (this.mVessel != null && this.mVessel.Connections.Any())
             {
                 mTextStyle.normal.textColor = XKCDColors.GreenApple;
             }
 
+            // draw connection / delay text
+            mTextStyle.fontSize = (int)(mTextStyle.font.fontSize * scale);
             GUI.Label(delaytextPosition, DisplayText, mTextStyle);
 
             // draw the flightcomputer button to the right relative to the delaytext position

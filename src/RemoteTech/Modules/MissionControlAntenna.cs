@@ -24,7 +24,7 @@ namespace RemoteTech.Modules
 
         public ISatellite Parent { get; set; }
 
-        float IAntenna.Omni { get { return Omni; } }
+        float IAntenna.Omni { get { return Omni * MissionControlRangeMultiplier; } }
         Guid IAntenna.Guid { get { return Parent.Guid; } }
         String IAntenna.Name { get { return "Dummy Antenna"; } }
         bool IAntenna.Powered { get { return true; } }
@@ -35,7 +35,8 @@ namespace RemoteTech.Modules
         Guid IAntenna.Target { get { return new Guid(RTSettings.Instance.ActiveVesselGuid); } set { return; } }
         float IAntenna.Dish { get { return Dish; } }
         double IAntenna.CosAngle { get { return CosAngle; } }
-        
+        private float MissionControlRangeMultiplier { get { return RTSettings.Instance.MissionControlRangeMultiplier; } }
+
         public void reloadUpgradeableAntennas(int techlvl = 0)
         {
             if (this.UpgradeableCosAngle != String.Empty && this.UpgradeableDish != String.Empty && this.UpgradeableOmni != String.Empty)
@@ -97,6 +98,11 @@ namespace RemoteTech.Modules
         public int CompareTo(IAntenna antenna)
         {
             return ((IAntenna)this).Consumption.CompareTo(antenna.Consumption);
+        }
+
+        public void SetOmniAntennaRange(float range)
+        {
+            this.Omni = range;
         }
     }
 }

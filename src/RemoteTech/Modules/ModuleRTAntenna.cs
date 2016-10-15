@@ -135,11 +135,11 @@ namespace RemoteTech.Modules
 
             if (ShowEditor_OmniRange && Mode1OmniRange > 0)
             {
-                info.AppendFormat("Omni range: {0} / {1}", RTUtil.FormatSI(Mode0OmniRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1OmniRange * RangeMultiplier, "m")).AppendLine();
+                info.AppendFormat("Omni {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0OmniRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1OmniRange * RangeMultiplier, "m")).AppendLine();
             }
             if (ShowEditor_DishRange && Mode1DishRange > 0)
             {
-                info.AppendFormat("Dish range: {0} / {1}", RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
+                info.AppendFormat("Dish {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
             }
 
             if (ShowEditor_DishAngle && CanTarget)
@@ -169,6 +169,36 @@ namespace RemoteTech.Modules
             }
 
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
+        }
+
+        /// <summary>
+        /// Displaying the stored "range" of the antenna/dish is confusing to players when rangeModel Root is selected, because that's not actually the range.
+        /// </summary>
+        /// <returns>Return a desciption for an antenna given the current range model (either 'range' or 'power'). An empty string if RTSettings instance is not available.</returns>
+        private string AntennaInfoDescriptionFromRangeModel()
+        {
+            string description = string.Empty;
+
+            if (RTSettings.Instance == null)
+                return description;
+            
+            switch(RTSettings.Instance.RangeModelType)
+            {
+                case RangeModel.RangeModel.Standard:
+                    description = "range";
+                    break;
+
+                case RangeModel.RangeModel.Root:
+                    //case RangeModel.RangeModel.Additive:
+                    description = "power";
+                    break;
+
+                default:
+                    description = "range";
+                    break;
+            }
+
+            return description;
         }
 
         public virtual void SetState(bool state)

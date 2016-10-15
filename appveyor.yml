@@ -1,0 +1,283 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 1.8.0-{build}-{branch}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - develop
+
+
+  # blacklist
+  except:
+    - gh-pages
+
+# Do not build on tags (GitHub and BitBucket)
+#skip_tags: true
+
+# Start builds on tags only (GitHub and BitBucket)
+#skip_non_tags: true
+
+# Skipping commits with particular message or from specific user
+#skip_commits:
+#  message: /Created.*\.(png|jpg|jpeg|bmp|gif)/      # Regex for matching commit message
+#  author: John                                      # Commit author's username, name, email or regexp maching one of these.
+
+# Including commits with particular message or from specific user
+#only_commits:
+#  message: /buildapp/                # Start a new build if message contains 'buildapp'
+#  author: jack@company.com        # Start a new build for commit of user with email jack@company.com
+
+# Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+#skip_commits:
+#  files:
+#    - docs/*
+#    - '**/*.html'
+
+# Including commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
+#only_commits:
+#  files:
+#    - Project-A/
+#    - Project-B/
+
+# Do not build feature branch with open Pull Requests
+#skip_branch_with_pr: true
+
+# Maximum number of concurrent jobs for the project
+#max_jobs: 1
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2015
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - git config --global core.autocrlf input
+
+# clone directory
+clone_folder: c:\projects\RemoteTech
+
+# fetch repository as zip archive
+shallow_clone: true                 # default is "false"
+
+# set clone depth
+#clone_depth: 5                      # clone entire repository history if not defined
+
+# setting up etc\hosts file
+hosts:
+  queue-server: 127.0.0.1
+  db.server.com: 127.0.0.2
+
+# environment variables
+environment:
+  DLL_ARCH_PASS:
+    secure: fcsROOd6CtTb4Ydc5RKLE3V8cJ2zlYj0iXv0EylyPeE=  
+
+# environment:
+#  global:
+#    connection_string: server=12;password=13;
+#    service_url: https://127.0.0.1:8090
+#
+#  matrix:
+#  - db: mysql
+#    provider: mysql
+#
+#  - db: mssql
+#    provider: mssql
+#    password:
+#      secure: $#(JFDA)jQ@#$
+
+# this is how to allow failing jobs in the matrix
+matrix:
+  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+#  allow_failures:
+#    - platform: x86
+#      configuration: Debug
+#    - platform: x64
+#      configuration: Release
+
+# build cache to preserve files/folders between builds
+#cache:
+#  - packages -> **\packages.config  # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+#  - projectA\libs
+#  - node_modules                    # local npm modules
+#  - '%LocalAppData%\NuGet\Cache'
+
+
+# scripts that run after cloning repository
+install:
+  # by default, all script lines are interpreted as batch
+  - cmd: echo Install scripts
+#  - cmd: echo %PATH%
+  - cmd: echo %APPVEYOR_BUILD_FOLDER%
+
+  - cmd: set DOWNLOAD_FOLDER=%APPVEYOR_BUILD_FOLDER%\..
+  - cmd: set ARTIFACTS_FOLDER=%APPVEYOR_BUILD_FOLDER%\artifacts
+  - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
+  - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
+
+  - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.2_RELEASE_DLLs.7z
+  - cmd: cd %DOWNLOAD_FOLDER% & dir
+  - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
+  - cmd: cd %ASSEMBLY_FOLDER% & dir
+
+# enable patching of AssemblyInfo.* files
+#assembly_info:
+#  patch: true
+#  file: AssemblyInfo.*
+#  assembly_version: "1.8.{build}"
+#  assembly_file_version: "{version}"
+#  assembly_informational_version: "{version}"
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+# to add several platforms to build matrix:
+platform:
+#  - x86
+  - Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+# to add several configurations to build matrix:
+configuration:
+  - Release
+#  - Debug  
+
+build:
+  parallel: true                  # enable MSBuild parallel builds
+  project: .\src\RemoteTech\RemoteTech.sln      # path to Visual Studio solution or project
+
+  # MSBuild verbosity level
+  verbosity: normal
+
+
+# scripts to run before build
+before_build:
+
+# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+before_package:
+  - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp.dll
+  - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp-firstpass.dll
+  - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.dll
+  - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.UI.dll
+  - cmd: cd %ASSEMBLY_FOLDER% & dir
+  - cmd: echo done!
+
+# scripts to run after build
+after_build:
+  - cmd: mkdir %ARTIFACTS_FOLDER%
+  - cmd: 7z.exe a %ARTIFACTS_FOLDER%\RemoteTech.zip %GAMEDATA_FOLDER% # zip the whole gameData folder
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+
+# to disable automatic builds
+#build: off
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  # pushing entire folder as a zip archive
+  - path: artifacts\RemoteTech.zip
+    name: rt_gd
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+# provider names are case-sensitive!
+deploy:
+
+    # Deploy to GitHub Releases
+  - provider: GitHub
+    artifact: rt_gd
+    release: RemoteTech-$(appveyor_build_version)
+    auth_token:
+      secure: "inL59Ha8LLxMmwFmkqagZvk7G8L0I4RxbUAJgBDgX0m8rpshnSdXar2vHWdNvdAl"
+    draft: false
+    prerelease: true
+    on:
+      branch: develop                # release from dev branch only
+#      appveyor_repo_tag: true       # deploy on tag push only
+
+    # Deploying to a named environment
+#  - provider: Environment
+#    name: staging
+#    on:
+#      branch: staging
+#      env_var1: value1
+#      env_var2: value2
+
+# scripts to run before deployment
+before_deploy:
+
+# scripts to run after deployment
+after_deploy:
+
+# to run your custom scripts instead of provider deployments
+deploy_script:
+
+# to disable deployment
+#deploy: off
+
+#---------------------------------#
+#        global handlers          #
+#---------------------------------#
+
+# on successful build
+#on_success:
+#  - do something
+
+# on build failure
+#on_failure:
+#  - do something
+
+# after build failure or success
+#on_finish:
+#  - do something
+
+
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
+
+#notifications:
+
+  # Email
+#  - provider: Email
+#    to:
+#      - user1@email.com
+#      - user2@email.com
+#    subject: 'Build {{status}}'                  # optional
+#    message: "{{message}}, {{commitId}}, ..."    # optional
+#    on_build_status_changed: true
+
+  # Slack
+#  - provider: Slack
+#    incoming_webhook: http://incoming-webhook-url
+
+  # ...or using auth token
+
+  #- provider: Slack
+  #  auth_token:
+  #    secure: kBl9BlxvRMr9liHmnBs14A==
+  #  channel: development
+  #  template: "{message}, {commitId}, ..."
