@@ -51,10 +51,13 @@ namespace RemoteTech.FlightComputer
                                                .First(fi => fi.FieldType == typeof(BaseEvent));
 
                         BaseEventList eventList = originalEvent.listParent;
-                        int listIndex = eventList.IndexOf(originalEvent);                      
-                        
+                        int listIndex = eventList.IndexOf(originalEvent);
+
+                        // fix problems with other mods (didn't see this behavior with KSP) when the customAttributes list is empty.
+                        KSPEvent kspEvent = customAttributes.Count() == 0 ? WrappedEvent.KspEventFromBaseEvent(originalEvent) : (KSPEvent)customAttributes[0];
+
                         // create the new BaseEvent
-                        BaseEvent hookedEvent = Wrapper.CreateWrapper(originalEvent, pass, ignore_delay, (KSPEvent)customAttributes[0]);
+                        BaseEvent hookedEvent = Wrapper.CreateWrapper(originalEvent, pass, ignore_delay, kspEvent);
                         eventList.RemoveAt(listIndex);
                         eventList.Add(hookedEvent);
 
@@ -77,6 +80,32 @@ namespace RemoteTech.FlightComputer
             public void InvokeOriginalEvent()
             {
                 originalEvent.Invoke();
+            }
+
+            /// <summary>
+            /// Given a BaseEvent, obtain a KSPEvent.
+            /// Note : This is used in UIPartActionMenuPatcher.Wrap in case there no KSPEvent in the custom attributes of the BaseEventDelegate from the button event.
+            /// </summary>
+            /// <param name="baseEvent">BaseEvent from which to abtain a KSPEvent.</param>
+            /// <returns>KSPEvent instance from the BaseEvent parameter.</returns>
+            public static KSPEvent KspEventFromBaseEvent(BaseEvent baseEvent)
+            {
+                KSPEvent kspEvent = new KSPEvent();
+                kspEvent.active = baseEvent.active;
+                kspEvent.guiActive = baseEvent.guiActive;
+                kspEvent.requireFullControl = baseEvent.requireFullControl;
+                kspEvent.guiActiveEditor = baseEvent.guiActiveEditor;
+                kspEvent.guiActiveUncommand = baseEvent.guiActiveUncommand;
+                kspEvent.guiIcon = baseEvent.guiIcon;
+                kspEvent.guiName = baseEvent.guiName;
+                kspEvent.category = baseEvent.category;
+                kspEvent.advancedTweakable = baseEvent.advancedTweakable;
+                kspEvent.guiActiveUnfocused = baseEvent.guiActiveUnfocused;
+                kspEvent.unfocusedRange = baseEvent.unfocusedRange;
+                kspEvent.externalToEVAOnly = baseEvent.externalToEVAOnly;
+                kspEvent.isPersistent = baseEvent.isPersistent;
+
+                return kspEvent;
             }
         }
 
