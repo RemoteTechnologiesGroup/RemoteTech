@@ -61,6 +61,7 @@
     <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
+    <Compile Include="FlightComputer\Commands\EventCommand.cs" />    
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
     <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
     <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
@@ -70,7 +71,6 @@
     <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
     <Compile Include="FlightComputer\RoverComputer.cs" />
     <Compile Include="FlightComputer\RoverPIDController.cs" />
-    <Compile Include="FlightComputer\EventCommand.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
     <Compile Include="FlightComputer\Commands\ICommand.cs" />
     <Compile Include="FlightComputer\Commands\TargetCommand.cs" />
