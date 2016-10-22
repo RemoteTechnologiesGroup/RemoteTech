@@ -95,11 +95,11 @@ namespace RemoteTech.UI
                         UnityEngine.UI.Button gizmoDeleteBtn = gizmo.deleteBtn;
 
                         // We are on the right gizmo but no buttons are visible so skip the rest
-						if (!gizmoDeleteBtn.GetComponent<Renderer>().isVisible)
+                        if (!gizmoDeleteBtn.isActiveAndEnabled)
                         {
                             continue;
                         }
-                        
+
                         Vector3 screenCoord = gizmo.camera.WorldToScreenPoint(gizmo.transform.position);
                         //Vector3 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
                         

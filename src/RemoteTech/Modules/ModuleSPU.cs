@@ -60,7 +60,8 @@ namespace RemoteTech.Modules
         private static readonly HashSet<String> eventWhiteList = new HashSet<String>
         {
             "RenameVessel", "RenameAsteroidEvent", //  allow renaming vessels and Asteroids.
-            "SpawnTransferDialog" // allow kerbal to transfer even if no connection
+            "SpawnTransferDialog", // allow kerbal to transfer even if no connection
+            "AimCamera", "ResetCamera" // advanced tweakables: camera events
         };
 
         private Guid mRegisteredId;
