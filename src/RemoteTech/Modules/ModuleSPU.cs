@@ -64,6 +64,15 @@ namespace RemoteTech.Modules
             "AimCamera", "ResetCamera" // advanced tweakables: camera events
         };
 
+        /// <summary>
+        /// Contains the names of any fields that should always be run, 
+        /// regardless of connection status or signal delay.
+        /// </summary>
+        private static readonly HashSet<String> fieldWhiteList = new HashSet<String>
+        {
+
+        };
+
         private Guid mRegisteredId;
 
         public override String GetInfo()
@@ -255,7 +264,32 @@ namespace RemoteTech.Modules
                 field.InvokeAction();
             }
 
-            field.InvokeAction();
+            else if (fieldWhiteList.Contains(baseField.name))
+            {
+                field.InvokeAction();
+            }
+            else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
+            {
+                if (ignoreDelay)
+                {
+                    field.InvokeAction();
+                }
+                else
+                {
+                    vs.SignalProcessor.FlightComputer.Enqueue(PartActionCommand.Field(baseField));
+                }
+            }
+            /*
+            else if (baseEvent.listParent.part.Modules.OfType<IAntenna>().Any() &&
+                     !baseEvent.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
+                     RTSettings.Instance.ControlAntennaWithoutConnection)
+            {
+                baseEvent.Invoke();
+            }*/
+            else
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+            }
 
         }
 

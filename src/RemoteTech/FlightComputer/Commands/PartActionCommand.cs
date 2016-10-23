@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Text;
 using System.Linq;
 
 using RemoteTech.FlightComputer.Commands;
+using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
 
 namespace RemoteTech.FlightComputer
 {
-    /*
+    
     public class PartActionCommand : AbstractCommand
     {
         // Guiname of the BaseEvent
@@ -27,31 +29,43 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                BaseField.FieldInfo.
-                return ((this.BaseField != null) ? this.BaseField.listParent.part.partInfo.title + ": " + this.GUIName : "none") +
-                        Environment.NewLine + base.Description;
+                var sb = new StringBuilder();
+                if (BaseField != null)
+                {
+                    sb.Append(BaseField.guiName + ": " + BaseField.name);
+                }
+                else
+                {
+                    sb.Append("none");
+                }
+                sb.Append(Environment.NewLine + base.Description);
+                return sb.ToString();
             }
         }
         public override string ShortName
         {
             get
             {
-                return (this.BaseField != null) ? this.BaseField.GUIName : "none";
+                return (BaseField != null) ? BaseField.guiName : "none";
             }
         }
 
         public override bool Pop(FlightComputer f)
         {
-            if (this.BaseField != null)
+            if (BaseField != null)
             {
                 try
                 {
-                    // invoke the baseevent
-                    this.BaseField.Invoke();
+                    var field = (BaseField as WrappedField);
+                    if (field != null)
+                    {
+                        // invoke the baseevent
+                        field.InvokeAction();
+                    }
                 }
                 catch (Exception invokeException)
                 {
-                    RTLog.Notify("BaseEvent invokeException by '{0}' with message: {1}",
+                    RTLog.Notify("BaseField InvokeAction() by '{0}' with message: {1}",
                                  RTLogLevel.LVL1, this.BaseField.guiName, invokeException.Message);
                 }
             }
@@ -59,16 +73,17 @@ namespace RemoteTech.FlightComputer
             return false;
         }
 
-        public static EventCommand Event(BaseEvent ev)
+        public static PartActionCommand Field(BaseField baseField)
         {
-            return new EventCommand()
+            return new PartActionCommand()
             {
-                BaseEvent = ev,
-                GUIName = ev.GUIName,
+                BaseField = baseField,
+                GUIName = baseField.guiName,
                 TimeStamp = RTUtil.GameTime,
             };
         }
 
+        /*
         /// <summary>
         /// Load infos into this object and create a new BaseEvent
         /// </summary>
@@ -133,7 +148,7 @@ namespace RemoteTech.FlightComputer
             this.Name = this.BaseField.name;
 
             base.Save(n, fc);
-        }
+        }*/
     }
-    */
+    
 }

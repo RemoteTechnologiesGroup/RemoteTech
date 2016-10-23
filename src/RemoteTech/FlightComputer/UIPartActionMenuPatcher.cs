@@ -141,6 +141,10 @@ namespace RemoteTech.FlightComputer
                 if(m_OriginalAction != null)
                     m_OriginalAction.Invoke();
             }
+            public void Invoke()
+            {
+                //this.FieldInfo.SetValue()
+            }
 
             public Action OriginalAction { set { m_OriginalAction = value; } }
 
@@ -172,10 +176,10 @@ namespace RemoteTech.FlightComputer
                 m_Passthrough = passthrough;
                 m_IgnoreDelay = ignore_delay;
                 m_WrappedField = new WrappedField(kspField, original.FieldInfo, original.host);
-                if (m_WrappedField.category == string.Empty)
-                    m_WrappedField.category = "skip_control";
+                if (kspField.category == string.Empty)
+                    kspField.category = "skip_control";
                 else
-                    m_WrappedField.category += ";skip_control";
+                    kspField.category += ";skip_control";
             }
 
             public WrappedField WrappedField { get { return m_WrappedField; } }
