@@ -1,3 +1,82 @@
+Version 1.8.0
+=============
+Released October 15, 2016
+
+KSP 1.2 update
+
+What's New?
+===========
+
+* Ported the RemoteTech code base to KSP 1.2. [#678]
+* Updated ModuleManager to the lastest 2.7.1 version (Nyan Cat ftw!).
+* Prevent parsing objects that have no chance (Asteroid, Unknown objects and flags) of being RT controlled.
+* Add and option to enable / disable CommNet alongside RemoteTech.
+* Moved all RT antennas to the new Communication category in VAB / SPH.
+* Added RemoteTech RLA config file. [#469]
+* Antenna info in VAB /SPH indicate "range" or "power" depending on the chosen RangeModel ("range" is technically wrong when in Root model). [#471]
+* Fixed an issue when the "RTAntennaTarget" field was empty in a save file. [#506]
+* Exception bubbling up from KSP or other mods are now caught in RT when staging. [#525]
+* Flight Computer window is now closed when switching to another vessel or leaving the flight scene.[#578]
+* Added a new API to change the range of ground stations. [#589]
+* Antenna range multiplier option slider is no longer snapped to 0 or 1. [#594]
+* Antenna range multiplier has now a maximum value of 5 (previously 2).
+* "World Scale" option sliders are now using 2 decimal places instead of 6. [#601]
+* Added a new option slider: range multiplier for ground stations / mission control. [#602]
+* Fixed a NRE spamming issue while transmitting science. [#613]
+* Fixed various issues with the connection indicator and various UI scales. [#618 & #668]
+* Kerbals can now transfer themselves even if there's no connection and they are not in a command module (this also bypass any signal delay). [#626]
+* Fixed an issue when a craft with an uncrewed ModuleCommand but with a ModuleSPU was deemed non controllable. [#628]
+* Flight Computer can be switched to "Off" instead of "KillRot" after maneuver execution or abort (configurable through settings file). [#631]
+* Added a new "LeadTime" field (in settings fileà to control how much time attitude control is queued ahead of the maneuver (default 3 minutes like the previous hardocded value). [#631]
+* Command Stations can now control themselves (if properly crewed and with the right SPU module) even if there's no one in a command module. [#633]
+* Fixed various problems with the github readme and the user manual. [#669, #670, #680]
+* Added current vessel name to flight computer (when UI is deployed). [#673]
+
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #469: Updated RLA config. Work made by kitoma [requested by: @marosciacchitano]
+* Issue #471: Handling GetInfo()'s "range" display when in rangemodel Root [reported by: @NathanKell]
+* Issue #506: Blank RTAntennaTarget, Exception stopping the registrations. [reported by: @OzoneGrif]
+* Issue #525: Missing parts in staging cause NRE spam, lock staging. [reported by: @NathanKell]
+* Issue #578: Flight Computer doesn't close when going back to Space center view. [requested by: @d4rksh4de  & @petersohn (in #673)]
+* Issue #589: API - Changing range of GroundStations [requested by: @AlphaAsh]
+* Issue #594: MultipleAntennaMultiplier is snapped to 0 or 1. [reported by: @WazWaz]
+* Issue #601: World Scale sliders under options are too granular. [reported by: @gnivler]
+* Issue #602: Mission Control not affected by Range Multiplier option. [requested by: @gnivler]
+* Issue #613: NRE Spamming when transmitting science (RT + other mods) [reported by: @lamont-granquist]
+* Issue #618: The connection indicator does not scale properly. [reported by: @tomekpiotrowski]
+* Issue #626: "Transfer crew" button in context popup menu should be always available. [reported by: @mscg82]
+* Issue #628: ModuleSPU on a crewed-command part with no crew = no control [reported by: @NathanKell]
+* Issue #633: Command Station has no local control. [reported by: @FancyMouse]
+* Issue #668: UI Scale Not Configurable. [reported by: @evan2645]
+* Issue #669: Player's Guide contains dead link to Advanced Settings [reported by: @HupfderFloh; PR #670 by @ahmedcharles]
+* Issue #673: Add vessel name to flight computer. [requested by: @krenshala]
+
+
+Pull Requests
+-------------
+
+* PR #631: Various FlightComputer improvements [PR by: @gnivler]
+* PR #670: Fix issue #669 (broken links on user manual) [PR by: @ahmedcharles]
+* PR #678: Port RT base code to KSP 1.2 [PR by: @neitsa]
+* PR #680: Various Readme.md updates [PR by: @keyspace]
+
+Warning
+=======
+
+* CommNet is disabled by default if RemoteTech is enabled.
+    - CommNet can still be enabled alongside RemoteTech in the RT option window but this has not been tested.
+* If you enable CommNet, consider using 2 types of satellites:
+    - Satellites with only RT antennas.
+    - Satellites with only CommNet antennas.
+    - Do not try to mix both: we won't fix these problems with *this* version of RemoteTech.
+
+
 Version 1.7.1
 ========================================
 Released July 2, 2016
@@ -239,21 +318,21 @@ Features:
 * Added a new button to every queued command to set the manual delay right after the queued one.
 * Added a new button to the manual delay field to set the manual delay.
 * The altitude buttons are no longer toggle buttons. To deactivate the current mode please use the small 'X' on the queue-window by the activated command.
-    
+
 ##General:
 * Added a mouse over tooltip to the antenna target window to show distance, status to the target
 * Added configs for AIES, Lack Luster Labs, Near-Future Spacecraft, and NovaPunch
 * Possibility to hide ground stations with the new property `HideGroundStationsBehindBody`
 * Hide RemoteTech windows,overlays and buttons when the GUI is hidden
 * Window positions for Flightcomputer and AntennaWindow will now be saved for the current ksp instance
-    
+
 ##Contributors:
 * We removed the dependency to the task extensions
 
 ##Modders:
 **Info** We refactored the namespace definitions of RemoteTech. The API class is no longer on the `RemoteTech` namespace. Please use `RemoteTech.API` for now.
-* RTSettings now reads settings from the GameDatabase to tweak settings for specific mods   
-* Possibility to tint groundstations with the property `MarkColor` `Syntax is R,G,B,A`         
+* RTSettings now reads settings from the GameDatabase to tweak settings for specific mods
+* Possibility to tint groundstations with the property `MarkColor` `Syntax is R,G,B,A`
 
 Bug Fixes:
 --------------------

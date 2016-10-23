@@ -468,14 +468,24 @@ namespace RemoteTech.UI
 
             // draw the Ground stations
             #region Ground stations
-            foreach (var stations in RTCore.Instance.Network.GroundStations)
+            if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
                 GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label(stations.Value.Name, GUILayout.ExpandWidth(true));
-                    GUILayout.TextField(stations.Key.ToString(), GUILayout.Width(270));
-                }
+                GUILayout.Label("Ground stations are only available in the flight or tracking station.", GUILayout.ExpandWidth(true));
                 GUILayout.EndHorizontal();
+            }
+            else
+            {
+                foreach (var stations in RTCore.Instance.Network.GroundStations)
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label(stations.Value.Name, GUILayout.ExpandWidth(true));
+                        GUILayout.TextField(stations.Key.ToString(), GUILayout.Width(270));
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                
             }
             #endregion
         }
