@@ -177,7 +177,8 @@ namespace RemoteTech.Modules
 
         public void HookPartMenus()
         {
-            UIPartActionMenuPatcher.Wrap(vessel, (e, ignoreDelay) => InvokeEvent(e, ignoreDelay));
+            UIPartActionMenuPatcher.WrapEvent(vessel, (e, ignoreDelay) => InvokeEvent(e, ignoreDelay));
+            UIPartActionMenuPatcher.WrapPartAction(vessel, (f, ignoreDelay) => InvokePartAction(f, ignoreDelay));
         }
 
         private void InvokeEvent(BaseEvent baseEvent, bool ignoreDelay)
@@ -227,6 +228,35 @@ namespace RemoteTech.Modules
             {
                 ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
             }
+        }
+
+
+        private void InvokePartAction(BaseField baseField,  bool ignoreDelay)
+        {
+            var field = (baseField as UIPartActionMenuPatcher.WrappedField);
+            if (field == null)
+                return;
+
+            var v = FlightGlobals.ActiveVessel;
+            if (v == null || v.isEVA || RTCore.Instance == null)
+            {
+                field.InvokeAction();
+                return;
+            }
+
+            VesselSatellite vs = null;
+            if (RTCore.Instance != null)
+            {
+                vs = RTCore.Instance.Satellites[v];
+            }
+
+            if (vs == null || vs.HasLocalControl)
+            {
+                field.InvokeAction();
+            }
+
+            field.InvokeAction();
+
         }
 
         public override string ToString()

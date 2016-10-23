@@ -7,9 +7,9 @@ namespace RemoteTech.FlightComputer
 {
     public static class UIPartActionMenuPatcher
     {
-        public static Type[] AllowedFieldTypes = { typeof(UIPartActionToggle), typeof(UIPartActionFloatRange) };
+        public static Type[] AllowedFieldTypes = { typeof(UIPartActionToggle), /*typeof(UIPartActionFloatRange)*/ };
 
-        public static void Wrap(Vessel parent, Action<BaseEvent, bool> passthrough)
+        public static void WrapEvent(Vessel parent, Action<BaseEvent, bool> passthrough)
         {
             UIPartActionController controller = UIPartActionController.Instance;
             if (!controller) return;
@@ -52,28 +52,56 @@ namespace RemoteTech.FlightComputer
                     bool skip_control = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_control"));
                     if (!skip_control)
                     {
+                        /*
+                         * Override the old BaseEvent with our BaseEvent to the button
+                         */                        
+
+                        // fix problems with other mods (behavior not seen with KSP) when the customAttributes list is empty.
+                        KSPEvent kspEvent = customAttributes.Count() == 0 ? WrappedEvent.KspEventFromBaseEvent(originalEvent) : (KSPEvent)customAttributes[0];
+
                         // Look for the custom attribute skip_delay
                         bool ignore_delay = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
 
-                        // Override the old BaseEvent with our BaseEvent to the button
-                        FieldInfo eventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                               .First(fi => fi.FieldType == typeof(BaseEvent));
+                        // create the new BaseEvent
+                        BaseEvent hookedEvent = EventWrapper.CreateWrapper(originalEvent, passthrough, ignore_delay, kspEvent);
 
+                        // get the original event index in the event list
                         BaseEventList eventList = originalEvent.listParent;
                         int listIndex = eventList.IndexOf(originalEvent);
 
-                        // fix problems with other mods (didn't see this behavior with KSP) when the customAttributes list is empty.
-                        KSPEvent kspEvent = customAttributes.Count() == 0 ? WrappedEvent.KspEventFromBaseEvent(originalEvent) : (KSPEvent)customAttributes[0];
-
-                        // create the new BaseEvent
-                        BaseEvent hookedEvent = Wrapper.CreateWrapper(originalEvent, pass, ignore_delay, kspEvent);
-
+                        // remove the original event in the event list and add our hooked event
                         eventList.RemoveAt(listIndex);
                         eventList.Add(hookedEvent);
 
+                        // get the baseEvent field from UIPartActionEventItem
+                        FieldInfo eventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                               .First(fi => fi.FieldType == typeof(BaseEvent));
+
+                        // replace the button baseEvent value with our hooked event
                         eventField.SetValue(button, hookedEvent);
                     }
                 }
+            }
+        }
+
+        public static void WrapPartAction(Vessel parent, Action<BaseField, bool> passthrough)
+        {
+            UIPartActionController controller = UIPartActionController.Instance;
+            if (!controller) return;
+
+            // Get the open context menus
+            FieldInfo listFieldInfo = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                      .First(fi => fi.FieldType == typeof(List<UIPartActionWindow>));
+
+            List<UIPartActionWindow> openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
+
+            foreach (UIPartActionWindow window in openWindows.Where(l => l.part.vessel == parent))
+            {
+                // Get the list of all UIPartActionItem's
+                FieldInfo itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                           .First(fi => fi.FieldType == typeof(List<UIPartActionItem>));
+
+                List<UIPartActionItem> partActionItems = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
 
                 UIPartActionItem[] actionToogleButtons = partActionItems.Where(l => AllowedFieldTypes.Any(t => l.GetType() == t) && (l as UIPartActionFieldItem) != null).ToArray();
                 for (int i = 0; i < actionToogleButtons.Count(); i++)
@@ -82,16 +110,123 @@ namespace RemoteTech.FlightComputer
                     object[] customAttributes = actionField.Field.FieldInfo.GetCustomAttributes(typeof(KSPField), true);
 
                     // Look for the custom attribute skip_control
-                    bool skip_control = customAttributes.Any(atrribute => ((KSPField)atrribute).category.Contains("skip_control"));
+                    bool skip_control = customAttributes.Any(attribute => ((KSPField)attribute).category.Contains("skip_control"));
                     if (!skip_control)
                     {
+                        KSPField kspField = customAttributes.Count() == 0 ? WrappedField.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
+
                         // Look for the custom attribute skip_delay
                         bool ignore_delay = customAttributes.Any(atrribute => ((KSPField)atrribute).category.Contains("skip_delay"));
+
+                        var fieldWrapper = new FieldWrapper(actionField.Field, passthrough, ignore_delay, kspField);
+                        fieldWrapper.WrappedField.OriginalAction = UIPartActionFieldItemPatcher.GetDefaultListener(actionField);
+                        UIPartActionFieldItemPatcher.SetDefaultListener(actionField, fieldWrapper);
                     }
                 }
             }
         }
 
+        #region FieldWrapper
+        public class WrappedField : BaseField
+        {
+            private Action m_OriginalAction;
+
+            public WrappedField(KSPField field, FieldInfo field_info, object host) : base(field, field_info, host)
+            {
+                
+            }
+
+            public void InvokeAction()
+            {
+                if(m_OriginalAction != null)
+                    m_OriginalAction.Invoke();
+            }
+
+            public Action OriginalAction { set { m_OriginalAction = value; } }
+
+
+            public static KSPField KspFieldFromBaseField(BaseField baseField)
+            {
+                var ksp_field = new KSPField();
+                ksp_field.isPersistant = baseField.isPersistant;
+                ksp_field.guiActive = baseField.guiActive;
+                ksp_field.guiActiveEditor = baseField.guiActiveEditor;
+                ksp_field.guiName = baseField.guiName;
+                ksp_field.guiUnits = baseField.guiUnits;
+                ksp_field.guiFormat = baseField.guiFormat;
+                ksp_field.category = baseField.category;
+                ksp_field.advancedTweakable = baseField.advancedTweakable;
+
+                return ksp_field;
+            }
+        }
+
+        public class FieldWrapper
+        {
+            private Action<BaseField, bool> m_Passthrough;
+            private bool m_IgnoreDelay;
+            private WrappedField m_WrappedField;            
+
+            public FieldWrapper(BaseField original, Action<BaseField, bool> passthrough, bool ignore_delay, KSPField kspField)
+            {
+                m_Passthrough = passthrough;
+                m_IgnoreDelay = ignore_delay;
+                m_WrappedField = new WrappedField(kspField, original.FieldInfo, original.host);
+                if (m_WrappedField.category == string.Empty)
+                    m_WrappedField.category = "skip_control";
+                else
+                    m_WrappedField.category += ";skip_control";
+            }
+
+            public WrappedField WrappedField { get { return m_WrappedField; } }
+
+            public void Invoke()
+            {
+                if(m_Passthrough != null)
+                    m_Passthrough.Invoke(m_WrappedField, m_IgnoreDelay);
+            }
+        }
+
+
+        public static class UIPartActionFieldItemPatcher
+        {
+            public static void SetDefaultListener(UIPartActionFieldItem item, FieldWrapper fw)
+            {
+                switch (item.GetType().Name)
+                {
+                    case nameof(UIPartActionToggle):
+                        var part_toggle = item as UIPartActionToggle;
+                        if (part_toggle != null)
+                        {
+                            part_toggle.toggle.onToggle.RemoveListener(part_toggle.OnTap);
+                            part_toggle.toggle.onToggle.AddListener(fw.Invoke);
+                        }
+                        break;
+
+                }
+            }
+
+            public static Action GetDefaultListener(UIPartActionFieldItem item)
+            {
+                Action action = null;
+                switch (item.GetType().Name)
+                {
+                    case nameof(UIPartActionToggle):
+                        var part_toggle = item as UIPartActionToggle;
+                        if (part_toggle != null)
+                        {
+                            action = part_toggle.OnTap;
+                        }
+                        break;
+
+                }
+
+                return action;
+            }
+        }
+        #endregion
+
+        #region EventWrapper
         public class WrappedEvent : BaseEvent
         {
             private BaseEvent originalEvent;
@@ -134,13 +269,13 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        private class Wrapper
+        private class EventWrapper
         {
             private Action<BaseEvent, bool> mPassthrough;
             private BaseEvent mEvent;
             private bool mIgnoreDelay;
 
-            private Wrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
+            private EventWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
             {
                 mPassthrough = passthrough;
                 mEvent = original;
@@ -151,7 +286,7 @@ namespace RemoteTech.FlightComputer
             {
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);
-                Wrapper wrapper = new Wrapper(original, passthrough, ignore_delay);
+                EventWrapper wrapper = new EventWrapper(original, passthrough, ignore_delay);
                 BaseEvent new_event = new WrappedEvent(original, original.listParent, original.name, wrapper.Invoke, kspEvent);
                 new_event.OnLoad(cn);
 
@@ -164,5 +299,6 @@ namespace RemoteTech.FlightComputer
                 mPassthrough.Invoke(mEvent, mIgnoreDelay);
             }
         }
+        #endregion
     }
 }
