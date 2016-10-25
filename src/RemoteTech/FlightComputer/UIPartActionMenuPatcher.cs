@@ -20,7 +20,7 @@ namespace RemoteTech.FlightComputer
 
             List<UIPartActionWindow> openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
 
-            foreach (UIPartActionWindow window in openWindows.Where(l => l.part.vessel == parent))
+            foreach (UIPartActionWindow window in openWindows.Where(window => window.part.vessel == parent))
             {
                 // Get the list of all UIPartActionItem's
                 FieldInfo itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -74,11 +74,11 @@ namespace RemoteTech.FlightComputer
                         eventList.Add(hookedEvent);
 
                         // get the baseEvent field from UIPartActionEventItem
-                        FieldInfo eventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                        FieldInfo baseEventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                                                .First(fi => fi.FieldType == typeof(BaseEvent));
 
                         // replace the button baseEvent value with our hooked event
-                        eventField.SetValue(button, hookedEvent);
+                        baseEventField.SetValue(button, hookedEvent);
                     }
                 }
             }
@@ -95,7 +95,7 @@ namespace RemoteTech.FlightComputer
 
             List<UIPartActionWindow> openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
 
-            foreach (UIPartActionWindow window in openWindows.Where(l => l.part.vessel == parent))
+            foreach (UIPartActionWindow window in openWindows.Where(window => window.part.vessel == parent))
             {
                 // Get the list of all UIPartActionItem's
                 FieldInfo itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
@@ -126,7 +126,7 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        #region FieldWrapper
+        #region FieldWrapper        
         public class WrappedField : BaseField
         {
             private Action m_OriginalAction;
@@ -288,10 +288,22 @@ namespace RemoteTech.FlightComputer
 
             public static BaseEvent CreateWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay, KSPEvent kspEvent)
             {
+                // Create a new config node and fill this config node with the original base event with the values
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);
+
+                // create the wrapper (used solely for its Invoke() method)
+                // this class keeps the:
+                // * passthrough event (leading to the ModuleSPU.InvokeEvent() method)
+                // * the original event (button click event)
+                // * the ignore delay boolean value (true if the event ignore delay, false otherwise)
                 EventWrapper wrapper = new EventWrapper(original, passthrough, ignore_delay);
+                // Create a new event, its main features are:
+                // 1. It retains its original base event invokable method: invokable directly through its InvokeOriginalEvent() method [useful for other mods, e.g. kOS]
+                // 2. Its new invoke() method which is in this wrapper class and decorated with and new KSPEvent category, namely "skip_control" (meaning we have already seen this event).
                 BaseEvent new_event = new WrappedEvent(original, original.listParent, original.name, wrapper.Invoke, kspEvent);
+
+                // load the original base event values into the new base event
                 new_event.OnLoad(cn);
 
                 return new_event;
@@ -300,6 +312,7 @@ namespace RemoteTech.FlightComputer
             [KSPEvent(category = "skip_control")]
             public void Invoke()
             {
+                // call the passthrough event, leading to call the ModuleSPU.InvokeEvent() method
                 mPassthrough.Invoke(mEvent, mIgnoreDelay);
             }
         }
