@@ -249,7 +249,7 @@ namespace RemoteTech.Modules
             var v = FlightGlobals.ActiveVessel;
             if (v == null || v.isEVA || RTCore.Instance == null)
             {
-                field.InvokeAction();
+                field.Invoke();
                 return;
             }
 
@@ -261,18 +261,18 @@ namespace RemoteTech.Modules
 
             if (vs == null || vs.HasLocalControl)
             {
-                field.InvokeAction();
+                field.Invoke();
             }
 
             else if (fieldWhiteList.Contains(baseField.name))
             {
-                field.InvokeAction();
+                field.Invoke();
             }
             else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
             {
                 if (ignoreDelay)
                 {
-                    field.InvokeAction();
+                    field.Invoke();
                 }
                 else
                 {

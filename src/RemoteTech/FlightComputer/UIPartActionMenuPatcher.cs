@@ -113,14 +113,12 @@ namespace RemoteTech.FlightComputer
                     bool skip_control = customAttributes.Any(attribute => ((KSPField)attribute).category.Contains("skip_control"));
                     if (!skip_control)
                     {
-                        KSPField kspField = customAttributes.Count() == 0 ? WrappedField.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
+                        KSPField kspField = customAttributes.Count() == 0 ? FieldWrapper.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
 
                         // Look for the custom attribute skip_delay
                         bool ignore_delay = customAttributes.Any(atrribute => ((KSPField)atrribute).category.Contains("skip_delay"));
 
-                        var fieldWrapper = new FieldWrapper(actionField.Field, passthrough, ignore_delay, kspField);
-                        fieldWrapper.WrappedField.OriginalAction = UIPartActionFieldItemPatcher.GetDefaultListener(actionField);
-                        UIPartActionFieldItemPatcher.SetDefaultListener(actionField, fieldWrapper);
+                        var fieldWrapper = new FieldWrapper(actionField, kspField, passthrough, ignore_delay);
                     }
                 }
             }
@@ -129,25 +127,69 @@ namespace RemoteTech.FlightComputer
         #region FieldWrapper        
         public class WrappedField : BaseField
         {
-            private Action m_OriginalAction;
+            /// <summary>
+            /// The future value (on called by the flight computer) of the field.
+            /// </summary>
+            private object m_newValue;
 
-            public WrappedField(KSPField field, FieldInfo field_info, object host) : base(field, field_info, host)
+            public WrappedField(BaseField baseField, KSPField field) : base(field, baseField.FieldInfo, baseField.host)
             {
                 
             }
 
-            public void InvokeAction()
+            /// <summary>
+            /// Gets or sets the future field value.
+            /// </summary>
+            public object NewValue
             {
-                if(m_OriginalAction != null)
-                    m_OriginalAction.Invoke();
+                get { return m_newValue; }
+                set { m_newValue = value; }
             }
+
+            /// <summary>
+            /// Effectively change the value of the underlying field.
+            /// </summary>
+            /// <remarks>This gets called by the flight computer either immediately if there's no delay or later if the command is queued.</remarks>
             public void Invoke()
             {
-                //this.FieldInfo.SetValue()
+                if(m_newValue != null)
+                    this.FieldInfo.SetValue(this.host, m_newValue);
+            }
+        }
+
+        public class FieldWrapper
+        {
+            private Action<BaseField, bool> m_Passthrough;
+            private bool m_IgnoreDelay;
+
+            private UIPartActionFieldItem m_UiPartAction;
+
+            private WrappedField m_WrappedField;      
+
+            public FieldWrapper(UIPartActionFieldItem uiPartAction, KSPField kspField, Action<BaseField, bool> passthrough, bool ignore_delay)
+            {
+                m_UiPartAction = uiPartAction;
+                SetDefaultListener();
+
+                BaseField baseField = uiPartAction.Field;
+                if(kspField == null)
+                {
+                    kspField = KspFieldFromBaseField(baseField);
+                }
+                
+                m_Passthrough = passthrough;
+                m_IgnoreDelay = ignore_delay;
+                m_WrappedField = new WrappedField(baseField, kspField);
             }
 
-            public Action OriginalAction { set { m_OriginalAction = value; } }
-
+            public void Invoke()
+            {
+                if (m_Passthrough != null)
+                {
+                    SetNewValue();
+                    m_Passthrough.Invoke(m_WrappedField, m_IgnoreDelay);
+                }
+            }
 
             public static KSPField KspFieldFromBaseField(BaseField baseField)
             {
@@ -163,69 +205,43 @@ namespace RemoteTech.FlightComputer
 
                 return ksp_field;
             }
-        }
 
-        public class FieldWrapper
-        {
-            private Action<BaseField, bool> m_Passthrough;
-            private bool m_IgnoreDelay;
-            private WrappedField m_WrappedField;            
-
-            public FieldWrapper(BaseField original, Action<BaseField, bool> passthrough, bool ignore_delay, KSPField kspField)
+            private void Action0()
             {
-                m_Passthrough = passthrough;
-                m_IgnoreDelay = ignore_delay;
-                m_WrappedField = new WrappedField(kspField, original.FieldInfo, original.host);
-                if (kspField.category == string.Empty)
-                    kspField.category = "skip_control";
-                else
-                    kspField.category += ";skip_control";
+                Invoke();
             }
 
-            public WrappedField WrappedField { get { return m_WrappedField; } }
-
-            public void Invoke()
+            private void SetDefaultListener()
             {
-                if(m_Passthrough != null)
-                    m_Passthrough.Invoke(m_WrappedField, m_IgnoreDelay);
-            }
-        }
-
-
-        public static class UIPartActionFieldItemPatcher
-        {
-            public static void SetDefaultListener(UIPartActionFieldItem item, FieldWrapper fw)
-            {
-                switch (item.GetType().Name)
+                switch (m_UiPartAction.GetType().Name)
                 {
                     case nameof(UIPartActionToggle):
-                        var part_toggle = item as UIPartActionToggle;
+                        var part_toggle = m_UiPartAction as UIPartActionToggle;
                         if (part_toggle != null)
                         {
                             part_toggle.toggle.onToggle.RemoveListener(part_toggle.OnTap);
-                            part_toggle.toggle.onToggle.AddListener(fw.Invoke);
+                            part_toggle.toggle.onToggle.AddListener(Action0);
                         }
                         break;
-
                 }
             }
 
-            public static Action GetDefaultListener(UIPartActionFieldItem item)
+            private void SetNewValue()
             {
-                Action action = null;
-                switch (item.GetType().Name)
+                switch (m_UiPartAction.GetType().Name)
                 {
                     case nameof(UIPartActionToggle):
-                        var part_toggle = item as UIPartActionToggle;
+                        var part_toggle = m_UiPartAction as UIPartActionToggle;
                         if (part_toggle != null)
                         {
-                            action = part_toggle.OnTap;
+                            var uiToggle = (part_toggle.Control as UI_Toggle);
+                            if (uiToggle != null)
+                            {
+                                m_WrappedField.NewValue = part_toggle.toggle.state ^ uiToggle.invertButton;
+                            }
                         }
                         break;
-
                 }
-
-                return action;
             }
         }
         #endregion

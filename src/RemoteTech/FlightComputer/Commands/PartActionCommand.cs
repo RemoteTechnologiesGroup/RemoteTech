@@ -59,8 +59,8 @@ namespace RemoteTech.FlightComputer
                     var field = (BaseField as WrappedField);
                     if (field != null)
                     {
-                        // invoke the baseevent
-                        field.InvokeAction();
+                        // invoke the field value change 
+                        field.Invoke();
                     }
                 }
                 catch (Exception invokeException)
