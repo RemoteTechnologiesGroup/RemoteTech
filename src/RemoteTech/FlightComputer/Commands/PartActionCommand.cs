@@ -10,10 +10,10 @@ namespace RemoteTech.FlightComputer
     
     public class PartActionCommand : AbstractCommand
     {
-        // Guiname of the BaseEvent
+        // Guiname of the BaseField
         [Persistent]
         public string GUIName;
-        // Name of the BaseEvent
+        // Name of the BaseField
         [Persistent]
         public string Name;
         // flight id of the part
@@ -57,7 +57,16 @@ namespace RemoteTech.FlightComputer
                 try
                 {
                     var field = (BaseField as WrappedField);
-                    if (field != null)
+                    if (field == null)
+                    {
+                        // we get there probably because the command was loaded from a save,
+                        // which means we lost the WrappedField instance.
+                        var originalValueField = typeof(BaseField).GetField("_originalValue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                        object newValue = originalValueField.GetValue(BaseField);
+                        BaseField.FieldInfo.SetValue(BaseField.host, newValue);
+
+                    }
+                    else
                     {
                         // invoke the field value change 
                         field.Invoke();

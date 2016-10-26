@@ -138,12 +138,12 @@ namespace RemoteTech.FlightComputer
         public class WrappedField : BaseField
         {
             /// <summary>
-            /// The future value (on called by the flight computer) of the field.
+            /// The future value (when set by the flight computer) of the field.
             /// </summary>
             private object m_newValue;
 
             public WrappedField(BaseField baseField, KSPField field) : base(field, baseField.FieldInfo, baseField.host)
-            {                
+            {   
             }
 
             /// <summary>
