@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace RemoteTech.FlightComputer
 {
     public static class UIPartActionMenuPatcher
     {
-        public static Type[] AllowedFieldTypes = { typeof(UIPartActionToggle), /*typeof(UIPartActionFloatRange)*/ };
+        public static Type[] AllowedFieldTypes = { typeof(UIPartActionToggle), typeof(UIPartActionFloatRange) };
+
+        public static List<string> parsedPartActions = new List<string>();
 
         public static void WrapEvent(Vessel parent, Action<BaseEvent, bool> passthrough)
         {
@@ -107,6 +111,11 @@ namespace RemoteTech.FlightComputer
                 for (int i = 0; i < actionToogleButtons.Count(); i++)
                 {
                     UIPartActionFieldItem actionField = (actionToogleButtons[i] as UIPartActionFieldItem);
+                    if (parsedPartActions.Contains(actionField.Field.name))
+                        continue;
+                    else
+                        parsedPartActions.Add(actionField.Field.name);
+
                     object[] customAttributes = actionField.Field.FieldInfo.GetCustomAttributes(typeof(KSPField), true);
 
                     // Look for the custom attribute skip_control
@@ -114,6 +123,7 @@ namespace RemoteTech.FlightComputer
                     if (!skip_control)
                     {
                         KSPField kspField = customAttributes.Count() == 0 ? FieldWrapper.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
+
 
                         // Look for the custom attribute skip_delay
                         bool ignore_delay = customAttributes.Any(atrribute => ((KSPField)atrribute).category.Contains("skip_delay"));
@@ -133,8 +143,7 @@ namespace RemoteTech.FlightComputer
             private object m_newValue;
 
             public WrappedField(BaseField baseField, KSPField field) : base(field, baseField.FieldInfo, baseField.host)
-            {
-                
+            {                
             }
 
             /// <summary>
@@ -164,7 +173,10 @@ namespace RemoteTech.FlightComputer
 
             private UIPartActionFieldItem m_UiPartAction;
 
-            private WrappedField m_WrappedField;      
+            private WrappedField m_WrappedField;
+
+            private Action<float> m_delayInvoke;
+            private object m_lastNewValue;
 
             public FieldWrapper(UIPartActionFieldItem uiPartAction, KSPField kspField, Action<BaseField, bool> passthrough, bool ignore_delay)
             {
@@ -186,9 +198,22 @@ namespace RemoteTech.FlightComputer
             {
                 if (m_Passthrough != null)
                 {
-                    SetNewValue();
+                    m_WrappedField.NewValue = m_lastNewValue;
                     m_Passthrough.Invoke(m_WrappedField, m_IgnoreDelay);
                 }
+            }
+
+            public void DelayInvoke(float waitTime)
+            {
+                HighLogic.fetch.StartCoroutine(DelayInvokeCoroutine(waitTime));
+            }
+
+            private IEnumerator DelayInvokeCoroutine(float waitTime)
+            {
+                yield return new WaitForSeconds(waitTime);
+                if (m_delayInvoke != null)
+                    m_delayInvoke = null;
+                Invoke();
             }
 
             public static KSPField KspFieldFromBaseField(BaseField baseField)
@@ -206,11 +231,6 @@ namespace RemoteTech.FlightComputer
                 return ksp_field;
             }
 
-            private void Action0()
-            {
-                Invoke();
-            }
-
             private void SetDefaultListener()
             {
                 switch (m_UiPartAction.GetType().Name)
@@ -220,13 +240,33 @@ namespace RemoteTech.FlightComputer
                         if (part_toggle != null)
                         {
                             part_toggle.toggle.onToggle.RemoveListener(part_toggle.OnTap);
-                            part_toggle.toggle.onToggle.AddListener(Action0);
+                            part_toggle.toggle.onToggle.AddListener(GetNewValue0);
+                        }
+                        break;
+
+                    case nameof(UIPartActionFloatRange):
+                        var part_float = m_UiPartAction as UIPartActionFloatRange;
+                        if(part_float != null)
+                        {
+                            part_float.slider.onValueChanged.RemoveAllListeners();
+                            part_float.slider.onValueChanged.AddListener(GetNewValueFloat);
+
                         }
                         break;
                 }
             }
 
-            private void SetNewValue()
+            private void GetNewValue0()
+            {
+                GetNewValue();
+            }
+
+            private void GetNewValueFloat(float obj)
+            {
+                GetNewValue();
+            }
+
+            private void GetNewValue()
             {
                 switch (m_UiPartAction.GetType().Name)
                 {
@@ -237,11 +277,73 @@ namespace RemoteTech.FlightComputer
                             var uiToggle = (part_toggle.Control as UI_Toggle);
                             if (uiToggle != null)
                             {
-                                m_WrappedField.NewValue = part_toggle.toggle.state ^ uiToggle.invertButton;
+                                m_lastNewValue = part_toggle.toggle.state ^ uiToggle.invertButton;
+                                // invoke now
+                                Invoke();
+                            }
+                        }
+                        break;
+
+                    case nameof(UIPartActionFloatRange):
+                        var part_float = m_UiPartAction as UIPartActionFloatRange;
+                        if (part_float != null)
+                        {
+                            var uiFloatRange = (part_float.Control as UI_FloatRange);
+                            if (uiFloatRange != null)
+                            {
+                                // get current value
+                                float currentValue = float.NaN;
+                                bool isModule = (part_float.PartModule != null);
+                                if (isModule)
+                                    currentValue = part_float.Field.GetValue<float>(part_float.PartModule);
+                                else
+                                    currentValue = part_float.Field.GetValue<float>(part_float.Part);
+
+                                // get new value
+                                float newValue = HandleFloatRange(currentValue, uiFloatRange, part_float.slider);
+                                if (!float.IsNaN(newValue))
+                                {
+                                    m_lastNewValue = newValue;
+                                    if (m_delayInvoke == null)
+                                    {
+                                        m_delayInvoke = new Action<float>(DelayInvoke);
+                                        m_delayInvoke(0.5f);
+                                    }
+                                }
                             }
                         }
                         break;
                 }
+            }
+
+            private float HandleFloatRange(float fieldValue, UI_FloatRange uiFloatRange, UnityEngine.UI.Slider slider)
+            {
+                var lerpedValue = Mathf.Lerp(uiFloatRange.minValue, uiFloatRange.maxValue, slider.value);
+                var moddedValue = lerpedValue % uiFloatRange.stepIncrement;
+                float num = fieldValue;
+                if (moddedValue != 0f)
+                {
+                    if (moddedValue < uiFloatRange.stepIncrement * 0.5f)
+                    {
+                        fieldValue = lerpedValue - moddedValue;
+                    }
+                    else
+                    {
+                        fieldValue = lerpedValue + (uiFloatRange.stepIncrement - moddedValue);
+                    }
+                }
+                else
+                {
+                    fieldValue = lerpedValue;
+                }
+                slider.value = Mathf.InverseLerp(uiFloatRange.minValue, uiFloatRange.maxValue, fieldValue);
+                fieldValue = (float)Math.Round((double)fieldValue, 5);
+                if (Mathf.Abs(fieldValue - num) > uiFloatRange.stepIncrement * 0.98f)
+                {
+                    return fieldValue;
+                }
+
+                return float.NaN;
             }
         }
         #endregion

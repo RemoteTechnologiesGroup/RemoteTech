@@ -89,6 +89,7 @@ namespace RemoteTech.Modules
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 GameEvents.onPartActionUICreate.Add(onPartActionUICreate);
+                GameEvents.onPartActionUIDismiss.Add(onPartActionUIDismiss);
                 mRegisteredId = vessel.id; 
                 if(RTCore.Instance != null)
                 {
@@ -105,12 +106,18 @@ namespace RemoteTech.Modules
             HookPartMenus();
         }
 
+        public void onPartActionUIDismiss(Part part)
+        {
+            UIPartActionMenuPatcher.parsedPartActions.Clear();
+        }
+
         public void OnDestroy()
         {
             RTLog.Notify("ModuleSPU: OnDestroy");
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
             GameEvents.onPartActionUICreate.Remove(onPartActionUICreate);
+            GameEvents.onPartActionUIDismiss.Remove(onPartActionUIDismiss);
             if (RTCore.Instance != null)
             {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);

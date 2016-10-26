@@ -16,13 +16,13 @@ namespace RemoteTech.FlightComputer
         // Name of the BaseEvent
         [Persistent]
         public string Name;
-        // flight id of the part by this BaseEvent
+        // flight id of the part
         [Persistent]
         public uint flightID;
-        // PartModule of the part by this BaseEvent
+        // PartModule of the part
         [Persistent]
         public string Module;
-        // BaseEvent to invoke
+        // BaseField
         public BaseField BaseField = null;
 
         public override string Description
@@ -83,7 +83,6 @@ namespace RemoteTech.FlightComputer
             };
         }
 
-        /*
         /// <summary>
         /// Load infos into this object and create a new BaseEvent
         /// </summary>
@@ -106,7 +105,7 @@ namespace RemoteTech.FlightComputer
                 this.GUIName = n.GetValue("GUIName");
                 this.Name = n.GetValue("Name");
 
-                RTLog.Notify("Try to load an EventCommand from persistent with {0},{1},{2},{3},{4}",
+                RTLog.Notify("Try to load an PartActionCommand from persistent with {0},{1},{2},{3},{4}",
                              PartId, this.flightID, this.Module, this.GUIName, this.Name);
 
                 Part part = null;
@@ -128,12 +127,13 @@ namespace RemoteTech.FlightComputer
                 PartModule partmodule = part.Modules[Module];
                 if (partmodule == null) return false;
 
-                BaseEventList eventlist = new BaseEventList(part, partmodule);
-                if (eventlist.Count <= 0) return false;
+                BaseFieldList fieldList = new BaseFieldList(partmodule);
+                if (fieldList.Count <= 0) return false;
 
-                this.BaseField = eventlist.Where(ba => (ba.GUIName == this.GUIName || ba.name == this.Name)).FirstOrDefault();
-                return true;
+                this.BaseField = fieldList[this.Name];
+                return (this.BaseField != null);
             }
+
             return false;
         }
 
@@ -142,13 +142,20 @@ namespace RemoteTech.FlightComputer
         /// </summary>
         public override void Save(ConfigNode n, FlightComputer fc)
         {
-            this.GUIName = this.BaseField.GUIName;
-            this.flightID = this.BaseField.listParent.module.part.flightID;
-            this.Module = this.BaseField.listParent.module.ClassName.ToString();
-            this.Name = this.BaseField.name;
+            PartModule pm = (BaseField.host as PartModule);
+            if(pm == null)
+            {
+                RTLog.Notify("On PartActionCommand.Save(): Can't save because BaseField.host is not a PartModule instance. Type is: {0}", BaseField.host.GetType());
+                return;
+            }
+
+            GUIName = BaseField.guiName;
+            flightID = pm.part.flightID;
+            Module = pm.ClassName.ToString();
+            Name = BaseField.name;
 
             base.Save(n, fc);
-        }*/
+        }
     }
     
 }
