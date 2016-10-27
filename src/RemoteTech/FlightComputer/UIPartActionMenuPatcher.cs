@@ -275,6 +275,7 @@ namespace RemoteTech.FlightComputer
             {
                 switch (m_UiPartAction.GetType().Name)
                 {
+                    // Handle toogle button, usually just a ON/OFF feature
                     case nameof(UIPartActionToggle):
                         var part_toggle = m_UiPartAction as UIPartActionToggle;
                         if (part_toggle != null)
@@ -289,6 +290,7 @@ namespace RemoteTech.FlightComputer
                         }
                         break;
 
+                    // handle sliders (using float value)
                     case nameof(UIPartActionFloatRange):
                         var part_float = m_UiPartAction as UIPartActionFloatRange;
                         if (part_float != null)
@@ -311,6 +313,7 @@ namespace RemoteTech.FlightComputer
                                     m_lastNewValue = newValue;
                                     if (m_delayInvoke == null)
                                     {
+                                        // invoke later
                                         m_delayInvoke = new Action<float>(DelayInvoke);
                                         m_delayInvoke(0.5f);
                                     }

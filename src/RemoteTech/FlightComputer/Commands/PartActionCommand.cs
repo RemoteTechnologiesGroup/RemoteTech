@@ -4,6 +4,7 @@ using System.Linq;
 
 using RemoteTech.FlightComputer.Commands;
 using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
+using System.Globalization;
 
 namespace RemoteTech.FlightComputer
 {
@@ -22,9 +23,6 @@ namespace RemoteTech.FlightComputer
         // PartModule of the part
         [Persistent]
         public string Module;
-        // underlying type of the new value
-        [Persistent]
-        public string NewValueTypeString;
 
         // new value for the field
         public object NewValue;
@@ -67,8 +65,15 @@ namespace RemoteTech.FlightComputer
                     var field = (BaseField as WrappedField);
                     if (field == null)
                     {
-                        if(NewValue != null)
-                            BaseField.FieldInfo.SetValue(BaseField.host, NewValue);
+                        // we lost the Wrapped field instance, this is due to the fact that the command was loaded from a save
+                        // we just have to use the NewValue field now and set the value ourselves.
+                        if (NewValue != null)
+                        {
+                            // get field type and convert NewValue (which is a string) to the desired value and finally set the field value.
+                            Type t = BaseField.FieldInfo.FieldType;
+                            object v = Convert.ChangeType(NewValue, t, CultureInfo.InvariantCulture);                                                   
+                            BaseField.FieldInfo.SetValue(BaseField.host, v);
+                        }
                     }
                     else
                     {
@@ -168,7 +173,6 @@ namespace RemoteTech.FlightComputer
             flightID = pm.part.flightID;
             Module = pm.ClassName.ToString();
             Name = BaseField.name;
-            NewValueTypeString = BaseField.FieldInfo.FieldType.ToString();
 
             n.AddValue("NewValue", this.NewValue);
 
