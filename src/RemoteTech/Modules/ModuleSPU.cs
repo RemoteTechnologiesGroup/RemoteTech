@@ -286,14 +286,13 @@ namespace RemoteTech.Modules
                     // queue command into FC
                     vs.SignalProcessor.FlightComputer.Enqueue(PartActionCommand.Field(baseField, field.NewValue));
                 }
-            }
-            /*
-            else if (baseEvent.listParent.part.Modules.OfType<IAntenna>().Any() &&
-                     !baseEvent.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
+            }            
+            else if (field.host is PartModule && ((PartModule)field.host).part.Modules.OfType<IAntenna>().Any() &&
+                     !((PartModule)field.host).part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
                      RTSettings.Instance.ControlAntennaWithoutConnection)
             {
-                baseEvent.Invoke();
-            }*/
+                field.Invoke();
+            }
             else
             {
                 ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));

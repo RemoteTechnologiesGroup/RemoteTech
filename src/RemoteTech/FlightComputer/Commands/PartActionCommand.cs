@@ -4,7 +4,6 @@ using System.Linq;
 
 using RemoteTech.FlightComputer.Commands;
 using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
-using System.Globalization;
 
 namespace RemoteTech.FlightComputer
 {
@@ -26,6 +25,8 @@ namespace RemoteTech.FlightComputer
 
         // new value for the field
         public object NewValue;
+        // the value as a string, once loaded from config
+        public string NewValueString;
         // the original BaseField
         public BaseField BaseField = null;
         
@@ -63,16 +64,15 @@ namespace RemoteTech.FlightComputer
                 try
                 {
                     var field = (BaseField as WrappedField);
-                    if (field == null)
-                    {
-                        // we lost the Wrapped field instance, this is due to the fact that the command was loaded from a save
-                        // we just have to use the NewValue field now and set the value ourselves.
+                    if (field == null) // we lost the Wrapped field instance, this is due to the fact that the command was loaded from a save
+                    {                        
                         if (NewValue != null)
                         {
-                            // get field type and convert NewValue (which is a string) to the desired value and finally set the field value.
-                            Type t = BaseField.FieldInfo.FieldType;
-                            object v = Convert.ChangeType(NewValue, t, CultureInfo.InvariantCulture);                                                   
-                            BaseField.FieldInfo.SetValue(BaseField.host, v);
+                            var newfield = new WrappedField(BaseField, WrappedField.KspFieldFromBaseField(BaseField));
+                            if(newfield.NewValueFromString(NewValueString))
+                            {
+                                newfield.Invoke();
+                            }
                         }
                     }
                     else
@@ -80,6 +80,9 @@ namespace RemoteTech.FlightComputer
                         // invoke the field value change 
                         field.Invoke();
                     }
+
+                    if (UIPartActionController.Instance != null)
+                        UIPartActionController.Instance.UpdateFlight();
                 }
                 catch (Exception invokeException)
                 {
@@ -123,7 +126,7 @@ namespace RemoteTech.FlightComputer
                 this.Module = n.GetValue("Module");
                 this.GUIName = n.GetValue("GUIName");
                 this.Name = n.GetValue("Name");
-                this.NewValue = n.GetValue("NewValue");
+                NewValueString = n.GetValue("NewValue");
 
                 RTLog.Notify("Try to load an PartActionCommand from persistent with {0},{1},{2},{3},{4}",
                              PartId, this.flightID, this.Module, this.GUIName, this.Name);

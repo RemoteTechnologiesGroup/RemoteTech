@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Globalization;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer
 {
     public static class UIPartActionMenuPatcher
     {
-        public static Type[] AllowedFieldTypes = { typeof(UIPartActionToggle), typeof(UIPartActionFloatRange) };
+        // UI types that we are actually hooking
+        public static Type[] AllowedFieldTypes = { typeof(UIPartActionToggle), typeof(UIPartActionFloatRange), typeof(UIPartActionCycle) };
 
         public static List<string> parsedPartActions = new List<string>();
 
@@ -122,7 +124,7 @@ namespace RemoteTech.FlightComputer
                     bool skip_control = customAttributes.Any(attribute => ((KSPField)attribute).category.Contains("skip_control"));
                     if (!skip_control)
                     {
-                        KSPField kspField = customAttributes.Count() == 0 ? FieldWrapper.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
+                        KSPField kspField = customAttributes.Count() == 0 ? WrappedField.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
 
 
                         // Look for the custom attribute skip_delay
@@ -160,6 +162,27 @@ namespace RemoteTech.FlightComputer
                 get { return this.FieldInfo.FieldType; }
             }
 
+            public bool NewValueFromString(string stringValue)
+            {
+                if (string.IsNullOrEmpty(stringValue))
+                    return false;
+
+                try
+                {
+                    if (NewValueType != typeof(string))
+                        m_newValue = Convert.ChangeType(NewValue, this.NewValueType, CultureInfo.InvariantCulture);
+                    else
+                        m_newValue = stringValue;
+
+                    return true;
+                }
+                catch(Exception ex) when(ex is InvalidCastException || ex is FormatException || ex is OverflowException)
+                {
+                    RTLog.Notify("WrappedField.NewValueFromString() : can't convert {0} to new type: {1} ; for field name: {2}", stringValue, NewValueType, FieldInfo.Name);
+                    return false;
+                }
+            }
+
             /// <summary>
             /// Effectively change the value of the underlying field.
             /// </summary>
@@ -168,6 +191,21 @@ namespace RemoteTech.FlightComputer
             {
                 if(m_newValue != null)
                     this.FieldInfo.SetValue(this.host, m_newValue);
+            }
+
+            public static KSPField KspFieldFromBaseField(BaseField baseField)
+            {
+                var ksp_field = new KSPField();
+                ksp_field.isPersistant = baseField.isPersistant;
+                ksp_field.guiActive = baseField.guiActive;
+                ksp_field.guiActiveEditor = baseField.guiActiveEditor;
+                ksp_field.guiName = baseField.guiName;
+                ksp_field.guiUnits = baseField.guiUnits;
+                ksp_field.guiFormat = baseField.guiFormat;
+                ksp_field.category = baseField.category;
+                ksp_field.advancedTweakable = baseField.advancedTweakable;
+
+                return ksp_field;
             }
         }
 
@@ -191,7 +229,7 @@ namespace RemoteTech.FlightComputer
                 BaseField baseField = uiPartAction.Field;
                 if(kspField == null)
                 {
-                    kspField = KspFieldFromBaseField(baseField);
+                    kspField = WrappedField.KspFieldFromBaseField(baseField);
                 }
                 
                 m_Passthrough = passthrough;
@@ -221,31 +259,29 @@ namespace RemoteTech.FlightComputer
                 Invoke();
             }
 
-            public static KSPField KspFieldFromBaseField(BaseField baseField)
-            {
-                var ksp_field = new KSPField();
-                ksp_field.isPersistant = baseField.isPersistant;
-                ksp_field.guiActive = baseField.guiActive;
-                ksp_field.guiActiveEditor = baseField.guiActiveEditor;
-                ksp_field.guiName = baseField.guiName;
-                ksp_field.guiUnits = baseField.guiUnits;
-                ksp_field.guiFormat = baseField.guiFormat;
-                ksp_field.category = baseField.category;
-                ksp_field.advancedTweakable = baseField.advancedTweakable;
-
-                return ksp_field;
-            }
-
             private void SetDefaultListener()
             {
                 switch (m_UiPartAction.GetType().Name)
                 {
-                    case nameof(UIPartActionToggle):
-                        var part_toggle = m_UiPartAction as UIPartActionToggle;
-                        if (part_toggle != null)
+                    case nameof(UIPartActionCycle):
                         {
-                            part_toggle.toggle.onToggle.RemoveListener(part_toggle.OnTap);
-                            part_toggle.toggle.onToggle.AddListener(GetNewValue0);
+                            var part_cycle = m_UiPartAction as UIPartActionCycle;
+                            if (part_cycle != null)
+                            {
+                                part_cycle.toggle.onToggle.RemoveListener(part_cycle.OnTap);
+                                part_cycle.toggle.onToggle.AddListener(GetNewValue0);
+                            }
+                        }
+                        break;
+
+                    case nameof(UIPartActionToggle):
+                        {
+                            var part_toggle = m_UiPartAction as UIPartActionToggle;
+                            if (part_toggle != null)
+                            {
+                                part_toggle.toggle.onToggle.RemoveListener(part_toggle.OnTap);
+                                part_toggle.toggle.onToggle.AddListener(GetNewValue0);
+                            }
                         }
                         break;
 
@@ -277,45 +313,74 @@ namespace RemoteTech.FlightComputer
                 {
                     // Handle toogle button, usually just a ON/OFF feature
                     case nameof(UIPartActionToggle):
-                        var part_toggle = m_UiPartAction as UIPartActionToggle;
-                        if (part_toggle != null)
                         {
-                            var uiToggle = (part_toggle.Control as UI_Toggle);
-                            if (uiToggle != null)
+                            var part_toggle = m_UiPartAction as UIPartActionToggle;
+                            if (part_toggle != null)
                             {
-                                m_lastNewValue = part_toggle.toggle.state ^ uiToggle.invertButton;
-                                // invoke now
-                                Invoke();
+                                var uiToggle = (part_toggle.Control as UI_Toggle);
+                                if (uiToggle != null)
+                                {
+                                    m_lastNewValue = part_toggle.toggle.state ^ uiToggle.invertButton;
+                                    // invoke now
+                                    Invoke();
+                                }
+                            }
+                        }
+                        break;
+
+                    // handle cycle button
+                    case nameof(UIPartActionCycle):
+                        {
+                            var part_cycle = m_UiPartAction as UIPartActionCycle;
+                            if (part_cycle != null)
+                            {
+                                var uiCycle = (part_cycle.Control as UI_Cycle);
+                                if (uiCycle != null)
+                                {
+                                    // get current value
+                                    int currentValue;
+                                    bool isModule = (part_cycle.PartModule != null);
+                                    if (isModule)
+                                        currentValue = part_cycle.Field.GetValue<int>(part_cycle.PartModule);
+                                    else
+                                        currentValue = part_cycle.Field.GetValue<int>(part_cycle.Part);
+
+                                    m_lastNewValue = (currentValue + 1) % uiCycle.stateNames.Length;
+                                    // invoke now
+                                    Invoke();
+                                }
                             }
                         }
                         break;
 
                     // handle sliders (using float value)
                     case nameof(UIPartActionFloatRange):
-                        var part_float = m_UiPartAction as UIPartActionFloatRange;
-                        if (part_float != null)
                         {
-                            var uiFloatRange = (part_float.Control as UI_FloatRange);
-                            if (uiFloatRange != null)
+                            var part_float = m_UiPartAction as UIPartActionFloatRange;
+                            if (part_float != null)
                             {
-                                // get current value
-                                float currentValue = float.NaN;
-                                bool isModule = (part_float.PartModule != null);
-                                if (isModule)
-                                    currentValue = part_float.Field.GetValue<float>(part_float.PartModule);
-                                else
-                                    currentValue = part_float.Field.GetValue<float>(part_float.Part);
-
-                                // get new value
-                                float newValue = HandleFloatRange(currentValue, uiFloatRange, part_float.slider);
-                                if (!float.IsNaN(newValue))
+                                var uiFloatRange = (part_float.Control as UI_FloatRange);
+                                if (uiFloatRange != null)
                                 {
-                                    m_lastNewValue = newValue;
-                                    if (m_delayInvoke == null)
+                                    // get current value
+                                    float currentValue = float.NaN;
+                                    bool isModule = (part_float.PartModule != null);
+                                    if (isModule)
+                                        currentValue = part_float.Field.GetValue<float>(part_float.PartModule);
+                                    else
+                                        currentValue = part_float.Field.GetValue<float>(part_float.Part);
+
+                                    // get new value
+                                    float newValue = HandleFloatRange(currentValue, uiFloatRange, part_float.slider);
+                                    if (!float.IsNaN(newValue))
                                     {
-                                        // invoke later
-                                        m_delayInvoke = new Action<float>(DelayInvoke);
-                                        m_delayInvoke(0.5f);
+                                        m_lastNewValue = newValue;
+                                        if (m_delayInvoke == null)
+                                        {
+                                            // invoke later
+                                            m_delayInvoke = new Action<float>(DelayInvoke);
+                                            m_delayInvoke(0.5f);
+                                        }
                                     }
                                 }
                             }
