@@ -64,6 +64,15 @@ namespace RemoteTech.Modules
             "AimCamera", "ResetCamera" // advanced tweakables: camera events
         };
 
+        /// <summary>
+        /// Contains the names of any fields that should always be run, 
+        /// regardless of connection status or signal delay.
+        /// </summary>
+        private static readonly HashSet<String> fieldWhiteList = new HashSet<String>
+        {
+
+        };
+
         private Guid mRegisteredId;
 
         public override String GetInfo()
@@ -80,6 +89,7 @@ namespace RemoteTech.Modules
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
                 GameEvents.onPartActionUICreate.Add(onPartActionUICreate);
+                GameEvents.onPartActionUIDismiss.Add(onPartActionUIDismiss);
                 mRegisteredId = vessel.id; 
                 if(RTCore.Instance != null)
                 {
@@ -96,12 +106,18 @@ namespace RemoteTech.Modules
             HookPartMenus();
         }
 
+        public void onPartActionUIDismiss(Part part)
+        {
+            UIPartActionMenuPatcher.parsedPartActions.Clear();
+        }
+
         public void OnDestroy()
         {
             RTLog.Notify("ModuleSPU: OnDestroy");
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
             GameEvents.onPartActionUICreate.Remove(onPartActionUICreate);
+            GameEvents.onPartActionUIDismiss.Remove(onPartActionUIDismiss);
             if (RTCore.Instance != null)
             {
                 RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
@@ -177,51 +193,111 @@ namespace RemoteTech.Modules
 
         public void HookPartMenus()
         {
-            UIPartActionMenuPatcher.Wrap(vessel, (e, ignoreDelay) =>
-            {
-                var v = FlightGlobals.ActiveVessel;
-                if (v == null || v.isEVA || RTCore.Instance == null)
-                {
-                    e.Invoke();
-                    return;
-                }
+            UIPartActionMenuPatcher.WrapEvent(vessel, (e, ignoreDelay) => InvokeEvent(e, ignoreDelay));
+            UIPartActionMenuPatcher.WrapPartAction(vessel, (f, ignoreDelay) => InvokePartAction(f, ignoreDelay));
+        }
 
-                VesselSatellite vs = null;
-                if(RTCore.Instance != null)
+        private void InvokeEvent(BaseEvent baseEvent, bool ignoreDelay)
+        {
+            // note: this gets called when the event is invoked through:
+            // RemoteTech.FlightComputer.UIPartActionMenuPatcher.Wrapper.Invoke()
+
+            var v = FlightGlobals.ActiveVessel;
+            if (v == null || v.isEVA || RTCore.Instance == null)
+            {
+                baseEvent.Invoke();
+                return;
+            }
+
+            VesselSatellite vs = null;
+            if (RTCore.Instance != null)
+            {
+                vs = RTCore.Instance.Satellites[v];
+            }
+
+            if (vs == null || vs.HasLocalControl)
+            {
+                baseEvent.Invoke();
+            }
+            else if (eventWhiteList.Contains(baseEvent.name))
+            {
+                baseEvent.Invoke();
+            }
+            else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
+            {
+                if (ignoreDelay)
                 {
-                    vs = RTCore.Instance.Satellites[v];
-                }
-                
-                if (vs == null || vs.HasLocalControl)
-                {
-                    e.Invoke();
-                }
-                else if (eventWhiteList.Contains(e.name))
-                {
-                    e.Invoke();
-                }
-                else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
-                {
-                    if (ignoreDelay)
-                    {
-                        e.Invoke();
-                    }
-                    else
-                    {
-                        vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(e));
-                    }
-                }
-                else if (e.listParent.part.Modules.OfType<IAntenna>().Any() &&
-                         !e.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
-                         RTSettings.Instance.ControlAntennaWithoutConnection)
-                {
-                    e.Invoke();
+                    baseEvent.Invoke();
                 }
                 else
                 {
-                    ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                    vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(baseEvent));
                 }
-            });
+            }
+            else if (baseEvent.listParent.part.Modules.OfType<IAntenna>().Any() &&
+                     !baseEvent.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
+                     RTSettings.Instance.ControlAntennaWithoutConnection)
+            {
+                baseEvent.Invoke();
+            }
+            else
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+            }
+        }
+
+
+        private void InvokePartAction(BaseField baseField,  bool ignoreDelay)
+        {
+            var field = (baseField as UIPartActionMenuPatcher.WrappedField);
+            if (field == null)
+                return;
+
+            var v = FlightGlobals.ActiveVessel;
+            if (v == null || v.isEVA || RTCore.Instance == null)
+            {
+                field.Invoke();
+                return;
+            }
+
+            VesselSatellite vs = null;
+            if (RTCore.Instance != null)
+            {
+                vs = RTCore.Instance.Satellites[v];
+            }
+
+            if (vs == null || vs.HasLocalControl)
+            {
+                field.Invoke();
+            }
+
+            else if (fieldWhiteList.Contains(baseField.name))
+            {
+                field.Invoke();
+            }
+            else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
+            {
+                if (ignoreDelay)
+                {
+                    field.Invoke();
+                }
+                else
+                {
+                    // queue command into FC
+                    vs.SignalProcessor.FlightComputer.Enqueue(PartActionCommand.Field(baseField, field.NewValue));
+                }
+            }            
+            else if (field.host is PartModule && ((PartModule)field.host).part.Modules.OfType<IAntenna>().Any() &&
+                     !((PartModule)field.host).part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
+                     RTSettings.Instance.ControlAntennaWithoutConnection)
+            {
+                field.Invoke();
+            }
+            else
+            {
+                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+            }
+
         }
 
         public override string ToString()
