@@ -22,8 +22,16 @@ namespace RemoteTech.FlightComputer
         // PartModule of the part
         [Persistent]
         public string Module;
-        // BaseField
+        // underlying type of the new value
+        [Persistent]
+        public string NewValueTypeString;
+
+        // new value for the field
+        public object NewValue;
+        // the original BaseField
         public BaseField BaseField = null;
+        
+
 
         public override string Description
         {
@@ -59,12 +67,8 @@ namespace RemoteTech.FlightComputer
                     var field = (BaseField as WrappedField);
                     if (field == null)
                     {
-                        // we get there probably because the command was loaded from a save,
-                        // which means we lost the WrappedField instance.
-                        var originalValueField = typeof(BaseField).GetField("_originalValue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                        object newValue = originalValueField.GetValue(BaseField);
-                        BaseField.FieldInfo.SetValue(BaseField.host, newValue);
-
+                        if(NewValue != null)
+                            BaseField.FieldInfo.SetValue(BaseField.host, NewValue);
                     }
                     else
                     {
@@ -82,13 +86,14 @@ namespace RemoteTech.FlightComputer
             return false;
         }
 
-        public static PartActionCommand Field(BaseField baseField)
+        public static PartActionCommand Field(BaseField baseField, object newValue)
         {
             return new PartActionCommand()
             {
                 BaseField = baseField,
                 GUIName = baseField.guiName,
                 TimeStamp = RTUtil.GameTime,
+                NewValue = newValue
             };
         }
 
@@ -113,6 +118,7 @@ namespace RemoteTech.FlightComputer
                 this.Module = n.GetValue("Module");
                 this.GUIName = n.GetValue("GUIName");
                 this.Name = n.GetValue("Name");
+                this.NewValue = n.GetValue("NewValue");
 
                 RTLog.Notify("Try to load an PartActionCommand from persistent with {0},{1},{2},{3},{4}",
                              PartId, this.flightID, this.Module, this.GUIName, this.Name);
@@ -162,9 +168,11 @@ namespace RemoteTech.FlightComputer
             flightID = pm.part.flightID;
             Module = pm.ClassName.ToString();
             Name = BaseField.name;
+            NewValueTypeString = BaseField.FieldInfo.FieldType.ToString();
+
+            n.AddValue("NewValue", this.NewValue);
 
             base.Save(n, fc);
         }
-    }
-    
+    }    
 }

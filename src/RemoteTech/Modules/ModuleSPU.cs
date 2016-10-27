@@ -283,13 +283,8 @@ namespace RemoteTech.Modules
                 }
                 else
                 {
-                    // the command is gonna be queued by the FC: we need a way to preserve the new value in the BaseField
-                    // we can't set the new value in the BaseField, otherwise this would automatically update the field value.
-                    // thus we set the _originalValue private field though reflection
-                    var originalValueField = typeof(BaseField).GetField("_originalValue", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    originalValueField.SetValue(baseField, field.NewValue);
-
-                    vs.SignalProcessor.FlightComputer.Enqueue(PartActionCommand.Field(baseField));
+                    // queue command into FC
+                    vs.SignalProcessor.FlightComputer.Enqueue(PartActionCommand.Field(baseField, field.NewValue));
                 }
             }
             /*

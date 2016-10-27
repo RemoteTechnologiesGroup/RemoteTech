@@ -155,6 +155,11 @@ namespace RemoteTech.FlightComputer
                 set { m_newValue = value; }
             }
 
+            public Type NewValueType
+            {
+                get { return this.FieldInfo.FieldType; }
+            }
+
             /// <summary>
             /// Effectively change the value of the underlying field.
             /// </summary>
