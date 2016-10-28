@@ -40,16 +40,16 @@ RemoteTech adds an overlay to the map view to display the state of your communic
 
 ![IMAGE: map view, with each type of overlay (active, cones, omni, dish, command center) labeled](rtmapview.png){:.right}
 
-![IMAGE: First button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texPath.png)
+![IMAGE: First button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech/Textures/texPath.png)
 :   This button will highlight the links used in the working connection (if any) as a green line.
 
-![IMAGE: Second button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texCone.png)
+![IMAGE: Second button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech/Textures/texCone.png)
 :   This button will display a 2D outline of any cones being aimed at planets or moons. For clarity, cones from ships far off the edge of the screen will not be shown.
 
-![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texOmniDish.png)
+![IMAGE: Third button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech/Textures/texOmniDish.png)
 :   This button cycles through four views of the network: no overlay, all omni-to-omni links in light brown, all dish-to-dish or omni-to-dish links in orange, and all links.
 
-![IMAGE: Fourth button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/src/RemoteTech/Resources/texButtonGreen.png)
+![IMAGE: Fourth button](https://raw.githubusercontent.com/RemoteTechnologiesGroup/RemoteTech/master/GameData/RemoteTech/Textures/texButtonGreen.png)
 :   This button pulls up a window listing all dishes on the current craft, as well as their targets. Dishes marked in green are activated, those marked in red are deactivated. Clicking on any dish in the list will pull up the target selection window for that dish.
 {: .indentedlist}
 
