@@ -17,7 +17,6 @@ namespace RemoteTech
         public NetworkRenderer Renderer { get; protected set; }
 
         /// Addons
-        public AddOns.ControlLockAddon ctrlLockAddon { get; protected set; }
         public AddOns.KerbalAlarmClockAddon kacAddon { get; protected set; }
 
         public event Action OnFrameUpdate = delegate { };
@@ -53,7 +52,6 @@ namespace RemoteTech
             // enable or disable KSP CommNet depending on settings.
             HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = RTSettings.Instance.CommNetEnabled;
 
-            ctrlLockAddon = new AddOns.ControlLockAddon();
             kacAddon = new AddOns.KerbalAlarmClockAddon();
 
             Satellites = new SatelliteManager();
@@ -160,7 +158,6 @@ namespace RemoteTech
             GameEvents.onHideUI.Remove(UIOff);
 
 			// addons
-            if (ctrlLockAddon != null) ctrlLockAddon = null;
             if (kacAddon != null) kacAddon = null;
 
             Instance = null;
