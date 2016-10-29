@@ -195,6 +195,11 @@
     #  subject: 'Build {{status}}'                  # optional
     #  message: "{{message}}, {{commitId}}, ..."    # optional
     #  on_build_status_changed: true
+    
+    # Github
+    - provider: GitHubPullRequest
+      auth_token:
+        secure: "inL59Ha8LLxMmwFmkqagZvk7G8L0I4RxbUAJgBDgX0m8rpshnSdXar2vHWdNvdAl"
 
     # Slack using webhook
     - provider: Slack
@@ -396,6 +401,11 @@
     #  subject: 'Build {{status}}'                  # optional
     #  message: "{{message}}, {{commitId}}, ..."    # optional
     #  on_build_status_changed: true
+    
+    # Github
+    - provider: GitHubPullRequest
+      auth_token:
+        secure: "inL59Ha8LLxMmwFmkqagZvk7G8L0I4RxbUAJgBDgX0m8rpshnSdXar2vHWdNvdAl"    
 
     # Slack using webhook
     - provider: Slack
