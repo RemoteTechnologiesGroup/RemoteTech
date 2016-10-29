@@ -178,7 +178,7 @@ namespace RemoteTech.FlightComputer
             Vessel vessel = fc.Vessel;
             Vector3d momentOfInertia = vessel.MOI;
             Transform vesselReference = vessel.GetTransform();
-            Vector3d torque = GetTorque(vessel, c.mainThrottle);
+            Vector3d torque = GetVesselTorque(vessel);
 
             // -----------------------------------------------
             // Copied from MechJeb master on 18.04.2016 with some modifications to adapt to RemoteTech
@@ -334,118 +334,51 @@ namespace RemoteTech.FlightComputer
         }
 
         /// <summary>
-        /// Returns the torque the ship can exert around its center of mass
+        /// Get the total torque for a vessel.
         /// </summary>
-        /// <returns>The torque in N m, around the (pitch, roll, yaw) axes.</returns>
-        /// <param name="vessel">The ship whose torque should be measured.</param>
-        /// <param name="thrust">The ship's throttle setting, on a scale of 0 to 1.</param>
-        public static Vector3d GetTorque(Vessel vessel, float thrust)
+        /// <param name="vessel">The vessel from which ot get the total torque.</param>
+        /// <returns>The vessel torque as a Vector3.</returns>
+        public static Vector3 GetVesselTorque(Vessel vessel)
         {
-            // Do everything in vessel coordinates
-            var centerOfMass = vessel.CoM;
+            // the resulting torque
+            Vector3 vesselTorque = Vector3.zero;
 
-            // Don't assume any particular symmetry for the vessel
-            double pitch = 0, roll = 0, yaw = 0;
+            // positive and negative vessel torque for all part modules that are torque providers
+            Vector3 positiveTorque = Vector3.zero;
+            Vector3 negativeTorque = Vector3.zero;
 
-            foreach (Part part in vessel.parts)
+            // cycle through all vessel parts.
+            int partCount = vessel.Parts.Count;
+            for(int iPart = 0; iPart < partCount; ++iPart)
             {
-                foreach (PartModule module in part.Modules)
+                Part part = vessel.Parts[iPart];
+
+                // loop through all modules for the part
+                int moduleCount = part.Modules.Count;
+                for (int iModule = 0; iModule < moduleCount; ++iModule)
                 {
-                    if (!module.isEnabled)
+                    // find modules in part that are torque providers.
+                    ITorqueProvider torqueProvider = part.Modules[iModule] as ITorqueProvider;
+                    if (torqueProvider == null)
                         continue;
 
-                    var reactionWheelModule = module as ModuleReactionWheel;
-                    var rcsModule = module as ModuleRCS;
-                    if (reactionWheelModule != null && reactionWheelModule.wheelState == ModuleReactionWheel.WheelState.Active)
-                    {
-                        pitch += reactionWheelModule.PitchTorque;
-                        roll += reactionWheelModule.RollTorque;
-                        yaw += reactionWheelModule.YawTorque;
-                    }
-                        // Is there a more direct way to see if RCS is enabled? module.isEnabled doesn't work...
-                    else if (rcsModule != null && vessel.ActionGroups[KSPActionGroup.RCS])
-                    {
-                        var vesselTransform = vessel.GetTransform();
-                        foreach (Transform thruster in rcsModule.thrusterTransforms)
-                        {
-                            // Avoids problems with part.Rigidbody.centerOfMass; should also give better
-                            //  support for RCS units integrated into larger parts
-                            Vector3d thrusterOffset = vesselTransform.InverseTransformPoint(thruster.position) - centerOfMass;
-                            /* Code by sarbian, shamelessly copied from MechJeb */
-                            Vector3d thrusterThrust = vesselTransform.InverseTransformDirection(-thruster.up.normalized) * rcsModule.thrusterPower;
-                            Vector3d thrusterTorque = Vector3.Cross(thrusterOffset, thrusterThrust);
-                            /* end sarbian's code */
+                    // pos and neg torque for this part module
+                    Vector3 posTorque;
+                    Vector3 negTorque;
 
-                            // This overestimates the usable torque, but that doesn't change the final behavior much
-                            pitch += (float)Math.Abs(thrusterTorque.x);
-                            roll += (float)Math.Abs(thrusterTorque.y);
-                            yaw += (float)Math.Abs(thrusterTorque.z);
-                        }
-                    }
+                    // get potential torque for the current module and update pos and neg torques.
+                    torqueProvider.GetPotentialTorque(out posTorque, out negTorque);
+                    positiveTorque += posTorque;
+                    negativeTorque += negTorque;
                 }
-
-                Vector3d gimbal = GetThrustTorque(part, vessel) * thrust;
-                pitch += gimbal.x;
-                roll += gimbal.y;
-                yaw += gimbal.z;
             }
 
-            return new Vector3d(pitch, roll, yaw);
-        }
+            // get max torque from all components of pos and neg torques.
+            vesselTorque.x = Mathf.Max(positiveTorque.x, negativeTorque.x);
+            vesselTorque.y = Mathf.Max(positiveTorque.y, negativeTorque.y);
+            vesselTorque.z = Mathf.Max(positiveTorque.z, negativeTorque.z);
 
-        /// <summary>
-        /// Returns the maximum torque the ship can exert by gimbaling its engines while at full throttle
-        /// </summary>
-        /// <returns>The torque in N m, around the (pitch, roll, yaw) axes.</returns>
-        /// <param name="p">The part providing the torque. Need not be an engine.</param>
-        /// <param name="vessel">The vessel to which the torque is applied.</param>
-        public static Vector3d GetThrustTorque(Part p, Vessel vessel)
-        {
-            double result = 0.0;
-            foreach (ModuleGimbal gimbal in p.Modules.OfType<ModuleGimbal>())
-            {
-                if (gimbal.gimbalLock)
-                    continue;
-
-                // Standardize treatment of ModuleEngines and ModuleEnginesFX; 
-                //      IEngineStatus doesn't have the needed fields
-                double maxThrust = 0.0;
-                // Assume exactly one module of EITHER type ModuleEngines or ModuleEnginesFX exists in `p`
-                bool engineFound = false;
-                {
-                    ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
-                    if (engine != null)
-                    {
-                        if (!engine.isOperational)
-                            continue;
-                        engineFound = true;
-                        maxThrust = engine.maxThrust;
-                    }
-                }
-                // Dummy ModuleGimbal, does nothing
-                if (!engineFound)
-                    continue;
-
-                double gimbalRadians = Math.Sin(Math.Abs(gimbal.gimbalRange) * Math.PI / 180);
-                result = gimbalRadians * maxThrust * (p.Rigidbody.worldCenterOfMass - vessel.CoM).magnitude;
-            }
-
-            // Better to overestimate roll torque than to underestimate it... calculate properly later
-            return new Vector3d(result, result, result);
-        }
-
-        private static Vector3d ReduceAngles(Vector3d input)
-        {
-            return new Vector3d(
-                  (input.x > 180f) ? (input.x - 360f) : input.x,
-                  (input.y > 180f) ? (input.y - 360f) : input.y,
-                  (input.z > 180f) ? (input.z - 360f) : input.z
-                  );
-        }
-
-        public static Vector3d Sign(Vector3d vector)
-        {
-            return new Vector3d(Math.Sign(vector.x), Math.Sign(vector.y), Math.Sign(vector.z));
+            return vesselTorque;
         }
     }
 }

@@ -420,8 +420,7 @@ namespace RemoteTech.FlightComputer
         {
             if (Vessel != null)
             {
-                Vector3d torque = SteeringHelper.GetTorque(Vessel,
-                    Vessel.ctrlState != null ? Vessel.ctrlState.mainThrottle : 0.0f);
+                Vector3 torque = SteeringHelper.GetVesselTorque(Vessel);
                 var CoM = Vessel.CoM;
                 var MoI = Vessel.MOI;
 
