@@ -28,18 +28,12 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Saves the Settings, kills the current instance and creates a new instance.
+        /// Replace the given settings with a new Settings object of the given setting preset, and save it
         /// </summary>
-        /// <returns>Reloaded Settings</returns>
-        public static Settings ReloadSettings()
+        public static void ReloadSettings(Settings previousSettings, string presetCFGUrl)
         {
-            if (RTSettings.mInstance != null)
-            {
-                RTSettings.mInstance.Save();
-            }
-
-            RTSettings.mInstance = null;
-            return RTSettings.Instance;
+            RTSettings.mInstance = Settings.LoadPreset(previousSettings, presetCFGUrl);
+            RTSettings.mInstance.Save();
         }
     }
 
@@ -86,11 +80,6 @@ namespace RemoteTech
         /// Temp Variable for all the Window Positions for each instance.
         /// </summary>
         public Dictionary<String, Rect> savedWindowPositions = new Dictionary<String, Rect>();
-
-        /// <summary>
-        /// Backup config node
-        /// </summary>
-        private ConfigNode backupNode;
 
         /// <summary>
         /// Returns the current RemoteTech_Settings of an existing save full path. The path will be empty
@@ -190,87 +179,82 @@ namespace RemoteTech
             {
                 // old or new format?
                 if (load.HasNode("RemoteTechSettings"))
-                {
                     load = load.GetNode("RemoteTechSettings");
-                }
                 
-                // load save-setting file
+                // replace the default settings with save-setting file
                 bool success = ConfigNode.LoadObjectFromConfig(settings, load);
                 RTLog.Notify("Found and load save settings into object with {0}: LOADED {1}", load, success ? "OK" : "FAIL");
             }
 
-            /* Will come back after testing the save & load
-            bool presetsLoaded = false;
-            // Prefer to load from GameDatabase, to allow easier user customization
-            UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
-            // find the default_settings from remote tech to load as the first settings
-            UrlDir.UrlConfig defConfig = Array.Find(configList, cl => cl.url.Equals("RemoteTech/Default_Settings/RemoteTechSettings") && !settings.PreSets.Contains(cl.url));
-            if(defConfig != null)
-            {
-                RTLog.Notify("Load default remotetech settings", RTLogLevel.LVL1);
-                settings = Settings.LoadPreset(settings, defConfig);
-            }
-
-            foreach (UrlDir.UrlConfig curSet in configList)
-            {
-                // only third party files
-                if (!curSet.url.Equals("RemoteTech/RemoteTech_Settings/RemoteTechSettings") && !settings.PreSets.Contains(curSet.url))
-                {
-                    settings = Settings.LoadPreset(settings, curSet);
-                    // trigger to save the settings again
-                    presetsLoaded = true;
-                }
-            }
-
-            if (presetsLoaded)
-            {
-                settings.Save();
-            }
-            */
-
+            SearchAndPreparePresets(settings); // find third-party mods' RemoteTech settings
             settings.settingsLoaded = true;
             RTSettings.OnSettingsLoaded.Fire();
 
             return settings;
         }
 
-        /// <summary>
-        /// Load a preset config into the remotetech settings object.
-        /// </summary>
-        private static Settings LoadPreset(Settings settings, UrlDir.UrlConfig curSet)
+        private static void SearchAndPreparePresets(Settings settings)
         {
-            settings.PreSets.Add(curSet.url);
-            RTLog.Notify("Override RTSettings with configs from {0}", curSet.url);
-            settings.backupFields();
-            ConfigNode.LoadObjectFromConfig(settings, curSet.config);
-            settings.restoreBackups();
+            /* Note:
+             * Scenario 1: RemoteTech_Settings.cfg of a save is of Default_Settings.cfg
+             *     RemoteTech_Settings.cfg contains the PreSets node. Thus, settings.PreSets already has the Default_Setting.cfg
+             * Scenario 2: RemoteTech_Settings.cfg of a save is of ExampleMod/RemoteTechSettings.cfg
+             *     RemoteTech_Settings.cfg may not contain the PreSets node. Thus, Default_Settings.cfg should be added to settings.PreSets
+             */
 
-            return settings;
-        }
-
-        /// <summary>
-        /// Stores the MapFilter, ActiveVesselGuid, NoTargetGuid and RemoteTechEnabled Value for overriding
-        /// with third party settings
-        /// </summary>
-        public void backupFields()
-        {
-            backupNode = new ConfigNode();
-            backupNode.AddValue("MapFilter", MapFilter);
-            backupNode.AddValue("ActiveVesselGuid", ActiveVesselGuid);
-            backupNode.AddValue("NoTargetGuid", NoTargetGuid);
-            backupNode.AddValue("RemoteTechEnabled", RemoteTechEnabled);
-        }
-
-        /// <summary>
-        /// Restores the backuped values from backupFields()
-        /// </summary>
-        public void restoreBackups()
-        {
-            if (backupNode != null)
+            bool presetsLoaded = false;
+            // Exploit KSP's GameDatabase to find third-party mods' RemoteTechSetting node (from GameData/ExampleMod/RemoteTechSettings.cfg)
+            UrlDir.UrlConfig[] RTSettingCFGs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            for (int i = 0; i < RTSettingCFGs.Length; i++)
             {
-                // restore backups
-                ConfigNode.LoadObjectFromConfig(this, backupNode);
+                UrlDir.UrlConfig RTSettingCFG = RTSettingCFGs[i];
+
+                // only new settings i.e. skip existing presets
+                if (!settings.PreSets.Contains(RTSettingCFG.url))
+                {
+                    settings.PreSets.Add(RTSettingCFG.url);
+                    RTLog.Notify("Add a new RemoteTechSettings from {0}", RTSettingCFG.url);
+                    presetsLoaded = true;
+                }
             }
+
+            if (presetsLoaded) // only if new RT settings are found and added to the save-setting's PreSets node
+                settings.Save();
+        }
+
+        /// <summary>
+        /// Load a preset config into the RemoteTech settings object.
+        /// </summary>
+        public static Settings LoadPreset(Settings previousSettings, string presetCFGUrl)
+        {
+            Settings NewPreSetSettings = new Settings();
+            bool SuccessLoadPreSet = false;
+
+            // Exploit KSP's GameDatabase to find third-party mods' RemoteTechSetting node (from GameData/ExampleMod/RemoteTechSettings.cfg)
+            UrlDir.UrlConfig[] RTSettingCFGs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            for(int i=0;i<RTSettingCFGs.Length;i++)
+            {
+                UrlDir.UrlConfig RTSettingCFG = RTSettingCFGs[i];
+
+                if (RTSettingCFG.url.Equals(presetCFGUrl))
+                {
+                    // Preserve important information of RT, such as the single ID
+                    ConfigNode importantInfoNode = new ConfigNode();
+                    importantInfoNode.AddValue("MapFilter", previousSettings.MapFilter);
+                    importantInfoNode.AddValue("ActiveVesselGuid", previousSettings.ActiveVesselGuid);
+                    importantInfoNode.AddValue("NoTargetGuid", previousSettings.NoTargetGuid);
+                    importantInfoNode.AddValue("RemoteTechEnabled", previousSettings.RemoteTechEnabled);
+
+                    SuccessLoadPreSet = ConfigNode.LoadObjectFromConfig(NewPreSetSettings, RTSettingCFG.config);
+                    RTLog.Notify("Load the preset cfg into object with {0}: LOADED {1}", NewPreSetSettings, SuccessLoadPreSet ? "OK" : "FAIL");
+
+                    // Restore backups
+                    ConfigNode.LoadObjectFromConfig(NewPreSetSettings, importantInfoNode);
+                    break;
+                }
+            }
+
+            return SuccessLoadPreSet?NewPreSetSettings: previousSettings;
         }
 
         /// Adds a new ground station to the list and returns a new guid id for

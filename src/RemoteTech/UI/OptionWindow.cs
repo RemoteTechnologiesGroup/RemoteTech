@@ -426,41 +426,30 @@ namespace RemoteTech.UI
         /// </summary>
         private void drawPresetsContent()
         {
-            GUILayout.Label("Other mods can deliver their own RemoteTech_Settings.cfg and override config values.\nHere you can see what presets we've loaded:", this.mGuiRunningText);
+            GUILayout.Label("A third-party mod can replace your current RemoteTech settings with its own settings (GameData/ExampleMod/RemoteTechSettings.cfg).\nAlso, you can revert to RemoteTech's default settings.\nHere you can see what presets are available:", this.mGuiRunningText);
             GUILayout.Space(15);
 
             List<String> presetList = this.mSettings.PreSets;
 
             if(this.mSettings.PreSets.Count <= 0)
             {
-                GUILayout.Label("- no presets found", this.mGuiRunningText);
+                GUILayout.Label("No presets are found", this.mGuiRunningText);
             }
 
             for(int i = presetList.Count - 1; i >= 0; --i)
             {
-                String FolderName = presetList[i].Replace("/RemoteTechSettings", ".cfg").Trim();
+                String FolderName = presetList[i].Replace("/RemoteTechSettings", "").Trim();
                 GUILayout.BeginHorizontal("box", GUILayout.MaxHeight(15));
                 {
                     GUILayout.Space(15);
                     GUILayout.Label("- "+FolderName, this.mGuiListText, GUILayout.ExpandWidth(true));
-                    if(GUILayout.Button("Reload", this.mGuiListButton, GUILayout.Width(50), GUILayout.Height(20)))
+                    if(GUILayout.Button("Overwrite", this.mGuiListButton, GUILayout.Width(60), GUILayout.Height(20)))
                     {
-                        RTLog.Notify("Reload cfg {0}", RTLogLevel.LVL3, presetList[i]);
-                        this.mSettings.PreSets.RemoveAt(i);
-                        RTSettings.ReloadSettings();
+                        RTSettings.ReloadSettings(this.mSettings, presetList[i]);
+                        RTLog.Notify("Overwrote current settings with this cfg {0}", RTLogLevel.LVL3, presetList[i]);
                     }
                 }
                 GUILayout.EndHorizontal();
-            }
-
-            // Reload all button
-            if (presetList.Count >= 2)
-            {
-                if (GUILayout.Button("Reload All", this.mGuiListButton))
-                {
-                    this.mSettings.PreSets.Clear();
-                    RTSettings.ReloadSettings();
-                }
             }
         }
 
