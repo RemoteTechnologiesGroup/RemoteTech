@@ -300,4 +300,63 @@ namespace RemoteTech
             return false;
         }
     }
+
+    public class RemoteTechGeneralSettings : GameParameters.CustomParameterNode
+    {
+        public override string Title => "RemoteTech General Options";
+        public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
+        public override bool HasPresets => false;
+        public override string Section => "RemoteTech";
+        public override int SectionOrder => 1;
+
+        [GameParameters.CustomParameterUI("RemoteTech Enabled", autoPersistance = true, toolTip = "If ON, RemoteTech is enabled on this save\nIf OFF, none of the RemoteTech features are enabled.")]
+        public bool RemoteTechEnabled = true;
+
+        [GameParameters.CustomStringParameterUI("Test String UI", autoPersistance = false, lines = 2, title = "This is what should show Test string#1", toolTip = "test string tooltip")]
+        public string UIstring = "foobarbaz <b><color=#ff0000>Test Bold & Red color</color></b>";
+    }
+
+    public class RemoteTechWorldScaleSettings : GameParameters.CustomParameterNode
+    {
+        public override string Title => "RemoteTech World Scale Options";
+        public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
+        public override bool HasPresets => false;
+        public override string Section => "RemoteTech";
+        public override int SectionOrder => 2;
+
+        [GameParameters.CustomFloatParameterUI("Consumption Multiplier", autoPersistance = true, 
+            toolTip = "If set to a value other than 1, the power consumption of all antennas will be increased or decreased by this factor.\nDoes not affect energy consumption for science transmissions.",
+            minValue = 0f, maxValue = 2f, displayFormat = "F2", stepCount = 400)]
+        public float ConsumptionMultiplier = 1;
+
+        [GameParameters.CustomFloatParameterUI("Antennas Range Multiplier", autoPersistance = true,
+            toolTip = "If set to a value other than 1, the range of all <b><color=#dd4949>antennas</color></b> will be increased or decreased by this factor.\nDoes not affect Mission Control range.",
+            minValue = 0f, maxValue = 5f, displayFormat = "F2")]
+        public float RangeMultiplier = 1;
+
+        [GameParameters.CustomFloatParameterUI("Mission Control Range Multiplier", autoPersistance = true,
+            toolTip = "If set to a value other than 1, the range of all <b><color=#dd4949>Mission Controls</color></b> will be increased or decreased by this factor.\nDoes not affect antennas range.",
+            minValue = 0f, maxValue = 5f, displayFormat = "F2")]
+        public float MissionControlRangeMultiplier = 1;
+    }
+
+    public class RemoteTechAlternativeRulesSettings : GameParameters.CustomParameterNode
+    {
+        public override string Title => "RemoteTech Alternative Rules Options";
+        public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
+        public override bool HasPresets => false;
+        public override string Section => "RemoteTech";
+        public override int SectionOrder => 3;
+
+        [GameParameters.CustomParameterUI("Signal Delay", autoPersistance = true, toolTip = "ON: All commands sent to RemoteTech-compatible probe cores are limited by the speed of light and have a delay before executing, based on distance.\nOFF: All commands will be executed immediately, although a working connection to Mission Control is still required.")]
+        public bool EnableSignalDelay = true;
+
+        [GameParameters.CustomParameterUI("Range Model Mode", toolTip = "This setting controls how the game determines whether two antennas are in range of each other.\nRead more on our online manual about the difference for each rule.")]
+        public RangeModel.RangeModel RangeModelType = RangeModel.RangeModel.Standard;
+
+        [GameParameters.CustomFloatParameterUI("Multiple Antenna Multiplier", autoPersistance = true,
+            toolTip = "Multiple omnidirectional antennas on the same craft work together.\nThe default value of 0 means this is disabled.\nThe largest value of 1.0 sums the range of all omnidirectional antennas to provide a greater effective range.\nThe effective range scales linearly and this option works with both the Standard and Root range models.",
+            minValue = 0f, maxValue = 1f, displayFormat = "F2")]
+        public float MultipleAntennaMultiplier = 0;
+    }
 }
