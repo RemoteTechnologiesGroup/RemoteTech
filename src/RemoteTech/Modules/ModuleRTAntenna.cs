@@ -172,9 +172,9 @@ namespace RemoteTech.Modules
         }
 
         /// <summary>
-        /// Displaying the stored "range" of the antenna/dish is confusing to players when rangeModel Root is selected, because that's not actually the range.
+        /// Displaying the stored "range" of the antenna/dish is confusing to players when rangeModel Root is selected, because that's not actually the 'range'.
         /// </summary>
-        /// <returns>Return a desciption for an antenna given the current range model (either 'range' or 'power'). An empty string if RTSettings instance is not available.</returns>
+        /// <returns>Returns a description for an antenna given the current range model (either 'range' or 'power'). An empty string if RTSettings instance is not available.</returns>
         private string AntennaInfoDescriptionFromRangeModel()
         {
             string description = string.Empty;

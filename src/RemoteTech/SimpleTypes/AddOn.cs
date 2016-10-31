@@ -7,15 +7,15 @@ namespace RemoteTech.SimpleTypes
 {
     public abstract class AddOn
     {
-        private bool loaded = false;
         /// <summary>Holds the current assembly type</summary>
-        protected Type assemblyType;
+        protected Type AssemblyType;
         /// <summary>Binding flags for invoking the methods</summary>
-        protected BindingFlags bFlags = BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static;
+        protected BindingFlags BindFlags = BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static;
         /// <summary>Instance object for invoking instance methods</summary>
-        protected object instance;
-        /// <summary>Assemlby loaded?</summary>
-        public bool assemblyLoaded { get { return this.loaded; } }
+        protected object Instance;
+
+        /// <summary>Assembly loaded?</summary>
+        public bool AssemblyLoaded { get; }
 
 
         protected AddOn(string assemblyName, string assemblyType)
@@ -23,13 +23,13 @@ namespace RemoteTech.SimpleTypes
             RTLog.Verbose("Connecting with {0} ...", RTLogLevel.Assembly, assemblyName);
 
             var loadedAssembly = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name.Equals(assemblyName));
-            if (loadedAssembly != null)
-            {
-                RTLog.Notify("Successfull connected to Assembly {0}", RTLogLevel.Assembly, assemblyName);
-                this.assemblyType = loadedAssembly.assembly.GetTypes().FirstOrDefault(t => t.FullName.Equals(assemblyType));
+            if (loadedAssembly == null)
+                return;
 
-                this.loaded = true;
-            }
+            RTLog.Notify("Successfull connected to Assembly {0}", RTLogLevel.Assembly, assemblyName);
+            AssemblyType = loadedAssembly.assembly.GetTypes().FirstOrDefault(t => t.FullName.Equals(assemblyType));
+
+            AssemblyLoaded = true;
         }
 
         /// <summary>
@@ -39,26 +39,26 @@ namespace RemoteTech.SimpleTypes
         /// </summary>
         /// <param name="parameters">Object parameter list, given to the assembly method</param>
         /// <returns>Null on a non successfull call</returns>
-        protected object invoke(object[] parameters)
+        protected object Invoke(object[] parameters)
         {
-            if(this.assemblyLoaded)
+            if (!AssemblyLoaded)
+                return null;
+
+            // look 1 call behind to get the name of the method who is called
+            var stackTrace = new StackTrace();
+            var stackFrame = stackTrace.GetFrame(1);
+
+            try
             {
-                // look 1 call behind to get the name of the method who is called
-                StackTrace st = new StackTrace();
-                StackFrame sf = st.GetFrame(1);
+                // invoke the method
+                var result = AssemblyType.InvokeMember(stackFrame.GetMethod().Name, BindFlags, null, Instance, parameters);
+                RTLog.Verbose("AddOn.InvokeResult for {0} with instance: {1} is '{2}'", RTLogLevel.Assembly, stackFrame.GetMethod().Name, Instance, result);
 
-                try
-                {
-                    // invoke the method
-                    var result = assemblyType.InvokeMember(sf.GetMethod().Name, this.bFlags, null, this.instance, parameters);
-                    RTLog.Verbose("AddOn.InvokeResult for {0} with instance: {1} is '{2}'", RTLogLevel.Assembly, sf.GetMethod().Name, this.instance, result);
-
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    RTLog.Verbose("AddOn.InvokeException for {0} with instance: {1} is '{2}'", RTLogLevel.Assembly, sf.GetMethod().Name, this.instance, ex);
-                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                RTLog.Verbose("AddOn.InvokeException for {0} with instance: {1} is '{2}'", RTLogLevel.Assembly, stackFrame.GetMethod().Name, Instance, ex);
             }
 
             // default value is null

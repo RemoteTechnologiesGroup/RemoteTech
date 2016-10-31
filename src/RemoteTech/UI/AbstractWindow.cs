@@ -217,9 +217,6 @@ namespace RemoteTech.UI
             {
                 InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "RTLockControlForWindows");
                 InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockControlCamForWindows");
-
-                if (!RTCore.Instance.ctrlLockAddon.IsLockSet())
-                    RTCore.Instance.ctrlLockAddon.SetFullLock("RemoteTech");
             }
         }
 
@@ -234,9 +231,6 @@ namespace RemoteTech.UI
             {
                 InputLockManager.RemoveControlLock("RTLockControlForWindows");
                 InputLockManager.RemoveControlLock("RTLockControlCamForWindows");
-
-                if (RTCore.Instance.ctrlLockAddon.IsLockSet("RemoteTech"))
-                    RTCore.Instance.ctrlLockAddon.UnsetFullLock("RemoteTech");
             }
         }
 
