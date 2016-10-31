@@ -438,14 +438,18 @@ namespace RemoteTech.UI
 
             for(int i = presetList.Count - 1; i >= 0; --i)
             {
-                String FolderName = presetList[i].Replace("/RemoteTechSettings", "").Trim();
                 GUILayout.BeginHorizontal("box", GUILayout.MaxHeight(15));
                 {
+                    string folderName = presetList[i];
+                    int index = folderName.LastIndexOf("/RemoteTechSettings");
+                    folderName = folderName.Substring(0, index) + folderName.Substring(index).Replace("/RemoteTechSettings", ".cfg").Trim();
+
                     GUILayout.Space(15);
-                    GUILayout.Label("- "+FolderName, this.mGuiListText, GUILayout.ExpandWidth(true));
-                    if(GUILayout.Button("Overwrite", this.mGuiListButton, GUILayout.Width(60), GUILayout.Height(20)))
+                    GUILayout.Label("- " + folderName, this.mGuiListText, GUILayout.ExpandWidth(true));
+                    if(GUILayout.Button("Overwrite", this.mGuiListButton, GUILayout.Width(70), GUILayout.Height(20)))
                     {
                         RTSettings.ReloadSettings(this.mSettings, presetList[i]);
+                        ScreenMessages.PostScreenMessage(string.Format("Your RemoteTech settings are set to {0}", folderName), 15);
                         RTLog.Notify("Overwrote current settings with this cfg {0}", RTLogLevel.LVL3, presetList[i]);
                     }
                 }

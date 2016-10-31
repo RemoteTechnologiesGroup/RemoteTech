@@ -119,7 +119,7 @@ namespace RemoteTech
                 String settingsFile = Settings.SaveSettingFile;
 
                 // only save the settings if the file name is not empty (i.e. not on loading screen or in training)
-                if (!String.IsNullOrEmpty(settingsFile) && this.RemoteTechEnabled)
+                if (!String.IsNullOrEmpty(settingsFile) && this != null)
                 {
                     ConfigNode details = new ConfigNode("RemoteTechSettings");
                     ConfigNode.CreateConfigFromObject(this, 0, details);
@@ -140,12 +140,9 @@ namespace RemoteTech
             ConfigNode defaultLoad = ConfigNode.Load(Settings.DefaultSettingFile);
             if(defaultLoad == null) // disable itself and write explanation to KSP's log
             {
-                settings.RemoteTechEnabled = false;
-                settings.CommNetEnabled = true;
                 RTLog.Notify("RemoteTech is disabled because the default file '{0}' is not found", Settings.DefaultSettingFile);
-                return settings;
-                // the main impact of returning the settings whose values are not initialised is several RT components glitch
-                // out (log-error spam) but the save settings will not affected due to this.RemoteTechEnabled check
+                return null;
+                // the main impact of returning null is the endless loop of invoking Load() in the KSP's loading screen
             }
             else
             {
@@ -153,6 +150,8 @@ namespace RemoteTech
                 bool success = ConfigNode.LoadObjectFromConfig(settings, defaultLoad);
                 RTLog.Notify("Load default settings into object with {0}: LOADED {1}", defaultLoad, success?"OK":"FAIL");
             }
+
+            settings.settingsLoaded = true;
 
             // Disable RemoteTech on Training missions
             if (RTUtil.IsGameScenario)
@@ -187,7 +186,7 @@ namespace RemoteTech
             }
 
             SearchAndPreparePresets(settings); // find third-party mods' RemoteTech settings
-            settings.settingsLoaded = true;
+            
             RTSettings.OnSettingsLoaded.Fire();
 
             return settings;
@@ -195,30 +194,35 @@ namespace RemoteTech
 
         private static void SearchAndPreparePresets(Settings settings)
         {
-            /* Note:
-             * Scenario 1: RemoteTech_Settings.cfg of a save is of Default_Settings.cfg
-             *     RemoteTech_Settings.cfg contains the PreSets node. Thus, settings.PreSets already has the Default_Setting.cfg
-             * Scenario 2: RemoteTech_Settings.cfg of a save is of ExampleMod/RemoteTechSettings.cfg
-             *     RemoteTech_Settings.cfg may not contain the PreSets node. Thus, Default_Settings.cfg should be added to settings.PreSets
-             */
+            bool presetsChanged = false;
 
-            bool presetsLoaded = false;
             // Exploit KSP's GameDatabase to find third-party mods' RemoteTechSetting node (from GameData/ExampleMod/RemoteTechSettings.cfg)
-            UrlDir.UrlConfig[] RTSettingCFGs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
-            for (int i = 0; i < RTSettingCFGs.Length; i++)
-            {
-                UrlDir.UrlConfig RTSettingCFG = RTSettingCFGs[i];
+            UrlDir.UrlConfig[] cfgs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            List<string> RTSettingCFGs = cfgs.Select(x => x.url).ToList<string>();
 
-                // only new settings i.e. skip existing presets
-                if (!settings.PreSets.Contains(RTSettingCFG.url))
+            //check for any invalid preset in the settings of a save
+            for (int i=0; i < settings.PreSets.Count(); i++)
+            {
+                if (!RTSettingCFGs.Contains(settings.PreSets.ElementAt(i)))
                 {
-                    settings.PreSets.Add(RTSettingCFG.url);
-                    RTLog.Notify("Add a new RemoteTechSettings from {0}", RTSettingCFG.url);
-                    presetsLoaded = true;
+                    RTLog.Notify("Remove an invalid setting preset {0}", settings.PreSets.ElementAt(i));
+                    settings.PreSets.RemoveAt(i);
+                    presetsChanged = true;
                 }
             }
 
-            if (presetsLoaded) // only if new RT settings are found and added to the save-setting's PreSets node
+            //find and add new presets to the settings of a save
+            for (int i = 0; i < RTSettingCFGs.Count(); i++)
+            {
+                if (!settings.PreSets.Contains(RTSettingCFGs.ElementAt(i)))
+                {
+                    RTLog.Notify("Add a new setting preset {0}", RTSettingCFGs.ElementAt(i));
+                    settings.PreSets.Add(RTSettingCFGs.ElementAt(i));
+                    presetsChanged = true;
+                }
+            }
+
+            if (presetsChanged) // only if new RT settings are found and added to the save-setting's PreSets node
                 settings.Save();
         }
 
@@ -243,7 +247,6 @@ namespace RemoteTech
                     importantInfoNode.AddValue("MapFilter", previousSettings.MapFilter);
                     importantInfoNode.AddValue("ActiveVesselGuid", previousSettings.ActiveVesselGuid);
                     importantInfoNode.AddValue("NoTargetGuid", previousSettings.NoTargetGuid);
-                    importantInfoNode.AddValue("RemoteTechEnabled", previousSettings.RemoteTechEnabled);
 
                     SuccessLoadPreSet = ConfigNode.LoadObjectFromConfig(NewPreSetSettings, RTSettingCFG.config);
                     RTLog.Notify("Load the preset cfg into object with {0}: LOADED {1}", NewPreSetSettings, SuccessLoadPreSet ? "OK" : "FAIL");
