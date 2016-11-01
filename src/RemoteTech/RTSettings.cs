@@ -260,6 +260,7 @@ namespace RemoteTech
             return SuccessLoadPreSet?NewPreSetSettings: previousSettings;
         }
 
+        /// <summary>
         /// Adds a new ground station to the list and returns a new guid id for
         /// a successfull new station otherwise a Guid.Empty will be returned.
         /// </summary>
