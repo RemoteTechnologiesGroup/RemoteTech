@@ -417,7 +417,7 @@ namespace RemoteTech
         public bool AutoInsertKaCAlerts = true;
     }
 
-    public class RemoteTecCheatSettings : GameParameters.CustomParameterNode
+    public class RemoteTechCheatSettings : GameParameters.CustomParameterNode
     {
         public override string Title => "RemoteTech Cheat Options";
         public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
