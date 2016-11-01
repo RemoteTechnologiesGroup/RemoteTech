@@ -309,11 +309,17 @@ namespace RemoteTech
         public override string Section => "RemoteTech";
         public override int SectionOrder => 1;
 
-        [GameParameters.CustomParameterUI("RemoteTech Enabled", autoPersistance = true, toolTip = "If ON, RemoteTech is enabled on this save\nIf OFF, none of the RemoteTech features are enabled.")]
+        // not a setting per se
+        [GameParameters.CustomStringParameterUI("RemoteTech Version", autoPersistance = false)]
+        public string RemoteTechVersion = $"<b><color=#928ccc>{RTUtil.Version}</color></b>";
+
+        [GameParameters.CustomParameterUI("RemoteTech Enabled", autoPersistance = true, toolTip = "<b><color=#14e356>ON</color></b>: RemoteTech is enabled on this save.\n<b><color=#e51a03>OFF</color></b>: none of the RemoteTech features are enabled.")]
         public bool RemoteTechEnabled = true;
 
-        [GameParameters.CustomStringParameterUI("Test String UI", autoPersistance = false, lines = 2, title = "This is what should show Test string#1", toolTip = "test string tooltip")]
-        public string UIstring = "foobarbaz <b><color=#ff0000>Test Bold & Red color</color></b>";
+        // not a setting per se ; just a reminder
+        [GameParameters.CustomStringParameterUI("RemoteTech enabled", autoPersistance = false)]
+        public string RemoteTechEnabledTip = "If RemoteTech is disabled, the default CommNet behavior will be used.";
+
     }
 
     public class RemoteTechWorldScaleSettings : GameParameters.CustomParameterNode
@@ -348,7 +354,8 @@ namespace RemoteTech
         public override string Section => "RemoteTech";
         public override int SectionOrder => 3;
 
-        [GameParameters.CustomParameterUI("Signal Delay", autoPersistance = true, toolTip = "ON: All commands sent to RemoteTech-compatible probe cores are limited by the speed of light and have a delay before executing, based on distance.\nOFF: All commands will be executed immediately, although a working connection to Mission Control is still required.")]
+        [GameParameters.CustomParameterUI("Signal Delay", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: All commands sent to RemoteTech-compatible probe cores are limited by the speed of light and have a delay before executing, based on distance.\n<color=#e51a03>OFF</color></b>: All commands will be executed immediately, although a working connection to Mission Control is still required.")]
         public bool EnableSignalDelay = true;
 
         [GameParameters.CustomParameterUI("Range Model Mode", toolTip = "This setting controls how the game determines whether two antennas are in range of each other.\nRead more on our online manual about the difference for each rule.")]
@@ -358,5 +365,68 @@ namespace RemoteTech
             toolTip = "Multiple omnidirectional antennas on the same craft work together.\nThe default value of 0 means this is disabled.\nThe largest value of 1.0 sums the range of all omnidirectional antennas to provide a greater effective range.\nThe effective range scales linearly and this option works with both the Standard and Root range models.",
             minValue = 0f, maxValue = 1f, displayFormat = "F2")]
         public float MultipleAntennaMultiplier = 0;
+    }
+
+    public class RemoteTechVisualContentSettings : GameParameters.CustomParameterNode
+    {
+        public override string Title => "RemoteTech Visual Content Options";
+        public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
+        public override bool HasPresets => false;
+        public override string Section => "RemoteTech";
+        public override int SectionOrder => 4;
+
+        [GameParameters.CustomParameterUI("Hide Ground Stations behind body", autoPersistance = true, 
+            toolTip = "<color=#14e356>ON</color></b>: Ground Stations are occluded by the planet or body, and are not visible behind it.\n<color=#e51a03>OFF</color></b>: Ground Stations are always shown (see 'Hide Ground Stations on distance' below).")]
+        public bool HideGroundStationsBehindBody = true;
+
+        [GameParameters.CustomParameterUI("Hide Ground Stations on distance", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: Ground Stations will not be shown past a defined distance to the mapview camera.\n<color=#e51a03>OFF</color></b>: Ground Stations are shown regardless of distance.")]
+        public bool HideGroundStationsOnDistance = true;
+
+        [GameParameters.CustomParameterUI("Show info on Ground Station mouse over", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: Some useful information is shown when you mouseover a Ground Station on the map view or Tracking Station.\n<color=#e51a03>OFF</color></b>: Information isn't shown during mouseover.")]
+        public bool ShowMouseOverInfoGroundStations = true;
+
+        // not a setting per se ; just a reminder
+        [GameParameters.CustomStringParameterUI("Connection Line Colors", autoPersistance = false, lines = 3, toolTip = "")]
+        public string VisualLineColorTip = "Note that you can change RemoteTech line colors (in the Tracking Station or the Map scene) in the RemoteTech option window.\nSetting available by clicking the RT button in the KSP center scene.";
+    }
+
+    public class RemoteTechMiscellaneousSettings : GameParameters.CustomParameterNode
+    {
+        public override string Title => "RemoteTech Miscellaneous Options";
+        public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
+        public override bool HasPresets => false;
+        public override string Section => "RemoteTech";
+        public override int SectionOrder => 5;
+
+        [GameParameters.CustomParameterUI("Throttle Time Warp", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: The flight computer will automatically stop time warp a few seconds before executing a queued command.\n<color=#e51a03>OFF</color></b>: The player is responsible for controlling time warp during scheduled actions.")]
+        public bool ThrottleTimeWarp = true;
+
+        [GameParameters.CustomParameterUI("No Throttle on no Connection", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: The flight computer cuts the thrust if you lose connection to Mission Control.\n<color=#e51a03>OFF</color></b>: The throttle is not adjusted automatically.")]
+        public bool ThrottleZeroOnNoConnection = true;
+
+        [GameParameters.CustomParameterUI("Upgradeable Mission Control Antennas", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: Mission Control antenna range is upgraded when the Tracking Center is upgraded.\n<color=#e51a03>OFF</color></b>: Mission Control antenna range isn't upgradeable.")]
+        public bool UpgradeableMissionControlAntennas = true;
+
+        [GameParameters.CustomParameterUI("Add Kerbal Alarm Clock Alarms", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: The flight computer will automatically add alarms to the Kerbal Alarm Clock mod for burn and maneuver commands.\n\tThe alarm goes off 3 minutes before the command executes.\n<color=#e51a03>OFF</color></b>: No alarms are added to Kerbal Alarm Clock.")]
+        public bool AutoInsertKaCAlerts = true;
+    }
+
+    public class RemoteTecCheatSettings : GameParameters.CustomParameterNode
+    {
+        public override string Title => "RemoteTech Cheat Options";
+        public override GameParameters.GameMode GameMode => GameParameters.GameMode.ANY;
+        public override bool HasPresets => false;
+        public override string Section => "RemoteTech";
+        public override int SectionOrder => 6;
+
+        [GameParameters.CustomParameterUI("Control Antennas Without Connection", autoPersistance = true,
+            toolTip = "<color=#14e356>ON</color></b>: antennas can be activated, deactivated and targeted without a connection.\n<color=#e51a03>OFF</color></b>: No control without a working connection.")]
+        public bool ControlAntennaWithoutConnection = false;
     }
 }
