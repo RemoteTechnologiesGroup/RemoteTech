@@ -82,6 +82,7 @@ namespace RemoteTech.UI
                 RemoteTech.RTSpaceCentre.LauncherButton.SetFalse();
             }
 
+            InputLockManager.RemoveControlLock("RTOption");
             base.Hide();
         }
         
@@ -93,6 +94,13 @@ namespace RemoteTech.UI
         /// </summary>
         public override void Window(int uid)
         {
+            // Block out user's camera inputs when user's cursor is within the window
+            InputLockManager.RemoveControlLock("RTOption");
+            if (this.backupPosition.ContainsMouse())
+            {
+                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTOption");
+            }
+
             // push the current GUI.skin
             var pushSkin = GUI.skin;
             GUI.skin = HighLogic.Skin;
@@ -108,12 +116,12 @@ namespace RemoteTech.UI
             }
             GUILayout.EndVertical();
 
-            if(GUILayout.Button("Close"))
+            if (GUILayout.Button("Close"))
             {
                 this.Hide();
                 RTSettings.OnSettingsChanged.Fire();
             }
-            
+
             base.Window(uid);
 
             // pop back the saved skin

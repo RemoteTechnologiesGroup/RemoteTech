@@ -55,6 +55,14 @@ namespace RemoteTech.UI
         /// </summary>
         public override void Window(int uid)
         {
+            // Block out user's camera & click inputs when user's cursor is within the window
+            InputLockManager.RemoveControlLock("RTLockDebug");
+            if (this.backupPosition.ContainsMouse())
+            {
+                // Please don't use ControlTypes.All because it is the nuke option
+                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | ControlTypes.MAP | ControlTypes.MAPVIEW, "RTLockDebug");
+            }
+
             // push the current GUI.skin
             var pushSkin = GUI.skin;
             GUI.skin = HighLogic.Skin;
@@ -115,13 +123,6 @@ namespace RemoteTech.UI
                 #endregion
             }
             GUILayout.EndVertical();
-
-            // Set a control lock that we can scroll through textareas
-            InputLockManager.RemoveControlLock("RTLockDebug");
-            if (this.backupPosition.ContainsMouse())
-            {
-                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockDebug");
-            }
 
             base.Window(uid);
 

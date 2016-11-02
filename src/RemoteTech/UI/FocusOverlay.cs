@@ -156,6 +156,7 @@ namespace RemoteTech.UI
         // Button states for applauncher
         private void OnButtonUp()
         {
+            InputLockManager.RemoveControlLock("RTMapViewSatelliteList");
             mShowOverlay = false;
         }
 
@@ -168,6 +169,14 @@ namespace RemoteTech.UI
         public void Draw()
         {
             if (!mShowOverlay) return;
+
+            // Block out user's camera & click inputs when user's cursor is within the window
+            InputLockManager.RemoveControlLock("RTMapViewSatelliteList");
+            if (this.PositionFrame.ContainsMouse())
+            {
+                // Please don't use ControlTypes.All because it is the nuke option
+                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | ControlTypes.MAPVIEW, "RTMapViewSatelliteList");
+            }
 
             GUILayout.BeginArea(PositionFrame);
             {
