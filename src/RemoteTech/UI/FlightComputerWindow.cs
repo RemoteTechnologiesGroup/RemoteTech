@@ -59,8 +59,6 @@ namespace RemoteTech.UI
 
         public override void Hide()
         {
-            InputLockManager.RemoveControlLock("RTFlightCom");
-
             mFlightComputer.onActiveCommandAbort -= mAttitude.Reset;
             mFlightComputer.onNewCommandPop -= mAttitude.getActiveFlightMode;
             base.Hide();
@@ -68,14 +66,6 @@ namespace RemoteTech.UI
 
         public override void Window(int id)
         {
-            // Block out user's camera & click inputs when user's cursor is within the window
-            InputLockManager.RemoveControlLock("RTFlightCom");
-            if (this.backupPosition.ContainsMouse())
-            {
-                // Please don't use ControlTypes.All because it is the nuke option
-                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | ControlTypes.MAP | ControlTypes.MAPVIEW, "RTFlightCom");
-            }
-
             GUI.skin = null;
             GUILayout.BeginHorizontal();
             {

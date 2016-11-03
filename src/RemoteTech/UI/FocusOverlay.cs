@@ -170,16 +170,14 @@ namespace RemoteTech.UI
         {
             if (!mShowOverlay) return;
 
-            // Block out user's camera & click inputs when user's cursor is within the window
-            InputLockManager.RemoveControlLock("RTMapViewSatelliteList");
-            if (this.PositionFrame.ContainsMouse())
-            {
-                // Please don't use ControlTypes.All because it is the nuke option
-                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | ControlTypes.MAPVIEW, "RTMapViewSatelliteList");
-            }
-
             GUILayout.BeginArea(PositionFrame);
             {
+                // Refer to the idential codes in AbstractWindow.cs
+                InputLockManager.RemoveControlLock("RTMapViewSatelliteList");
+                if (this.PositionFrame.ContainsMouse())
+                {
+                    InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | ControlTypes.MAP, "RTMapViewSatelliteList");
+                }
                 mFocus.Draw();
             }
             GUILayout.EndArea();

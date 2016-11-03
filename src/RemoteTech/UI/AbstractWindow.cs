@@ -95,7 +95,8 @@ namespace RemoteTech.UI
 
         public virtual void Hide()
         {
-            removeWindowCtrlLock();
+            InputLockManager.RemoveControlLock("RTUserLockAbstractWindow");
+
             Windows.Remove(mGuid);
             Enabled = false;
             if (mSavePosition)
@@ -108,6 +109,17 @@ namespace RemoteTech.UI
 
         private void WindowPre(int uid)
         {
+            // Block out user's camera & click inputs whenever user's cursor is within the RT window
+            // In order to be effective, this is required BEFORE any GUI drawing. I tried the one that is after drawing and it doesn't work
+            InputLockManager.RemoveControlLock("RTUserLockAbstractWindow");
+            if (this.backupPosition.ContainsMouse())
+            {
+                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | // block scrolling through
+                                                ControlTypes.MAP | // block user's clicks on ship/planet/orbit elements
+                                                ControlTypes.ALL_SHIP_CONTROLS // block user's actions on vessel like keypress Z, X or T
+                                                , "RTUserLockAbstractWindow");
+            }
+
             Window(uid);
         }
 
@@ -188,16 +200,6 @@ namespace RemoteTech.UI
                     onPositionChanged.Invoke();
                     backupPosition = Position;
                 }
-
-                // Set ship control lock if one rt input is in focus
-                if (GUI.GetNameOfFocusedControl().StartsWith("rt_"))
-                {
-                    setWindowCtrlLock();
-                }
-                else
-                {
-                    removeWindowCtrlLock();
-                }
             }
         }
 
@@ -205,33 +207,6 @@ namespace RemoteTech.UI
         {
             RTSettings.Instance.savedWindowPositions.Remove(this.GetType().ToString());
             RTSettings.Instance.savedWindowPositions.Add(this.GetType().ToString(), Position);
-        }
-
-        /// <summary>
-        /// Set a input lock to keep typing to this window
-        /// </summary>
-        public void setWindowCtrlLock()
-        {
-            // only if we are enabled and the controllock is not set
-            if (Enabled && InputLockManager.GetControlLock("RTLockControlForWindows") == ControlTypes.None)
-            {
-                InputLockManager.SetControlLock(ControlTypes.ALL_SHIP_CONTROLS, "RTLockControlForWindows");
-                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockControlCamForWindows");
-            }
-        }
-
-
-        /// <summary>
-        /// Remove the input lock
-        /// </summary>
-        public void removeWindowCtrlLock()
-        {
-            // only if the controllock is set
-            if (InputLockManager.GetControlLock("RTLockControlForWindows") != ControlTypes.None)
-            {
-                InputLockManager.RemoveControlLock("RTLockControlForWindows");
-                InputLockManager.RemoveControlLock("RTLockControlCamForWindows");
-            }
         }
 
         /// <summary>

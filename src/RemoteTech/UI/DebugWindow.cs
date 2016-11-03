@@ -18,7 +18,6 @@ namespace RemoteTech.UI
 
         public override void Hide()
         {
-            InputLockManager.RemoveControlLock("RTLockDebug");
             base.Hide();
         }
         #endregion
@@ -55,14 +54,6 @@ namespace RemoteTech.UI
         /// </summary>
         public override void Window(int uid)
         {
-            // Block out user's camera & click inputs when user's cursor is within the window
-            InputLockManager.RemoveControlLock("RTLockDebug");
-            if (this.backupPosition.ContainsMouse())
-            {
-                // Please don't use ControlTypes.All because it is the nuke option
-                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | ControlTypes.MAP | ControlTypes.MAPVIEW, "RTLockDebug");
-            }
-
             // push the current GUI.skin
             var pushSkin = GUI.skin;
             GUI.skin = HighLogic.Skin;
