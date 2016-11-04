@@ -108,12 +108,12 @@ namespace RemoteTech.UI
             }
             GUILayout.EndVertical();
 
-            if(GUILayout.Button("Close"))
+            if (GUILayout.Button("Close"))
             {
                 this.Hide();
                 RTSettings.OnSettingsChanged.Fire();
             }
-            
+
             base.Window(uid);
 
             // pop back the saved skin

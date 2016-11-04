@@ -18,7 +18,6 @@ namespace RemoteTech.UI
 
         public override void Hide()
         {
-            InputLockManager.RemoveControlLock("RTLockDebug");
             base.Hide();
         }
         #endregion
@@ -115,13 +114,6 @@ namespace RemoteTech.UI
                 #endregion
             }
             GUILayout.EndVertical();
-
-            // Set a control lock that we can scroll through textareas
-            InputLockManager.RemoveControlLock("RTLockDebug");
-            if (this.backupPosition.ContainsMouse())
-            {
-                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockDebug");
-            }
 
             base.Window(uid);
 
