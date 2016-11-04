@@ -70,6 +70,6 @@ When writing new code for RemoteTech, please follow the following steps:
 * Read the titles of open issues and pull requests, to see if somebody's already thought of your idea. If the issue has somebody assigned (see the rightmost column of the page), it's already being taken care of. Otherwise, assign yourself and/or add a comment saying you'll do it.
 * Fork RemoteTech and do any code updates. Like most KSP plugins, RemoteTech's code is organized around a solution (`.sln`) file, which can be opened with [any of several C# development tools](http://wiki.kerbalspaceprogram.com/wiki/Plugins). Third-party developers can ignore the `build.remotetech.sh` script; it is needed only to support automatic builds from the online repository.
 * What happens next depends on what the new code does:
-    - If your code fixes a bug in RemoteTech, create a pull request to the `master` branch (this should be the default).
+    - If your code fixes a bug in RemoteTech, create a pull request to the `develop` branch (this should be the default).
     - If your code adds a new feature in RemoteTech, create a pull request to the branch of the next release (e.g., `1.7.0`; if no such branch exists, please contact us).
 * One of the Remote Technologies Group members will merge the pull request; if you yourself are a member, please wait one week to give others a chance to give feedback.
