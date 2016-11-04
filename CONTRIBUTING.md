@@ -1,10 +1,10 @@
-Contributing to RemoteTech
-==========================
+# Contributing to RemoteTech
+
 
 Thank you for helping make RemoteTech better! We'd like this to be a community effort. However, we do have a few rules we need you to follow in order to keep things running smoothly, whether you're reporting a bug or submitting code.
 
-Bug Reports
------------
+## Bug Reports
+
 
 Before issuing a bug report, please follow the following steps:
 
@@ -54,8 +54,17 @@ Screenshot:
 
 * In `Screenshot` (optional) If it's easy to see in an image, please attach a screen shot (use F1 key when in KSP).
 
-Pull Requests
------------
+### Triming down the problem
+
+Despite how complicated it may seem, it is actually quite simple to do (even for Steam users), as you can simply copy your install directory elsewhere as needed and remove non problematic mods. It's especially useful since interaction bugs are some of the hardest to nail down; something that appears to be a bug in one mod might actually be caused by something else.
+
+If the issue stems from only `RemoteTech`, try to replicate this issue with only `RemoteTech` in a clean KSP install. 
+
+If the issue stems from the use of several different mods (e.g. `RemoteTech` and ScanSat or FAR, etc.) then get a clean install of KSP and install only these mods (and their dependencies, if applicable).
+
+This may seem like an extreme measure, but it ensures that only `RemoteTech`and these mods (or maybe the stock game) are to blame.
+
+## Pull Requests
 
 When writing new code for RemoteTech, please follow the following steps:
 * Read the titles of open issues and pull requests, to see if somebody's already thought of your idea. If the issue has somebody assigned (see the rightmost column of the page), it's already being taken care of. Otherwise, assign yourself and/or add a comment saying you'll do it.
