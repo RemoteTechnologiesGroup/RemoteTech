@@ -113,7 +113,7 @@ namespace RemoteTech.UI
                         Rect screenPos = new Rect(screenCoord.x - btnWidth - 5.0f, Screen.height - screenCoord.y - btnWidth, btnWidth, btnWidth);
                         
                         GUIStyle maneuverCtrl = mManeuverNodeButtonAdd;
-                        bool nodeAlreadyQueued = flightComputer.hasManeuverCommandByNode(node);
+                        bool nodeAlreadyQueued = flightComputer.HasManeuverCommandByNode(node);
 
                         // switch the button style
                         if (nodeAlreadyQueued)
@@ -130,7 +130,7 @@ namespace RemoteTech.UI
                             }
                             else
                             {
-                                flightComputer.removeManeuverCommandByNode(node);
+                                flightComputer.RemoveManeuverCommandByNode(node);
                             }
                         }
                         GUILayout.EndArea();

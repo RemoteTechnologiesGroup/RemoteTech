@@ -323,14 +323,14 @@ namespace RemoteTech.UI
         public void getActiveFlightMode()
         {
             // check the current flight mode
-            if (mFlightComputer.currentFlightMode == null)
+            if (mFlightComputer.CurrentFlightMode == null)
             {
                 Reset();
                 return;
             }
 
             // get active command
-            SimpleTypes.ComputerModeMapper mappedCommand = mFlightComputer.currentFlightMode.mapFlightMode();
+            SimpleTypes.ComputerModeMapper mappedCommand = mFlightComputer.CurrentFlightMode.mapFlightMode();
             mMode = mappedCommand.computerMode;
             mAttitude = FlightAttitude.Null;
 

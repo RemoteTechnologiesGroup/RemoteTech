@@ -36,7 +36,7 @@ namespace RemoteTech
         /// <summary>Gets or sets the list of signal processor (<see cref="ISignalProcessor"/>) for the satellite.</summary>
         public List<ISignalProcessor> SignalProcessors { get; set; }
 
-        /// <summary>Gets if the satellite is actually powered.</summary>
+        /// <summary>Gets if the satellite is actually powered or not.</summary>
         public bool Powered
         {
             get { return SignalProcessors.Any(s => s.Powered); }
@@ -85,9 +85,7 @@ namespace RemoteTech
          * Helpers
          */
 
-        /// <summary>
-        /// List of network routes for the satellite.
-        /// </summary>
+        /// <summary>List of network routes for the satellite.</summary>
         public List<NetworkRoute<ISatellite>> Connections => RTCore.Instance.Network[this];
 
         /// <summary>Called on connection refresh to update the connections.</summary>

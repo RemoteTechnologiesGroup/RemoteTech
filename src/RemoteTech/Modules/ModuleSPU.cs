@@ -330,7 +330,7 @@ namespace RemoteTech.Modules
                 {
                     if (FlightComputer == null)
                         FlightComputer = new FlightComputer.FlightComputer(this);
-                    FlightComputer.load(node);
+                    FlightComputer.Load(node);
                 }
             }
             catch (Exception e) { print(e); };

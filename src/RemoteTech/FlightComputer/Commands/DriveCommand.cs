@@ -28,7 +28,7 @@ namespace RemoteTech.FlightComputer.Commands
 
         public override bool Pop(FlightComputer f)
         {
-            mRoverComputer = f.mRoverComputer;
+            mRoverComputer = f.RoverComputer;
             mRoverComputer.InitMode(this);
             return true;
         }
@@ -41,7 +41,7 @@ namespace RemoteTech.FlightComputer.Commands
                 return true;
             }
 
-            return f.mRoverComputer.Drive(this, fcs);
+            return f.RoverComputer.Drive(this, fcs);
         }
 
         public static DriveCommand Off()
