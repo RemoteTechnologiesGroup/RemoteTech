@@ -41,13 +41,13 @@ namespace RemoteTech
         public NetworkRenderer Renderer { get; protected set; }
 
         /*
-         * Addons
+         * Add-ons
          */
 
         /// <summary>
-        /// Kerbal Alarm Clock Addon.
+        /// Kerbal Alarm Clock Add-on.
         /// </summary>
-        public AddOns.KerbalAlarmClockAddon kacAddon { get; protected set; }
+        public AddOns.KerbalAlarmClockAddon KacAddon { get; protected set; }
 
         /*
          * Events
@@ -88,16 +88,16 @@ namespace RemoteTech
         public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
 
         // New for handling the F2 GUI Hiding
-        private bool mGUIVisible = true;
+        private bool _guiVisible = true;
 
 
         /// <summary>
-        /// Called by Unity engine during intialization phase.
+        /// Called by Unity engine during initialization phase.
         /// Only ever called once.
         /// </summary>
         public void Start()
         {
-            // Destroy the Core instance if != null or if Remotetech is disabled
+            // Destroy the Core instance if != null or if RemoteTech is disabled
             if (Instance != null || !RTSettings.Instance.RemoteTechEnabled)
             {
                 Destroy(this);
@@ -109,26 +109,30 @@ namespace RemoteTech
             // enable or disable KSP CommNet depending on settings.
             HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = RTSettings.Instance.CommNetEnabled;
 
-            kacAddon = new AddOns.KerbalAlarmClockAddon();
+            // add-ons
+            KacAddon = new AddOns.KerbalAlarmClockAddon();
 
+            // managers
             Satellites = new SatelliteManager();
             Antennas = new AntennaManager();
             Network = new NetworkManager();
             Renderer = NetworkRenderer.CreateAndAttach();
 
+            // overlays
             FilterOverlay = new FilterOverlay();
             FocusOverlay = new FocusOverlay();
             TimeWarpDecorator = new TimeWarpDecorator();
 
             // Handling new F2 GUI Hiding
-            GameEvents.onShowUI.Add(UIOn);
-            GameEvents.onHideUI.Add(UIOff);
+            GameEvents.onShowUI.Add(UiOn);
+            GameEvents.onHideUI.Add(UiOff);
 
             RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
 
+            // register vessels and antennas
             foreach (var vessel in FlightGlobals.Vessels)
             {
-                if ((vessel.vesselType > VesselType.Unknown) && (vessel.vesselType != VesselType.Flag))
+                if ((vessel.vesselType > VesselType.Unknown) && (vessel.vesselType != VesselType.Flag) && (vessel.vesselType != VesselType.EVA))
                 {
                     Satellites.RegisterProto(vessel);
                     Antennas.RegisterProtos(vessel);
@@ -139,17 +143,17 @@ namespace RemoteTech
         /// <summary>
         /// F2 GUI Hiding functionality; called when the UI must be displayed.
         /// </summary>
-        public void UIOn()
+        public void UiOn()
         {
-            mGUIVisible = true;
+            _guiVisible = true;
         }
 
         /// <summary>
         /// F2 GUI Hiding functionality; called when the UI must be hidden.
         /// </summary>
-        public void UIOff()
+        public void UiOff()
         {
-            mGUIVisible = false;
+            _guiVisible = false;
         }
 
         /// <summary>
@@ -209,7 +213,7 @@ namespace RemoteTech
         /// </summary>
         public void OnGUI()
         {
-            if (!mGUIVisible)
+            if (!_guiVisible)
                 return;
 
             if (TimeWarpDecorator != null)
@@ -241,11 +245,11 @@ namespace RemoteTech
             if (Antennas != null) Antennas.Dispose();
 
             // Remove GUI stuff
-            GameEvents.onShowUI.Remove(UIOn);
-            GameEvents.onHideUI.Remove(UIOff);
+            GameEvents.onShowUI.Remove(UiOn);
+            GameEvents.onHideUI.Remove(UiOff);
 
-			// addons
-            if (kacAddon != null) kacAddon = null;
+			// add-ons
+            if (KacAddon != null) KacAddon = null;
 
             Instance = null;
         }
@@ -253,7 +257,7 @@ namespace RemoteTech
         /// <summary>
         /// Release RemoteTech UI locks (enable usage of UI buttons).
         /// </summary>
-        private void ReleaseLocks()
+        private static void ReleaseLocks()
         {
             InputLockManager.RemoveControlLock("RTLockStaging");
             InputLockManager.RemoveControlLock("RTLockSAS");
@@ -264,7 +268,7 @@ namespace RemoteTech
         /// <summary>
         /// Acquire RemoteTech UI locks (disable usage of UI buttons).
         /// </summary>
-        private void GetLocks()
+        private static void GetLocks()
         {
             InputLockManager.SetControlLock(ControlTypes.STAGING, "RTLockStaging");
             InputLockManager.SetControlLock(ControlTypes.SAS, "RTLockSAS");
@@ -273,7 +277,7 @@ namespace RemoteTech
         }
         
         // Monstrosity that should fix the kOS control locks without modifications on their end.
-        private IEnumerable<KSPActionGroup> GetActivatedGroup()
+        private static IEnumerable<KSPActionGroup> GetActivatedGroup()
         {
             if (GameSettings.LAUNCH_STAGES.GetKeyDown())
                 if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.STAGING) == ControlTypes.STAGING && !l.Key.Equals("RTLockStaging"))) 
@@ -344,19 +348,19 @@ namespace RemoteTech
         public new void Start()
         {
             base.Start();
-            if (RTCore.Instance != null)
-            {
-                FlightUIPatcher.Patch();
-                base.ManeuverNodeOverlay = new ManeuverNodeOverlay();
-                base.ManeuverNodeOverlay.OnEnterMapView();
-            }
+            if (Instance == null)
+                return;
+
+            FlightUIPatcher.Patch();
+            ManeuverNodeOverlay = new ManeuverNodeOverlay();
+            ManeuverNodeOverlay.OnEnterMapView();
         }
 
         private new void OnDestroy()
         {
-            if (RTCore.Instance != null)
+            if (Instance != null)
             {
-                base.ManeuverNodeOverlay.OnExitMapView();
+                ManeuverNodeOverlay.OnExitMapView();
             }
             base.OnDestroy();
         }
@@ -371,19 +375,19 @@ namespace RemoteTech
         public new void Start()
         {
             base.Start();
-            if(RTCore.Instance != null)
-            {
-                base.FilterOverlay.OnEnterMapView();
-                base.FocusOverlay.OnEnterMapView();
-            }
+            if (Instance == null)
+                return;
+
+            FilterOverlay.OnEnterMapView();
+            FocusOverlay.OnEnterMapView();
         }
 
         private new void OnDestroy()
         {
-            if (RTCore.Instance != null)
+            if (Instance != null)
             {
-                base.FilterOverlay.OnExitMapView();
-                base.FocusOverlay.OnExitMapView();
+                FilterOverlay.OnExitMapView();
+                FocusOverlay.OnExitMapView();
             }
             base.OnDestroy();
         }
@@ -399,7 +403,7 @@ namespace RemoteTech
         {
             // Set the loaded trigger to false, this we will load a new
             // settings after selecting a save game. This is necessary
-            // for switching between saves without shutting down the ksp
+            // for switching between saves without shutting down the KSP
             // instance.
             RTSettings.Instance.settingsLoaded = false;
         }
