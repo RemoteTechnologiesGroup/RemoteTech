@@ -7,37 +7,94 @@ using UnityEngine;
 
 namespace RemoteTech
 {
+    /// <summary>
+    /// Main base class of RemoteTech. It is called by various inheriting classes: 
+    ///  * RTCoreFlight (Flight scene)
+    ///  * RTCoreTracking (Tracking station scene)
+    ///  * RTMainMenu (Main menu scene)
+    /// </summary>
     public abstract class RTCore : MonoBehaviour
     {
+        /// <summary>
+        /// Main class instance.
+        /// </summary>
         public static RTCore Instance { get; protected set; }
 
+        /// <summary>
+        /// RemoteTech satellites manager.
+        /// </summary>
         public SatelliteManager Satellites { get; protected set; }
+
+        /// <summary>
+        /// RemoteTech antennas manager.
+        /// </summary>
         public AntennaManager Antennas { get; protected set; }
+
+        /// <summary>
+        /// RemotTech network manager. 
+        /// </summary>
         public NetworkManager Network { get; protected set; }
+
+        /// <summary>
+        /// RemoteTech UI network renderer.
+        /// </summary>
         public NetworkRenderer Renderer { get; protected set; }
 
-        /// Addons
+        /*
+         * Addons
+         */
+
+        /// <summary>
+        /// Kerbal Alarm Clock Addon.
+        /// </summary>
         public AddOns.KerbalAlarmClockAddon kacAddon { get; protected set; }
 
+        /*
+         * Events
+         */
+
+        /// <summary>
+        /// Methods can register to this event to be called during the Update() method of the Unity engine (Game Logic engine phase).
+        /// </summary>
         public event Action OnFrameUpdate = delegate { };
+        /// <summary>
+        /// Methods can register to this event to be called during the FixedUpdate() method of the Unity engine (Physics engine phase).
+        /// </summary>
         public event Action OnPhysicsUpdate = delegate { };
+        /// <summary>
+        /// Methods can register to this event to be called during the OnGUI() method of the Unity engine (GUI Rendering engine phase).
+        /// </summary>
         public event Action OnGuiUpdate = delegate { };
 
-        // Prevent duplicate calls
-        public void AddOnceOnFrameUpdate(Action d)
-        {
-            if (!Instance.OnFrameUpdate.GetInvocationList().Contains(d))
-                Instance.OnFrameUpdate += d;
-        }
+        /*
+         * UI Overlays
+         */
 
+        /// <summary>
+        /// UI overlay for the Tracking station or Flight map view (draw and handle buttons in the bottom right corner).
+        /// </summary>
         public FilterOverlay FilterOverlay { get; protected set; }
+        /// <summary>
+        /// UI overlay for the "focus view" in the Tracking station scene.
+        /// </summary>
         public FocusOverlay FocusOverlay { get; protected set; }
+        /// <summary>
+        /// UI overlay to add a new button to maneuver nodes.
+        /// </summary>
         public ManeuverNodeOverlay ManeuverNodeOverlay { get; protected set; }
+        /// <summary>
+        /// UI overlay used to display and handle the status quadrant (time delay) and the flight computer button.
+        /// </summary>
         public TimeWarpDecorator TimeWarpDecorator { get; protected set; }
 
         // New for handling the F2 GUI Hiding
         private bool mGUIVisible = true;
 
+
+        /// <summary>
+        /// Called by Unity engine during intialization phase.
+        /// Only ever called once.
+        /// </summary>
         public void Start()
         {
             // Destroy the Core instance if != null or if Remotetech is disabled
@@ -79,18 +136,26 @@ namespace RemoteTech
             }
         }
 
-        // F2 GUI Hiding functionality
+        /// <summary>
+        /// F2 GUI Hiding functionality; called when the UI must be displayed.
+        /// </summary>
         public void UIOn()
         {
             mGUIVisible = true;
         }
 
+        /// <summary>
+        /// F2 GUI Hiding functionality; called when the UI must be hidden.
+        /// </summary>
         public void UIOff()
         {
             mGUIVisible = false;
         }
 
-
+        /// <summary>
+        /// Called by the Unity engine during the game logic phase.
+        /// This function is called once per frame. It is the main workhorse function for frame updates.
+        /// </summary>
         public void Update()
         {
             OnFrameUpdate.Invoke();
@@ -118,12 +183,30 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// Prevent duplicate calls for the OnFrameUpdate event.
+        /// </summary>
+        /// <param name="action">The action to be added to the OnFrameUpdate event.</param>
+        public void AddOnceOnFrameUpdate(Action action)
+        {
+            if (!Instance.OnFrameUpdate.GetInvocationList().Contains(action))
+                Instance.OnFrameUpdate += action;
+        }
+
+        /// <summary>
+        /// Called by the Unity engine during the Physics phase.
+        /// Note that FixedUpdate() is called before the internal engine physics update. This function is often called more frequently than Update().
+        /// </summary>
         public void FixedUpdate()
         {
             OnPhysicsUpdate.Invoke();
         }
 
-        // Updated for new GUI Draw handling
+        /// <summary>
+        /// Called by the Unity engine during the GUI rendering phase.
+        /// Note that OnGUI() is called multiple times per frame in response to GUI events.
+        /// The Layout and Repaint events are processed first, followed by a Layout and keyboard/mouse event for each input event.
+        /// </summary>
         public void OnGUI()
         {
             if (!mGUIVisible)
@@ -143,6 +226,10 @@ namespace RemoteTech
             windows.Invoke();
         }
 
+        /// <summary>
+        /// Called by the Unity engine during the Decommissioning phase of the Engine.
+        /// This is used to clean up everything before quiting.
+        /// </summary>
         public void OnDestroy()
         {
             if (FocusOverlay != null) FocusOverlay.Dispose();
@@ -163,6 +250,9 @@ namespace RemoteTech
             Instance = null;
         }
 
+        /// <summary>
+        /// Release RemoteTech UI locks (enable usage of UI buttons).
+        /// </summary>
         private void ReleaseLocks()
         {
             InputLockManager.RemoveControlLock("RTLockStaging");
@@ -171,6 +261,9 @@ namespace RemoteTech
             InputLockManager.RemoveControlLock("RTLockActions");
         }
 
+        /// <summary>
+        /// Acquire RemoteTech UI locks (disable usage of UI buttons).
+        /// </summary>
         private void GetLocks()
         {
             InputLockManager.SetControlLock(ControlTypes.STAGING, "RTLockStaging");
@@ -242,6 +335,9 @@ namespace RemoteTech
         }
     }
 
+    /// <summary>
+    /// Main class, instantiated during Flight scene.
+    /// </summary>
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class RTCoreFlight : RTCore
     {
@@ -266,6 +362,9 @@ namespace RemoteTech
         }
     }
 
+    /// <summary>
+    /// Main class, instantiated during Tracking station scene.
+    /// </summary>
     [KSPAddon(KSPAddon.Startup.TrackingStation, false)]
     public class RTCoreTracking : RTCore
     {
@@ -290,6 +389,9 @@ namespace RemoteTech
         }
     }
 
+    /// <summary>
+    /// Main class, instantiated during Main menu scene.
+    /// </summary>
     [KSPAddon(KSPAddon.Startup.MainMenu, false)]
     public class RTMainMenu : MonoBehaviour
     {

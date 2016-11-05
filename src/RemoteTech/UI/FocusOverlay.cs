@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace RemoteTech.UI
 {
+    /// <summary>
+    /// Class handling the "focus view" in the Tracking station scene.
+    /// </summary>
     public class FocusOverlay : IFragment, IDisposable
     {
         private FocusFragment mFocus = new FocusFragment();

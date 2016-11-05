@@ -22,6 +22,9 @@ namespace RemoteTech
         Path   = 16
     }
 
+    /// <summary>
+    /// RemoteTech UI network render in charre of drawing connection links in tracking station or flight map scenes.
+    /// </summary>
     public class NetworkRenderer : MonoBehaviour
     {
         public MapFilter Filter { 

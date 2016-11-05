@@ -5,6 +5,9 @@ using RemoteTech.FlightComputer.Commands;
 
 namespace RemoteTech.UI
 {
+    /// <summary>
+    /// Class adding and handling a new button to maneuver nodes.
+    /// </summary>
     public class ManeuverNodeOverlay : IFragment, IDisposable
     {
         private readonly GUIStyle mManeuverNodeButtonAdd;

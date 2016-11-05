@@ -6,6 +6,10 @@ using RemoteTech.Modules;
 
 namespace RemoteTech
 {
+    /// <summary>
+    /// Class keeping track of RemoteTech satellites.
+    /// Acts as a list of vessels managed by RemoteTech.
+    /// </summary>
     public class SatelliteManager : IEnumerable<VesselSatellite>, IDisposable
     {
         public event Action<VesselSatellite> OnRegister = delegate { };

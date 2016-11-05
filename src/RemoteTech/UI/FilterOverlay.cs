@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace RemoteTech.UI
 {
+    /// <summary>
+    /// Class used for the buttons overlay in Tracking Station or Flight map scenes.
+    /// Draws and handles buttons on the bottom right of the scene.
+    /// </summary>
     public class FilterOverlay : IFragment, IDisposable
     {
         private class Texture
@@ -197,7 +201,7 @@ namespace RemoteTech.UI
             GameEvents.onShowUI.Add(OnShowUI);
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
-            /// Add the on mouse over event
+            // Add the on mouse over event
             mAntennaFragment.onMouseOverListEntry += showTargetInfo;
 
             WindowAlign targetInfoAlign = WindowAlign.TopLeft;
@@ -207,14 +211,14 @@ namespace RemoteTech.UI
                 targetInfoAlign = WindowAlign.TopRight;
             }
 
-            /// Create a new Targetinfo window with a fixed position to the antenna fragment
+            // Create a new Targetinfo window with a fixed position to the antenna fragment
             mTargetInfos = new TargetInfoWindow(PositionAntenna, targetInfoAlign);
 
         }
 
         public void Dispose()
         {
-            /// Remove the on mouse over event
+            // Remove the on mouse over event
             mAntennaFragment.onMouseOverListEntry -= showTargetInfo;
 
             GameEvents.onPlanetariumTargetChanged.Remove(OnChangeTarget);
