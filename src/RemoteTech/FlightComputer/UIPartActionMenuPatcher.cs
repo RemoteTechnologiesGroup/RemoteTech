@@ -92,75 +92,55 @@ namespace RemoteTech.FlightComputer
 
         public static void WrapPartAction(Vessel parent, Action<BaseField, bool> passthrough)
         {
-            UIPartActionController controller = UIPartActionController.Instance;
-            if (!controller) return;
+            var controller = UIPartActionController.Instance;
+            if (!controller)
+                return;
 
             // Get the open context menus
-            FieldInfo listFieldInfo = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+            var listFieldInfo = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                                       .First(fi => fi.FieldType == typeof(List<UIPartActionWindow>));
 
-            List<UIPartActionWindow> openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
+            var openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
 
             foreach (UIPartActionWindow window in openWindows.Where(window => window.part.vessel == parent))
             {
                 // Get the list of all UIPartActionItem's
-                FieldInfo itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                var itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
                                            .First(fi => fi.FieldType == typeof(List<UIPartActionItem>));
 
-                List<UIPartActionItem> partActionItems = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
+                var partActionItems = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
 
-                UIPartActionItem[] actionToogleButtons = partActionItems.Where(l => AllowedFieldTypes.Any(t => l.GetType() == t) && (l as UIPartActionFieldItem) != null).ToArray();
-                for (int i = 0; i < actionToogleButtons.Count(); i++)
+                var actionToogleButtons = partActionItems.Where(l => AllowedFieldTypes.Any(t => l.GetType() == t) && (l as UIPartActionFieldItem) != null).ToArray();
+                for (var i = 0; i < actionToogleButtons.Count(); i++)
                 {
-                    UIPartActionFieldItem actionField = (actionToogleButtons[i] as UIPartActionFieldItem);
-                    if (parsedPartActions.Contains(actionField.Field.name))
+                    var actionField = (actionToogleButtons[i] as UIPartActionFieldItem);
+                    if (actionField == null)
+                        continue;
+                    /*if (parsedPartActions.Contains(actionField.Field.name))
                         continue;
                     else
-                        parsedPartActions.Add(actionField.Field.name);
+                        parsedPartActions.Add(actionField.Field.name);*/
 
-                    object[] customAttributes = actionField.Field.FieldInfo.GetCustomAttributes(typeof(KSPField), true);
+                    var customAttributes = actionField.Field.FieldInfo.GetCustomAttributes(typeof(KSPField), true);
 
-                    // Look for the custom attribute skip_control
-                    bool skip_control = customAttributes.Any(attribute => ((KSPField)attribute).category.Contains("skip_control"));
-                    if (!skip_control)
-                    {
-                        KSPField kspField = customAttributes.Count() == 0 ? WrappedField.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
+                    var kspField = !customAttributes.Any() ? WrappedField.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
 
-
-                        // Look for the custom attribute skip_delay
-                        bool ignore_delay = customAttributes.Any(atrribute => ((KSPField)atrribute).category.Contains("skip_delay"));
-
-                        var fieldWrapper = new FieldWrapper(actionField, kspField, passthrough, ignore_delay);
+                    var fieldWrapper = new FieldWrapper(actionField, kspField, passthrough, false);
                     }
-                }
             }
         }
 
         #region FieldWrapper        
         public class WrappedField : BaseField
         {
-            /// <summary>
-            /// The future value (when set by the flight computer) of the field.
-            /// </summary>
-            private object m_newValue;
-
             public WrappedField(BaseField baseField, KSPField field) : base(field, baseField.FieldInfo, baseField.host)
             {   
             }
 
-            /// <summary>
-            /// Gets or sets the future field value.
-            /// </summary>
-            public object NewValue
-            {
-                get { return m_newValue; }
-                set { m_newValue = value; }
-            }
+            /// <summary>Gets or sets the future field value.</summary>
+            public object NewValue { get; set; }
 
-            public Type NewValueType
-            {
-                get { return this.FieldInfo.FieldType; }
-            }
+            public Type NewValueType => FieldInfo.FieldType;
 
             public bool NewValueFromString(string stringValue)
             {
@@ -170,9 +150,9 @@ namespace RemoteTech.FlightComputer
                 try
                 {
                     if (NewValueType != typeof(string))
-                        m_newValue = Convert.ChangeType(NewValue, this.NewValueType, CultureInfo.InvariantCulture);
+                        NewValue = Convert.ChangeType(NewValue, this.NewValueType, CultureInfo.InvariantCulture);
                     else
-                        m_newValue = stringValue;
+                        NewValue = stringValue;
 
                     return true;
                 }
@@ -189,61 +169,61 @@ namespace RemoteTech.FlightComputer
             /// <remarks>This gets called by the flight computer either immediately if there's no delay or later if the command is queued.</remarks>
             public void Invoke()
             {
-                if(m_newValue != null)
-                    this.FieldInfo.SetValue(this.host, m_newValue);
+                if(NewValue != null)
+                    FieldInfo.SetValue(host, NewValue);
             }
 
             public static KSPField KspFieldFromBaseField(BaseField baseField)
             {
-                var ksp_field = new KSPField();
-                ksp_field.isPersistant = baseField.isPersistant;
-                ksp_field.guiActive = baseField.guiActive;
-                ksp_field.guiActiveEditor = baseField.guiActiveEditor;
-                ksp_field.guiName = baseField.guiName;
-                ksp_field.guiUnits = baseField.guiUnits;
-                ksp_field.guiFormat = baseField.guiFormat;
-                ksp_field.category = baseField.category;
-                ksp_field.advancedTweakable = baseField.advancedTweakable;
+                var kspField = new KSPField
+                {
+                    isPersistant = baseField.isPersistant,
+                    guiActive = baseField.guiActive,
+                    guiActiveEditor = baseField.guiActiveEditor,
+                    guiName = baseField.guiName,
+                    guiUnits = baseField.guiUnits,
+                    guiFormat = baseField.guiFormat,
+                    category = baseField.category,
+                    advancedTweakable = baseField.advancedTweakable
+                };
 
-                return ksp_field;
+                return kspField;
             }
         }
 
         public class FieldWrapper
         {
-            private Action<BaseField, bool> m_Passthrough;
-            private bool m_IgnoreDelay;
+            private readonly Action<BaseField, bool> _passthrough;
+            private readonly bool _ignoreDelay;
+            private readonly UIPartActionFieldItem _uiPartAction;
+            private readonly WrappedField _wrappedField;
 
-            private UIPartActionFieldItem m_UiPartAction;
+            private Action<float> _delayInvoke;
+            private object _lastNewValue;
 
-            private WrappedField m_WrappedField;
-
-            private Action<float> m_delayInvoke;
-            private object m_lastNewValue;
-
-            public FieldWrapper(UIPartActionFieldItem uiPartAction, KSPField kspField, Action<BaseField, bool> passthrough, bool ignore_delay)
+            public FieldWrapper(UIPartActionFieldItem uiPartAction, KSPField kspField, Action<BaseField, bool> passthrough, bool ignoreDelay)
             {
-                m_UiPartAction = uiPartAction;
+                _uiPartAction = uiPartAction;
                 SetDefaultListener();
 
-                BaseField baseField = uiPartAction.Field;
+                var baseField = uiPartAction.Field;
                 if(kspField == null)
                 {
                     kspField = WrappedField.KspFieldFromBaseField(baseField);
                 }
                 
-                m_Passthrough = passthrough;
-                m_IgnoreDelay = ignore_delay;
-                m_WrappedField = new WrappedField(baseField, kspField);
+                _passthrough = passthrough;
+                _ignoreDelay = ignoreDelay;
+                _wrappedField = new WrappedField(baseField, kspField);
             }
 
             public void Invoke()
             {
-                if (m_Passthrough != null)
-                {
-                    m_WrappedField.NewValue = m_lastNewValue;
-                    m_Passthrough.Invoke(m_WrappedField, m_IgnoreDelay);
-                }
+                if (_passthrough == null)
+                    return;
+
+                _wrappedField.NewValue = _lastNewValue;
+                _passthrough.Invoke(_wrappedField, _ignoreDelay);
             }
 
             public void DelayInvoke(float waitTime)
@@ -254,43 +234,42 @@ namespace RemoteTech.FlightComputer
             private IEnumerator DelayInvokeCoroutine(float waitTime)
             {
                 yield return new WaitForSeconds(waitTime);
-                if (m_delayInvoke != null)
-                    m_delayInvoke = null;
+                _delayInvoke = null;
                 Invoke();
             }
 
             private void SetDefaultListener()
             {
-                switch (m_UiPartAction.GetType().Name)
+                switch (_uiPartAction.GetType().Name)
                 {
                     case nameof(UIPartActionCycle):
                         {
-                            var part_cycle = m_UiPartAction as UIPartActionCycle;
-                            if (part_cycle != null)
+                            var partCycle = _uiPartAction as UIPartActionCycle;
+                            if (partCycle != null)
                             {
-                                part_cycle.toggle.onToggle.RemoveListener(part_cycle.OnTap);
-                                part_cycle.toggle.onToggle.AddListener(GetNewValue0);
+                                partCycle.toggle.onToggle.RemoveListener(partCycle.OnTap);
+                                partCycle.toggle.onToggle.AddListener(GetNewValue0);
                             }
                         }
                         break;
 
                     case nameof(UIPartActionToggle):
                         {
-                            var part_toggle = m_UiPartAction as UIPartActionToggle;
-                            if (part_toggle != null)
+                            var partToggle = _uiPartAction as UIPartActionToggle;
+                            if (partToggle != null)
                             {
-                                part_toggle.toggle.onToggle.RemoveListener(part_toggle.OnTap);
-                                part_toggle.toggle.onToggle.AddListener(GetNewValue0);
+                                partToggle.toggle.onToggle.RemoveListener(partToggle.OnTap);
+                                partToggle.toggle.onToggle.AddListener(GetNewValue0);
                             }
                         }
                         break;
 
                     case nameof(UIPartActionFloatRange):
-                        var part_float = m_UiPartAction as UIPartActionFloatRange;
-                        if(part_float != null)
+                        var partFloat = _uiPartAction as UIPartActionFloatRange;
+                        if(partFloat != null)
                         {
-                            part_float.slider.onValueChanged.RemoveAllListeners();
-                            part_float.slider.onValueChanged.AddListener(GetNewValueFloat);
+                            partFloat.slider.onValueChanged.RemoveAllListeners();
+                            partFloat.slider.onValueChanged.AddListener(GetNewValueFloat);
 
                         }
                         break;
@@ -309,18 +288,18 @@ namespace RemoteTech.FlightComputer
 
             private void GetNewValue()
             {
-                switch (m_UiPartAction.GetType().Name)
+                switch (_uiPartAction.GetType().Name)
                 {
-                    // Handle toogle button, usually just a ON/OFF feature
+                    // Handle toggle button, usually just a ON/OFF feature
                     case nameof(UIPartActionToggle):
                         {
-                            var part_toggle = m_UiPartAction as UIPartActionToggle;
-                            if (part_toggle != null)
+                            var partToggle = _uiPartAction as UIPartActionToggle;
+                            if (partToggle != null)
                             {
-                                var uiToggle = (part_toggle.Control as UI_Toggle);
+                                var uiToggle = (partToggle.Control as UI_Toggle);
                                 if (uiToggle != null)
                                 {
-                                    m_lastNewValue = part_toggle.toggle.state ^ uiToggle.invertButton;
+                                    _lastNewValue = partToggle.toggle.state ^ uiToggle.invertButton;
                                     // invoke now
                                     Invoke();
                                 }
@@ -331,21 +310,20 @@ namespace RemoteTech.FlightComputer
                     // handle cycle button
                     case nameof(UIPartActionCycle):
                         {
-                            var part_cycle = m_UiPartAction as UIPartActionCycle;
-                            if (part_cycle != null)
+                            var partCycle = _uiPartAction as UIPartActionCycle;
+                            if (partCycle != null)
                             {
-                                var uiCycle = (part_cycle.Control as UI_Cycle);
+                                var uiCycle = (partCycle.Control as UI_Cycle);
                                 if (uiCycle != null)
                                 {
                                     // get current value
                                     int currentValue;
-                                    bool isModule = (part_cycle.PartModule != null);
-                                    if (isModule)
-                                        currentValue = part_cycle.Field.GetValue<int>(part_cycle.PartModule);
+                                    if (partCycle.PartModule != null)
+                                        currentValue = partCycle.Field.GetValue<int>(partCycle.PartModule);
                                     else
-                                        currentValue = part_cycle.Field.GetValue<int>(part_cycle.Part);
+                                        currentValue = partCycle.Field.GetValue<int>(partCycle.Part);
 
-                                    m_lastNewValue = (currentValue + 1) % uiCycle.stateNames.Length;
+                                    _lastNewValue = (currentValue + 1) % uiCycle.stateNames.Length;
                                     // invoke now
                                     Invoke();
                                 }
@@ -356,30 +334,29 @@ namespace RemoteTech.FlightComputer
                     // handle sliders (using float value)
                     case nameof(UIPartActionFloatRange):
                         {
-                            var part_float = m_UiPartAction as UIPartActionFloatRange;
-                            if (part_float != null)
+                            var partFloat = _uiPartAction as UIPartActionFloatRange;
+                            if (partFloat != null)
                             {
-                                var uiFloatRange = (part_float.Control as UI_FloatRange);
+                                var uiFloatRange = (partFloat.Control as UI_FloatRange);
                                 if (uiFloatRange != null)
                                 {
                                     // get current value
-                                    float currentValue = float.NaN;
-                                    bool isModule = (part_float.PartModule != null);
-                                    if (isModule)
-                                        currentValue = part_float.Field.GetValue<float>(part_float.PartModule);
+                                    float currentValue;
+                                    if (partFloat.PartModule != null)
+                                        currentValue = partFloat.Field.GetValue<float>(partFloat.PartModule);
                                     else
-                                        currentValue = part_float.Field.GetValue<float>(part_float.Part);
+                                        currentValue = partFloat.Field.GetValue<float>(partFloat.Part);
 
                                     // get new value
-                                    float newValue = HandleFloatRange(currentValue, uiFloatRange, part_float.slider);
+                                    var newValue = HandleFloatRange(currentValue, uiFloatRange, partFloat.slider);
                                     if (!float.IsNaN(newValue))
                                     {
-                                        m_lastNewValue = newValue;
-                                        if (m_delayInvoke == null)
+                                        _lastNewValue = newValue;
+                                        if (_delayInvoke == null)
                                         {
                                             // invoke later
-                                            m_delayInvoke = new Action<float>(DelayInvoke);
-                                            m_delayInvoke(0.5f);
+                                            _delayInvoke = DelayInvoke;
+                                            _delayInvoke(0.5f);
                                         }
                                     }
                                 }
@@ -389,11 +366,11 @@ namespace RemoteTech.FlightComputer
                 }
             }
 
-            private float HandleFloatRange(float fieldValue, UI_FloatRange uiFloatRange, UnityEngine.UI.Slider slider)
+            private static float HandleFloatRange(float fieldValue, UI_FloatRange uiFloatRange, UnityEngine.UI.Slider slider)
             {
                 var lerpedValue = Mathf.Lerp(uiFloatRange.minValue, uiFloatRange.maxValue, slider.value);
                 var moddedValue = lerpedValue % uiFloatRange.stepIncrement;
-                float num = fieldValue;
+                var num = fieldValue;
                 if (moddedValue != 0f)
                 {
                     if (moddedValue < uiFloatRange.stepIncrement * 0.5f)
@@ -410,13 +387,8 @@ namespace RemoteTech.FlightComputer
                     fieldValue = lerpedValue;
                 }
                 slider.value = Mathf.InverseLerp(uiFloatRange.minValue, uiFloatRange.maxValue, fieldValue);
-                fieldValue = (float)Math.Round((double)fieldValue, 5);
-                if (Mathf.Abs(fieldValue - num) > uiFloatRange.stepIncrement * 0.98f)
-                {
-                    return fieldValue;
-                }
-
-                return float.NaN;
+                fieldValue = (float)Math.Round(fieldValue, 5);
+                return Mathf.Abs(fieldValue - num) > uiFloatRange.stepIncrement * 0.98f ? fieldValue : float.NaN;
             }
         }
         #endregion
@@ -424,87 +396,89 @@ namespace RemoteTech.FlightComputer
         #region EventWrapper
         public class WrappedEvent : BaseEvent
         {
-            private BaseEvent originalEvent;
+            private readonly BaseEvent _originalEvent;
 
             public WrappedEvent(BaseEvent originalEvent, BaseEventList baseParentList, string name, BaseEventDelegate baseActionDelegate, KSPEvent kspEvent)
                 : base(baseParentList, name, baseActionDelegate, kspEvent)
             {
-                this.originalEvent = originalEvent;
+                _originalEvent = originalEvent;
             }
 
             public void InvokeOriginalEvent()
             {
-                originalEvent.Invoke();
+                _originalEvent.Invoke();
             }
 
             /// <summary>
             /// Given a BaseEvent, obtain a KSPEvent.
             /// Note : This is used in UIPartActionMenuPatcher.Wrap in case there no KSPEvent in the custom attributes of the BaseEventDelegate from the button event.
             /// </summary>
-            /// <param name="baseEvent">BaseEvent from which to abtain a KSPEvent.</param>
+            /// <param name="baseEvent">BaseEvent from which to obtain a KSPEvent.</param>
             /// <returns>KSPEvent instance from the BaseEvent parameter.</returns>
             public static KSPEvent KspEventFromBaseEvent(BaseEvent baseEvent)
             {
-                KSPEvent kspEvent = new KSPEvent();
-                kspEvent.active = baseEvent.active;
-                kspEvent.guiActive = baseEvent.guiActive;
-                kspEvent.requireFullControl = baseEvent.requireFullControl;
-                kspEvent.guiActiveEditor = baseEvent.guiActiveEditor;
-                kspEvent.guiActiveUncommand = baseEvent.guiActiveUncommand;
-                kspEvent.guiIcon = baseEvent.guiIcon;
-                kspEvent.guiName = baseEvent.guiName;
-                kspEvent.category = baseEvent.category;
-                kspEvent.advancedTweakable = baseEvent.advancedTweakable;
-                kspEvent.guiActiveUnfocused = baseEvent.guiActiveUnfocused;
-                kspEvent.unfocusedRange = baseEvent.unfocusedRange;
-                kspEvent.externalToEVAOnly = baseEvent.externalToEVAOnly;
-                kspEvent.isPersistent = baseEvent.isPersistent;
+                var kspEvent = new KSPEvent
+                {
+                    active = baseEvent.active,
+                    guiActive = baseEvent.guiActive,
+                    requireFullControl = baseEvent.requireFullControl,
+                    guiActiveEditor = baseEvent.guiActiveEditor,
+                    guiActiveUncommand = baseEvent.guiActiveUncommand,
+                    guiIcon = baseEvent.guiIcon,
+                    guiName = baseEvent.guiName,
+                    category = baseEvent.category,
+                    advancedTweakable = baseEvent.advancedTweakable,
+                    guiActiveUnfocused = baseEvent.guiActiveUnfocused,
+                    unfocusedRange = baseEvent.unfocusedRange,
+                    externalToEVAOnly = baseEvent.externalToEVAOnly,
+                    isPersistent = baseEvent.isPersistent
+                };
 
                 return kspEvent;
             }
         }
 
-        private class EventWrapper
+        public class EventWrapper
         {
-            private Action<BaseEvent, bool> mPassthrough;
-            private BaseEvent mEvent;
-            private bool mIgnoreDelay;
+            private readonly Action<BaseEvent, bool> _passthrough;
+            private readonly BaseEvent _event;
+            private readonly bool _ignoreDelay;
 
-            private EventWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay)
+            private EventWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignoreDelay)
             {
-                mPassthrough = passthrough;
-                mEvent = original;
-                mIgnoreDelay = ignore_delay;
+                _passthrough = passthrough;
+                _event = original;
+                _ignoreDelay = ignoreDelay;
             }
 
-            public static BaseEvent CreateWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignore_delay, KSPEvent kspEvent)
+            public static BaseEvent CreateWrapper(BaseEvent original, Action<BaseEvent, bool> passthrough, bool ignoreDelay, KSPEvent kspEvent)
             {
-                // Create a new config node and fill this config node with the original base event with the values
+                // Create a new configuration node and fill this node with the original base event with the values
                 ConfigNode cn = new ConfigNode();
                 original.OnSave(cn);
 
                 // create the wrapper (used solely for its Invoke() method)
                 // this class keeps the:
-                // * passthrough event (leading to the ModuleSPU.InvokeEvent() method)
+                // * pass through event (leading to the ModuleSPU.InvokeEvent() method)
                 // * the original event (button click event)
                 // * the ignore delay boolean value (true if the event ignore delay, false otherwise)
-                EventWrapper wrapper = new EventWrapper(original, passthrough, ignore_delay);
+                EventWrapper wrapper = new EventWrapper(original, passthrough, ignoreDelay);
                 // Create a new event, its main features are:
                 // 1. It retains its original base event invokable method: invokable directly through its InvokeOriginalEvent() method [useful for other mods, e.g. kOS]
                 // 2. Its new invoke() method which is in this wrapper class and decorated with and new KSPEvent category, namely "skip_control" (meaning we have already seen this event).
-                BaseEvent new_event = new WrappedEvent(original, original.listParent, original.name, wrapper.Invoke, kspEvent);
+                BaseEvent newEvent = new WrappedEvent(original, original.listParent, original.name, wrapper.Invoke, kspEvent);
 
                 // load the original base event values into the new base event
-                new_event.OnLoad(cn);
+                newEvent.OnLoad(cn);
 
-                return new_event;
+                return newEvent;
             }
 
             [KSPEvent(category = "skip_control")]
             public void Invoke()
             {
-                // call the passthrough event, leading to call the ModuleSPU.InvokeEvent() method
-                mPassthrough.Invoke(mEvent, mIgnoreDelay);
+                // call the pass through event, leading to call the ModuleSPU.InvokeEvent() method
+                _passthrough.Invoke(_event, _ignoreDelay);
             }
         }
         #endregion
