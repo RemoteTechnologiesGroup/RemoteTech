@@ -11,123 +11,112 @@ namespace RemoteTech.FlightComputer
     public static class UIPartActionMenuPatcher
     {
         // UI types that we are actually hooking
-        public static Type[] AllowedFieldTypes = { typeof(UIPartActionToggle), typeof(UIPartActionFloatRange), typeof(UIPartActionCycle) };
+        public static Type[] UIPartActionFieldItemAllowedTypes = { typeof(UIPartActionToggle), typeof(UIPartActionFloatRange), typeof(UIPartActionCycle) };
 
-        public static List<string> parsedPartActions = new List<string>();
+        public static List<string> ParsedPartActions = new List<string>();
 
-        public static void WrapEvent(Vessel parent, Action<BaseEvent, bool> passthrough)
-        {
-            UIPartActionController controller = UIPartActionController.Instance;
-            if (!controller) return;
-
-            // Get the open context menus
-            FieldInfo listFieldInfo = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                      .First(fi => fi.FieldType == typeof(List<UIPartActionWindow>));
-
-            List<UIPartActionWindow> openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
-
-            foreach (UIPartActionWindow window in openWindows.Where(window => window.part.vessel == parent))
-            {
-                // Get the list of all UIPartActionItem's
-                FieldInfo itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                           .First(fi => fi.FieldType == typeof(List<UIPartActionItem>));
-
-                List<UIPartActionItem> partActionItems = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
-
-                // We only need the UIPartActionEventItem's
-                UIPartActionItem[] actionEventButtons = partActionItems.Where(l => (l as UIPartActionEventItem) != null).ToArray();
-                for (int i = 0; i < actionEventButtons.Count(); i++)
-                {
-                    // get event from button
-                    UIPartActionEventItem button = (actionEventButtons[i] as UIPartActionEventItem);
-                    BaseEvent originalEvent = button.Evt;                   
-
-                    // Search for the BaseEventDelegate (BaseEvent.onEvent) field defined for the current BaseEvent type.
-                    // Note that 'onEvent' is protected, so we have to go through reflection.
-                    FieldInfo partEventFieldInfo = typeof(BaseEvent).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                                   .First(fi => fi.FieldType == typeof(BaseEventDelegate));
-
-                    // Get the actual value of the 'onEvent' field 
-                    BaseEventDelegate partEvent = (BaseEventDelegate)partEventFieldInfo.GetValue(originalEvent);
-
-                    // Gets the method represented by the delegate and from this method returns an array of custom attributes applied to this member.
-                    // Simply put, we want all [KSPEvent] attributes applied to the BaseEventDelegate.Method field.
-                    object[] customAttributes = partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true);
-
-                    // Look for the custom attribute skip_control
-                    bool skip_control = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_control"));
-                    if (!skip_control)
-                    {
-                        /*
-                         * Override the old BaseEvent with our BaseEvent to the button
-                         */                        
-
-                        // fix problems with other mods (behavior not seen with KSP) when the customAttributes list is empty.
-                        KSPEvent kspEvent = customAttributes.Count() == 0 ? WrappedEvent.KspEventFromBaseEvent(originalEvent) : (KSPEvent)customAttributes[0];
-
-                        // Look for the custom attribute skip_delay
-                        bool ignore_delay = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
-
-                        // create the new BaseEvent
-                        BaseEvent hookedEvent = EventWrapper.CreateWrapper(originalEvent, passthrough, ignore_delay, kspEvent);
-
-                        // get the original event index in the event list
-                        BaseEventList eventList = originalEvent.listParent;
-                        int listIndex = eventList.IndexOf(originalEvent);
-
-                        // remove the original event in the event list and add our hooked event
-                        eventList.RemoveAt(listIndex);
-                        eventList.Add(hookedEvent);
-
-                        // get the baseEvent field from UIPartActionEventItem
-                        FieldInfo baseEventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                               .First(fi => fi.FieldType == typeof(BaseEvent));
-
-                        // replace the button baseEvent value with our hooked event
-                        baseEventField.SetValue(button, hookedEvent);
-                    }
-                }
-            }
-        }
-
-        public static void WrapPartAction(Vessel parent, Action<BaseField, bool> passthrough)
+        public static void WrapPartActionEventItem(Part part, Action<BaseEvent, bool> passthrough)
         {
             var controller = UIPartActionController.Instance;
             if (!controller)
                 return;
 
-            // Get the open context menus
-            var listFieldInfo = controller.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                      .First(fi => fi.FieldType == typeof(List<UIPartActionWindow>));
+            // get the part action window corresponding to the part
+            var window = controller.GetItem(part);
+            if (window == null)
+                return;
 
-            var openWindows = (List<UIPartActionWindow>)listFieldInfo.GetValue(controller);
+            // get all the items that makes this window (toggle buttons, sliders, etc.)
+            var partActionItems = window.ListItems;
 
-            foreach (UIPartActionWindow window in openWindows.Where(window => window.part.vessel == parent))
+            // loop through all of those UI components
+            for (var i = 0; i < partActionItems.Count(); i++)
             {
-                // Get the list of all UIPartActionItem's
-                var itemsFieldInfo = typeof(UIPartActionWindow).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                                           .First(fi => fi.FieldType == typeof(List<UIPartActionItem>));
+                // check that the part action item is actually a UIPartActionFieldItem (it could be a UIPartActionEventItem)
+                var uiPartActionEventItem = (partActionItems[i] as UIPartActionEventItem);
+                if (uiPartActionEventItem == null)
+                    continue;
 
-                var partActionItems = (List<UIPartActionItem>)itemsFieldInfo.GetValue(window);
+                // get event from button
+                BaseEvent originalEvent = uiPartActionEventItem.Evt;                   
 
-                var actionToogleButtons = partActionItems.Where(l => AllowedFieldTypes.Any(t => l.GetType() == t) && (l as UIPartActionFieldItem) != null).ToArray();
-                for (var i = 0; i < actionToogleButtons.Count(); i++)
-                {
-                    var actionField = (actionToogleButtons[i] as UIPartActionFieldItem);
-                    if (actionField == null)
-                        continue;
-                    /*if (parsedPartActions.Contains(actionField.Field.name))
-                        continue;
-                    else
-                        parsedPartActions.Add(actionField.Field.name);*/
+                // Search for the BaseEventDelegate (BaseEvent.onEvent) field defined for the current BaseEvent type.
+                // Note that 'onEvent' is protected, so we have to go through reflection.
+                FieldInfo partEventFieldInfo = typeof(BaseEvent).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                                                .First(fi => fi.FieldType == typeof(BaseEventDelegate));
 
-                    var customAttributes = actionField.Field.FieldInfo.GetCustomAttributes(typeof(KSPField), true);
+                // Get the actual value of the 'onEvent' field 
+                BaseEventDelegate partEvent = (BaseEventDelegate)partEventFieldInfo.GetValue(originalEvent);
 
-                    var kspField = !customAttributes.Any() ? WrappedField.KspFieldFromBaseField(actionField.Field) : (KSPField)customAttributes[0];
+                // Gets the method represented by the delegate and from this method returns an array of custom attributes applied to this member.
+                // Simply put, we want all [KSPEvent] attributes applied to the BaseEventDelegate.Method field.
+                object[] customAttributes = partEvent.Method.GetCustomAttributes(typeof(KSPEvent), true);
 
-                    var fieldWrapper = new FieldWrapper(actionField, kspField, passthrough, false);
-                    }
+                // Look for the custom attribute skip_control
+                bool skipControl = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_control"));
+                if (skipControl)
+                    continue;
+                
+                /*
+                 * Override the old BaseEvent with our BaseEvent to the button
+                 */
+
+                // fix problems with other mods (behavior not seen with KSP) when the customAttributes list is empty.
+                KSPEvent kspEvent = !customAttributes.Any() ? WrappedEvent.KspEventFromBaseEvent(originalEvent) : (KSPEvent)customAttributes[0];
+
+                // Look for the custom attribute skip_delay
+                bool ignoreDelay = customAttributes.Any(a => ((KSPEvent)a).category.Contains("skip_delay"));
+
+                // create the new BaseEvent
+                BaseEvent hookedEvent = EventWrapper.CreateWrapper(originalEvent, passthrough, ignoreDelay, kspEvent);
+
+                // get the original event index in the event list
+                BaseEventList eventList = originalEvent.listParent;
+                int listIndex = eventList.IndexOf(originalEvent);
+
+                // remove the original event in the event list and add our hooked event
+                eventList.RemoveAt(listIndex);
+                eventList.Add(hookedEvent);
+
+                // get the baseEvent field from UIPartActionEventItem (note: this is uiPartActionEventItem.Evt, but we can't set its value...)
+                FieldInfo baseEventField = typeof(UIPartActionEventItem).GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
+                    .First(fi => fi.FieldType == typeof(BaseEvent));
+
+                // replace the button baseEvent value with our hooked event
+                baseEventField.SetValue(uiPartActionEventItem, hookedEvent);
             }
+        }
+
+        public static void WrapPartActionFieldItem(Part part, Action<BaseField, bool> passthrough)
+        {
+            var controller = UIPartActionController.Instance;
+            if (!controller)
+                return;
+
+            // get the part action window corresponding to the part
+            var window = controller.GetItem(part);
+            if (window == null)
+                return;
+
+            // get all the items that makes this window (toggle buttons, sliders, etc.)
+            var partActionItems = window.ListItems;
+
+            // loop through all of those UI components
+            for (var i = 0; i < partActionItems.Count(); i++)
+            {
+                // check that the part action item is actually a UIPartActionFieldItem (it could be a UIPartActionEventItem)
+                var uiPartActionFieldItem = (partActionItems[i] as UIPartActionFieldItem);
+                if (uiPartActionFieldItem == null)
+                    continue;
+
+                // now check that the UIPartActionFieldItem type (e.g UIPartActionToggle; UIPartActionCycle; UIPartActionFloatRange, etc.) 
+                // is actually something we can handle.
+                if (UIPartActionFieldItemAllowedTypes.All(type => uiPartActionFieldItem.GetType() != type))
+                    continue;
+
+                var fieldWrapper = new FieldWrapper(uiPartActionFieldItem, passthrough, false);
+            }
+            
         }
 
         #region FieldWrapper        
@@ -201,20 +190,14 @@ namespace RemoteTech.FlightComputer
             private Action<float> _delayInvoke;
             private object _lastNewValue;
 
-            public FieldWrapper(UIPartActionFieldItem uiPartAction, KSPField kspField, Action<BaseField, bool> passthrough, bool ignoreDelay)
+            public FieldWrapper(UIPartActionFieldItem uiPartAction, Action<BaseField, bool> passthrough, bool ignoreDelay)
             {
                 _uiPartAction = uiPartAction;
                 SetDefaultListener();
-
-                var baseField = uiPartAction.Field;
-                if(kspField == null)
-                {
-                    kspField = WrappedField.KspFieldFromBaseField(baseField);
-                }
-                
+               
                 _passthrough = passthrough;
                 _ignoreDelay = ignoreDelay;
-                _wrappedField = new WrappedField(baseField, kspField);
+                _wrappedField = new WrappedField(uiPartAction.Field, WrappedField.KspFieldFromBaseField(uiPartAction.Field));
             }
 
             public void Invoke()

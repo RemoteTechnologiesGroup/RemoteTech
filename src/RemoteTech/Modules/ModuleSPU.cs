@@ -101,14 +101,14 @@ namespace RemoteTech.Modules
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
         }
 
-        public void onPartActionUICreate(Part p)
+        public void onPartActionUICreate(Part partForUi)
         {
-            HookPartMenus();
+            HookPartMenus(partForUi);
         }
 
-        public void onPartActionUIDismiss(Part part)
+        public void onPartActionUIDismiss(Part partForUi)
         {
-            UIPartActionMenuPatcher.parsedPartActions.Clear();
+            UIPartActionMenuPatcher.ParsedPartActions.Clear();
         }
 
         public void OnDestroy()
@@ -191,10 +191,14 @@ namespace RemoteTech.Modules
             }
         }
 
-        public void HookPartMenus()
+        public void HookPartMenus(Part partForUi)
         {
-            UIPartActionMenuPatcher.WrapEvent(vessel, (e, ignoreDelay) => InvokeEvent(e, ignoreDelay));
-            UIPartActionMenuPatcher.WrapPartAction(vessel, (f, ignoreDelay) => InvokePartAction(f, ignoreDelay));
+            // check if the part is actually one from this vessel
+            if (partForUi.vessel != vessel)
+                return;
+
+            UIPartActionMenuPatcher.WrapPartActionEventItem(partForUi, InvokeEvent);
+            UIPartActionMenuPatcher.WrapPartActionFieldItem(partForUi, InvokePartAction);
         }
 
         private void InvokeEvent(BaseEvent baseEvent, bool ignoreDelay)
