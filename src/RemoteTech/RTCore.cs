@@ -132,11 +132,13 @@ namespace RemoteTech
             // register vessels and antennas
             foreach (var vessel in FlightGlobals.Vessels)
             {
-                if ((vessel.vesselType > VesselType.Unknown) && (vessel.vesselType != VesselType.Flag) && (vessel.vesselType != VesselType.EVA))
-                {
-                    Satellites.RegisterProto(vessel);
-                    Antennas.RegisterProtos(vessel);
-                }
+                // do not try to register vessel types that have no chance of being RT controlled.
+                // includes: debris, SpaceObject, unknown, EVA and flag
+                if ((vessel.vesselType <= VesselType.Unknown) || (vessel.vesselType >= VesselType.EVA))
+                    continue;
+
+                Satellites.RegisterProto(vessel);
+                Antennas.RegisterProtos(vessel);
             }
         }
 
