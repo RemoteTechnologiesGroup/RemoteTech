@@ -27,7 +27,7 @@ namespace RemoteTech.Modules
         public bool IsCommandStation => IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
         public FlightComputer.FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel => vessel;
-        public bool IsMaster { get { return Satellite != null && Satellite.SignalProcessor == this; } }
+        public bool IsMaster => Satellite != null && ReferenceEquals(Satellite.SignalProcessor, this);
 
         /* KSP fields */
         [KSPField(isPersistant = true)] public bool IsRTPowered;
