@@ -18,44 +18,46 @@ namespace RemoteTech
         {
             yield return null;
 
-            List<AvailablePart> loadedParts = PartLoader.LoadedPartsList;
+            var loadedParts = PartLoader.LoadedPartsList;
+
             // find all RT parts
-            IEnumerable<AvailablePart> rtPartList = loadedParts.Where(part => part.partPrefab.Modules != null && (part.partPrefab.Modules.Contains<Modules.ModuleRTAntennaPassive>() ||
-                                                                                                                  part.partPrefab.Modules.Contains<Modules.ModuleRTAntenna>() ||
-                                                                                                                  part.partPrefab.Modules.Contains<Modules.ModuleSPU>() ||
-                                                                                                                  part.partPrefab.Modules.Contains<Modules.ModuleSPUPassive>()));
-
-
+            var rtPartList = loadedParts.Where(
+                part => part.partPrefab.Modules != null && 
+                (part.partPrefab.Modules.Contains<Modules.ModuleRTAntennaPassive>() ||
+                part.partPrefab.Modules.Contains<Modules.ModuleRTAntenna>() ||
+                part.partPrefab.Modules.Contains<Modules.ModuleSPU>() ||
+                part.partPrefab.Modules.Contains<Modules.ModuleSPUPassive>())
+                );
 
             foreach (var rtPart in rtPartList)
             {
-                bool partHasTechPerk = rtPart.partPrefab.Modules.Contains<Modules.ModuleRTAntennaPassive>();
-                bool techPerkRefreshed = false;
+                var partHasTechPerk = rtPart.partPrefab.Modules.Contains<Modules.ModuleRTAntennaPassive>();
+                var techPerkRefreshed = false;
 
-                for (int i = rtPart.moduleInfos.Count - 1; i >= 0; --i)
+                for (var i = rtPart.moduleInfos.Count - 1; i >= 0; --i)
                 {
                     var info = rtPart.moduleInfos[i];
 
-                    String moduleName = info.moduleName;
+                    var moduleName = info.moduleName;
                     if (moduleName == "Technology Perk" || moduleName == "Antenna" || moduleName == "Signal Processor" )
                     {
-                        String moduleClassName = String.Empty;
+                        var moduleClassName = string.Empty;
                         if (moduleName == "Technology Perk")  moduleClassName = "ModuleRTAntennaPassive";
                         if (moduleName == "Antenna")          moduleClassName = "ModuleRTAntenna";
                         if (moduleName == "Signal Processor") moduleClassName = "ModuleSPU";
 
                         // no moduleClassName found, skip to the next part
-                        if (moduleClassName == String.Empty) continue;
+                        if (moduleClassName == string.Empty) continue;
 
                         // otherwise refresh the infos
-                        string new_infos = this.RefreshPartInfo(rtPart.partPrefab, moduleClassName);
-                        if (new_infos != String.Empty)
+                        var newInfos = RefreshPartInfo(rtPart.partPrefab, moduleClassName);
+                        if (newInfos != string.Empty)
                         {
                             if (moduleName == "Technology Perk")
                             {
                                 techPerkRefreshed = true;
                             }
-                            info.info = new_infos;
+                            info.info = newInfos;
                         }
                         else
                         {
@@ -66,9 +68,9 @@ namespace RemoteTech
                 }
 
                 // add a new info block for TechPerk
-                if (techPerkRefreshed == false && partHasTechPerk == true && rtPart.partPrefab.Modules.GetModule<Modules.ModuleRTAntennaPassive>().Unlocked)
+                if (techPerkRefreshed == false && partHasTechPerk && rtPart.partPrefab.Modules.GetModule<Modules.ModuleRTAntennaPassive>().Unlocked)
                 {
-                    rtPart.moduleInfos.Add(this.CreateTechPerkInfoforPart(rtPart.partPrefab));
+                    rtPart.moduleInfos.Add(CreateTechPerkInfoforPart(rtPart.partPrefab));
                 }
             }
         }
@@ -76,25 +78,24 @@ namespace RemoteTech
         /// <summary>
         /// This method creates a new Info-block for the <paramref name="part"/> and
         /// the <paramref name="moduleClassName"/> and returns a string. If no info
-        /// is available the result is an empty string.
-        /// 
+        /// is available the result is an empty string. 
         /// </summary>
         /// <param name="part">Part to get the infos</param>
-        /// <param name="moduleClassName">module class name for the getInfo() call</param>
+        /// <param name="moduleClassName">module class name for the <see cref="PartModule.GetInfo"/> call</param>
         /// <returns>new info block</returns>
-        private String RefreshPartInfo(Part part, String moduleClassName)
+        private static string RefreshPartInfo(Part part, string moduleClassName)
         {
-            String new_info = String.Empty;
+            var newInfo = string.Empty;
                 
-            foreach (PartModule pm in part.Modules)
+            foreach (var pm in part.Modules)
             {
                 if (pm.moduleName == moduleClassName)
                 {
-                    new_info = pm.GetInfo();
+                    newInfo = pm.GetInfo();
                 }
             }
 
-            return new_info;
+            return newInfo;
         }
 
         /// <summary>
@@ -106,14 +107,16 @@ namespace RemoteTech
         private AvailablePart.ModuleInfo CreateTechPerkInfoforPart(Part part)
         {
             // Get the infos for the TechPerk info block
-            string perk_infos = this.RefreshPartInfo(part, "ModuleRTAntennaPassive");
+            var perkInfos = RefreshPartInfo(part, "ModuleRTAntennaPassive");
 
             // creates a new info block
-            AvailablePart.ModuleInfo NewPerkInfo = new AvailablePart.ModuleInfo();
-            NewPerkInfo.info = perk_infos;
-            NewPerkInfo.moduleName = "Technology Perk";
+            var newPerkInfo = new AvailablePart.ModuleInfo
+            {
+                info = perkInfos,
+                moduleName = "Technology Perk"
+            };
 
-            return NewPerkInfo;
+            return newPerkInfo;
         }
     }
 }
