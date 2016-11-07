@@ -7,12 +7,12 @@ namespace RemoteTech
     [KSPAddon(KSPAddon.Startup.EveryScene, false)]
     public class RTDebugUnit : MonoBehaviour
     {
-        private RemoteTech.UI.DebugWindow debugWindow = null;
+        private UI.DebugWindow debugWindow;
 
         public void Start()
         {
             #if DEBUG
-            this.debugWindow = new RemoteTech.UI.DebugWindow();
+            debugWindow = new UI.DebugWindow();
             #endif
         }
 
@@ -20,21 +20,16 @@ namespace RemoteTech
         {
             if ((Input.GetKeyDown(KeyCode.F11) || Input.GetKeyDown(KeyCode.F12)) && (HighLogic.LoadedSceneIsFlight || HighLogic.LoadedSceneHasPlanetarium))
             {
-                if (Input.GetKeyDown(KeyCode.F11)){
+                if (Input.GetKeyDown(KeyCode.F11))
                     Dump();
-                }
-                else {
-                    if (this.debugWindow != null)
-                    {
-                        this.debugWindow.toggleWindow();
-                    }
-                }
+                else
+                    debugWindow?.toggleWindow();
             }
         }
 
         public void Dump()
         {
-            var dump = new List<String>();
+            var dump = new List<string>();
             dump.AddRange(DumpSatellites());
             dump.Add(Environment.NewLine);
             dump.AddRange(DumpAntennas());
@@ -44,65 +39,61 @@ namespace RemoteTech
             dump.AddRange(DumpConnectionTests());
             dump.Add(Environment.NewLine);
 
-            System.IO.File.WriteAllText(@"./rt_dump.txt", String.Join(Environment.NewLine, dump.ToArray()));
+            System.IO.File.WriteAllText(@"./rt_dump.txt", string.Join(Environment.NewLine, dump.ToArray()));
         }
         
-        public String[] DumpSatellites()
+        public string[] DumpSatellites()
         {
-            var data = new List<String>();
-            data.Add("NetworkManager contents: ");
-            int i = 0;
-            foreach (var s in RTCore.Instance.Network)
+            var data = new List<string> {"NetworkManager contents: "};
+            var i = 0;
+            foreach (var satellite in RTCore.Instance.Network)
             {
-                data.Add(String.Format("    {0}: {1}", i++, s));
+                data.Add($"    {i++}: {satellite}");
             }
 
             return data.ToArray();
         }
 
-        public String[] DumpAntennas()
+        public string[] DumpAntennas()
         {
-            var data = new List<String>();
-            data.Add("AntennaManager contents: ");
-            int i = 0;
-            foreach (var a in RTCore.Instance.Antennas)
+            var data = new List<string> {"AntennaManager contents: "};
+            var i = 0;
+            foreach (var antenna in RTCore.Instance.Antennas)
             {
-                data.Add(String.Format("    {0}: {1}", i++, a));
+                data.Add($"    {i++}: {antenna}");
             }
 
             return data.ToArray();
         }
 
-        public String[] DumpEdges()
+        public string[] DumpEdges()
         {
-            var data = new List<String>();
-            data.Add("NetworkManager.Graph contents: ");
-            int i = 0;
+            var data = new List<string> {"NetworkManager.Graph contents: "};
+            var i = 0;
             foreach (var edge in RTCore.Instance.Network.Graph)
             {
-                data.Add(String.Format("    {0}: {1}", i++, edge.Key));
-                int j = 0;
+                data.Add($"    {i++}: {edge.Key}");
+                var j = 0;
                 foreach (var target in edge.Value)
                 {
-                    data.Add(String.Format("        {0}: {1}", j++, target));
+                    data.Add($"        {j++}: {target}");
                 }
             }
 
             return data.ToArray();
         }
 
-        public String[] DumpConnectionTests()
+        public string[] DumpConnectionTests()
         {
-            var data = new List<String>();
-            data.Add("Forced connection checks: ");
-            int i = 0;
+            var data = new List<string> {"Forced connection checks: "};
+            var i = 0;
             foreach (var sat1 in RTCore.Instance.Network)
             {
-                int j = 0;
+                var j = 0;
                 foreach (var sat2 in RTCore.Instance.Network)
                 {
                     if (sat1 == sat2) continue;
-                    data.Add(String.Format("    {0} -> {1}: {2}", i, j, NetworkManager.GetLink(sat1, sat2)));
+                    data.Add($"    {i} -> {j}: {NetworkManager.GetLink(sat1, sat2)}");
                     j++;
                 }
                 i++;
