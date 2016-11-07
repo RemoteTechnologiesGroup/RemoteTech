@@ -10,7 +10,7 @@ namespace RemoteTech.Modules
         public String Name { get { return String.Format("ModuleSPUPassive({0})", VesselName); } }
         public String VesselName { get { return vessel.vesselName; } set { vessel.vesselName = value; } }
         public bool VesselLoaded { get { return vessel.loaded; } }
-        public Guid Guid { get { return mRegisteredId; } }
+        public Guid VesselId { get { return mRegisteredId; } }
         public Vector3 Position { get { return vessel.GetWorldPos3D(); } }
         public CelestialBody Body { get { return vessel.mainBody; } }
         public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(vessel); } }

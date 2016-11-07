@@ -13,7 +13,7 @@ namespace RemoteTech.Modules
         public bool VesselLoaded { get { return false; } }
         public bool Powered { get; private set; }
         public bool IsCommandStation { get; private set; }
-        public Guid Guid { get { return mVessel.id; } }
+        public Guid VesselId { get { return mVessel.id; } }
         public Vessel Vessel { get { return mVessel; } }
         public FlightComputer.FlightComputer FlightComputer { get { return null; } }
         public bool IsMaster { get { return true; } }

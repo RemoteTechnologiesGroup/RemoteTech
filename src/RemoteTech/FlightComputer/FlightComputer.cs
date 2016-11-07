@@ -51,7 +51,7 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
+                var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
                 var connection = RTCore.Instance.Network[satellite];
                 return (satellite != null && satellite.HasLocalControl) || (SignalProcessor.Powered && connection.Any());
             }
@@ -62,7 +62,7 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
+                var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
 
                 if (satellite != null && satellite.HasLocalControl)
                     return 0.0;
@@ -77,7 +77,7 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                var satellite = RTCore.Instance.Network[SignalProcessor.Guid];
+                var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
                 var connection = RTCore.Instance.Network[satellite];
                 var status = State.Normal;
                 if (!SignalProcessor.Powered) status |= State.OutOfPower;
@@ -425,7 +425,7 @@ namespace RemoteTech.FlightComputer
         private void OnFlyByWirePre(FlightCtrlState fcs)
         {
             if (!SignalProcessor.IsMaster) return;
-            var satellite = RTCore.Instance.Satellites[SignalProcessor.Guid];
+            var satellite = RTCore.Instance.Satellites[SignalProcessor.VesselId];
 
             if (Vessel == FlightGlobals.ActiveVessel && InputAllowed && !satellite.HasLocalControl)
             {

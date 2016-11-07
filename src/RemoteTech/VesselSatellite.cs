@@ -22,7 +22,7 @@ namespace RemoteTech
         }
 
         /// <summary>Gets the satellite id.</summary>
-        public Guid Guid => SignalProcessor.Guid;
+        public Guid Guid => SignalProcessor.VesselId;
 
         /// <summary>Get a double precision vector for the vessel's world space position.</summary>
         public Vector3d Position => SignalProcessor.Position;
