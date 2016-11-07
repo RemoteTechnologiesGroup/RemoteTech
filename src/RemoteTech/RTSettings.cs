@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -11,42 +12,41 @@ namespace RemoteTech
         public static EventVoid OnSettingsLoaded = new EventVoid("OnSettingsLoaded");
         public static EventVoid OnSettingsSaved = new EventVoid("OnSettingsSaved");
 
-        private static Settings mInstance;
+        private static Settings _instance;
         public static Settings Instance
         {
             get
             {
-                if (mInstance is Settings && mInstance.settingsLoaded)
-                {
-                    return mInstance;
-                }
-                else
-                {
-                    return mInstance = Settings.Load();
-                }
+                //check if there's an already loaded instance
+                if (_instance != null && _instance.SettingsLoaded)
+                    return _instance;
+                
+                // otherwise load settings to get the instance
+                return _instance = Settings.Load();
             }
         }
 
         /// <summary>
         /// Replace the given settings with a new Settings object of the given setting preset, and save it
         /// </summary>
-        public static void ReloadSettings(Settings previousSettings, string presetCFGUrl)
+        public static void ReloadSettings(Settings previousSettings, string presetCfgUrl)
         {
-            RTSettings.mInstance = Settings.LoadPreset(previousSettings, presetCFGUrl);
-            RTSettings.mInstance.Save();
+            _instance = Settings.LoadPreset(previousSettings, presetCfgUrl);
+            _instance.Save();
         }
     }
 
     public class Settings
     {
-        //Global settings of the RemoteTech add-on, whose default values are to be read from Default_Settings.cfg
+        // Global settings of the RemoteTech add-on, whose default values are to be read from Default_Settings.cfg
+        // Note: do not rename any of those fields here except if you change the name in the configuration file; be careful though: this will render all previous saves incompatible!!!
         [Persistent] public bool RemoteTechEnabled;
         [Persistent] public bool CommNetEnabled;
         [Persistent] public float ConsumptionMultiplier;
         [Persistent] public float RangeMultiplier;
         [Persistent] public float MissionControlRangeMultiplier;
-        [Persistent] public String ActiveVesselGuid;
-        [Persistent] public String NoTargetGuid;
+        [Persistent] public string ActiveVesselGuid;
+        [Persistent] public string NoTargetGuid;
         [Persistent] public float SpeedOfLight;
         [Persistent] public MapFilter MapFilter;
         [Persistent] public bool EnableSignalDelay;
@@ -68,46 +68,38 @@ namespace RemoteTech
         [Persistent] public Color ActiveConnectionColor;
         [Persistent] public Color RemoteStationColorDot;
         [Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;
-        [Persistent(collectionIndex = "PRESETS")] public List<String> PreSets;
+        [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 
-        /// <summary>
-        /// Trigger to force a reloading of the settings if a selected save is running.
-        /// </summary>
-        public bool settingsLoaded = false;
-        public bool firstStart = false;
+        public const string SaveFileName = "RemoteTech_Settings.cfg";
 
-        /// <summary>
-        /// Temp Variable for all the Window Positions for each instance.
-        /// </summary>
-        public Dictionary<String, Rect> savedWindowPositions = new Dictionary<String, Rect>();
+        /// <summary>Trigger to force a reloading of the settings if a selected save is running.</summary>
+        public bool SettingsLoaded;
+
+        /// <summary>True if its the first start of RemoteTech for this save, false otherwise.</summary>
+        public bool FirstStart;
+
+        /// <summary>Temp Variable for all the Window Positions for each instance.</summary>
+        public Dictionary<string, Rect> SavedWindowPositions = new Dictionary<string, Rect>();
 
         /// <summary>
         /// Returns the current RemoteTech_Settings of an existing save full path. The path will be empty
         /// if no save is loaded or the game is a training mission
         /// </summary>
-        private static String SaveSettingFile
+        private static string SaveSettingFile
         {
             get
             {
                 if (HighLogic.CurrentGame == null || RTUtil.IsGameScenario)
-                {
-                    return "";
-                }
+                    return string.Empty;
 
-                return KSPUtil.ApplicationRootPath + "/saves/" + HighLogic.SaveFolder + "/RemoteTech_Settings.cfg";
+                return KSPUtil.ApplicationRootPath + "/saves/" + HighLogic.SaveFolder + Path.DirectorySeparatorChar + SaveFileName;
             }
         }
 
         /// <summary>
         /// Returns the full path of the Default_Settings of the RemoteTech mod
         /// </summary>
-        private static String DefaultSettingFile
-        {
-            get
-            {
-                return KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/Default_Settings.cfg";
-            }
-        }
+        private static string DefaultSettingFile => KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/" + SaveFileName;
 
         /// <summary>
         /// Saves the current RTSettings object to the RemoteTech_Settings.cfg
@@ -116,42 +108,40 @@ namespace RemoteTech
         {
             try
             {
-                String settingsFile = Settings.SaveSettingFile;
-
                 // only save the settings if the file name is not empty (i.e. not on loading screen or in training)
-                if (!String.IsNullOrEmpty(settingsFile) && this != null)
-                {
-                    ConfigNode details = new ConfigNode("RemoteTechSettings");
-                    ConfigNode.CreateConfigFromObject(this, 0, details);
-                    ConfigNode save = new ConfigNode();
-                    save.AddNode(details);
-                    save.Save(Settings.SaveSettingFile);
+                if (string.IsNullOrEmpty(SaveSettingFile))
+                    return;
 
-                    RTSettings.OnSettingsSaved.Fire();
-                }
+                var details = new ConfigNode("RemoteTechSettings");
+                ConfigNode.CreateConfigFromObject(this, 0, details);
+                var save = new ConfigNode();
+                save.AddNode(details);
+                save.Save(SaveSettingFile);
+
+                RTSettings.OnSettingsSaved.Fire();
             }
-            catch (Exception e) { RTLog.Notify("An error occurred while attempting to save: {0}", RTLogLevel.LVL1, e.Message); }
+            catch (Exception e)
+            {
+                RTLog.Notify("An error occurred while attempting to save: {0}", RTLogLevel.LVL1, e.Message);
+            }
         }
 
         public static Settings Load()
         {
             // Create a new settings object from the stored default settings
-            Settings settings = new Settings();
-            ConfigNode defaultLoad = ConfigNode.Load(Settings.DefaultSettingFile);
+            var settings = new Settings();
+            var defaultLoad = ConfigNode.Load(DefaultSettingFile);
             if(defaultLoad == null) // disable itself and write explanation to KSP's log
             {
-                RTLog.Notify("RemoteTech is disabled because the default file '{0}' is not found", Settings.DefaultSettingFile);
+                RTLog.Notify("RemoteTech is disabled because the default file '{0}' is not found", DefaultSettingFile);
                 return null;
                 // the main impact of returning null is the endless loop of invoking Load() in the KSP's loading screen
             }
-            else
-            {
-                defaultLoad = defaultLoad.GetNode("RemoteTechSettings"); // defaultLoad has root{...} so need to traverse downwards
-                bool success = ConfigNode.LoadObjectFromConfig(settings, defaultLoad);
-                RTLog.Notify("Load default settings into object with {0}: LOADED {1}", defaultLoad, success?"OK":"FAIL");
-            }
+            defaultLoad = defaultLoad.GetNode("RemoteTechSettings"); // defaultLoad has root{...} so need to traverse downwards
+            var success = ConfigNode.LoadObjectFromConfig(settings, defaultLoad);
+            RTLog.Notify("Load default settings into object with {0}: LOADED {1}", defaultLoad, success ? "OK" : "FAIL");
 
-            settings.settingsLoaded = true;
+            settings.SettingsLoaded = true;
 
             // Disable RemoteTech on Training missions
             if (RTUtil.IsGameScenario)
@@ -161,18 +151,18 @@ namespace RemoteTech
             }
 
             // stop and return default settings if we are on the KSP loading screen OR in training scenarios
-            if (string.IsNullOrEmpty(Settings.SaveSettingFile))
+            if (string.IsNullOrEmpty(SaveSettingFile))
             {
                 return settings;
             }
 
             // try to load from the save-settings.cfg
-            ConfigNode load = ConfigNode.Load(Settings.SaveSettingFile);
+            var load = ConfigNode.Load(SaveSettingFile);
             if (load == null)
             {
                 // write the RT settings to the player's save folder
                 settings.Save();
-                settings.firstStart = true;
+                settings.FirstStart = true;
             }
             else
             {
@@ -181,11 +171,12 @@ namespace RemoteTech
                     load = load.GetNode("RemoteTechSettings");
                 
                 // replace the default settings with save-setting file
-                bool success = ConfigNode.LoadObjectFromConfig(settings, load);
+                success = ConfigNode.LoadObjectFromConfig(settings, load);
                 RTLog.Notify("Found and load save settings into object with {0}: LOADED {1}", load, success ? "OK" : "FAIL");
             }
 
-            SearchAndPreparePresets(settings); // find third-party mods' RemoteTech settings
+            // find third-party mods' RemoteTech settings
+            SearchAndPreparePresets(settings); 
             
             RTSettings.OnSettingsLoaded.Fire();
 
@@ -194,32 +185,32 @@ namespace RemoteTech
 
         private static void SearchAndPreparePresets(Settings settings)
         {
-            bool presetsChanged = false;
+            var presetsChanged = false;
 
             // Exploit KSP's GameDatabase to find third-party mods' RemoteTechSetting node (from GameData/ExampleMod/RemoteTechSettings.cfg)
-            UrlDir.UrlConfig[] cfgs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
-            List<string> RTSettingCFGs = cfgs.Select(x => x.url).ToList<string>();
+            var cfgs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            var rtSettingCfGs = cfgs.Select(x => x.url).ToList();
 
             //check for any invalid preset in the settings of a save
-            for (int i=0; i < settings.PreSets.Count(); i++)
+            for (var i=0; i < settings.PreSets.Count(); i++)
             {
-                if (!RTSettingCFGs.Contains(settings.PreSets.ElementAt(i)))
-                {
-                    RTLog.Notify("Remove an invalid setting preset {0}", settings.PreSets.ElementAt(i));
-                    settings.PreSets.RemoveAt(i);
-                    presetsChanged = true;
-                }
+                if (rtSettingCfGs.Contains(settings.PreSets[i]))
+                    continue;
+
+                RTLog.Notify("Remove an invalid setting preset {0}", settings.PreSets[i]);
+                settings.PreSets.RemoveAt(i);
+                presetsChanged = true;
             }
 
             //find and add new presets to the settings of a save
-            for (int i = 0; i < RTSettingCFGs.Count(); i++)
+            for (var i = 0; i < rtSettingCfGs.Count(); i++)
             {
-                if (!settings.PreSets.Contains(RTSettingCFGs.ElementAt(i)))
-                {
-                    RTLog.Notify("Add a new setting preset {0}", RTSettingCFGs.ElementAt(i));
-                    settings.PreSets.Add(RTSettingCFGs.ElementAt(i));
-                    presetsChanged = true;
-                }
+                if (settings.PreSets.Contains(rtSettingCfGs[i]))
+                    continue;
+
+                RTLog.Notify("Add a new setting preset {0}", rtSettingCfGs[i]);
+                settings.PreSets.Add(rtSettingCfGs[i]);
+                presetsChanged = true;
             }
 
             if (presetsChanged) // only if new RT settings are found and added to the save-setting's PreSets node
@@ -227,86 +218,85 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Load a preset config into the RemoteTech settings object.
+        /// Load a preset configuration into the RemoteTech settings object.
         /// </summary>
-        public static Settings LoadPreset(Settings previousSettings, string presetCFGUrl)
+        public static Settings LoadPreset(Settings previousSettings, string presetCfgUrl)
         {
-            Settings NewPreSetSettings = new Settings();
-            bool SuccessLoadPreSet = false;
+            var newPreSetSettings = new Settings();
+            var successLoadPreSet = false;
 
             // Exploit KSP's GameDatabase to find third-party mods' RemoteTechSetting node (from GameData/ExampleMod/RemoteTechSettings.cfg)
-            UrlDir.UrlConfig[] RTSettingCFGs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
-            for(int i=0;i<RTSettingCFGs.Length;i++)
+            var rtSettingCfGs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            for(var i = 0; i < rtSettingCfGs.Length; i++)
             {
-                UrlDir.UrlConfig RTSettingCFG = RTSettingCFGs[i];
+                var rtSettingCfg = rtSettingCfGs[i];
 
-                if (RTSettingCFG.url.Equals(presetCFGUrl))
-                {
-                    // Preserve important information of RT, such as the single ID
-                    ConfigNode importantInfoNode = new ConfigNode();
-                    importantInfoNode.AddValue("MapFilter", previousSettings.MapFilter);
-                    importantInfoNode.AddValue("ActiveVesselGuid", previousSettings.ActiveVesselGuid);
-                    importantInfoNode.AddValue("NoTargetGuid", previousSettings.NoTargetGuid);
+                if (!rtSettingCfg.url.Equals(presetCfgUrl))
+                    continue;
 
-                    SuccessLoadPreSet = ConfigNode.LoadObjectFromConfig(NewPreSetSettings, RTSettingCFG.config);
-                    RTLog.Notify("Load the preset cfg into object with {0}: LOADED {1}", NewPreSetSettings, SuccessLoadPreSet ? "OK" : "FAIL");
+                // Preserve important information of RT, such as the single ID
+                var importantInfoNode = new ConfigNode();
+                importantInfoNode.AddValue("MapFilter", previousSettings.MapFilter);
+                importantInfoNode.AddValue("ActiveVesselGuid", previousSettings.ActiveVesselGuid);
+                importantInfoNode.AddValue("NoTargetGuid", previousSettings.NoTargetGuid);
 
-                    // Restore backups
-                    ConfigNode.LoadObjectFromConfig(NewPreSetSettings, importantInfoNode);
-                    break;
-                }
+                successLoadPreSet = ConfigNode.LoadObjectFromConfig(newPreSetSettings, rtSettingCfg.config);
+                RTLog.Notify("Load the preset cfg into object with {0}: LOADED {1}", newPreSetSettings, successLoadPreSet ? "OK" : "FAIL");
+
+                // Restore backups
+                ConfigNode.LoadObjectFromConfig(newPreSetSettings, importantInfoNode);
+                break;
             }
 
-            return SuccessLoadPreSet?NewPreSetSettings: previousSettings;
+            return successLoadPreSet?newPreSetSettings: previousSettings;
         }
 
-        /// Adds a new ground station to the list and returns a new guid id for
-        /// a successfull new station otherwise a Guid.Empty will be returned.
+        /// <summary>
+        /// Adds a new ground station to the list. 
         /// </summary>
         /// <param name="name">Name of the ground station</param>
-        /// <param name="latitude">latitude position</param>
-        /// <param name="longitude">longitude position</param>
-        /// <param name="height">height from asl</param>
-        /// <param name="body">Referencebody 1=Kerbin etc...</param>
+        /// <param name="latitude">Latitude position</param>
+        /// <param name="longitude">Longitude position</param>
+        /// <param name="height">Height above sea level</param>
+        /// <param name="body">Reference body 1=Kerbin etc...</param>
+        /// <returns>A new <see cref="Guid"/> if a new station was successfully added otherwise a Guid.Empty.</returns>
         public Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
         {
-            RTLog.Notify("Trying to add groundstation({0})", RTLogLevel.LVL1, name);
+            RTLog.Notify("Trying to add ground station({0})", RTLogLevel.LVL1, name);
 
-            MissionControlSatellite newGroundStation = new MissionControlSatellite();
+            var newGroundStation = new MissionControlSatellite();
             newGroundStation.SetDetails(name, latitude, longitude, height, body);
 
             // Already on the list?
-            var foundsat = this.GroundStations.Where(ms => ms.GetDetails().Equals(newGroundStation.GetDetails())).FirstOrDefault();
-            if (foundsat != null)
+            var foundGroundStation = GroundStations.FirstOrDefault(ms => ms.GetDetails().Equals(newGroundStation.GetDetails()));
+            if (foundGroundStation != null)
             {
-                RTLog.Notify("Groundstation already exists!", RTLogLevel.LVL1);
+                RTLog.Notify("Ground station already exists!");
                 return Guid.Empty;
             }
 
-            this.GroundStations.Add(newGroundStation);
-            this.Save();
+            GroundStations.Add(newGroundStation);
+            Save();
 
             return newGroundStation.mGuid;
         }
 
-        /// <summary>
-        /// Removes a ground station from the list by its unique <paramref name="stationid"/>.
-        /// Returns true for a successfull removed station, otherwise false
-        /// </summary>
+        /// <summary>Removes a ground station from the list by its unique <paramref name="stationid"/>.</summary>
         /// <param name="stationid">Unique ground station id</param>
+        /// <returns>Returns true for a successful removed station, otherwise false.</returns>
         public bool RemoveGroundStation(Guid stationid)
         {
-            RTLog.Notify("Trying to remove groundstation {0}", RTLogLevel.LVL1, stationid);
+            RTLog.Notify("Trying to remove ground station {0}", RTLogLevel.LVL1, stationid);
 
-            for (int i = this.GroundStations.Count - 1; i >= 0; i--)
+            for (var i = 0; i < GroundStations.Count; i++)
             {
-                if (this.GroundStations[i].mGuid.Equals(stationid))
-                {
-                    RTLog.Notify("Removing {0} ", RTLogLevel.LVL1, GroundStations[i].GetName());
-                    this.GroundStations.RemoveAt(i);
-                    this.Save();
-                    return true;
-                }
+                if (!GroundStations[i].mGuid.Equals(stationid))
+                    continue;
+
+                RTLog.Notify("Removing {0} ", RTLogLevel.LVL1, GroundStations[i].GetName());
+                GroundStations.RemoveAt(i);
+                Save();
+                return true;
             }
 
             RTLog.Notify("Cannot find station {0}", RTLogLevel.LVL1, stationid);

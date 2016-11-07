@@ -62,13 +62,13 @@ namespace RemoteTech
             if (scene != GameScenes.SPACECENTER)
                 return;
 
-            if (!RTSettings.Instance.firstStart)
+            if (!RTSettings.Instance.FirstStart)
                 return;
 
             // open here the option dialog for the first start
             RTLog.Notify("First start of RemoteTech!");
             _optionWindow.Show();
-            RTSettings.Instance.firstStart = false;
+            RTSettings.Instance.FirstStart = false;
         }
         
         /// <summary>

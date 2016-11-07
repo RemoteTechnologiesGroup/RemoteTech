@@ -407,7 +407,7 @@ namespace RemoteTech
             // settings after selecting a save game. This is necessary
             // for switching between saves without shutting down the KSP
             // instance.
-            RTSettings.Instance.settingsLoaded = false;
+            RTSettings.Instance.SettingsLoaded = false;
         }
     }
 }
