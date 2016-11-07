@@ -36,21 +36,21 @@ namespace RemoteTech.Modules
 
             RTLog.Notify("ProtoSignalProcessor crew count of {0} is {1}", v.vesselName, crewcount);
 
-            try
+            int ppmsMinCrew;
+            //try to get the RTCommandMinCrew value in the ProtoPartModuleSnapshot
+            if (ppms.GetInt("RTCommandMinCrew", out ppmsMinCrew))
             {
-                IsCommandStation = Powered && v.HasCommandStation() && crewcount >= ppms.GetInt("RTCommandMinCrew");
+                IsCommandStation = Powered && v.HasCommandStation() && crewcount >= ppmsMinCrew;
                 RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2}/{3})",
-                    Powered, v.HasCommandStation(), crewcount, ppms.GetInt("RTCommandMinCrew"));
+                    Powered, v.HasCommandStation(), crewcount, ppmsMinCrew);
             }
-            catch (ArgumentException argexeception)
+            else
             {
-                // I'm assuming this would get thrown by ppms.GetInt()... do the other functions have an exception spec?
+                // there was no RTCommandMinCrew member in the ProtoPartModuleSnapshot
                 IsCommandStation = false;
 
                 RTLog.Notify("ProtoSignalProcessor(Powered: {0}, HasCommandStation: {1}, Crew: {2})",
                     Powered, v.HasCommandStation(), crewcount);
-
-                RTLog.Notify("ProtoSignalProcessor ", argexeception);
             }
         }
 
