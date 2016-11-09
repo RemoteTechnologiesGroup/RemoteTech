@@ -74,25 +74,29 @@ namespace RemoteTech.Modules
 
             while (scienceDataQueue.Any())
             {
-                RnDCommsStream commStream = null;
                 var scienceData = scienceDataQueue[0];
                 var dataAmount = scienceData.dataAmount;
                 scienceDataQueue.RemoveAt(0);
                 scienceData.triggered = true;
+
                 var subject = ResearchAndDevelopment.GetSubjectByID(scienceData.subjectID);
                 if (subject == null)
                     subject = new ScienceSubject("", "", 1, 0, 0);
+
                 int packets = Mathf.CeilToInt(scienceData.dataAmount / PacketSize);
+
+                RnDCommsStream commStream = null;
                 if (ResearchAndDevelopment.Instance != null)
                 {
-                    // pre calculate the time interval - fix for x64 systems
+                    // pre-calculate the time interval - fix for x64 systems
                     // workaround for issue #136
                     float time1 = Time.time;
                     yield return new WaitForSeconds(PacketInterval);
+
                     // get the delta time
                     float x64PacketInterval = (Time.time - time1);
-
                     RTLog.Notify("Changing RnDCommsStream timeout from {0} to {1}", PacketInterval, x64PacketInterval);
+
                     //TODO (porting to 1.2): check if scienceData.baseTransmitValue alone or with scienceData.transmitBonus
                     commStream = new RnDCommsStream(subject, scienceData.dataAmount, x64PacketInterval,
                                             scienceData.baseTransmitValue, false, ResearchAndDevelopment.Instance);
@@ -104,17 +108,26 @@ namespace RemoteTech.Modules
                     power += part.RequestResource("ElectricCharge", PacketResourceCost - power);
                     if (power >= PacketResourceCost * 0.95)
                     {
-                        float frame = Math.Min(PacketSize, dataAmount);
-                        power -= PacketResourceCost;
                         GUIStatus = "Uploading Data...";
+
+                        // remove some power due to transmission
+                        power -= PacketResourceCost;
+
+                        // transmitted size
+                        float frame = Math.Min(PacketSize, dataAmount);
+
+                        // subtract current packet size from data left to transmit
+                        // and clamp it to 1 digit precision to avoid large float precision error (#667)
                         dataAmount -= frame;
+                        dataAmount = (float)Math.Round(dataAmount, 1);
+
                         packets--;
+
                         float progress = (scienceData.dataAmount - dataAmount) / scienceData.dataAmount;
-                        //StartCoroutine(SetFXModules_Coroutine(modules_progress, progress));
-                        msgStatus.message = String.Format("[{0}]: Uploading Data... {1}", part.partInfo.title, progress.ToString("P0"));
+                        msgStatus.message = String.Format("[{0}]: Uploading Data... {1:P0}", part.partInfo.title, progress);
                         ScreenMessages.PostScreenMessage(msgStatus);
 
-                        RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Files to Go: {3}",
+                        RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mbits/sec. Packets to go: {2} - Other experiments waiting to transfer: {3}",
                             scienceData.title, (PacketSize / PacketInterval).ToString("0.00"), packets, scienceDataQueue.Count);
 
                         // if we've a defined callback parameter so skip to stream each packet
@@ -174,6 +187,7 @@ namespace RemoteTech.Modules
                         // not enough power
                         msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
                         ScreenMessages.PostScreenMessage(msg);
+
                         GUIStatus = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
                     }
 
