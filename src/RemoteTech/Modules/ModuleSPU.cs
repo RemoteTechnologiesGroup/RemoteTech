@@ -108,7 +108,8 @@ namespace RemoteTech.Modules
         {
             if (state != StartState.Editor)
             {
-                RTLog.Notify($"ModuleSPU: OnStart [{VesselName}]");
+                if (vessel != null)
+                    RTLog.Notify($"ModuleSPU: OnStart [{VesselName}]");
 
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
@@ -149,7 +150,8 @@ namespace RemoteTech.Modules
 
         public void OnDestroy()
         {
-            RTLog.Notify($"ModuleSPU: OnDestroy [{VesselName}]");
+            if(vessel != null)
+                RTLog.Notify($"ModuleSPU: OnDestroy [{VesselName}]");
 
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
