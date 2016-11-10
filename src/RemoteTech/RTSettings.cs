@@ -71,6 +71,7 @@ namespace RemoteTech
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 
         public const string SaveFileName = "RemoteTech_Settings.cfg";
+        public const string DefaultSettingFileName = "Default_Settings.cfg";
 
         /// <summary>Trigger to force a reloading of the settings if a selected save is running.</summary>
         public bool SettingsLoaded;
@@ -99,7 +100,7 @@ namespace RemoteTech
         /// <summary>
         /// Returns the full path of the Default_Settings of the RemoteTech mod
         /// </summary>
-        private static string DefaultSettingFile => KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/" + SaveFileName;
+        private static string DefaultSettingFile => KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/" + DefaultSettingFileName;
 
         /// <summary>
         /// Saves the current RTSettings object to the RemoteTech_Settings.cfg
