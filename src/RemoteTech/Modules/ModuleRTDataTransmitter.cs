@@ -23,6 +23,15 @@ namespace RemoteTech.Modules
         private bool isBusy;
         private readonly List<ScienceData> scienceDataQueue = new List<ScienceData>();
 
+
+        /// <summary> When a transmission almost succeed but not totally (issue #667), 
+        /// e.g. the probe transmitted 9.999999 instead of 10 due to a floating point error in KSP, 
+        /// we use this constant value as the maximum size that can be left to transmit. 
+        /// If the remaining size is less or equal than this constant value, RT will push the remaining science by itself (like a ghost packet, to alleviate the rounding error).
+        /// If it's bigger than this constant value, RT will not do anything to push the remaining size to the R & D center.
+        /// </summary>
+        private const float PacketRemainingSize = 0.1f;
+
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
         {
@@ -154,14 +163,18 @@ namespace RemoteTech.Modules
                             //     gets registered to the ResearchAndDevelopment center.
                             if (packets == 0) // check that we have no packet left to send.
                             {
+                                // get the private field (dataIn) in RnDCommsStream. This field is subject to floating point rounding error
+                                // We handle this problem on our side.
                                 var dataIn = RTUtil.GetInstanceField(typeof(RnDCommsStream), commStream, "dataIn");
                                 if (dataIn != null)
                                 {
-                                    // check if we have a delta (e.g. 10 - 9.999999999 will give us a delta)
+                                    // check if we have a delta (e.g. 10 - 9.999999999 will give us a tiny delta)
                                     var delta = scienceData.dataAmount - (float) dataIn;
                                     RTLog.Notify("[Transmitter]: delta: {0}", delta);
-                                    // ReSharper disable once CompareOfFloatsByEqualityOperator
-                                    if (delta != 0f)
+
+                                    // the delta must be positive and less than this constant to push / transmit the remaining size.
+                                    // This prevent us pushing packets with too much leftover to transmit (e.g if there was a connection loss).
+                                    if ((delta > 0f) && (delta <= PacketRemainingSize))
                                     {
                                         try
                                         {
@@ -174,6 +187,10 @@ namespace RemoteTech.Modules
                                                 RTLogLevel.LVL2, nre);
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    RTLog.Notify("[Transmitter]: dataIn is null.");
                                 }
                             } // end stock fix
                         }
