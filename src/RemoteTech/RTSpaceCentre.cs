@@ -25,7 +25,7 @@ namespace RemoteTech
             // create the option window
             _optionWindow = new OptionWindow();
             
-            GameEvents.onLevelWasLoaded.Add(OnLevelWasLoaded);
+            GameEvents.onLevelWasLoaded.Add(onLevelWasLoaded);
             GameEvents.OnUpgradeableObjLevelChange.Add(OnUpgradeableObjLevelChange);
             RTSettings.OnSettingsChanged.Add(OnRtSettingsChanged);
 
@@ -40,7 +40,7 @@ namespace RemoteTech
         /// <summary>
         /// Callback-Event when a Upgradeable object (TrackingStation) has changed
         /// </summary>
-        private static void OnUpgradeableObjLevelChange(Upgradeables.UpgradeableObject obj, int lvl)
+        private void OnUpgradeableObjLevelChange(Upgradeables.UpgradeableObject obj, int lvl)
         {
             if (!obj.name.Equals("TrackingStation"))
                 return;
@@ -52,12 +52,13 @@ namespace RemoteTech
         /// <summary>
         /// Callback-Event when the RTSettings are changed
         /// </summary>
-        private static void OnRtSettingsChanged()
+        private void OnRtSettingsChanged()
         {
             ReloadUpgradableAntennas();
         }
 
-        private void OnLevelWasLoaded(GameScenes scene)
+        // Note: KSP's GameEvents.onLevelWasLoaded has the lower-case 'on' instead of usual 'On'
+        private void onLevelWasLoaded(GameScenes scene)
         {
             if (scene != GameScenes.SPACECENTER)
                 return;
@@ -70,12 +71,12 @@ namespace RemoteTech
             _optionWindow.Show();
             RTSettings.Instance.FirstStart = false;
         }
-        
+
         /// <summary>
         /// Apply antenna upgrades to all ground stations.
         /// </summary>
         /// <param name="techlvl">The level applied to the antennas range.</param>
-        private static void ReloadUpgradableAntennas(int techlvl = 0)
+        private void ReloadUpgradableAntennas(int techlvl = 0)
         {
             foreach ( var satellite in RTSettings.Instance.GroundStations)
             {
@@ -105,7 +106,7 @@ namespace RemoteTech
         public void OnDestroy()
         {
             RTSettings.OnSettingsChanged.Remove(OnRtSettingsChanged);
-            GameEvents.onLevelWasLoaded.Remove(OnLevelWasLoaded);
+            GameEvents.onLevelWasLoaded.Remove(onLevelWasLoaded);
             GameEvents.OnUpgradeableObjLevelChange.Remove(OnUpgradeableObjLevelChange);
 
             _optionWindow.Hide();
