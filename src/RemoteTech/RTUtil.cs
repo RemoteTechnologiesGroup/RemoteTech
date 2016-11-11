@@ -145,12 +145,14 @@ namespace RemoteTech
         {
             String timeindicator = "sec";
 
+            /* Disabled to follow the stock consumption format
             if(consumption < 1)
             {
                 // minutes
                 consumption *= 60;
                 timeindicator = "min";
             }
+            */
             
             return String.Format("{0:F2}/{1}.", consumption, timeindicator);
         }
