@@ -15,6 +15,8 @@ namespace RemoteTech.FlightComputer
     /// </summary>
     public class FlightComputer : IDisposable
     {
+        private RTCore CoreInstance => RTCore.Instance;
+
         /// <summary>Flight computer loaded configuration from persistent save.</summary>
         private ConfigNode _fcLoadedConfigs;
 
@@ -51,8 +53,8 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
-                var connection = RTCore.Instance.Network[satellite];
+                var satellite = CoreInstance.Network[SignalProcessor.VesselId];
+                var connection = CoreInstance.Network[satellite];
                 return (satellite != null && satellite.HasLocalControl) || (SignalProcessor.Powered && connection.Any());
             }
         }
@@ -62,12 +64,12 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
+                var satellite = CoreInstance.Network[SignalProcessor.VesselId];
 
                 if (satellite != null && satellite.HasLocalControl)
                     return 0.0;
 
-                var connection = RTCore.Instance.Network[satellite];
+                var connection = CoreInstance.Network[satellite];
                 return !connection.Any() ? double.PositiveInfinity : connection.Min().Delay;
             }
         }
@@ -77,8 +79,8 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
-                var connection = RTCore.Instance.Network[satellite];
+                var satellite = CoreInstance.Network[SignalProcessor.VesselId];
+                var connection = CoreInstance.Network[satellite];
                 var status = State.Normal;
                 if (!SignalProcessor.Powered) status |= State.OutOfPower;
                 if (!SignalProcessor.IsMaster) status |= State.NotMaster;
@@ -101,7 +103,7 @@ namespace RemoteTech.FlightComputer
         public Vessel Vessel { get; private set; }
         /// <summary>The signal processor (<see cref="ISignalProcessor"/>; <seealso cref="ModuleSPU"/>) used by this flight computer.</summary>
         public ISignalProcessor SignalProcessor { get; }
-        /// <summary>List of autopilots for this flight computer. Used by external mods to add their own autopilots (<see cref="RemoteTech.API"/> class).</summary>
+        /// <summary>List of autopilots for this flight computer. Used by external mods to add their own autopilots (<see cref="API"/> class).</summary>
         public List<Action<FlightCtrlState>> SanctionedPilots { get; }
         /// <summary>List of commands that are currently active (not queued).</summary>
         public IEnumerable<ICommand> ActiveCommands => _activeCommands.Values;
@@ -142,9 +144,11 @@ namespace RemoteTech.FlightComputer
 
         /// <summary>Flight Computer constructor.</summary>
         /// <param name="s">A signal processor (most probably a <see cref="ModuleSPU"/> instance.)</param>
+        /// <param name="coreInstance">RemoteTech Core instance.</param>
         public FlightComputer(ISignalProcessor s)
         {
             SignalProcessor = s;
+
             Vessel = s.Vessel;
             SanctionedPilots = new List<Action<FlightCtrlState>>();
             pid = new PIDControllerV3(Vector3d.zero, Vector3d.zero, Vector3d.zero, 1, -1);
@@ -256,19 +260,27 @@ namespace RemoteTech.FlightComputer
             if (_activeCommands.ContainsValue(cmd)) _activeCommands.Remove(cmd.Priority);
         }
 
-        /// <summary>Called by the <see cref="ModuleSPU.Update"/> method during the Update() "Game Logic" engine phase.</summary>
+        /// <summary>Called by the <see cref="ModuleSPU.OnUpdate"/> method during the Update() "Game Logic" engine phase.</summary>
         /// <remarks>This checks if there are any commands that can be removed from the FC queue if their delay has elapsed.</remarks>
         public void OnUpdate()
         {
-            if (RTCore.Instance == null) return;
-            if (!SignalProcessor.IsMaster) return;
+            if (!SignalProcessor.IsMaster)
+                return;
+
+            if (InputAllowed && Vessel == FlightGlobals.ActiveVessel)
+            {
+                foreach (var actionGroup in GetActivatedGroup())
+                {
+                    Enqueue(ActionGroupCommand.WithGroup(actionGroup));
+                }
+            }
+
             PopCommand();
         }
 
         /// <summary>Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.</summary>
         public void OnFixedUpdate()
         {
-            if (RTCore.Instance == null) return;
             if (Vessel == null)
             {
                 Vessel = SignalProcessor.Vessel;
@@ -282,7 +294,7 @@ namespace RemoteTech.FlightComputer
             // Do we have a loaded configuration?
             if (_fcLoadedConfigs != null)
             {
-                // than load
+                // then load it
                 Load(_fcLoadedConfigs);
                 _fcLoadedConfigs = null;
             }
@@ -313,7 +325,7 @@ namespace RemoteTech.FlightComputer
         /// <summary>Updates the last target command used by the flight computer.</summary>
         private void UpdateLastTarget()
         {
-            int lastTargetIndex = _commandQueue.FindLastIndex(c => (c is TargetCommand));
+            var lastTargetIndex = _commandQueue.FindLastIndex(c => (c is TargetCommand));
             if (lastTargetIndex >= 0)
             {
                 LastTarget = _commandQueue[lastTargetIndex] as TargetCommand;
@@ -425,7 +437,7 @@ namespace RemoteTech.FlightComputer
         private void OnFlyByWirePre(FlightCtrlState fcs)
         {
             if (!SignalProcessor.IsMaster) return;
-            var satellite = RTCore.Instance.Satellites[SignalProcessor.VesselId];
+            var satellite = CoreInstance.Satellites[SignalProcessor.VesselId];
 
             if (Vessel == FlightGlobals.ActiveVessel && InputAllowed && !satellite.HasLocalControl)
             {
@@ -453,7 +465,8 @@ namespace RemoteTech.FlightComputer
             {
                 foreach (var dc in _activeCommands.Values.ToList())
                 {
-                    if (dc.Execute(this, fcs)) _activeCommands.Remove(dc.Priority);
+                    if (dc.Execute(this, fcs))
+                        _activeCommands.Remove(dc.Priority);
                 }
             }
 
@@ -695,6 +708,68 @@ namespace RemoteTech.FlightComputer
                     return;
                 }
             }
+        }
+
+        // Monstrosity that should fix the kOS control locks without modifications on their end.
+        private static IEnumerable<KSPActionGroup> GetActivatedGroup()
+        {
+            if (GameSettings.LAUNCH_STAGES.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.STAGING) == ControlTypes.STAGING && !l.Key.Equals("RTLockStaging")))
+                    yield return KSPActionGroup.Stage;
+            if (GameSettings.AbortActionGroup.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_ABORT) == ControlTypes.GROUP_ABORT && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Abort;
+            if (GameSettings.RCS_TOGGLE.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.RCS) == ControlTypes.RCS && !l.Key.Equals("RTLockRCS")))
+                    yield return KSPActionGroup.RCS;
+            if (GameSettings.SAS_TOGGLE.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.SAS) == ControlTypes.SAS && !l.Key.Equals("RTLockSAS")))
+                    yield return KSPActionGroup.SAS;
+            if (GameSettings.SAS_HOLD.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.SAS) == ControlTypes.SAS && !l.Key.Equals("RTLockSAS")))
+                    yield return KSPActionGroup.SAS;
+            if (GameSettings.SAS_HOLD.GetKeyUp())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.SAS) == ControlTypes.SAS && !l.Key.Equals("RTLockSAS")))
+                    yield return KSPActionGroup.SAS;
+            if (GameSettings.BRAKES.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_BRAKES) == ControlTypes.GROUP_BRAKES && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Brakes;
+            if (GameSettings.LANDING_GEAR.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_GEARS) == ControlTypes.GROUP_GEARS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Gear;
+            if (GameSettings.HEADLIGHT_TOGGLE.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.GROUP_LIGHTS) == ControlTypes.GROUP_LIGHTS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Light;
+            if (GameSettings.CustomActionGroup1.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom01;
+            if (GameSettings.CustomActionGroup2.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom02;
+            if (GameSettings.CustomActionGroup3.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom03;
+            if (GameSettings.CustomActionGroup4.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom04;
+            if (GameSettings.CustomActionGroup5.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom05;
+            if (GameSettings.CustomActionGroup6.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom06;
+            if (GameSettings.CustomActionGroup7.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom07;
+            if (GameSettings.CustomActionGroup8.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom08;
+            if (GameSettings.CustomActionGroup9.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom09;
+            if (GameSettings.CustomActionGroup10.GetKeyDown())
+                if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                    yield return KSPActionGroup.Custom10;
         }
     }
 }
