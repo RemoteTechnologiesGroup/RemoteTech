@@ -5,6 +5,9 @@ using System.Text;
 
 namespace RemoteTech.Modules
 {
+    /// <summary>
+    /// This module represents an omni-directional antenna that is always on, but consumes no power. Intended as a secondary function on non-antenna parts, such as probe cores.
+    /// </summary>
     [KSPModule("Technology Perk")]
     public class ModuleRTAntennaPassive : PartModule, IAntenna
     {

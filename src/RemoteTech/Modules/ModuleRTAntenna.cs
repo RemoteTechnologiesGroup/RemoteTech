@@ -9,6 +9,8 @@ using UnityEngine;
 
 namespace RemoteTech.Modules
 {
+    /// <summary>This module represents a part that can receive control transmissions from another vessel or a ground station.</summary>
+    /// <remarks>You must remove any <see cref="ModuleDataTransmitter"/> modules from the antenna if using <see cref="ModuleRTAntenna"/>.</remarks>
     [KSPModule("Antenna")]
     public class ModuleRTAntenna : PartModule, IAntenna
     {
