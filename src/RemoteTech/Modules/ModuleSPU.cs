@@ -6,6 +6,12 @@ using UnityEngine;
 
 namespace RemoteTech.Modules
 {
+    /// <summary>
+    /// Module Signal Processing Unit.
+    /// <para>This module represents the “autopilot” living in a probe core. A vessel will only filter commands according to network availability and time delay if all parts with ModuleCommand also have ModuleSPU; otherwise, the vessel can be controlled in real time. Having at least one ModuleSPU on board is also required to use the flight computer.</para>
+    /// <para>Signal Processors are any part that can receive commands over a working connection (this include all stock probe cores).</para>
+    /// <para>Thus, controlling a vessel is made only through the ModuleSPU unit. Players are only able to control a signal processor 5SPU) as long as they have a working connection (which by default is subject to signal delay).</para>
+    /// </summary>
     [KSPModule("Signal Processor")]
     public class ModuleSPU : PartModule, ISignalProcessor
     {
@@ -101,15 +107,20 @@ namespace RemoteTech.Modules
         }
 
         /*
-         * Unity engine overridden methods
+         * PartModule overridden methods
          */
 
         public override void OnStart(StartState state)
         {
             if (state != StartState.Editor)
             {
-                if (vessel != null)
-                    RTLog.Notify($"ModuleSPU: OnStart [{VesselName}]");
+                if (vessel == null)
+                {
+                    RTLog.Notify("ModuleSPU: OnStart : No vessel!", RTLogLevel.LVL2);
+                    return;
+                }
+
+                RTLog.Notify($"ModuleSPU: OnStart [{VesselName}]");
 
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
@@ -127,12 +138,12 @@ namespace RemoteTech.Modules
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
         }
 
-        public void Update()
+        public override void OnUpdate()
         {
             FlightComputer?.OnUpdate();
         }
 
-        public void FixedUpdate()
+        public override void OnFixedUpdate()
         {
             FlightComputer?.OnFixedUpdate();
 
@@ -148,10 +159,74 @@ namespace RemoteTech.Modules
             }
         }
 
+        public override string ToString()
+        {
+            return $"ModuleSPU({(Vessel != null ? Vessel.vesselName : "null")}, {VesselId})";
+        }
+
+        public override string GetInfo()
+        {
+            if (!ShowEditor_Type)
+                return string.Empty;
+
+            return IsRTCommandStation
+                ? $"Remote Command capable <color=#00FFFF>({RTCommandMinCrew}+ crew)</color>"
+                : "Remote Control capable";
+        }
+
+        public override void OnSave(ConfigNode node)
+        {
+            base.OnSave(node);
+            try
+            {
+                if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
+                {
+                    if (FlightComputer == null)
+                        FlightComputer = new FlightComputer.FlightComputer(this);
+                    FlightComputer.Save(node);
+                }
+
+            }
+            catch (Exception e)
+            {
+                RTLog.Notify("An exception occurred in ModuleSPU.OnSave(): ", RTLogLevel.LVL4, e);
+                print(e);
+            }
+        }
+
+        public override void OnLoad(ConfigNode node)
+        {
+            base.OnLoad(node);
+            try
+            {
+                if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
+                {
+                    if (FlightComputer == null)
+                        FlightComputer = new FlightComputer.FlightComputer(this);
+                    FlightComputer.Load(node);
+                }
+            }
+            catch (Exception e)
+            {
+                RTLog.Notify("An exception occurred in ModuleSPU.OnLoad(): ", RTLogLevel.LVL4, e);
+                print(e);
+            };
+        }
+
+        /*
+         * Unity engine overridden methods
+         */
+
         public void OnDestroy()
         {
-            if(vessel != null)
-                RTLog.Notify($"ModuleSPU: OnDestroy [{VesselName}]");
+            if (vessel == null)
+            {
+                RTLog.Notify("ModuleSPU: OnDestroy: no vessel!", RTLogLevel.LVL2);
+                FlightComputer?.Dispose();
+                return;
+            }
+
+            RTLog.Notify($"ModuleSPU: OnDestroy [{VesselName}]");
 
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
@@ -305,64 +380,6 @@ namespace RemoteTech.Modules
             {
                 ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
             }
-
-        }
-
-        /*
-         * ModuleSPU overridden methods
-         */
-
-        public override string ToString()
-        {
-            return $"ModuleSPU({(Vessel != null ? Vessel.vesselName : "null")}, {VesselId})";
-        }
-
-        public override string GetInfo()
-        {
-            if (!ShowEditor_Type)
-                return string.Empty;
-
-            return IsRTCommandStation
-                ? $"Remote Command capable <color=#00FFFF>({RTCommandMinCrew}+ crew)</color>"
-                : "Remote Control capable";
-        }
-
-        public override void OnSave(ConfigNode node)
-        {
-            base.OnSave(node);
-            try
-            {
-                if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
-                {
-                    if (FlightComputer == null)
-                        FlightComputer = new FlightComputer.FlightComputer(this);
-                    FlightComputer.Save(node);
-                }
-
-            }
-            catch (Exception e)
-            {
-                RTLog.Notify("An exception occurred in ModuleSPU.OnSave(): ", RTLogLevel.LVL4, e);
-                print(e);
-            }
-        }
-        public override void OnLoad(ConfigNode node)
-        {
-            base.OnLoad(node);
-            try
-            {
-                if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
-                {
-                    if (FlightComputer == null)
-                        FlightComputer = new FlightComputer.FlightComputer(this);
-                    FlightComputer.Load(node);
-                }
-            }
-            catch (Exception e)
-            {
-                RTLog.Notify("An exception occurred in ModuleSPU.OnLoad(): ", RTLogLevel.LVL4, e);
-                print(e);
-            };
         }
     }
 }

@@ -265,7 +265,7 @@ namespace RemoteTech.FlightComputer
             PopCommand();
         }
 
-        /// <summary>Called by the <see cref="ModuleSPU.FixedUpdate"/> method during the "Physics" engine phase.</summary>
+        /// <summary>Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.</summary>
         public void OnFixedUpdate()
         {
             if (RTCore.Instance == null) return;
