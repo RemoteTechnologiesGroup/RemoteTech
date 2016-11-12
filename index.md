@@ -53,4 +53,4 @@ Transmitting science back to KSC requires a working connection to KSC. Any other
 ## Credits
 * RT1 Contributors: JDP, The_Duck, gresrun, Tosh, rkman, NovaSilisko, r4m0n, Alchemist, Kreuzung, Spaceghost, Tomato, BoJaN, Mortaq.
 * RT2 Contributors: JDP, Cilph, TaranisElsu, acc, Vrana, MedievalNerd, NathanKell, jdmj, kommit, koritastic, Dail8859, Grays, Jsartisohn, MOARdV, Reignerok, Pezmc, Starstrider42, woogoose, Peppie23, d4rksh4de, tomek.piotrowski, Erendrake, Warrenseymour.
-* RT v1.8.0 and beyond is currently maintained by the Remote Technologies Group, a community effort to ensure the proliferation of unmanned vessels throughout the known Kerbalverse: neitsa, TaxiService.
+* RT v1.8.0 and beyond is currently maintained by the Remote Technologies Group, a community effort to ensure the proliferation of unmanned vessels throughout the known Kerbalverse: neitsa, YamoriYuki, TaxiService.
