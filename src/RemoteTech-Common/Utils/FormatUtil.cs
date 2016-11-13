@@ -84,8 +84,10 @@ namespace RemoteTech.Common.Utils
 
         public static string FormatSI(double value, string unit)
         {
-            var i = (int)Clamp(Math.Floor(Math.Log10(value)) / 3,
+            var i = (int)ClampUtil.Clamp(
+                Math.Floor(Math.Log10(value)) / 3,
                 0, DistanceUnits.Length - 1);
+
             value /= Math.Pow(1000, i);
             return value.ToString("F2") + DistanceUnits[i] + unit;
         }
