@@ -43,3 +43,6 @@ using System.Runtime.InteropServices;
 // non-hacky way in KSP.  Format is (AssemblyProduct, major, minor), and it
 // does not appear to have a hard requirement to match the assembly version.
 [assembly: KSPAssembly("RemoteTech", 1, 8)]
+
+// This assembly depends on RemoteTech-Common
+[assembly: KSPAssemblyDependency("RemoteTech-Common", 2, 0)]

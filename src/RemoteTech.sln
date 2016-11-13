@@ -4,8 +4,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteTech", "RemoteTech\RemoteTech.csproj", "{42155D82-1F25-4E59-9F65-64ABC583F420}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D93D9A84-2A93-4CD8-B543-0AE5728554C5} = {D93D9A84-2A93-4CD8-B543-0AE5728554C5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteTech-FlightComputer", "RemoteTech-FlightComputer\RemoteTech-FlightComputer.csproj", "{FF2B5C4D-8354-4EFC-B51E-4BA08F28214E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D93D9A84-2A93-4CD8-B543-0AE5728554C5} = {D93D9A84-2A93-4CD8-B543-0AE5728554C5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteTech-Common", "RemoteTech-Common\RemoteTech-Common.csproj", "{D93D9A84-2A93-4CD8-B543-0AE5728554C5}"
 EndProject
