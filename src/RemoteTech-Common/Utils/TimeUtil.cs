@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace RemoteTech.Common.Utils
+﻿namespace RemoteTech.Common.Utils
 {
     public static class TimeUtil
     {
@@ -24,7 +19,7 @@ namespace RemoteTech.Common.Utils
                 time = new EarthTimeStringConverter();
             }
 
-            return time.parseDouble(duration, withMicroSecs);
+            return time.ParseDouble(duration, withMicroSecs);
         }
 
         /// <summary>Generates a string for use in flight log entries.</summary>
@@ -62,7 +57,7 @@ namespace RemoteTech.Common.Utils
                 time = new EarthTimeStringConverter();
             }
 
-            return time.parseString(duration);
+            return time.ParseString(duration);
         }
     }
 }
