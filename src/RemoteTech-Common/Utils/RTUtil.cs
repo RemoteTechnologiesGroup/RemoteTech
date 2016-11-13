@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace RemoteTech.Common.Utils
 {
@@ -82,27 +81,44 @@ namespace RemoteTech.Common.Utils
         }
     }
 
-
-    public static partial class RTUtil
+    public static class TimeUtil
     {
+        /// <summary>Format a <see cref="double"/>duration into a string.</summary>
+        /// <param name="duration">The time duration as a double.</param>
+        /// <param name="withMicroSecs">Whether or not to include microseconds in the output.</param>
+        /// <returns>A string corresponding to the <paramref name="duration"/> input parameter.</returns>
+        public static string FormatDuration(double duration, bool withMicroSecs = true)
+        {
+            TimeStringConverter time;
+
+            if (GameSettings.KERBIN_TIME)
+            {
+                time = new KerbinTimeStringConverter();
+            }
+            else
+            {
+                time = new EarthTimeStringConverter();
+            }
+
+            return time.parseDouble(duration, withMicroSecs);
+        }
+
+        /// <summary>Generates a string for use in flight log entries.</summary>
+        /// <returns>A string in the same format as used by stock flight log events</returns>
+        /// <param name="years">The number of full years the mission has lasted</param>
+        /// <param name="days">The number of additional days the mission has lasted</param>
+        /// <param name="hours">The number of additional hours the mission has lasted</param>
+        /// <param name="minutes">The number of additional minutes the mission has lasted</param>
+        /// <param name="seconds">The number of additional seconds the mission has lasted</param>
+        /// <precondition>All numerical arguments non-negative</precondition>
+        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
+        public static string FormatTimestamp(int years, int days, int hours, int minutes, int seconds)
+        {
+            return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
+        }
+
         /// <summary>The simulation time, in seconds, since this save was started.</summary>
         public static double GameTime => Planetarium.GetUniversalTime();
-
-        /// <summary>This time member is needed to debounce the RepeatButton</summary>
-        private static double _timeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? GameTime : 0;
-
-
-
-
-
-        public static readonly string[]
-            DistanceUnits = { "", "k", "M", "G", "T" },
-            ClassDescripts = {  "Short-Planetary (SP)",
-                                "Medium-Planetary (MP)",
-                                "Long-Planetary (LP)",
-                                "Short-Interplanetary (SI)",
-                                "Medium-Interplanetary (MI)",
-                                "Long-Interplanetary (LI)"};
 
         public static double TryParseDuration(string duration)
         {
@@ -119,6 +135,30 @@ namespace RemoteTech.Common.Utils
 
             return time.parseString(duration);
         }
+    }
+
+
+    public static partial class RTUtil
+    {
+
+
+        /// <summary>This time member is needed to debounce the RepeatButton</summary>
+        private static double _timeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? TimeUtil.GameTime : 0;
+
+
+
+
+
+        public static readonly string[]
+            DistanceUnits = { "", "k", "M", "G", "T" },
+            ClassDescripts = {  "Short-Planetary (SP)",
+                                "Medium-Planetary (MP)",
+                                "Long-Planetary (LP)",
+                                "Short-Interplanetary (SI)",
+                                "Medium-Interplanetary (MI)",
+                                "Long-Interplanetary (LI)"};
+
+
 
         public static void ScreenMessage(string msg)
         {
@@ -158,39 +198,9 @@ namespace RemoteTech.Common.Utils
             return degrees;
         }
 
-        public static string FormatDuration(double duration, bool withMicroSecs = true)
-        {
-            TimeStringConverter time;
 
-            if (GameSettings.KERBIN_TIME)
-            {
-                time = new KerbinTimeStringConverter();
-            }
-            else
-            {
-                time = new EarthTimeStringConverter();
-            }
 
-            return time.parseDouble(duration, withMicroSecs);
-        }
 
-        /// <summary>
-        /// Generates a string for use in flight log entries
-        /// </summary>
-        /// <returns>A string in the same format as used by stock flight log events</returns>
-        /// <param name="years">The number of full years the mission has lasted</param>
-        /// <param name="days">The number of additional days the mission has lasted</param>
-        /// <param name="hours">The number of additional hours the mission has lasted</param>
-        /// <param name="minutes">The number of additional minutes the mission has lasted</param>
-        /// <param name="seconds">The number of additional seconds the mission has lasted</param>
-        /// 
-        /// <precondition>All numerical arguments non-negative</precondition>
-        /// 
-        /// <exceptionsafe>Does not throw exceptions</exceptionsafe>
-        public static string FormatTimestamp(int years, int days, int hours, int minutes, int seconds)
-        {
-            return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
-        }
 
         public static string FormatConsumption(double consumption)
         {
@@ -299,11 +309,11 @@ namespace RemoteTech.Common.Utils
         /// <param name="options">GUILayout params</param>
         public static void RepeatButton(string text, Action onClick, params GUILayoutOption[] options)
         {
-            if (GUILayout.RepeatButton(text, options) && (RTUtil._timeDebouncer + 0.05) < RTUtil.GameTime)
+            if (GUILayout.RepeatButton(text, options) && (RTUtil._timeDebouncer + 0.05) < TimeUtil.GameTime)
             {
                 onClick.Invoke();
                 // set the new time to the debouncer
-                RTUtil._timeDebouncer = RTUtil.GameTime;
+                RTUtil._timeDebouncer = TimeUtil.GameTime;
             }
         }
 
@@ -397,15 +407,15 @@ namespace RemoteTech.Common.Utils
             // Current textfield under control?
             if((GUI.GetNameOfFocusedControl() == fieldName))
             {
-                if (Input.GetAxis("Mouse ScrollWheel") > 0 && (_timeDebouncer + 0.05) < RTUtil.GameTime)
+                if (Input.GetAxis("Mouse ScrollWheel") > 0 && (_timeDebouncer + 0.05) < TimeUtil.GameTime)
                 {
                     onWheelDown.Invoke();
-                    _timeDebouncer = RTUtil.GameTime;
+                    _timeDebouncer = TimeUtil.GameTime;
                 }
-                else if (Input.GetAxis("Mouse ScrollWheel") < 0 && (_timeDebouncer + 0.05) < RTUtil.GameTime)
+                else if (Input.GetAxis("Mouse ScrollWheel") < 0 && (_timeDebouncer + 0.05) < TimeUtil.GameTime)
                 {
                     onWheelUp.Invoke();
-                    _timeDebouncer = RTUtil.GameTime;
+                    _timeDebouncer = TimeUtil.GameTime;
                 }
             }
         }
