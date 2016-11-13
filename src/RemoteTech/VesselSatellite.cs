@@ -62,7 +62,7 @@ namespace RemoteTech
         {
             get
             {
-                return RTUtil.CachePerFrame(ref _localControl, () => SignalProcessor.Vessel.HasLocalControl());
+                return CachePerFrame(ref _localControl, () => SignalProcessor.Vessel.HasLocalControl());
             }
         }
 
@@ -100,6 +100,17 @@ namespace RemoteTech
 
         /// <summary>Local control cache variable.</summary>
         private CachedField<bool> _localControl;
+
+        private static T CachePerFrame<T>(ref CachedField<T> cachedField, Func<T> getter)
+        {
+            if (cachedField.Frame == Time.frameCount)
+            {
+                return cachedField.Field;
+            }
+
+            cachedField.Frame = Time.frameCount;
+            return cachedField.Field = getter();
+        }
 
         /*
          * Methods

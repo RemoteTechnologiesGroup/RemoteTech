@@ -410,18 +410,6 @@ namespace RemoteTech.Common
                 }
             }
         }
-
-        public static T CachePerFrame<T>(ref CachedField<T> cachedField, Func<T> getter)
-        {
-            if (cachedField.Frame == Time.frameCount)
-            {
-                return cachedField.Field;
-            }
-
-            cachedField.Frame = Time.frameCount;
-            return cachedField.Field = getter();
-        }
-
         
         public static bool IsTechUnlocked(string techid)
         {
@@ -657,7 +645,6 @@ namespace RemoteTech.Common
 
         // end MechJeb import
         //---------------------------------------
-
     }
 
 
