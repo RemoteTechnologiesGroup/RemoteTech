@@ -1,9 +1,4 @@
-﻿using RemoteTech.FlightComputer.Commands;
-using RemoteTech.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RemoteTech.UI;
 
 namespace RemoteTech.SimpleTypes
 {

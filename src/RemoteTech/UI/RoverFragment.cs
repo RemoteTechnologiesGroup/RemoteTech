@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using RemoteTech.FlightComputer.Commands;
 
 namespace RemoteTech.UI
 {

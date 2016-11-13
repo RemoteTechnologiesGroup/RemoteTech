@@ -6,6 +6,7 @@ using RemoteTech.FlightComputer.Commands;
 using RemoteTech.Modules;
 using RemoteTech.UI;
 using RemoteTech.Common;
+using RemoteTech.Common.Extensions;
 
 namespace RemoteTech.FlightComputer
 {

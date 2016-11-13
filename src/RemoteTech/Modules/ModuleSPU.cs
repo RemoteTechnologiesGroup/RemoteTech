@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
-using RemoteTech.FlightComputer;
 using UnityEngine;
 
 namespace RemoteTech.Modules

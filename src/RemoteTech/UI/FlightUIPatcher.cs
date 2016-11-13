@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using KSP.UI.Screens.Flight;
-using RemoteTech.FlightComputer.Commands;
 
 namespace RemoteTech.UI
 {
