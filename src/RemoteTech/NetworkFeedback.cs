@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RemoteTech.Common.Utils;
 using RemoteTech.RangeModel;
 
 namespace RemoteTech
@@ -113,8 +114,8 @@ namespace RemoteTech
                     double dist    = RangeModelExtensions.DistanceTo(mySat, targetSat);
                     // Only standard model supported for now, RangeModel isn't designed for this problem
                     double maxDist = Math.Max(antenna.Omni, antenna.Dish);
-                    conditions.Add("Current distance:" + RTUtil.FormatSI(dist, "m"));
-                    conditions.Add("Antenna range:" + RTUtil.FormatSI(maxDist, "m"));
+                    conditions.Add("Current distance:" + FormatUtil.FormatSI(dist, "m"));
+                    conditions.Add("Antenna range:" + FormatUtil.FormatSI(maxDist, "m"));
                     if (dist > maxDist) {
                         status = "Target not in range";
                         error = true;
@@ -134,12 +135,12 @@ namespace RemoteTech
                         warning = true;
                     }
 
-                    conditions.Add("Current distance:"+RTUtil.FormatSI(dist, "m"));
-                    conditions.Add("Antenna range:" + RTUtil.FormatSI(maxDist, "m"));
+                    conditions.Add("Current distance:"+ FormatUtil.FormatSI(dist, "m"));
+                    conditions.Add("Antenna range:" + FormatUtil.FormatSI(maxDist, "m"));
 
                     if (dist <= maxDist) {
                         conditions.Add(String.Format("Info:{0} beam covers {1} targets)",
-                            RTUtil.FormatSI(spread, "m"),
+                            FormatUtil.FormatSI(spread, "m"),
                             numTargets
                         ));
                     } else {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -62,8 +63,8 @@ namespace RemoteTech.UI
 
         private double Duration
         {
-            get { return RTUtil.TryParseDuration(mDuration); }
-            set { mDuration = RTUtil.FormatDuration(value); }
+            get { return TimeUtil.TryParseDuration(mDuration); }
+            set { mDuration = TimeUtil.FormatDuration(value); }
         }
 
         private double DeltaV
@@ -128,39 +129,39 @@ namespace RemoteTech.UI
                     GUIStyle guiTableRow = new GUIStyle(HighLogic.Skin.label);
                     guiTableRow.normal.textColor = Color.white;
 
-                    RTUtil.FakeStateButton(new GUIContent("KILL", "Kill rotation."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Kill)), (int)mMode, (int)ComputerMode.Kill, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("NODE", "Prograde points in the direction of the first maneuver node."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Node)), (int)mMode, (int)ComputerMode.Node, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("RVEL", "Prograde relative to target velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetVel)), (int)mMode, (int)ComputerMode.TargetVel, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("KILL", "Kill rotation."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Kill)), (int)mMode, (int)ComputerMode.Kill, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("NODE", "Prograde points in the direction of the first maneuver node."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Node)), (int)mMode, (int)ComputerMode.Node, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("RVEL", "Prograde relative to target velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetVel)), (int)mMode, (int)ComputerMode.TargetVel, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent("ORB", "Prograde relative to orbital velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Orbital)), (int)mMode, (int)ComputerMode.Orbital, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("SRF", "Prograde relative to surface velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Surface)), (int)mMode, (int)ComputerMode.Surface, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("TGT", "Prograde points directly at target."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetPos)), (int)mMode, (int)ComputerMode.TargetPos, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("ORB", "Prograde relative to orbital velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Orbital)), (int)mMode, (int)ComputerMode.Orbital, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("SRF", "Prograde relative to surface velocity."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Surface)), (int)mMode, (int)ComputerMode.Surface, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("TGT", "Prograde points directly at target."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.TargetPos)), (int)mMode, (int)ComputerMode.TargetPos, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent("OFF", "Set Attitude to Off."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Off)), (int)mMode, (int)ComputerMode.Off, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("CUSTOM", "Prograde fixed as pitch, heading, roll relative to north pole."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Custom)), (int)mMode, (int)ComputerMode.Custom, GUILayout.ExpandWidth(true));
+                    GuiUtil.FakeStateButton(new GUIContent("OFF", "Set Attitude to Off."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Off)), (int)mMode, (int)ComputerMode.Off, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("CUSTOM", "Prograde fixed as pitch, heading, roll relative to north pole."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Custom)), (int)mMode, (int)ComputerMode.Custom, GUILayout.ExpandWidth(true));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent("GRD\n+", "Orient to Prograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Prograde)), (int)mAttitude, (int)FlightAttitude.Prograde, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("RAD\n+", "Orient to Radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialPlus)), (int)mAttitude, (int)FlightAttitude.RadialPlus, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("NRM\n+", "Orient to Normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalPlus)), (int)mAttitude, (int)FlightAttitude.NormalPlus, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("GRD\n+", "Orient to Prograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Prograde)), (int)mAttitude, (int)FlightAttitude.Prograde, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("RAD\n+", "Orient to Radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialPlus)), (int)mAttitude, (int)FlightAttitude.RadialPlus, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("NRM\n+", "Orient to Normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalPlus)), (int)mAttitude, (int)FlightAttitude.NormalPlus, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent("GRD\n-", "Orient to Retrograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Retrograde)), (int)mAttitude, (int)FlightAttitude.Retrograde, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("RAD\n-", "Orient to Anti-radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialMinus)), (int)mAttitude, (int)FlightAttitude.RadialMinus, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("NRM\n-", "Orient to Anti-normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalMinus)), (int)mAttitude, (int)FlightAttitude.NormalMinus, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("GRD\n-", "Orient to Retrograde."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.Retrograde)), (int)mAttitude, (int)FlightAttitude.Retrograde, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("RAD\n-", "Orient to Anti-radial."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.RadialMinus)), (int)mAttitude, (int)FlightAttitude.RadialMinus, GUILayout.Width(width3));
+                    GuiUtil.FakeStateButton(new GUIContent("NRM\n-", "Orient to Anti-normal."), () => RTCore.Instance.StartCoroutine(OnAttitudeClick(FlightAttitude.NormalMinus)), (int)mAttitude, (int)FlightAttitude.NormalMinus, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5);
@@ -168,27 +169,27 @@ namespace RemoteTech.UI
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent("PIT:", "Sets pitch."), GUILayout.Width(width3));
-                    RTUtil.RepeatButton("+", () => { Pitch++; });
-                    RTUtil.RepeatButton("-", () => { Pitch--; });
-                    RTUtil.MouseWheelTriggerField(ref mPitch, "rt_phr1", () => { Pitch++; }, () => { Pitch--; }, GUILayout.Width(width3));
+                    GuiUtil.RepeatButton("+", () => { Pitch++; });
+                    GuiUtil.RepeatButton("-", () => { Pitch--; });
+                    GuiUtil.MouseWheelTriggerField(ref mPitch, "rt_phr1", () => { Pitch++; }, () => { Pitch--; }, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent("HDG:", "Sets heading."), GUILayout.Width(width3));
-                    RTUtil.RepeatButton("+", () => { Heading++; });
-                    RTUtil.RepeatButton("-", () => { Heading--; });
-                    RTUtil.MouseWheelTriggerField(ref mHeading, "rt_phr2", () => { Heading++; }, () => { Heading--; }, GUILayout.Width(width3));
+                    GuiUtil.RepeatButton("+", () => { Heading++; });
+                    GuiUtil.RepeatButton("-", () => { Heading--; });
+                    GuiUtil.MouseWheelTriggerField(ref mHeading, "rt_phr2", () => { Heading++; }, () => { Heading--; }, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent("RLL:", "Sets roll."), GUILayout.Width(width3));
-                    RTUtil.RepeatButton("+", () => { Roll++; });
-                    RTUtil.RepeatButton("-", () => { Roll--; });
-                    RTUtil.MouseWheelTriggerField(ref mRoll, "rt_phr3", () => { Roll++; }, () => { Roll--; }, GUILayout.Width(width3));
+                    GuiUtil.RepeatButton("+", () => { Roll++; });
+                    GuiUtil.RepeatButton("-", () => { Roll--; });
+                    GuiUtil.MouseWheelTriggerField(ref mRoll, "rt_phr3", () => { Roll++; }, () => { Roll--; }, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
 
@@ -200,17 +201,17 @@ namespace RemoteTech.UI
                 }
                 GUILayout.EndHorizontal();
 
-                RTUtil.HorizontalSlider(ref mThrottle, 0, 1);
+                GuiUtil.HorizontalSlider(ref mThrottle, 0, 1);
                 GUI.SetNextControlName("rt_burn");
-                RTUtil.TextField(ref mDuration);
+                GuiUtil.TextField(ref mDuration);
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.Button(new GUIContent("BURN", "Example: 125, 125s, 5m20s, 1d6h20m10s, 123m/s."),
+                    GuiUtil.Button(new GUIContent("BURN", "Example: 125, 125s, 5m20s, 1d6h20m10s, 123m/s."),
                         OnBurnClick, GUILayout.Width(width3));
-                    RTUtil.Button(new GUIContent("EXEC", "Executes next maneuver node."),
+                    GuiUtil.Button(new GUIContent("EXEC", "Executes next maneuver node."),
                         OnExecClick, GUILayout.Width(width3));
-                    RTUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
+                    GuiUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
                         mOnClickQueue, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
@@ -306,9 +307,9 @@ namespace RemoteTech.UI
         {
             if (mFlightComputer.Vessel.patchedConicSolver == null || mFlightComputer.Vessel.patchedConicSolver.maneuverNodes.Count == 0) return;
             var cmd = ManeuverCommand.WithNode(0, mFlightComputer);
-            if (cmd.TimeStamp < RTUtil.GameTime + mFlightComputer.Delay)
+            if (cmd.TimeStamp < TimeUtil.GameTime + mFlightComputer.Delay)
             {
-                RTUtil.ScreenMessage("[Flight Computer]: Signal delay is too high to execute this maneuver at the proper time.");
+                GuiUtil.ScreenMessage("[Flight Computer]: Signal delay is too high to execute this maneuver at the proper time.");
             }
             else
             {

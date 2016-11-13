@@ -82,7 +82,7 @@ namespace RemoteTech.UI
         public FocusOverlay()
         {
             // Load texture on create, removal of the old Textures class
-            satellite = RTUtil.LoadImage("texSatellite");
+            satellite = GameUtil.LoadImage("texSatellite");
 
             // New AppLauncher Button instead of floating satellite button
             var actives = KSP.UI.Screens.ApplicationLauncher.AppScenes.TRACKSTATION | KSP.UI.Screens.ApplicationLauncher.AppScenes.MAPVIEW;

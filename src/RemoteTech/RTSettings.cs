@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using RemoteTech.Common;
 using UnityEngine;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech
 {
@@ -91,7 +92,7 @@ namespace RemoteTech
         {
             get
             {
-                if (HighLogic.CurrentGame == null || RTUtil.IsGameScenario)
+                if (HighLogic.CurrentGame == null || GameUtil.IsGameScenario)
                     return string.Empty;
 
                 return KSPUtil.ApplicationRootPath + "/saves/" + HighLogic.SaveFolder + Path.DirectorySeparatorChar + SaveFileName;
@@ -146,7 +147,7 @@ namespace RemoteTech
             settings.SettingsLoaded = true;
 
             // Disable RemoteTech on Training missions
-            if (RTUtil.IsGameScenario)
+            if (GameUtil.IsGameScenario)
             {
                 settings.RemoteTechEnabled = false;
                 settings.CommNetEnabled = true;

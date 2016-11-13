@@ -1,4 +1,5 @@
 ﻿using System;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.SimpleTypes
@@ -9,15 +10,15 @@ namespace RemoteTech.SimpleTypes
         // Replaced with new texture handling mechanics.
         public static GUIStyle CreateFromFilename(String normal)
         {
-            Texture2D tex = RTUtil.LoadImage(normal);
+            Texture2D tex = GameUtil.LoadImage(normal);
             return CreateFromTextures(tex, tex, tex, tex);
         }
 
         // Replaced with new texture handling mechanics.
         public static GUIStyle CreateFromFilename(String normal, String hover, String active, String focus)
         {
-            return CreateFromTextures(RTUtil.LoadImage(normal), RTUtil.LoadImage(hover),
-                RTUtil.LoadImage(active), RTUtil.LoadImage(focus));
+            return CreateFromTextures(GameUtil.LoadImage(normal), GameUtil.LoadImage(hover),
+                GameUtil.LoadImage(active), GameUtil.LoadImage(focus));
         }
 
         private static GUIStyle CreateFromTextures(Texture2D texNormal, Texture2D texHover,

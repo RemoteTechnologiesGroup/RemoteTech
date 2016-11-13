@@ -24,7 +24,7 @@ namespace RemoteTech
     }
 
     /// <summary>
-    /// RemoteTech UI network render in charre of drawing connection links in tracking station or flight map scenes.
+    /// RemoteTech UI network render in charge of drawing connection links in tracking station or flight map scenes.
     /// </summary>
     public class NetworkRenderer : MonoBehaviour
     {
@@ -56,7 +56,7 @@ namespace RemoteTech
 
         static NetworkRenderer()
         {
-            RTUtil.LoadImage(out mTexMark, "mark");
+            GameUtil.LoadImage(out mTexMark, "mark");
         }
 
         public static NetworkRenderer CreateAndAttach()
@@ -146,11 +146,11 @@ namespace RemoteTech
                             {
                                 if(antenna.Omni > 0)
                                 {
-                                    antennaRanges += "Omni: "+ RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;
+                                    antennaRanges += "Omni: "+ FormatUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;
                                 }
                                 if (antenna.Dish > 0)
                                 {
-                                    antennaRanges += "Dish: " + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;
+                                    antennaRanges += "Dish: " + FormatUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;
                                 }
                             }
 

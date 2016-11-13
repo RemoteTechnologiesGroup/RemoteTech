@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 
@@ -64,7 +65,7 @@ namespace RemoteTech.UI
         #region AbstractWindow-Definitions
 
         public OptionWindow()
-            : base(new Guid("387AEB5A-D29C-485B-B96F-CA575E776940"), "RemoteTech " + RTUtil.Version + " Options",
+            : base(new Guid("387AEB5A-D29C-485B-B96F-CA575E776940"), "RemoteTech " + GameUtil.Version + " Options",
                    new Rect(Screen.width / 2 - (OptionWindow.WINDOW_WIDTH / 2), Screen.height / 2 - (OptionWindow.WINDOW_HEIGHT / 2), OptionWindow.WINDOW_WIDTH, OptionWindow.WINDOW_HEIGHT), WindowAlign.Floating)
         {
 
@@ -152,7 +153,7 @@ namespace RemoteTech.UI
             };
 
             // initial Textures
-            mTexHeadline = RTUtil.LoadImage("headline");
+            mTexHeadline = GameUtil.LoadImage("headline");
             // Visual style colors
             this.loadColorTexture(out this.mVSColorDish, this.mSettings.DishConnectionColor);
             this.loadColorTexture(out this.mVSColorOmni, this.mSettings.OmniConnectionColor);
@@ -173,7 +174,7 @@ namespace RemoteTech.UI
 
                 foreach (OPTION_MENUS menu in Enum.GetValues(typeof(OPTION_MENUS)))
                 {
-                    RTUtil.FakeStateButton(new GUIContent(menu.ToString()), () => this.mMenuValue = (int)menu, this.mMenuValue, (int)menu, GUILayout.Height(16));
+                    GuiUtil.FakeStateButton(new GUIContent(menu.ToString()), () => this.mMenuValue = (int)menu, this.mMenuValue, (int)menu, GUILayout.Height(16));
                 }
 
                 // pop the saved button size back
@@ -307,8 +308,8 @@ namespace RemoteTech.UI
             GUILayout.Label("This setting controls how the game determines whether two antennas are in range of each other.\nRead more on our online manual about the difference for each rule.", this.mGuiHintText);
             GUILayout.BeginHorizontal();
             {
-                RTUtil.FakeStateButton(new GUIContent("Standard"), () => this.mSettings.RangeModelType = RangeModel.RangeModel.Standard, (int)this.mSettings.RangeModelType, (int)RangeModel.RangeModel.Standard, GUILayout.Height(20));
-                RTUtil.FakeStateButton(new GUIContent("Root"), () => this.mSettings.RangeModelType = RangeModel.RangeModel.Additive, (int)this.mSettings.RangeModelType, (int)RangeModel.RangeModel.Additive, GUILayout.Height(20));
+                GuiUtil.FakeStateButton(new GUIContent("Standard"), () => this.mSettings.RangeModelType = RangeModel.RangeModel.Standard, (int)this.mSettings.RangeModelType, (int)RangeModel.RangeModel.Standard, GUILayout.Height(20));
+                GuiUtil.FakeStateButton(new GUIContent("Root"), () => this.mSettings.RangeModelType = RangeModel.RangeModel.Additive, (int)this.mSettings.RangeModelType, (int)RangeModel.RangeModel.Additive, GUILayout.Height(20));
             }
             GUILayout.EndHorizontal();
 

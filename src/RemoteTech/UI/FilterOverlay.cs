@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.Common.Utils;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 
@@ -27,17 +28,17 @@ namespace RemoteTech.UI
 
             public void CreateTextures()
             {
-                RTUtil.LoadImage(out Background, "texBackground");
-                RTUtil.LoadImage(out BackgroundLeft, "texBackground_left");
-                RTUtil.LoadImage(out NoPath, "texNoPath");
-                RTUtil.LoadImage(out Path, "texPath");
-                RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish");
-                RTUtil.LoadImage(out Dish, "texDish");
-                RTUtil.LoadImage(out Omni, "texOmni");
-                RTUtil.LoadImage(out OmniDish, "texOmniDish");
-                RTUtil.LoadImage(out NoCone, "texNoCone");
-                RTUtil.LoadImage(out Cone, "texCone");
-                RTUtil.LoadImage(out SatButton, "texButtonGray");
+                GameUtil.LoadImage(out Background, "texBackground");
+                GameUtil.LoadImage(out BackgroundLeft, "texBackground_left");
+                GameUtil.LoadImage(out NoPath, "texNoPath");
+                GameUtil.LoadImage(out Path, "texPath");
+                GameUtil.LoadImage(out NoOmniDish, "texNoOmniDish");
+                GameUtil.LoadImage(out Dish, "texDish");
+                GameUtil.LoadImage(out Omni, "texOmni");
+                GameUtil.LoadImage(out OmniDish, "texOmniDish");
+                GameUtil.LoadImage(out NoCone, "texNoCone");
+                GameUtil.LoadImage(out Cone, "texCone");
+                GameUtil.LoadImage(out SatButton, "texButtonGray");
             }
         }
 

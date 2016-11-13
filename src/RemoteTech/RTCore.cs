@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 using RemoteTech.UI;
 using UnityEngine;
 
@@ -131,7 +132,7 @@ namespace RemoteTech
             GameEvents.onShowUI.Add(UiOn);
             GameEvents.onHideUI.Add(UiOff);
 
-            RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
+            RTLog.Notify("RTCore {0} loaded successfully.", GameUtil.Version);
 
             // register vessels and antennas
             foreach (var vessel in FlightGlobals.Vessels)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -110,14 +111,14 @@ namespace RemoteTech.UI
                         GUILayout.Space(current.Depth * (GUI.skin.button.margin.left + 24));
                         if (current.SubEntries.Count > 0)
                         {
-                            RTUtil.Button(current.Expanded ? " <" : " >",
+                            GuiUtil.Button(current.Expanded ? " <" : " >",
                                 () =>
                                 {
                                     current.Expanded = !current.Expanded;
                                 }, GUILayout.Width(24));
                         }
 
-                        RTUtil.StateButton(current.Text, mSelection == current ? 1 : 0, 1,
+                        GuiUtil.StateButton(current.Text, mSelection == current ? 1 : 0, 1,
                             (s) =>
                             {
                                 mSelection = current;

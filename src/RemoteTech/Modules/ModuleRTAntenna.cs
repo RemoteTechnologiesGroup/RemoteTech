@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 using RemoteTech.UI;
 using UnityEngine;
 
@@ -138,11 +139,17 @@ namespace RemoteTech.Modules
 
             if (ShowEditor_OmniRange && Mode1OmniRange > 0)
             {
-                info.AppendFormat("Omni {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0OmniRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1OmniRange * RangeMultiplier, "m")).AppendLine();
+                info.AppendFormat("Omni {0}: {1} / {2}", 
+                    AntennaInfoDescriptionFromRangeModel(), 
+                    FormatUtil.FormatSI(Mode0OmniRange * RangeMultiplier, "m"), 
+                    FormatUtil.FormatSI(Mode1OmniRange * RangeMultiplier, "m")).AppendLine();
             }
             if (ShowEditor_DishRange && Mode1DishRange > 0)
             {
-                info.AppendFormat("Dish {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
+                info.AppendFormat("Dish {0}: {1} / {2}", 
+                    AntennaInfoDescriptionFromRangeModel(), 
+                    FormatUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"),
+                    FormatUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
             }
 
             if (ShowEditor_DishAngle && CanTarget)
@@ -168,7 +175,7 @@ namespace RemoteTech.Modules
             if (ShowEditor_EnergyReq && EnergyCost > 0)
             {
                 info.AppendLine().Append("<b><color=#99ff00ff>Requires:</color></b>").AppendLine();
-                info.AppendFormat("<b>ElectricCharge: </b>{0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
+                info.AppendFormat("<b>ElectricCharge: </b>{0}", FormatUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
             }
 
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
@@ -484,9 +491,9 @@ namespace RemoteTech.Modules
 
         private void UpdateContext()
         {
-            GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
-            GUI_DishRange = RTUtil.FormatSI(Dish, "m");
-            GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
+            GUI_OmniRange = FormatUtil.FormatSI(Omni, "m");
+            GUI_DishRange = FormatUtil.FormatSI(Dish, "m");
+            GUI_EnergyReq = FormatUtil.FormatConsumption(Consumption);
             Events["EventTarget"].guiName = TargetName(Target);
         }
 

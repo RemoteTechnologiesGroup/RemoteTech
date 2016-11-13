@@ -1,4 +1,5 @@
 ﻿using System;
+using RemoteTech.Common.Utils;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 
@@ -91,7 +92,7 @@ namespace RemoteTech.UI
                         ManeuverNode node = pCS.maneuverNodes[i];
                         
                         // node has an attached gizmo?
-                        if (node.attachedGizmo == null || node.UT < RTUtil.GameTime) continue;
+                        if (node.attachedGizmo == null || node.UT < TimeUtil.GameTime) continue;
 
                         ManeuverGizmo gizmo = node.attachedGizmo;
                         UnityEngine.UI.Button gizmoDeleteBtn = gizmo.deleteBtn;

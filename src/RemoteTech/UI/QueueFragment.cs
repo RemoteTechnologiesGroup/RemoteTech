@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -15,7 +16,7 @@ namespace RemoteTech.UI
 
         private double Delay
         {
-            get { return RTUtil.TryParseDuration(mExtraDelay); }
+            get { return TimeUtil.TryParseDuration(mExtraDelay); }
             set { mExtraDelay = value.ToString(); }
         }
 
@@ -82,7 +83,7 @@ namespace RemoteTech.UI
                             }
                             GUILayout.Label(s.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
                             GUILayout.FlexibleSpace();
-                            RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickReset()), GUILayout.Width(21), GUILayout.Height(21));
+                            GuiUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickReset()), GUILayout.Width(21), GUILayout.Height(21));
                         }
                         GUILayout.EndHorizontal();
 
@@ -94,8 +95,8 @@ namespace RemoteTech.UI
                                 GUILayout.FlexibleSpace();
                                 GUILayout.BeginVertical();
                                 {
-                                    RTUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
-                                    RTUtil.Button(new GUIContent("v", string.Format("Set the signal delay right after this - Current: {0}", RTUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false))), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelayFromQueuedCommand(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                    GuiUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                    GuiUtil.Button(new GUIContent("v", string.Format("Set the signal delay right after this - Current: {0}", TimeUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false))), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelayFromQueuedCommand(c)), GUILayout.Width(21), GUILayout.Height(21));
                                 }
                                 GUILayout.EndVertical();
                             }
@@ -108,11 +109,11 @@ namespace RemoteTech.UI
                 GUILayout.Label(Status);
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label(new GUIContent("Delay (+ signal): " + RTUtil.FormatDuration(mFlightComputer.TotalDelay), "Total delay including signal delay."));
+                    GUILayout.Label(new GUIContent("Delay (+ signal): " + TimeUtil.FormatDuration(mFlightComputer.TotalDelay), "Total delay including signal delay."));
                     GUILayout.FlexibleSpace();
                     GUI.SetNextControlName("rt_xd");
-                    RTUtil.TextField(ref mExtraDelay, GUILayout.Width(45));
-                    RTUtil.Button(new GUIContent(">", "Add extra signal delay - Example: 125, 125s, 5m20s, 1d6h20m10s"), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelay()), GUILayout.Width(21), GUILayout.Height(21));
+                    GuiUtil.TextField(ref mExtraDelay, GUILayout.Width(45));
+                    GuiUtil.Button(new GUIContent(">", "Add extra signal delay - Example: 125, 125s, 5m20s, 1d6h20m10s"), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelay()), GUILayout.Width(21), GUILayout.Height(21));
                 }
                 GUILayout.EndHorizontal();
             }
@@ -129,7 +130,7 @@ namespace RemoteTech.UI
         {
             yield return null;
 
-            mExtraDelay = RTUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false);
+            mExtraDelay = TimeUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false);
             RTCore.Instance.StartCoroutine(onClickAddExtraDelay());
         }
 

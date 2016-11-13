@@ -39,7 +39,7 @@ namespace RemoteTech
         /// </summary>
         /// <param name="vessel">The vessel.</param>
         /// <param name="spu">The signal processor.</param>
-        /// <returns>Guid key under which the signal processor was registered.</returns>
+        /// <returns><see cref="Guid"/> key under which the signal processor was registered.</returns>
         public Guid Register(Vessel vessel, ISignalProcessor spu)
         {
             RTLog.Notify("SatelliteManager: Register({0})", spu);
@@ -95,7 +95,7 @@ namespace RemoteTech
                 _loadedSpuCache.Remove(key);
 
                 // search vessel by id
-                var vessel = RTUtil.GetVesselById(key);
+                var vessel = VesselExtension.GetVesselById(key);
                 if (vessel != null)
                 {
                     // trigger the onRails on more time
@@ -110,7 +110,7 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Registers a protosatellite compiled from the unloaded vessel data.
+        /// Registers a ProtoSatellite compiled from the unloaded vessel data.
         /// </summary>
         /// <param name="vessel">The vessel.</param>
         public void RegisterProto(Vessel vessel)
@@ -132,7 +132,7 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Unregisters the protosatellite which was compiled from the unloaded vessel data.
+        /// Unregisters the ProtoSatellite which was compiled from the unloaded vessel data.
         /// </summary>
         public void UnregisterProto(Guid key)
         {

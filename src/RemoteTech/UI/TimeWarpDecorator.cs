@@ -3,6 +3,7 @@ using System.Linq;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 using KSP.UI;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.UI
 {
@@ -107,7 +108,7 @@ namespace RemoteTech.UI
             mFlightButtonRed.stretchHeight = mFlightButtonRed.stretchWidth = true;
 
             // create the Background
-            RTUtil.LoadImage(out mTexBackground, "TimeQuadrantFcStatus");
+            GameUtil.LoadImage(out mTexBackground, "TimeQuadrantFcStatus");
 
             // Get the image for positioning the decorator
             GameObject go = GameObject.Find("TimeQuadrant");

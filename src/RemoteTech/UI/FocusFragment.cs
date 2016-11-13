@@ -1,5 +1,6 @@
 ﻿using System;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -29,7 +30,7 @@ namespace RemoteTech.UI
                     }
 
                     String text = sat.Name.Truncate(25);
-                    RTUtil.StateButton(text, mSelection == sat.parentVessel ? 1 : 0, 1, s =>
+                    GuiUtil.StateButton(text, mSelection == sat.parentVessel ? 1 : 0, 1, s =>
                     {
                         mSelection = (s > 0) ? sat.parentVessel : null;
                         if (mSelection != null)

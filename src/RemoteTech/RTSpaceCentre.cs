@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech
 {
@@ -30,7 +31,7 @@ namespace RemoteTech
             GameEvents.OnUpgradeableObjLevelChange.Add(OnUpgradeableObjLevelChange);
             RTSettings.OnSettingsChanged.Add(OnRtSettingsChanged);
 
-            _rtOptionBtn = RTUtil.LoadImage("gitpagessat");
+            _rtOptionBtn = GameUtil.LoadImage("gitpagessat");
 
             LauncherButton = ApplicationLauncher.Instance.AddModApplication(
                 _optionWindow.toggleWindow, null, null, null, null, null,

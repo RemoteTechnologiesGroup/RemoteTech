@@ -167,7 +167,7 @@ namespace RemoteTech.Modules
                             {
                                 // get the private field (dataIn) in RnDCommsStream. This field is subject to floating point rounding error
                                 // We handle this problem on our side.
-                                var dataIn = RTUtil.GetInstanceField(typeof(RnDCommsStream), commStream, "dataIn");
+                                var dataIn = Common.Utils.ReflectionUtil.GetInstanceField(typeof(RnDCommsStream), commStream, "dataIn");
                                 if (dataIn != null)
                                 {
                                     // check if we have a delta (e.g. 10 - 9.999999999 will give us a tiny delta)

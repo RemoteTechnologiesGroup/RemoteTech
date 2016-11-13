@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.Modules
 {
@@ -29,7 +30,7 @@ namespace RemoteTech.Modules
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
         private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
-        public bool Unlocked { get { return RTUtil.IsTechUnlocked(TechRequired); } }
+        public bool Unlocked { get { return GameUtil.IsTechUnlocked(TechRequired); } }
 
         [KSPField]
         public bool
@@ -83,7 +84,7 @@ namespace RemoteTech.Modules
             var info = new StringBuilder();
             if (ShowEditor_OmniRange && Unlocked)
             {
-                info.AppendFormat("Integrated Omni: {1} always-on", RTUtil.FormatSI(OmniRange, "m"), RTUtil.FormatSI(OmniRange, "m"));
+                info.AppendFormat("Integrated Omni: {1} always-on", FormatUtil.FormatSI(OmniRange, "m"), FormatUtil.FormatSI(OmniRange, "m"));
             }
 
             return info.ToString();
@@ -152,7 +153,7 @@ namespace RemoteTech.Modules
                 mRegisteredId = vessel.id;
                 RTCore.Instance.Antennas.Register(vessel.id, this);
                 SetState(true);
-                GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
+                GUI_OmniRange = FormatUtil.FormatSI(Omni, "m");
             }
         }
 

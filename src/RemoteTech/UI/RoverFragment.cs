@@ -1,4 +1,6 @@
 ﻿using System;
+using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -146,7 +148,7 @@ namespace RemoteTech.UI
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.FlexibleSpace();
-                    RTUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
+                    GuiUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
                         mOnClickQueue, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
@@ -186,13 +188,13 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
 
-            RTUtil.HorizontalSlider(ref mSteering, 1, -1);
+            GuiUtil.HorizontalSlider(ref mSteering, 1, -1);
 
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label(new GUIContent("Turn", "How many degrees to turn"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC1");
-                RTUtil.TextField(ref mTurn, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mTurn, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(°)", "How many degrees to turn"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
@@ -201,7 +203,7 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label(new GUIContent("Dist.", "Distance to drive"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC2");
-                RTUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(m)", "Distance to drive"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
@@ -210,14 +212,14 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label(new GUIContent("Speed", "Speed to keep, negative for reverse"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC3");
-                RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(m/s)", "Speed to keep, negative for reverse"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
 
-            mTurn = RTUtil.ConstrictNum(mTurn, 90);
-            mDist = RTUtil.ConstrictNum(mDist, false);
-            mSpeed = RTUtil.ConstrictNum(mSpeed);
+            mTurn = FormatUtil.ConstrictNum(mTurn, 90);
+            mDist = FormatUtil.ConstrictNum(mDist, false);
+            mSpeed = FormatUtil.ConstrictNum(mSpeed);
 
 
             if (prevTurn != Turn)
@@ -245,13 +247,13 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
 
-            RTUtil.HorizontalSlider(ref mSteerClamp, 0, 1);
+            GuiUtil.HorizontalSlider(ref mSteerClamp, 0, 1);
 
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label(new GUIContent("Hdg.", "Heading to keep"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC1");
-                RTUtil.TextField(ref Mheading, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref Mheading, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label("(°)", GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
@@ -260,7 +262,7 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label(new GUIContent("Dist.", "Distance to drive"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC2");
-                RTUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label("(m)", GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
@@ -269,14 +271,14 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label(new GUIContent("Speed", "Speed to keep"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC3");
-                RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(m/s)", "Speed to keep"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
 
-            Mheading = RTUtil.ConstrictNum(Mheading, 360);
-            mDist = RTUtil.ConstrictNum(mDist, false);
-            mSpeed = RTUtil.ConstrictNum(mSpeed, false);
+            Mheading = FormatUtil.ConstrictNum(Mheading, 360);
+            mDist = FormatUtil.ConstrictNum(mDist, false);
+            mSpeed = FormatUtil.ConstrictNum(mSpeed, false);
         }
 
         private void Target()
@@ -286,7 +288,7 @@ namespace RemoteTech.UI
             else if (GameSettings.MODIFIER_KEY.GetKey() && ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) != MouseClick)) {
                 MouseClick = Input.GetMouseButton(0) || Input.GetMouseButton(1);
                 Vector2 latlon;
-                if (MouseClick && RTUtil.CBhit(mFlightComputer.Vessel.mainBody, out latlon)) {
+                if (MouseClick && CelestialBodyExtension.CBhit(mFlightComputer.Vessel.mainBody, out latlon)) {
                     Latitude = latlon.x;
                     Longitude = latlon.y;
 
@@ -304,13 +306,13 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
 
-            RTUtil.HorizontalSlider(ref mSteerClamp, 0, 1);
+            GuiUtil.HorizontalSlider(ref mSteerClamp, 0, 1);
 
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label(new GUIContent("LAT.", "Latitude to drive to"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC1");
-                RTUtil.TextField(ref mLatitude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mLatitude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(°)", "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
@@ -319,7 +321,7 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label(new GUIContent("LON.", "Longitude to drive to"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC2");
-                RTUtil.TextField(ref mLongditude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mLongditude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(°)", "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
@@ -328,15 +330,15 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label(new GUIContent("Speed", "Speed to keep"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC3");
-                RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
+                GuiUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(m/s)", "Speed to keep"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
 
 
-            mLatitude = RTUtil.ConstrictNum(mLatitude);
-            mLongditude = RTUtil.ConstrictNum(mLongditude);
-            mSpeed = RTUtil.ConstrictNum(mSpeed, false);
+            mLatitude = FormatUtil.ConstrictNum(mLatitude);
+            mLongditude = FormatUtil.ConstrictNum(mLongditude);
+            mSpeed = FormatUtil.ConstrictNum(mSpeed, false);
         }
 
     }

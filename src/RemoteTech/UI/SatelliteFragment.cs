@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Utils;
 using RemoteTech.Modules;
 using UnityEngine;
 
@@ -40,9 +41,9 @@ namespace RemoteTech.UI
             GUILayout.BeginHorizontal();
             {
                 GUILayout.TextField(Satellite.Name.Truncate(25), GUILayout.ExpandWidth(true));
-                RTUtil.Button("Name", () =>
+                GuiUtil.Button("Name", () =>
                 {
-                    var vessel = RTUtil.GetVesselById(Satellite.Guid);
+                    var vessel = VesselExtension.GetVesselById(Satellite.Guid);
                     if (vessel) vessel.RenameVessel();
                 }, GUILayout.ExpandWidth(false), GUILayout.Height(24));
             }
@@ -57,7 +58,7 @@ namespace RemoteTech.UI
                 {
                     GUI.contentColor = (a.Powered) ? XKCDColors.ElectricLime : XKCDColors.Scarlet;
                     String text = a.Name.Truncate(25) + Environment.NewLine + "Target: " + ModuleRTAntenna.TargetName(a.Target).Truncate(18);
-                    RTUtil.StateButton(text, Antenna, a, s =>
+                    GuiUtil.StateButton(text, Antenna, a, s =>
                     {
                         Antenna = (s > 0) ? a : null;
                     });

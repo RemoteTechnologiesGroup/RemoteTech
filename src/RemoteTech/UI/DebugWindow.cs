@@ -73,7 +73,7 @@ namespace RemoteTech.UI
                     int menueItemCounter = 0;
                     foreach (string menueItem in this.debugMenueItems)
                     {
-                        RTUtil.FakeStateButton(new GUIContent(menueItem), () => { this.currentDebugMenue = menueItemCounter; }, currentDebugMenue, menueItemCounter, GUILayout.Height(16));
+                        GuiUtil.FakeStateButton(new GUIContent(menueItem), () => { this.currentDebugMenue = menueItemCounter; }, currentDebugMenue, menueItemCounter, GUILayout.Height(16));
                         menueItemCounter++;
                     }
 
@@ -109,7 +109,7 @@ namespace RemoteTech.UI
                 {
                     var pushFontsize = GUI.skin.button.fontSize;
                     GUI.skin.button.fontSize = 12;
-                    RTUtil.Button(new GUIContent("Clear Logs in " + this.currentLogLevel.ToString(), "tbd."), () => RTLog.RTLogList[this.currentLogLevel].Clear());
+                    GuiUtil.Button(new GUIContent("Clear Logs in " + this.currentLogLevel.ToString(), "tbd."), () => RTLog.RTLogList[this.currentLogLevel].Clear());
                     GUI.skin.button.fontSize = pushFontsize;
                 }
                 GUILayout.EndHorizontal();
@@ -148,7 +148,7 @@ namespace RemoteTech.UI
                 GUI.skin.button.fontSize = 11;
                 foreach (RTLogLevel lvl in Enum.GetValues(typeof(RTLogLevel)))
                 {
-                    RTUtil.FakeStateButton(new GUIContent(lvl.ToString()), () => { this.currentLogLevel = lvl; }, (int)currentLogLevel, (int)lvl, GUILayout.Height(16));
+                    GuiUtil.FakeStateButton(new GUIContent(lvl.ToString()), () => { this.currentLogLevel = lvl; }, (int)currentLogLevel, (int)lvl, GUILayout.Height(16));
                 }
                 GUI.skin.button.fontSize = pushFontsize;
             }
@@ -188,8 +188,8 @@ namespace RemoteTech.UI
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label("Deactivate KSC: ", GUILayout.Width(firstColWidth));
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(false); }; deactivatedMissionControls = 1; }, deactivatedMissionControls, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(true); }; deactivatedMissionControls = 0; }, deactivatedMissionControls, 0);
+                GuiUtil.FakeStateButton(new GUIContent("On"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(false); }; deactivatedMissionControls = 1; }, deactivatedMissionControls, 1);
+                GuiUtil.FakeStateButton(new GUIContent("Off"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(true); }; deactivatedMissionControls = 0; }, deactivatedMissionControls, 0);
             }
             GUILayout.EndHorizontal();
 
@@ -201,8 +201,8 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label("Signal Through Bodies: ", GUILayout.Width(firstColWidth));
                 int cheatEVAFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatEVAFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatEVAFuel, 0);
+                GuiUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatEVAFuel, 1);
+                GuiUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatEVAFuel, 0);
             }
             GUILayout.EndHorizontal();
 
@@ -210,8 +210,8 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label("Infinite Fuel: ", GUILayout.Width(firstColWidth));
                 int cheatinfiniteFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteFuel, 0);
+                GuiUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteFuel, 1);
+                GuiUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteFuel, 0);
             }
             GUILayout.EndHorizontal();
 
@@ -219,8 +219,8 @@ namespace RemoteTech.UI
             {
                 GUILayout.Label("Infinite RCS Fuel: ", GUILayout.Width(firstColWidth));
                 int cheatinfiniteRCSFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteRCSFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteRCSFuel, 0);
+                GuiUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteRCSFuel, 1);
+                GuiUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteRCSFuel, 0);
             }
             GUILayout.EndHorizontal();
 

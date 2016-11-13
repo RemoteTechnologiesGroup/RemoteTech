@@ -14,7 +14,7 @@ namespace RemoteTech.Common.Utils
         /// <param name="instance">The object instance</param>
         /// <param name="fieldName">The field name in the object instance, from which to obtain the value.</param>
         /// <returns>The value of the <paramref name="fieldName"/> instance or null if no such field exist in the instance.</returns>
-        internal static object GetInstanceField(Type type, object instance, string fieldName)
+        public static object GetInstanceField(Type type, object instance, string fieldName)
         {
             const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
                                            | BindingFlags.Static;

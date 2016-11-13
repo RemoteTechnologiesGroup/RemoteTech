@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Extensions;
 using WrappedEvent = RemoteTech.FlightComputer.UIPartActionMenuPatcher.WrappedEvent;
 
 
@@ -20,7 +21,7 @@ namespace RemoteTech.API
 
         public static bool HasLocalControl(Guid id)
         {
-            var vessel = RTUtil.GetVesselById(id);            
+            var vessel = VesselExtension.GetVesselById(id);            
             if (vessel == null) return false;
 
             RTLog.Verbose("Flight: {0} HasLocalControl: {1}", RTLogLevel.API, id, vessel.HasLocalControl());
@@ -140,7 +141,7 @@ namespace RemoteTech.API
 
         public static Guid GetCelestialBodyGuid(CelestialBody celestialBody)
         {
-            return RTUtil.Guid(celestialBody);
+            return celestialBody.Guid();
         }
 
         public static Guid GetNoTargetGuid() {

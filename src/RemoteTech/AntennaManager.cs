@@ -77,7 +77,7 @@ namespace RemoteTech
                 }
                 OnUnregister(antenna);
 
-                Vessel vessel = RTUtil.GetVesselById(key);
+                Vessel vessel = VesselExtension.GetVesselById(key);
                 if (vessel != null)
                 {
                     // trigger the onRails on more time
