@@ -32,7 +32,7 @@ namespace RemoteTech.Modules
             set
             {
                 RTAntennaTarget = value;
-                Events["EventTarget"].guiName = RTUtil.TargetName(Target);
+                Events["EventTarget"].guiName = TargetName(Target);
                 foreach (UIPartActionWindow w in GameObject.FindObjectsOfType(typeof(UIPartActionWindow)).Where(w => ((UIPartActionWindow) w).part == part))
                 {
                     w.displayDirty = true;
@@ -486,7 +486,7 @@ namespace RemoteTech.Modules
             GUI_OmniRange = RTUtil.FormatSI(Omni, "m");
             GUI_DishRange = RTUtil.FormatSI(Dish, "m");
             GUI_EnergyReq = RTUtil.FormatConsumption(Consumption);
-            Events["EventTarget"].guiName = RTUtil.TargetName(Target);
+            Events["EventTarget"].guiName = TargetName(Target);
         }
 
         /// <summary>
@@ -662,6 +662,31 @@ namespace RemoteTech.Modules
         public override string ToString()
         {
             return String.Format("ModuleRTAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, CosAngle: {5})", Name, mRegisteredId, Dish, Omni, Target, CosAngle);
+        }
+
+        public static string TargetName(Guid guid)
+        {
+            if (RTCore.Instance != null && RTCore.Instance.Network != null && RTCore.Instance.Satellites != null)
+            {
+                if (guid == System.Guid.Empty)
+                {
+                    return "No Target";
+                }
+                if (RTCore.Instance.Network.Planets.ContainsKey(guid))
+                {
+                    return RTCore.Instance.Network.Planets[guid].name;
+                }
+                if (guid == NetworkManager.ActiveVesselGuid)
+                {
+                    return "Active Vessel";
+                }
+                ISatellite sat;
+                if ((sat = RTCore.Instance.Network[guid]) != null)
+                {
+                    return sat.Name;
+                }
+            }
+            return "Unknown Target";
         }
     }
 }

@@ -222,30 +222,7 @@ namespace RemoteTech.Common.Utils
             return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
         }
 
-        public static string TargetName(Guid guid)
-        {
-            if (RTCore.Instance != null && RTCore.Instance.Network != null && RTCore.Instance.Satellites != null)
-            {
-                if (guid == System.Guid.Empty)
-                {
-                    return "No Target";
-                }
-                if (RTCore.Instance.Network.Planets.ContainsKey(guid))
-                {
-                    return RTCore.Instance.Network.Planets[guid].name;
-                }
-                if (guid == NetworkManager.ActiveVesselGuid)
-                {
-                    return "Active Vessel";
-                }
-                ISatellite sat;
-                if ((sat = RTCore.Instance.Network[guid]) != null)
-                {
-                    return sat.Name;
-                }
-            }
-            return "Unknown Target";
-        }
+
 
         public static Guid Guid(this CelestialBody cb)
         {

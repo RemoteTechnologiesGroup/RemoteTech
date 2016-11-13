@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.Modules;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -54,7 +55,7 @@ namespace RemoteTech.UI
                 foreach (var a in Satellite.Antennas.Where(a => a.CanTarget))
                 {
                     GUI.contentColor = (a.Powered) ? XKCDColors.ElectricLime : XKCDColors.Scarlet;
-                    String text = a.Name.Truncate(25) + Environment.NewLine + "Target: " + RTUtil.TargetName(a.Target).Truncate(18);
+                    String text = a.Name.Truncate(25) + Environment.NewLine + "Target: " + ModuleRTAntenna.TargetName(a.Target).Truncate(18);
                     RTUtil.StateButton(text, Antenna, a, s =>
                     {
                         Antenna = (s > 0) ? a : null;
