@@ -154,15 +154,7 @@ namespace RemoteTech.Common.Utils
 
 
 
-        /// <summary>
-        /// Returns a vessel object by the given <paramref name="vesselid"/> or
-        /// null if no vessel was found
-        /// </summary>
-        /// <param name="vesselid">Guid of a vessel</param>
-        public static Vessel GetVesselById(Guid vesselid)
-        {
-            return FlightGlobals.Vessels.FirstOrDefault(vessel => vessel.id == vesselid);
-        }
+
 
         // -----------------------------------------------
         // Copied from MechJeb master on 18.04.2016
@@ -289,44 +281,8 @@ namespace RemoteTech.Common.Utils
         }
 
 
-        public static ISignalProcessor GetSignalProcessor(this Vessel v)
-        {
-            RTLog.Notify("GetSignalProcessor({0}): Check", v.vesselName);
 
-            ISignalProcessor result = null;
 
-            if (v.loaded && v.parts.Count > 0)
-            {
-                var partModuleList = v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Where(pm => pm.IsSignalProcessor()).ToList();
-                // try to look for a moduleSPU
-                result = partModuleList.FirstOrDefault(pm => pm.moduleName == "ModuleSPU") as ISignalProcessor ??
-                         partModuleList.FirstOrDefault() as ISignalProcessor;
-            }
-            else
-            {
-                var protoPartList = v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Where(ppms => ppms.IsSignalProcessor()).ToList();
-                // try to look for a moduleSPU on a unloaded vessel
-                var protoPartProcessor = protoPartList.FirstOrDefault(ppms => ppms.moduleName == "ModuleSPU") ??
-                                         protoPartList.FirstOrDefault();
 
-                // convert the found protoPartSnapshots to a ProtoSignalProcessor
-                if (protoPartProcessor != null)
-                {
-                    result = new ProtoSignalProcessor(protoPartProcessor, v);
-                }
-            }
-
-            return result;
-        }
-
-        public static bool HasCommandStation(this Vessel v)
-        {
-            RTLog.Notify("HasCommandStation({0})", v.vesselName);
-            if (v.loaded && v.parts.Count > 0)
-            {
-                return v.Parts.SelectMany(p => p.Modules.Cast<PartModule>()).Any(pm => pm.IsCommandStation());
-            }
-            return v.protoVessel.protoPartSnapshots.SelectMany(x => x.modules).Any(pm => pm.IsCommandStation());
-        }
     }
 }
