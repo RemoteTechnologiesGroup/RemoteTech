@@ -23,11 +23,11 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which over
 ### 1. Antennas
 Using antennas, it is now possible to set up satellite networks to route your control input. Unlike in stock KSP, antennas will no longer activate or deactivate automatically; you must order an antenna to activate by right-clicking on it. There are two classes of antennas: 'Dishes' and 'Omnidirectionals'.
 
-    #### Dishes
-    Useful for long range communications, dishes are directional or beam antennas that must be instructed what direction to point at. They do not need to be physically rotated; you need merely select a target from a list of comsats. These dishes come with a cone of vision (which becomes narrower for a longer range). If the dish is pointed at a planet or moon, anything inside this cone can achieve a connection with the dish.
+  #### Dishes
+  Useful for long range communications, dishes are directional or beam antennas that must be instructed what direction to point at. They do not need to be physically rotated; you need merely select a target from a list of comsats. These dishes come with a cone of vision (which becomes narrower for a longer range). If the dish is pointed at a planet or moon, anything inside this cone can achieve a connection with the dish.
 
-    #### Omnidirectionals
-    Omni antennas radiate in every direction equally, and as such do not require you to target them at anything. However, they have shorter ranges than the dishes.
+  #### Omnidirectionals
+  Omni antennas radiate in every direction equally, and as such do not require you to target them at anything. However, they have shorter ranges than the dishes.
 
 The Kerbal Space Center has multiple dish antennas that can be pointed to different targets, making it behave like an omnidirectional antenna with a range of 75 Mm. If you want to send probes beyond Kerbin's sphere of influence, you *must* invest in some communications satellites with long-range antennas.
 
