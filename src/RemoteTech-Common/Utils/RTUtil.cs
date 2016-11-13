@@ -337,7 +337,7 @@ namespace RemoteTech.Common.Utils
         }
     }
 
-    public static partial class RTUtil
+    public static class FormatUtil
     {
         public static readonly string[]
             DistanceUnits = { "", "k", "M", "G", "T" },
@@ -348,17 +348,41 @@ namespace RemoteTech.Common.Utils
                                 "Medium-Interplanetary (MI)",
                                 "Long-Interplanetary (LI)"};
 
-
-
-
-        public static string Truncate(this string targ, int len)
+        public static string ConstrictNum(string s)
         {
-            const string suffix = "...";
-            if (targ.Length > len)
+            return ConstrictNum(s, true);
+        }
+
+        public static string ConstrictNum(string s, float max)
+        {
+
+            var tmp = ConstrictNum(s, false);
+
+            float f;
+
+            float.TryParse(tmp, out f);
+
+            return f > max ? max.ToString("00") : tmp;
+        }
+
+        public static string ConstrictNum(string s, bool allowNegative)
+        {
+            var tmp = new StringBuilder();
+            if (allowNegative && s.StartsWith("-"))
+                tmp.Append(s[0]);
+            var point = false;
+
+            foreach (var c in s)
             {
-                return targ.Substring(0, len - suffix.Length) + suffix;
+                if (char.IsNumber(c))
+                    tmp.Append(c);
+                else if (!point && (c == '.' || c == ','))
+                {
+                    point = true;
+                    tmp.Append('.');
+                }
             }
-            return targ;
+            return tmp.ToString();
         }
 
         public static Vector3 Format360To180(Vector3 v)
@@ -384,14 +408,10 @@ namespace RemoteTech.Common.Utils
             return degrees;
         }
 
-
-
-
-
         public static string FormatConsumption(double consumption)
         {
             const string timeindicator = "sec";
-          
+
             return $"{consumption:F2}/{timeindicator}.";
         }
 
@@ -401,6 +421,19 @@ namespace RemoteTech.Common.Utils
                 0, DistanceUnits.Length - 1);
             value /= Math.Pow(1000, i);
             return value.ToString("F2") + DistanceUnits[i] + unit;
+        }
+    }
+
+    public static partial class RTUtil
+    {
+        public static string Truncate(this string targ, int len)
+        {
+            const string suffix = "...";
+            if (targ.Length > len)
+            {
+                return targ.Substring(0, len - suffix.Length) + suffix;
+            }
+            return targ;
         }
 
         public static T Clamp<T>(T value, T min, T max) where T : IComparable<T>
@@ -442,37 +475,7 @@ namespace RemoteTech.Common.Utils
  
         
  
-        public static string ConstrictNum(string s) {
-            return ConstrictNum(s, true);
-        }
 
-        public static string ConstrictNum(string s, float max) {
-
-            var tmp = ConstrictNum(s, false);
-
-            float f;
-
-            float.TryParse(tmp, out f);
-
-            return f > max ? max.ToString("00") : tmp;
-        }
-
-        public static string ConstrictNum(string s, bool allowNegative) {
-            var tmp = new StringBuilder();
-            if (allowNegative && s.StartsWith("-"))
-                tmp.Append(s[0]);
-            var point = false;
-
-            foreach (var c in s) {
-                if (char.IsNumber(c))
-                    tmp.Append(c);
-                else if (!point && (c == '.' || c == ',')) {
-                    point = true;
-                    tmp.Append('.');
-                }
-            }
-            return tmp.ToString();
-        }
 
         public static bool CBhit(CelestialBody body, out Vector2 latlon) {
 
