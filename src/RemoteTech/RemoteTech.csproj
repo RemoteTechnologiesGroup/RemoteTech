@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,8 +13,8 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\GameData\RemoteTech\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -34,12 +34,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Assembly-CSharp.dll</HintPath>
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="DryIoc, Version=2.8.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\DryIoc.dll.2.8.5\lib\net35\DryIoc.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,33 +52,17 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>UnityEngine.UI.dll</HintPath>
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
     <Compile Include="API\API.cs" />
-    <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
-    <Compile Include="FlightComputer\Commands\EventCommand.cs" />    
-    <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
-    <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
-    <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
-    <Compile Include="FlightComputer\Commands\BurnCommand.cs" />
-    <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
-    <Compile Include="FlightComputer\Commands\DriveCommand.cs" />
-    <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
-    <Compile Include="FlightComputer\Commands\PartActionCommand.cs" />    
-    <Compile Include="FlightComputer\RoverComputer.cs" />
-    <Compile Include="FlightComputer\RoverPIDController.cs" />
-    <Compile Include="FlightComputer\FlightCore.cs" />
-    <Compile Include="FlightComputer\Commands\ICommand.cs" />
-    <Compile Include="FlightComputer\Commands\TargetCommand.cs" />
-    <Compile Include="FlightComputer\PIDControllerV3.cs" />
     <Compile Include="Modules\MissionControlAntenna.cs" />
     <Compile Include="Modules\ProtoSignalProcessor.cs" />
     <Compile Include="RangeModel\RangeModel.cs" />
@@ -83,9 +71,6 @@
     <Compile Include="RangeModel\RangeModelExtensions.cs" />
     <Compile Include="RTDebugUnit.cs" />
     <Compile Include="RTLog.cs" />
-    <Compile Include="FlightComputer\DelayedCommand.cs" />
-    <Compile Include="FlightComputer\FlightComputer.cs" />
-    <Compile Include="FlightComputer\UIPartActionMenuPatcher.cs" />
     <Compile Include="IAntenna.cs" />
     <Compile Include="ISatellite.cs" />
     <Compile Include="ISignalProcessor.cs" />
@@ -142,6 +127,9 @@
     <Compile Include="VesselSatellite.cs" />
     <Compile Include="RangeModel\AbstractRangeModel.cs" />
     <Compile Include="NetworkFeedback.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

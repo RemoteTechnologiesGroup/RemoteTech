@@ -30,17 +30,49 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Commands\AbstractCommand.cs" />
+    <Compile Include="Commands\ActionGroupCommand.cs" />
+    <Compile Include="Commands\AttitudeCommand.cs" />
+    <Compile Include="Commands\BurnCommand.cs" />
+    <Compile Include="Commands\CancelCommand.cs" />
+    <Compile Include="Commands\DriveCommand.cs" />
+    <Compile Include="Commands\EventCommand.cs" />
+    <Compile Include="Commands\ExternalAPICommand.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ManeuverCommand.cs" />
+    <Compile Include="Commands\PartActionCommand.cs" />
+    <Compile Include="Commands\PartActionFieldCommand.cs" />
+    <Compile Include="Commands\TargetCommand.cs" />
+    <Compile Include="DelayedCommand.cs" />
+    <Compile Include="FlightComputer.cs" />
+    <Compile Include="FlightCore.cs" />
+    <Compile Include="PIDControllerV3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoverComputer.cs" />
+    <Compile Include="RoverPIDController.cs" />
+    <Compile Include="UIPartActionMenuPatcher.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
