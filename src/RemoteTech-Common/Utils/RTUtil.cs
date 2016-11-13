@@ -12,25 +12,6 @@ namespace RemoteTech.Common.Utils
 {
     public static partial class RTUtil
     {
-        public static string Truncate(this string targ, int len)
-        {
-            const string suffix = "...";
-            if (targ.Length > len)
-            {
-                return targ.Substring(0, len - suffix.Length) + suffix;
-            }
-            return targ;
-        }
-
-
-
-
-
-
-
-
-
-
  
         // -----------------------------------------------
         // Copied from MechJeb master on 18.04.2016
