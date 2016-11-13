@@ -38,10 +38,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -50,7 +46,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CelestialBodyExtension.cs" />
+    <Compile Include="Extensions\PartModuleExtension.cs" />
+    <Compile Include="Extensions\ProtoPartModuleSnapshotExtension.cs" />
+    <Compile Include="Extensions\QuaternionExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Extensions\Vector3dExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RTLog.cs" />
+    <Compile Include="Utils\ClampUtil.cs" />
+    <Compile Include="Utils\FormatUtil.cs" />
+    <Compile Include="Utils\GameUtil.cs" />
+    <Compile Include="Utils\GuiUtil.cs" />
+    <Compile Include="Utils\ReflectionUtil.cs" />
+    <Compile Include="Utils\TimeStringConverter.cs" />
+    <Compile Include="Utils\TimeUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

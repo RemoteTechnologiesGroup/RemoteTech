@@ -72,7 +72,12 @@
     <Compile Include="RoverPIDController.cs" />
     <Compile Include="UIPartActionMenuPatcher.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RemoteTech-Common\RemoteTech-Common.csproj">
+      <Project>{d93d9a84-2a93-4cd8-b543-0ae5728554c5}</Project>
+      <Name>RemoteTech-Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -41,16 +41,8 @@
       <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DryIoc, Version=2.8.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\DryIoc.dll.2.8.5\lib\net35\DryIoc.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>I:\KSP\KSP_1.2.1\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -70,7 +62,6 @@
     <Compile Include="RangeModel\RangeModelRoot.cs" />
     <Compile Include="RangeModel\RangeModelExtensions.cs" />
     <Compile Include="RTDebugUnit.cs" />
-    <Compile Include="RTLog.cs" />
     <Compile Include="IAntenna.cs" />
     <Compile Include="ISatellite.cs" />
     <Compile Include="ISignalProcessor.cs" />
@@ -88,7 +79,6 @@
     <Compile Include="RTPartInfoReloader.cs" />
     <Compile Include="RTSettings.cs" />
     <Compile Include="RTSpaceCentre.cs" />
-    <Compile Include="RTUtil.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />
     <Compile Include="SimpleTypes\AddOn.cs" />
@@ -129,7 +119,10 @@
     <Compile Include="NetworkFeedback.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\RemoteTech-Common\RemoteTech-Common.csproj">
+      <Project>{d93d9a84-2a93-4cd8-b543-0ae5728554c5}</Project>
+      <Name>RemoteTech-Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
