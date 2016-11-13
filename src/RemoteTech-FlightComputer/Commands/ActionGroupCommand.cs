@@ -1,4 +1,5 @@
 ﻿using System;
+using RemoteTech.Common;
 
 namespace RemoteTech.FlightComputer.Commands
 {

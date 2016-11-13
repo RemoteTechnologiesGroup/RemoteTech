@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteTech.Common;
+using RemoteTech.Common.Extensions;
 using RemoteTech.Modules;
 using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;

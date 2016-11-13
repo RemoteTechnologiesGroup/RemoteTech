@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
+using RemoteTech.Common;
 
 namespace RemoteTech
 {

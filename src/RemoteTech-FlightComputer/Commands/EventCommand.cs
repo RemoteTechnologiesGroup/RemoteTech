@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-
+using RemoteTech.Common;
 using RemoteTech.FlightComputer.Commands;
 
 namespace RemoteTech.FlightComputer

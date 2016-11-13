@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.Common;
+using RemoteTech.Common.Extensions;
 using RemoteTech.Modules;
 
 namespace RemoteTech

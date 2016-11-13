@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RemoteTech.Common;
 
 namespace RemoteTech.SimpleTypes
 {

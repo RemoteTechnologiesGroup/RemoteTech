@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Linq;
-
+using RemoteTech.Common;
 using RemoteTech.FlightComputer.Commands;
 using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
 

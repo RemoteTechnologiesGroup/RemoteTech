@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using RemoteTech.Common;
 
 namespace RemoteTech.SimpleTypes
 {

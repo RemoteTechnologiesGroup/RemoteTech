@@ -4,8 +4,8 @@ using System.Linq;
 using UnityEngine;
 using RemoteTech.FlightComputer.Commands;
 using RemoteTech.Modules;
-using RemoteTech.SimpleTypes;
 using RemoteTech.UI;
+using RemoteTech.Common;
 
 namespace RemoteTech.FlightComputer
 {

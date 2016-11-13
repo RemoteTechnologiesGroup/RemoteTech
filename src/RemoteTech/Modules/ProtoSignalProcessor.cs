@@ -1,4 +1,6 @@
 ﻿using System;
+using RemoteTech.Common;
+using RemoteTech.Common.Extensions;
 using UnityEngine;
 
 namespace RemoteTech.Modules
