@@ -120,6 +120,11 @@ namespace RemoteTech.Common.Utils
         /// <summary>The simulation time, in seconds, since this save was started.</summary>
         public static double GameTime => Planetarium.GetUniversalTime();
 
+        /// <summary>
+        /// Try to parse a duration from a string to a double value.
+        /// </summary>
+        /// <param name="duration">A duration, as a string.</param>
+        /// <returns>The <see cref="double"/> value corresponding to the <paramref name="duration"/> input string.</returns>
         public static double TryParseDuration(string duration)
         {
             TimeStringConverter time;
@@ -137,121 +142,10 @@ namespace RemoteTech.Common.Utils
         }
     }
 
-
-    public static partial class RTUtil
+    public static class GuiUtil
     {
-
-
         /// <summary>This time member is needed to debounce the RepeatButton</summary>
         private static double _timeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? TimeUtil.GameTime : 0;
-
-
-
-
-
-        public static readonly string[]
-            DistanceUnits = { "", "k", "M", "G", "T" },
-            ClassDescripts = {  "Short-Planetary (SP)",
-                                "Medium-Planetary (MP)",
-                                "Long-Planetary (LP)",
-                                "Short-Interplanetary (SI)",
-                                "Medium-Interplanetary (MI)",
-                                "Long-Interplanetary (LI)"};
-
-
-
-        public static void ScreenMessage(string msg)
-        {
-            ScreenMessages.PostScreenMessage(new ScreenMessage(msg, 4.0f, ScreenMessageStyle.UPPER_LEFT));
-        }
-
-        public static string Truncate(this string targ, int len)
-        {
-            const string suffix = "...";
-            if (targ.Length > len)
-            {
-                return targ.Substring(0, len - suffix.Length) + suffix;
-            }
-            return targ;
-        }
-
-        public static Vector3 Format360To180(Vector3 v)
-        {
-            return new Vector3(Format360To180(v.x), Format360To180(v.y), Format360To180(v.z));
-        }
-
-        public static float Format360To180(float degrees)
-        {
-            if (degrees > 180)
-            {
-                return degrees - 360;
-            }
-            return degrees;
-        }
-
-        public static float Format180To360(float degrees)
-        {
-            if (degrees < 0)
-            {
-                return degrees + 360;
-            }
-            return degrees;
-        }
-
-
-
-
-
-        public static string FormatConsumption(double consumption)
-        {
-            const string timeindicator = "sec";
-          
-            return $"{consumption:F2}/{timeindicator}.";
-        }
-
-        public static string FormatSI(double value, string unit)
-        {
-            var i = (int)Clamp(Math.Floor(Math.Log10(value)) / 3,
-                0, DistanceUnits.Length - 1);
-            value /= Math.Pow(1000, i);
-            return value.ToString("F2") + DistanceUnits[i] + unit;
-        }
-
-        public static T Clamp<T>(T value, T min, T max) where T : IComparable<T>
-        {
-            return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
-        }
-
-
-
-        public static Guid Guid(this CelestialBody cb)
-        {
-            var name = cb.GetName().ToCharArray();
-            var s = new StringBuilder();
-            for (var i = 0; i < 16; i++)
-            {
-                s.Append(((short)name[i % name.Length]).ToString("x"));
-            }
-            return new Guid(s.ToString());
-        }
-
-
-
-        //Note: Keep this method even if it has no reference, it is useful to track some bugs.
-        /// <summary>
-        /// Get a private field value from an object instance though reflection.
-        /// </summary>
-        /// <param name="type">The type of the object instance from which to obtain the private field.</param>
-        /// <param name="instance">The object instance</param>
-        /// <param name="fieldName">The field name in the object instance, from which to obtain the value.</param>
-        /// <returns>The value of the <paramref name="fieldName"/> instance or null if no such field exist in the instance.</returns>
-        internal static object GetInstanceField(Type type, object instance, string fieldName)
-        {
-            const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
-                                           | BindingFlags.Static;
-            var field = type.GetField(fieldName, bindFlags);
-            return field?.GetValue(instance);
-        }
 
         public static void Button(Texture2D icon, Action onClick, params GUILayoutOption[] options)
         {
@@ -286,11 +180,11 @@ namespace RemoteTech.Common.Utils
         /// <param name="options">GUILayout params</param>
         public static void RepeatButton(string text, Action onClick, params GUILayoutOption[] options)
         {
-            if (GUILayout.RepeatButton(text, options) && (RTUtil._timeDebouncer + 0.05) < TimeUtil.GameTime)
+            if (GUILayout.RepeatButton(text, options) && (_timeDebouncer + 0.05) < TimeUtil.GameTime)
             {
                 onClick.Invoke();
                 // set the new time to the debouncer
-                RTUtil._timeDebouncer = TimeUtil.GameTime;
+                _timeDebouncer = TimeUtil.GameTime;
             }
         }
 
@@ -382,7 +276,7 @@ namespace RemoteTech.Common.Utils
             text = GUILayout.TextField(text, options);
 
             // Current textfield under control?
-            if((GUI.GetNameOfFocusedControl() == fieldName))
+            if ((GUI.GetNameOfFocusedControl() == fieldName))
             {
                 if (Input.GetAxis("Mouse ScrollWheel") > 0 && (_timeDebouncer + 0.05) < TimeUtil.GameTime)
                 {
@@ -418,6 +312,116 @@ namespace RemoteTech.Common.Utils
                 }
             }
         }
+
+        public static void ScreenMessage(string msg)
+        {
+            ScreenMessages.PostScreenMessage(new ScreenMessage(msg, 4.0f, ScreenMessageStyle.UPPER_LEFT));
+        }
+    }
+
+    public static partial class RTUtil
+    {
+        public static readonly string[]
+            DistanceUnits = { "", "k", "M", "G", "T" },
+            ClassDescripts = {  "Short-Planetary (SP)",
+                                "Medium-Planetary (MP)",
+                                "Long-Planetary (LP)",
+                                "Short-Interplanetary (SI)",
+                                "Medium-Interplanetary (MI)",
+                                "Long-Interplanetary (LI)"};
+
+
+
+
+        public static string Truncate(this string targ, int len)
+        {
+            const string suffix = "...";
+            if (targ.Length > len)
+            {
+                return targ.Substring(0, len - suffix.Length) + suffix;
+            }
+            return targ;
+        }
+
+        public static Vector3 Format360To180(Vector3 v)
+        {
+            return new Vector3(Format360To180(v.x), Format360To180(v.y), Format360To180(v.z));
+        }
+
+        public static float Format360To180(float degrees)
+        {
+            if (degrees > 180)
+            {
+                return degrees - 360;
+            }
+            return degrees;
+        }
+
+        public static float Format180To360(float degrees)
+        {
+            if (degrees < 0)
+            {
+                return degrees + 360;
+            }
+            return degrees;
+        }
+
+
+
+
+
+        public static string FormatConsumption(double consumption)
+        {
+            const string timeindicator = "sec";
+          
+            return $"{consumption:F2}/{timeindicator}.";
+        }
+
+        public static string FormatSI(double value, string unit)
+        {
+            var i = (int)Clamp(Math.Floor(Math.Log10(value)) / 3,
+                0, DistanceUnits.Length - 1);
+            value /= Math.Pow(1000, i);
+            return value.ToString("F2") + DistanceUnits[i] + unit;
+        }
+
+        public static T Clamp<T>(T value, T min, T max) where T : IComparable<T>
+        {
+            return (value.CompareTo(min) < 0) ? min : (value.CompareTo(max) > 0) ? max : value;
+        }
+
+
+
+        public static Guid Guid(this CelestialBody cb)
+        {
+            var name = cb.GetName().ToCharArray();
+            var s = new StringBuilder();
+            for (var i = 0; i < 16; i++)
+            {
+                s.Append(((short)name[i % name.Length]).ToString("x"));
+            }
+            return new Guid(s.ToString());
+        }
+
+
+
+        //Note: Keep this method even if it has no reference, it is useful to track some bugs.
+        /// <summary>
+        /// Get a private field value from an object instance though reflection.
+        /// </summary>
+        /// <param name="type">The type of the object instance from which to obtain the private field.</param>
+        /// <param name="instance">The object instance</param>
+        /// <param name="fieldName">The field name in the object instance, from which to obtain the value.</param>
+        /// <returns>The value of the <paramref name="fieldName"/> instance or null if no such field exist in the instance.</returns>
+        internal static object GetInstanceField(Type type, object instance, string fieldName)
+        {
+            const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                                           | BindingFlags.Static;
+            var field = type.GetField(fieldName, bindFlags);
+            return field?.GetValue(instance);
+        }
+
+ 
         
         public static bool IsTechUnlocked(string techid)
         {
