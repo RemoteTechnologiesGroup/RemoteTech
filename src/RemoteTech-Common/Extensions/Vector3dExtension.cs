@@ -1,4 +1,5 @@
 ﻿using System;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.Common.Extensions
 {
@@ -40,9 +41,9 @@ namespace RemoteTech.Common.Extensions
         public static Vector3d Clamp(this Vector3d value, double min, double max)
         {
             return new Vector3d(
-                Clamp(value.x, min, max),
-                Clamp(value.y, min, max),
-                Clamp(value.z, min, max)
+                ClampUtil.Clamp(value.x, min, max),
+                ClampUtil.Clamp(value.y, min, max),
+                ClampUtil.Clamp(value.z, min, max)
                 );
         }
     }
