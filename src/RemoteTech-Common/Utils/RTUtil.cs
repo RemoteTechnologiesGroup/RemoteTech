@@ -7,23 +7,67 @@ using System.Linq;
 using System.Text;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
-namespace RemoteTech.Common
+namespace RemoteTech.Common.Utils
 {
-    public static partial class RTUtil
+    public static class GameUtil
     {
-        /// <summary>The simulation time, in seconds, since this save was started.</summary>
-        public static double GameTime => Planetarium.GetUniversalTime();
-
-        /// <summary>This time member is needed to debounce the RepeatButton</summary>
-        private static double _timeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? GameTime : 0;
-
         /// <summary>Automatically finds the proper texture directory from the DLL location. Assumes the DLL is in the proper location of GameData/RemoteTech/Plugins/</summary>
-        private static readonly string TextureDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Name + "/Textures/";
+        /// <returns>The texture directory string if found otherwise a null reference.</returns>
+        private static string TextureDirectory {
+            get
+            {
+                var location = Assembly.GetExecutingAssembly().Location;
+                if (!string.IsNullOrEmpty(location))
+                {
+                    var parentLocation = Directory.GetParent(location).Parent;
+                    if (parentLocation != null)
+                        return parentLocation.Name + "/Textures/";
 
-        /// <summary>
-        /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
-        /// </summary>
+                    RTLog.Notify("TextureDirectory: cannot Find parent location", RTLogLevel.LVL4);
+                    return null;
+                }
+
+                RTLog.Notify("TextureDirectory: cannot Find location", RTLogLevel.LVL4);
+                return null;
+            }
+        }
+
+        /// <summary>True if the current running game is a SCENARIO or SCENARIO_NON_RESUMABLE, otherwise false</summary>
+        public static bool IsGameScenario => (HighLogic.CurrentGame != null && (HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO || HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO_NON_RESUMABLE));
+
+        /// <summary>Load an image from the texture directory.</summary>
+        /// <param name="texture">The output texture if the texture is found, otherwise a black texture.</param>
+        /// <param name="fileName">The file name of the texture (in the texture directory).</param>
+        /// <remarks>Replaces old manual method with unity style texture loading.</remarks>
+        public static void LoadImage(out Texture2D texture, string fileName)
+        {
+            var str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                texture = GameDatabase.Instance.GetTexture(str, false);
+            else
+            {
+                RTLog.Notify($"LoadImage: cannot Find Texture: {str}", RTLogLevel.LVL4);
+                texture = Texture2D.blackTexture;
+            }
+        }
+
+        /// <summary>Load an image from the texture directory.</summary>
+        /// <param name="fileName">The file name of the texture (in the texture directory).</param>
+        /// <returns>The texture if the file was found, otherwise a completely black texture.</returns>
+        /// <remarks>Replaces old manual method with unity style texture loading.</remarks>
+        public static Texture2D LoadImage(string fileName)
+        {
+            var str = TextureDirectory + fileName;
+            if (GameDatabase.Instance.ExistsTexture(str))
+                return GameDatabase.Instance.GetTexture(str, false);
+
+            RTLog.Notify($"LoadImage: cannot Find Texture: {str}", RTLogLevel.LVL4);
+            return Texture2D.blackTexture;
+        }
+
+        /// <summary>Returns the current AssemblyFileVersion, as a string, from AssemblyInfos.cs.</summary>
         public static string Version
         {
             get
@@ -36,17 +80,20 @@ namespace RemoteTech.Common
                 return "Unknown version";
             }
         }
+    }
 
-        /// <summary>
-        /// True if the current running game is a SCENARIO or SCENARIO_NON_RESUMABLE, otherwise false
-        /// </summary>
-        public static bool IsGameScenario
-        {
-            get
-            {
-                return (HighLogic.CurrentGame != null && (HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO || HighLogic.CurrentGame.Mode == Game.Modes.SCENARIO_NON_RESUMABLE));
-            }
-        }
+
+    public static partial class RTUtil
+    {
+        /// <summary>The simulation time, in seconds, since this save was started.</summary>
+        public static double GameTime => Planetarium.GetUniversalTime();
+
+        /// <summary>This time member is needed to debounce the RepeatButton</summary>
+        private static double _timeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? GameTime : 0;
+
+
+
+
 
         public static readonly string[]
             DistanceUnits = { "", "k", "M", "G", "T" },
@@ -56,7 +103,7 @@ namespace RemoteTech.Common
                                 "Short-Interplanetary (SI)",
                                 "Medium-Interplanetary (MI)",
                                 "Long-Interplanetary (LI)"};
-        
+
         public static double TryParseDuration(string duration)
         {
             TimeStringConverter time;
@@ -367,32 +414,6 @@ namespace RemoteTech.Common
         {
             return window.Contains(new Vector2(Input.mousePosition.x,
                 Screen.height - Input.mousePosition.y));
-        }
-
-        // Replaces old manual method with unity style texture loading
-        public static void LoadImage(out Texture2D texture, string fileName)
-        {
-            var str = TextureDirectory + fileName;
-            if (GameDatabase.Instance.ExistsTexture(str))
-                texture = GameDatabase.Instance.GetTexture(str, false);
-            else
-            {
-                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
-                texture = Texture2D.blackTexture;
-            }
-        }
-
-        // New method for ease of use
-        public static Texture2D LoadImage(string fileName)
-        {
-            var str = TextureDirectory + fileName;
-            if (GameDatabase.Instance.ExistsTexture(str))
-                return GameDatabase.Instance.GetTexture(str, false);
-            else
-            {
-                UnityEngine.Debug.Log("Cannot Find Texture: " + str);
-                return Texture2D.blackTexture;
-            }
         }
 
         public static IEnumerable<Transform> FindTransformsWithCollider(Transform input)
