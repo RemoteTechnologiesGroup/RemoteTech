@@ -52,6 +52,24 @@ namespace RemoteTech.Common.Utils
             }
         }
 
+        /// <summary>Check if a technology is unlocked in the Research and Development center.</summary>
+        /// <param name="techId">The technology Id.</param>
+        /// <returns>true if the technology is unlocked, false otherwise.</returns>
+        public static bool IsTechUnlocked(string techId)
+        {
+            if (string.IsNullOrEmpty(techId))
+            {
+                RTLog.Notify("IsTechUnlocked: techId is null or empty.", RTLogLevel.LVL4);
+                return false;
+            }
+
+            if (techId.Equals("None"))
+                return true;
+
+            return HighLogic.CurrentGame == null || HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX ||
+                ResearchAndDevelopment.GetTechnologyState(techId) == RDTech.State.Available;
+        }
+
         /// <summary>Load an image from the texture directory.</summary>
         /// <param name="fileName">The file name of the texture (in the texture directory).</param>
         /// <returns>The texture if the file was found, otherwise a completely black texture.</returns>
@@ -423,12 +441,7 @@ namespace RemoteTech.Common.Utils
 
  
         
-        public static bool IsTechUnlocked(string techid)
-        {
-            if (techid.Equals("None")) return true;
-            return HighLogic.CurrentGame == null || HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX ||
-                ResearchAndDevelopment.GetTechnologyState(techid) == RDTech.State.Available;
-        }
+ 
         public static string ConstrictNum(string s) {
             return ConstrictNum(s, true);
         }
