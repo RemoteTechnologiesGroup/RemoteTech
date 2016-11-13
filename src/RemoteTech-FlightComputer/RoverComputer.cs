@@ -45,9 +45,9 @@ namespace RemoteTech.FlightComputer
                 Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
 
                 if (ForwardAxis == Vector3.zero)
-                    return RTUtil.GetHeading(mVessel.srf_velocity.normalized, up, north);
+                    return GetHeading(mVessel.srf_velocity.normalized, up, north);
                 else
-                    return RTUtil.GetHeading(mVessel.ReferenceTransform.TransformDirection(ForwardAxis), up, north);
+                    return GetHeading(mVessel.ReferenceTransform.TransformDirection(ForwardAxis), up, north);
             }
         }
 
@@ -57,7 +57,7 @@ namespace RemoteTech.FlightComputer
             {
                 Vector3d up = (mVessel.CoM - mVessel.mainBody.position).normalized;
                 Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
-                return RTUtil.GetHeading((TargetPos - mVessel.CoM).normalized, up, north);
+                return GetHeading((TargetPos - mVessel.CoM).normalized, up, north);
             }
         }
 
@@ -205,6 +205,11 @@ namespace RemoteTech.FlightComputer
                 dc.mode = RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Off;
                 return true;
             }
+        }
+
+        public static float GetHeading(Vector3 dir, Vector3 up, Vector3 north)
+        {
+            return Quaternion.Inverse(Quaternion.Inverse(Quaternion.LookRotation(dir, up)) * Quaternion.LookRotation(north, up)).eulerAngles.y;
         }
 
         private float BrakeSpeed(float speed, float actualSpeed)

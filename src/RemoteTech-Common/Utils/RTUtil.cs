@@ -617,9 +617,7 @@ namespace RemoteTech.Common.Utils
             return true;
         }
 
-        public static float GetHeading(Vector3 dir, Vector3 up, Vector3 north) {
-            return Quaternion.Inverse(Quaternion.Inverse(Quaternion.LookRotation(dir, up)) * Quaternion.LookRotation(north, up)).eulerAngles.y;
-        }
+
 
 
 
