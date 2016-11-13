@@ -25,14 +25,14 @@ namespace RemoteTech.Common.Extensions
 
             if (MapView.MapIsEnabled)
             {
-                //Use Scaled camera and don't attempt physics raycast if in map view.
+                // Use Scaled camera and don't attempt physics ray-cast if in map view.
                 var ray = ScaledCamera.Instance.galaxyCamera.ScreenPointToRay(Input.mousePosition);
                 origin = ScaledSpace.ScaledToLocalSpace(ray.origin);
                 dir = ray.direction.normalized;
             }
             else
             {
-                //Attempt ray cast and return results if successfull.
+                // Attempt ray cast and return results if successful.
                 var ray = FlightCamera.fetch.mainCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hitB;
                 var dist = (float)(Vector3.Distance(body.position, ray.origin) - body.Radius / 2);
@@ -41,7 +41,7 @@ namespace RemoteTech.Common.Extensions
                     latlon = new Vector2((float)body.GetLatitude(hitB.point), (float)body.GetLongitude(hitB.point));
                     return true;
                 }
-                //if all else fails, try with good oldfashioned arithmetic.
+                // if all else fails, try with good old fashioned arithmetic.
                 origin = ray.origin;
                 dir = ray.direction.normalized;
             }
