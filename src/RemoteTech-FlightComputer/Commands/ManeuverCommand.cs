@@ -81,7 +81,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">FlightComputer instance of the computer of the vessel.</param>
         private void AbortManeuver(FlightComputer computer)
         {
-            RTUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
+            GuiUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
             if (computer.Vessel.patchedConicSolver != null)
             {
                 Node.RemoveSelf();
@@ -262,7 +262,7 @@ namespace RemoteTech.FlightComputer.Commands
         {
             var timetoexec = (TimeStamp + ExtraDelay) - RTSettings.Instance.FCLeadTime;
 
-            if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts)
+            if (timetoexec - TimeUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts)
             {
                 var kaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
 

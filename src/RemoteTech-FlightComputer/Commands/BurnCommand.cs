@@ -1,4 +1,5 @@
 ﻿using System;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -25,7 +26,7 @@ namespace RemoteTech.FlightComputer.Commands
             } 
         }
         private string burnLength() {
-            return Duration > 0 ? RTUtil.FormatDuration(Duration) : (DeltaV.ToString("F2") + "m/s");
+            return Duration > 0 ? TimeUtil.FormatDuration(Duration) : (DeltaV.ToString("F2") + "m/s");
         }
 
         private bool mAbort;
@@ -82,7 +83,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Throttle = Single.NaN,
                 Duration = 0,
                 DeltaV = 0,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -93,7 +94,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Throttle = throttle,
                 Duration = duration,
                 DeltaV = 0,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -104,7 +105,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Throttle = throttle,
                 Duration = 0,
                 DeltaV = delta,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -118,13 +119,13 @@ namespace RemoteTech.FlightComputer.Commands
             var timetoexec = (TimeStamp + ExtraDelay) - 180;
 
             // only insert if we've no negative time and the option is set
-            if (!(timetoexec - RTUtil.GameTime > 0) || !RTSettings.Instance.AutoInsertKaCAlerts)
+            if (!(timetoexec - TimeUtil.GameTime > 0) || !RTSettings.Instance.AutoInsertKaCAlerts)
                 return;
 
             // set kac alarm label
             var kaCAddonLabel = "Burn " + computer.Vessel.vesselName + " for ";
             if (Duration > 0)
-                kaCAddonLabel += RTUtil.FormatDuration(this.Duration);
+                kaCAddonLabel += TimeUtil.FormatDuration(this.Duration);
             else
                 kaCAddonLabel += this.DeltaV;
                 

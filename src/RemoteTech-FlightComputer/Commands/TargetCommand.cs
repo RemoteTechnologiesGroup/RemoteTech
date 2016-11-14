@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -39,7 +40,7 @@ namespace RemoteTech.FlightComputer.Commands
             return new TargetCommand()
             {
                 Target = target,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -59,7 +60,7 @@ namespace RemoteTech.FlightComputer.Commands
                     case "Vessel":
                         {
                             Guid Vesselid = new Guid(TargetId);
-                            Target = RTUtil.GetVesselById(Vesselid);
+                            Target = VesselExtension.GetVesselById(Vesselid);
                             break;
                         }
                     case "CelestialBody":

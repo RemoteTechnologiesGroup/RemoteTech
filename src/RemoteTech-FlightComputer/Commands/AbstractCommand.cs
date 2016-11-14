@@ -1,5 +1,6 @@
 ﻿using System;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -8,15 +9,15 @@ namespace RemoteTech.FlightComputer.Commands
         public double TimeStamp { get; set; }
         public Guid CmdGuid { get; private set; }
         public virtual double ExtraDelay { get; set; }
-        public virtual double Delay { get { return Math.Max(TimeStamp - RTUtil.GameTime, 0); } }
+        public virtual double Delay { get { return Math.Max(TimeStamp - TimeUtil.GameTime, 0); } }
         public virtual String Description {
             get
             {
                 double delay = this.Delay;
                 if (delay > 0 || ExtraDelay > 0)
                 {
-                    var extra = ExtraDelay > 0 ? String.Format("{0} + {1}", RTUtil.FormatDuration(delay), RTUtil.FormatDuration(ExtraDelay)) 
-                                               : RTUtil.FormatDuration(delay);
+                    var extra = ExtraDelay > 0 ? String.Format("{0} + {1}", TimeUtil.FormatDuration(delay), TimeUtil.FormatDuration(ExtraDelay)) 
+                                               : TimeUtil.FormatDuration(delay);
                     return "Signal delay: " + extra;
                 }
                 return "";
@@ -64,7 +65,7 @@ namespace RemoteTech.FlightComputer.Commands
                 // only save the current gametime if we have no signal delay.
                 // We need this to calculate the correct delta time for the
                 // ExtraDelay if we come back to this satellite.
-                this.TimeStamp = RTUtil.GameTime;
+                this.TimeStamp = TimeUtil.GameTime;
             }
 
             node.AddValue("TimeStamp", this.TimeStamp);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Commands;
 
 namespace RemoteTech.FlightComputer
@@ -59,7 +60,7 @@ namespace RemoteTech.FlightComputer
             {
                 BaseEvent = ev,
                 GUIName = ev.GUIName,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 

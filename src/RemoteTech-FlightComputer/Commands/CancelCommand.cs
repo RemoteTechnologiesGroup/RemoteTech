@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -33,7 +34,7 @@ namespace RemoteTech.FlightComputer.Commands
             return new CancelCommand()
             {
                 CancelCmdGuid = cmd.CmdGuid,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -42,7 +43,7 @@ namespace RemoteTech.FlightComputer.Commands
             return new CancelCommand()
             {
                 CancelCmdGuid = Guid.Empty,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 

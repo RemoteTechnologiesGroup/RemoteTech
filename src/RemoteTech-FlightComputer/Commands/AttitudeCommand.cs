@@ -208,7 +208,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Frame = ReferenceFrame.North,
                 Orientation = Quaternion.identity,
                 Altitude = height,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -224,7 +224,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Frame = ReferenceFrame.North,
                 Orientation = rotation,
                 Altitude = Single.NaN,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 

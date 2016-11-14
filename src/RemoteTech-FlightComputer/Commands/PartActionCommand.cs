@@ -2,6 +2,7 @@
 using System.Text;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Commands;
 using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
 
@@ -100,7 +101,7 @@ namespace RemoteTech.FlightComputer
             {
                 BaseField = baseField,
                 GUIName = baseField.guiName,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
                 NewValue = newValue
             };
         }
