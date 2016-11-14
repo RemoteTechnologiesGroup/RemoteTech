@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer
@@ -127,9 +128,9 @@ namespace RemoteTech.FlightComputer
         {
             if (dc != null) {
                 if (mVessel.srf_velocity.magnitude > 0.5) {
-                    float degForward = Mathf.Abs(RTUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.forward)));
-                    float degUp = Mathf.Abs(RTUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.up)));
-                    float degRight = Mathf.Abs(RTUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.right)));
+                    float degForward = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.forward)));
+                    float degUp = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.up)));
+                    float degRight = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.right)));
 
                     if (degForward < degUp && degForward < degRight)
                         ForwardAxis = Vector3.forward;
@@ -196,7 +197,7 @@ namespace RemoteTech.FlightComputer
             if (Delta > 0) {
                 fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed) - speed);
                 if (ForwardAxis != Vector3.zero)
-                    fs.wheelSteer = mWheelPID.Control(RTUtil.AngleBetween(RoverHDG, dc.target2));
+                    fs.wheelSteer = mWheelPID.Control(ClampUtil.AngleBetween(RoverHDG, dc.target2));
                 return false;
             } else {
                 fs.wheelThrottle = 0;
@@ -226,7 +227,7 @@ namespace RemoteTech.FlightComputer
         private bool Coord(RemoteTech.FlightComputer.Commands.DriveCommand dc, FlightCtrlState fs)
         {
             float
-                deg = RTUtil.AngleBetween(RoverHDG, TargetHDG),
+                deg = ClampUtil.AngleBetween(RoverHDG, TargetHDG),
                 speed = RoverSpeed;
 
             Delta = Vector3.Distance(mVessel.CoM, TargetPos);

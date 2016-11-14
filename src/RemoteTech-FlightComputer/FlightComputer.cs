@@ -7,6 +7,7 @@ using RemoteTech.Modules;
 using RemoteTech.UI;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer
 {
@@ -366,7 +367,7 @@ namespace RemoteTech.FlightComputer
                 delayed.mainThrottle = fcs.mainThrottle;
             }
 
-            while (_flightCtrlQueue.Count > 0 && _flightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
+            while (_flightCtrlQueue.Count > 0 && _flightCtrlQueue.Peek().TimeStamp <= TimeUtil.GameTime)
             {
                 delayed = _flightCtrlQueue.Dequeue().State;
             }
@@ -386,10 +387,10 @@ namespace RemoteTech.FlightComputer
             if (RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 4.0f)
             {
                 var time = TimeWarp.deltaTime;
-                foreach (var dc in _commandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime + (2 * time + 1.0)))
+                foreach (var dc in _commandQueue.TakeWhile(c => c.TimeStamp <= TimeUtil.GameTime + (2 * time + 1.0)))
                 {
                     var message = new ScreenMessage("[Flight Computer]: Throttling back time warp...", 4.0f, ScreenMessageStyle.UPPER_LEFT);
-                    while ((2 * TimeWarp.deltaTime + 1.0) > (Math.Max(dc.TimeStamp - RTUtil.GameTime, 0) + dc.ExtraDelay) && TimeWarp.CurrentRate > 1.0f)
+                    while ((2 * TimeWarp.deltaTime + 1.0) > (Math.Max(dc.TimeStamp - TimeUtil.GameTime, 0) + dc.ExtraDelay) && TimeWarp.CurrentRate > 1.0f)
                     {
                         TimeWarp.SetRate(TimeWarp.CurrentRateIndex - 1, true);
                         ScreenMessages.PostScreenMessage(message);
@@ -600,7 +601,7 @@ namespace RemoteTech.FlightComputer
                         if (cmd is ManeuverCommand)
                         {
                             // TODO: Need better text
-                            RTUtil.ScreenMessage("You missed the maneuver burn!");
+                            GuiUtil.ScreenMessage("You missed the maneuver burn!");
                             continue;
                         }
 
@@ -608,7 +609,7 @@ namespace RemoteTech.FlightComputer
                         // and set the new extra delay based on the current time
                         if (cmd.ExtraDelay > 0)
                         {
-                            cmd.ExtraDelay = cmd.TimeStamp  + cmd.ExtraDelay - RTUtil.GameTime;
+                            cmd.ExtraDelay = cmd.TimeStamp  + cmd.ExtraDelay - TimeUtil.GameTime;
 
                             // Are we ready to handle the command ?
                             if (cmd.ExtraDelay <= 0)
@@ -616,7 +617,7 @@ namespace RemoteTech.FlightComputer
                                 if (cmd is BurnCommand)
                                 {
                                     // TODO: Need better text
-                                    RTUtil.ScreenMessage("You missed the burn command!");
+                                    GuiUtil.ScreenMessage("You missed the burn command!");
                                     continue;
                                 }
 

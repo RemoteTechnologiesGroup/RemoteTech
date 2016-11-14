@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -135,7 +136,7 @@ namespace RemoteTech.FlightComputer.Commands
         public static ExternalAPICommand FromExternal(ConfigNode externalData)
         {
             ExternalAPICommand command =  new ExternalAPICommand();
-            command.TimeStamp = RTUtil.GameTime;
+            command.TimeStamp = TimeUtil.GameTime;
             command.ConfigNodeToObject(command,externalData);
 
             return command;
@@ -207,7 +208,7 @@ namespace RemoteTech.FlightComputer.Commands
             }
             catch(Exception)
             {
-                RTUtil.ScreenMessage(string.Format("Mod '{0}' not found. Queued command '{1}' will be removed.", this.Executor, this.ShortName));
+                GuiUtil.ScreenMessage(string.Format("Mod '{0}' not found. Queued command '{1}' will be removed.", this.Executor, this.ShortName));
             }
             return false;
         }

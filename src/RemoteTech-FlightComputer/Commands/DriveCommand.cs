@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer.Commands
@@ -48,7 +49,7 @@ namespace RemoteTech.FlightComputer.Commands
         {
             return new DriveCommand() {
                 mode = DriveMode.Off,
-                TimeStamp = RTUtil.GameTime
+                TimeStamp = TimeUtil.GameTime
             };
         }
 
@@ -59,7 +60,7 @@ namespace RemoteTech.FlightComputer.Commands
                 steering = steering,
                 target = degrees,
                 speed = speed,
-                TimeStamp = RTUtil.GameTime
+                TimeStamp = TimeUtil.GameTime
             };
         }
 
@@ -70,7 +71,7 @@ namespace RemoteTech.FlightComputer.Commands
                 steering = steerClamp,
                 target = distance,
                 speed = speed,
-                TimeStamp = RTUtil.GameTime
+                TimeStamp = TimeUtil.GameTime
             };
         }
 
@@ -82,7 +83,7 @@ namespace RemoteTech.FlightComputer.Commands
                 target = distance,
                 target2 = heading,
                 speed = speed,
-                TimeStamp = RTUtil.GameTime
+                TimeStamp = TimeUtil.GameTime
             };
         }
 
@@ -94,7 +95,7 @@ namespace RemoteTech.FlightComputer.Commands
                 target = latitude,
                 target2 = longitude,
                 speed = speed,
-                TimeStamp = RTUtil.GameTime
+                TimeStamp = TimeUtil.GameTime
             };
         }
 
@@ -108,28 +109,28 @@ namespace RemoteTech.FlightComputer.Commands
                         s.Append("Drive to: ");
                         s.Append(new Vector2(target, target2).ToString("0.000"));
                         s.Append(" @ ");
-                        s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
+                        s.Append(FormatUtil.FormatSI(Math.Abs(speed), "m/s"));
                         if (mRoverComputer != null) {
                             s.Append(" (");
-                            s.Append(RTUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(FormatUtil.FormatSI(mRoverComputer.Delta, "m"));
                             s.Append(" ");
-                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
                             s.Append(")"); ;
                         }
                         break;
                     case DriveMode.Distance:
                         s.Append("Drive: ");
-                        s.Append(RTUtil.FormatSI(target, "m"));
+                        s.Append(FormatUtil.FormatSI(target, "m"));
                         if (speed > 0)
                             s.Append(" forwards @");
                         else
                             s.Append(" backwards @");
-                        s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
+                        s.Append(FormatUtil.FormatSI(Math.Abs(speed), "m/s"));
                         if (mRoverComputer != null) {
                             s.Append(" (");
-                            s.Append(RTUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(FormatUtil.FormatSI(mRoverComputer.Delta, "m"));
                             s.Append(" ");
-                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
                             s.Append(")"); ;
                         }
                         break;
@@ -146,22 +147,22 @@ namespace RemoteTech.FlightComputer.Commands
                             s.Append(" (");
                             s.Append(mRoverComputer.Delta.ToString("F2"));
                             s.Append("° ");
-                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
                             s.Append(")"); ;
                         }
                         break;
                     case DriveMode.DistanceHeading:
                         s.Append("Drive: ");
-                        s.Append(RTUtil.FormatSI(target, "m"));
+                        s.Append(FormatUtil.FormatSI(target, "m"));
                         s.Append(", Hdg: ");
                         s.Append(target2.ToString("0"));
                         s.Append("° @ ");
-                        s.Append(RTUtil.FormatSI(Math.Abs(speed), "m/s"));
+                        s.Append(FormatUtil.FormatSI(Math.Abs(speed), "m/s"));
                         if (mRoverComputer != null) {
                             s.Append(" (");
-                            s.Append(RTUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(FormatUtil.FormatSI(mRoverComputer.Delta, "m"));
                             s.Append(" ");
-                            s.Append(RTUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
                             s.Append(")");
                         }
                         break;

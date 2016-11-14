@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -23,7 +24,7 @@ namespace RemoteTech.FlightComputer.Commands
             return new PartActionFieldCommand()
             {
                 FieldItem = fieldItem,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer
@@ -13,7 +14,7 @@ namespace RemoteTech.FlightComputer
         {
             State = new FlightCtrlState();
             State.CopyFrom(fcs);
-            TimeStamp = RTUtil.GameTime;
+            TimeStamp = TimeUtil.GameTime;
         }
 
         public int CompareTo(DelayedFlightCtrlState dfcs)
@@ -39,7 +40,7 @@ namespace RemoteTech.FlightComputer
                 UT = node.UT,
                 nodeRotation = node.nodeRotation,
             };
-            TimeStamp = RTUtil.GameTime;
+            TimeStamp = TimeUtil.GameTime;
         }
 
         public int CompareTo(DelayedManeuver dm)

@@ -1,5 +1,6 @@
 ﻿using System;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -41,7 +42,7 @@ namespace RemoteTech.FlightComputer.Commands
             return new ActionGroupCommand()
             {
                 ActionGroup = group,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
     }

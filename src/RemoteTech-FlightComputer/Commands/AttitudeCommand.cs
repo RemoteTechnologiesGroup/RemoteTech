@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer.Commands
@@ -92,13 +93,13 @@ namespace RemoteTech.FlightComputer.Commands
                 switch (Mode)
                 {
                     default: res = FormatMode[Mode]; break;
-                    case FlightMode.AltitudeHold: res = String.Format(FormatMode[Mode], RTUtil.FormatSI(Altitude, "m")); break;
+                    case FlightMode.AltitudeHold: res = String.Format(FormatMode[Mode], FormatUtil.FormatSI(Altitude, "m")); break;
                     case FlightMode.AttitudeHold:
                         if (Attitude == FlightAttitude.Surface)
                         {
                             res = String.Format(FormatMode[Mode], Orientation.eulerAngles.x.ToString("F1") + "°, " +
                                                                    (360 - Orientation.eulerAngles.y).ToString("F1") + "°, " +
-                                                                   RTUtil.Format360To180(180 - Orientation.eulerAngles.z).ToString("F1") + "°", "");
+                                                                   FormatUtil.Format360To180(180 - Orientation.eulerAngles.z).ToString("F1") + "°", "");
                             break;
                         }
                         res = String.Format(FormatMode[Mode], FormatReference[Frame], FormatAttitude[Attitude]);
@@ -155,7 +156,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Frame = ReferenceFrame.World,
                 Orientation = Quaternion.identity,
                 Altitude = Single.NaN,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -168,7 +169,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Frame = ReferenceFrame.World,
                 Orientation = Quaternion.identity,
                 Altitude = Single.NaN,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 
@@ -181,7 +182,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Frame = ReferenceFrame.Maneuver,
                 Orientation = Quaternion.identity,
                 Altitude = Single.NaN,
-                TimeStamp = (timetoexec == 0) ? RTUtil.GameTime:timetoexec,
+                TimeStamp = (timetoexec == 0) ? TimeUtil.GameTime : timetoexec,
             };
         }
 
@@ -194,7 +195,7 @@ namespace RemoteTech.FlightComputer.Commands
                 Frame = frame,
                 Orientation = Quaternion.identity,
                 Altitude = Single.NaN,
-                TimeStamp = RTUtil.GameTime,
+                TimeStamp = TimeUtil.GameTime,
             };
         }
 

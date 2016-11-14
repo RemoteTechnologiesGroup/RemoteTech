@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Utils;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer.Commands
@@ -32,7 +33,7 @@ namespace RemoteTech.FlightComputer.Commands
                     string flightInfo = "Executing maneuver: " + RemainingDelta.ToString("F2") +
                                         "m/s" + Environment.NewLine + "Remaining duration: ";
 
-                    flightInfo += this.EngineActivated ? RTUtil.FormatDuration(RemainingTime) : "-:-";
+                    flightInfo += this.EngineActivated ? TimeUtil.FormatDuration(RemainingTime) : "-:-";
 
                     return flightInfo + Environment.NewLine + base.Description;
                 }
@@ -56,7 +57,7 @@ namespace RemoteTech.FlightComputer.Commands
             double thrustToMass = FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass();
             if (thrustToMass == 0.0) {
                 this.EngineActivated = false;
-                RTUtil.ScreenMessage("[Flight Computer]: No engine to carry out the maneuver.");
+                GuiUtil.ScreenMessage("[Flight Computer]: No engine to carry out the maneuver.");
             } else {
                 RemainingTime = RemainingDelta / thrustToMass;
             }
