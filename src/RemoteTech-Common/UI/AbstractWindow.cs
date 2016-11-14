@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using RemoteTech.Common.Utils;
 using UnityEngine;
 
-namespace RemoteTech.UI
+namespace RemoteTech.Common.UI
 {
     public enum WindowAlign
     {
@@ -17,10 +17,10 @@ namespace RemoteTech.UI
     public abstract class AbstractWindow
     {
         public Rect Position;
-        public String Title { get; set; }
+        public string Title { get; set; }
         public WindowAlign Alignment { get; set; }
-        public String Tooltip { get; set; }
-        public bool Enabled = false;
+        public string Tooltip { get; set; }
+        public bool Enabled;
         public static GUIStyle Frame = new GUIStyle(HighLogic.Skin.window);
         public const double TooltipDelay = 0.5;
         protected bool mSavePosition = false;
@@ -33,7 +33,7 @@ namespace RemoteTech.UI
         public float mInitialWidth;
         /// <summary>The initial height of this window</summary>
         public float mInitialHeight;
-        /// <summary>Callback trigger for the change in the posistion</summary>
+        /// <summary>Callback trigger for the change in the position</summary>
         public Action onPositionChanged = delegate { };
         public Rect backupPosition;
         /// <summary>todo</summary>
@@ -44,7 +44,7 @@ namespace RemoteTech.UI
             Frame.padding = new RectOffset(5, 5, 5, 5);
         }
 
-        public AbstractWindow(Guid id, String title, Rect position, WindowAlign align)
+        public AbstractWindow(Guid id, string title, Rect position, WindowAlign align)
         {
             mGuid = id;
             Title = title;
@@ -70,9 +70,9 @@ namespace RemoteTech.UI
                 onPositionChanged += storePosition;
 
                 // read the saved position
-                if (RTSettings.Instance.SavedWindowPositions.ContainsKey(this.GetType().ToString()))
+                if (RTSettings.Instance.SavedWindowPositions.ContainsKey(GetType().ToString()))
                 {
-                    Position = RTSettings.Instance.SavedWindowPositions[this.GetType().ToString()];
+                    Position = RTSettings.Instance.SavedWindowPositions[GetType().ToString()];
                 }
             }
 
@@ -113,7 +113,7 @@ namespace RemoteTech.UI
             // Block out user's camera & click inputs whenever user's cursor is within the RT window
             // In order to be effective, this is required BEFORE any GUI drawing. I tried the one that is after drawing and it doesn't work
             InputLockManager.RemoveControlLock("RTUserLockAbstractWindow");
-            if (this.backupPosition.ContainsMouse())
+            if (backupPosition.ContainsMouse())
             {
                 InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | // block scrolling through
                                                 ControlTypes.MAP | // block user's clicks on ship/planet/orbit elements
@@ -128,7 +128,7 @@ namespace RemoteTech.UI
         {
             if (Title != null)
             {
-                GUI.DragWindow(new Rect(0, 0, Single.MaxValue, 20));
+                GUI.DragWindow(new Rect(0, 0, float.MaxValue, 20));
             }
             Tooltip = GUI.tooltip;
         }
@@ -144,7 +144,7 @@ namespace RemoteTech.UI
 
             Position = GUILayout.Window(mGuid.GetHashCode(), Position, WindowPre, Title, Title == null ? Frame : HighLogic.Skin.window);
             
-            if (Title != null && this.mCloseButton)
+            if (Title != null && mCloseButton)
             {
                 if (GUI.Button(new Rect(Position.x + Position.width - 18, Position.y + 2, 16, 16), ""))
                 {
@@ -206,8 +206,8 @@ namespace RemoteTech.UI
 
         private void storePosition()
         {
-            RTSettings.Instance.SavedWindowPositions.Remove(this.GetType().ToString());
-            RTSettings.Instance.SavedWindowPositions.Add(this.GetType().ToString(), Position);
+            RTSettings.Instance.SavedWindowPositions.Remove(GetType().ToString());
+            RTSettings.Instance.SavedWindowPositions.Add(GetType().ToString(), Position);
         }
 
         /// <summary>
@@ -215,13 +215,13 @@ namespace RemoteTech.UI
         /// </summary>
         public void toggleWindow()
         {
-            if (this.Enabled)
+            if (Enabled)
             {
-                this.Hide();
+                Hide();
             }
             else
             {
-                this.Show();
+                Show();
             }
         }
     }
