@@ -19,56 +19,88 @@ After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wik
 
 The probe cores are otherwise unchanged from their [stock versions](http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods).
 
-## Omnidirectional Antennas
+## Overview
 
 {::comment}
 Yes, the non-breaking spaces are necessary. Without them, when printing the table on a narrow screen, browsers won't be smart enough to realize that notes is the only column that word-wraps well, and will try to create eye-wrenching entries like 2500
 km
 {:/comment}
 
-Part                | Cost | Mass            | Drag | Range          | Power Drain   | Notes
-:-------------------|-----:|:----------------|------|---------------:|:--------------|:------
-[Reflectron DP-10](#reflectron-dp-10) | 60   | 0.005&nbsp;tons | 0.2  |    500&nbsp;km | 0.01&nbsp;e/s | Activated on mission start. Not damaged by atmospheric flight
-[Communotron 16](#communotron-16) | 300  | 0.005&nbsp;tons | 0.2  |   2500&nbsp;km | 0.13&nbsp;e/s | 
-[CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 400  | 0.02&nbsp;tons  | 0.0  |   3000&nbsp;km | 0.18&nbsp;e/s | 
-[Communotron 32](#communotron-32) | 600  | 0.01&nbsp;tons  | 0.2  |   5000&nbsp;km | 0.6&nbsp;e/s  | 
-KSC Mission Control |      |                 |      | 75,000&nbsp;km |               | Command Station
+### Stock antennas
+
+Kerbal Space Program has a number of antennas available, which ranges and power consumptions vary widely.
+
+Antenna | Type | Cone angle (degree) | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s)
+--- | ---: | ---: | ---: | ---: | ---: | ---:
+Communotron 16-S | Omni | - | 300 | Yes | 1.50 | 0.02
+Communotron 16 | Omni | - | 300 | No | 2.50 | 0.13
+HG-5 High Gain Antenna | Dish | 90.00 | 600 | No | 20.00 | 0.55
+KSC Mission Control | Omni | - | - | - | 75.00 | - | -
+RA-2 Relay Antenna | Dish | 12.50 | 1,800 | Yes | 200.00 | 1.15
+RA-15 Relay Antenna | Dish | 0.25 | 2,400 | Yes | 10,000.00 | 1.10
+Communotron HG-55 | Dish | 0.12 | 1,200 | No | 25,000.00 | 1.04
+Communotron 88-88 | Dish | 0.06 | 1,500 | No | 40,000.00 | 0.93
+Communotron DTS-M1 | Dish | 45.00 | 900 | No | 50,000.00 | 0.82
+RA-100 Relay Antenna | Dish | 0.65 | 3,000 | Yes | 100,000.00 | 1.10
 {:.data}
 
-<!--All science transmissions with stock or RemoteTech antennas cost 7.5 charge per Mit, and they all drain 50 charge per second while transmitting science. This is in addition to the power drain listed in the table, which is for keeping the antenna active and searching for links.-->
+### RemoteTech antennas
 
-### Reflectron DP-10
+RemoteTech integrates the additional antennas into Kerbal Space Program. Among these antennas, the antenna, Reflectron DP-10, is the cheapest one while the Reflectron GX-128 wields the power so immense that a crash-party video can be streamed directly to Eeloo from Moho.
+
+Antenna | Type | Cone angle (degree) | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s)
+--- | ---: | ---: | ---: | ---: | ---: | ---:
+Reflectron DP-10 | Omni | - | 60 | Yes | 0.50 | 0.01
+CommTech EXP-VR-2T | Omni | - | 400 | No | 3.00 | 0.18
+Communotron 32 | Omni | - | 600 | No | 5.00 | 0.60
+Reflectron KR-7 | Dish | 25.00 | 800 | Yes | 90.00 | 0.82
+Reflectron KR-14 | Dish | 0.04 | 2,000 | Yes | 60,000.00 | 0.93 
+CommTech-1 | Dish | 0.01 | 9,500 | Yes | 350,000.00 | 2.60
+Reflectron GX-128 | Dish | 0.01 | 11,000 | No | 400,000.00 | 2.80
+{:.data}
+
+## Omnidirectional Antennas
+
+The following list is of all stock and RemoteTech antennas of the omnidirectional type.
+
+Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
+--- | ---: | ---: | ---: | ---: | ---: | ---
+[Reflectron DP-10](#reflectron-dp-10) | 60 | Yes | 0.50 | 0.01 | Activated by default
+[Communotron 16-S](#communotron-16-s) | 300 | Yes | 1.50 | 0.02 | Activated by default
+[Communotron 16](#communotron-16) | 300 | No | 2.50 | 0.13 | 
+[CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 400 | No | 3.00 | 0.18 | 
+[Communotron 32](#communotron-32) | 600 | No | 5.00 | 0.60 | Upgraded version of Communotron 16
+[KSC Mission Control](#mission-control) | - | - | 75.00 | - | - | Kerbin's Command Station
+{:.data}
+
+#### Reflectron DP-10
 
 <div class="antenna" markdown="1">
 
 ![Picture of Reflectron DP-10](antenna_dp10_B.png)
 
-The Reflectron DP-10 is a lightweight omnidirectional antenna. Its omnidirectional nature and its ability to function in atmosphere even at high speeds make it an excellent choice for launches and landings, but its short range means it rapidly becomes useless outside low Kerbin orbit. Unlike other antennas, the DP-10 is active by default, although this state can be toggled in the antenna's right-click menu.
+**Summary**
+SOME SENTENCE
 {:.blurb}
 
 |Basic Properties
 --------------------|-------------------
 Tech to Unlock      | [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control)
-VAB Category        | Science Parts
-Manufacturer        | Parabolic Industries
 Cost                | 60
 Mass                | 0.005 tons
-Length              | 1.375 m
-Drag                | 0.2
 Comlink power       | 0.01 charge/s
-Science power       | 50 charge/s
 Science efficiency  | 7.5 charge/Mit
 {:.basic}
 
 |Transmission Properties
 --------------------------------------|-------------------
 Maximum Range                         | 500 km
-Reach                                 | Any line of sight to KSC Mission Control, if below 150 km altitude
+Reachability                          | Any line of sight to KSC Mission Control, if below 150 km altitude
 {:.xmit}
 
-|Atmosphere Performance
+|Atmosphere Safety
 |------------------------------------
-|Does not break in atmospheric flight.
+|Does not break off in flight.
 {:.atm}
 
 ---------------
@@ -205,18 +237,22 @@ Yes, the non-breaking spaces are necessary. Without them, when printing the tabl
 km
 {:/comment}
 
-Antenna           | Cost | Mass            | Drag | Cone | Range          | Power Drain   | Notes
-:-----------------|-----:|:----------------|------|:-----------|---------------:|:--------------|:------
-[Comms DTS-M1](#comms-dts-m1) | 600  | 0.03&nbsp;tons  | 0.2  | 45&deg;    | 50,000&nbsp;km | 0.82&nbsp;e/s | 
-[Reflectron KR-7](#reflectron-kr-7) | 800  | 0.5&nbsp;tons   | 0.2  | 25&deg;    | 90,000&nbsp;km | 0.82&nbsp;e/s | Not damaged by atmospheric flight
-[Communotron 88-88](#communotron-88-88) | 1100  | 0.025&nbsp;tons | 0.2  | 0.06&deg;  | 40M&nbsp;km    | 0.93&nbsp;e/s | 
-[Reflectron KR-14](#reflectron-kr-14) | 2000  | 1.0&nbsp;tons   | 0.2  | 0.04&deg;  | 60M&nbsp;km    | 0.93&nbsp;e/s | Not damaged by atmospheric flight
-[CommTech-1](#commtech-1) | 9500  | 1.0&nbsp;tons   | 0.2  | 0.006&deg; | 350M&nbsp;km   | 2.6&nbsp;e/s  | Not damaged by atmospheric flight
-[Reflectron GX-128](#reflectron-gx-128) | 11000  | 0.5&nbsp;tons   | 0.2  | 0.005&deg; | 400M&nbsp;km   | 2.8&nbsp;e/s  | 
-{:.data}
+The following list is of all stock and RemoteTech antennas of the dish type.
 
-**Warning:** the Reflectron SS-5 and Reflectron LL-5 are legacy parts included for backward compatibility. Do not use these parts in new spacecraft, as they will be removed in an upcoming release of RemoteTech.
-{: .alert}
+Antenna | Cone angle (degree) | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
+--- | ---: | ---: | ---: | ---: | ---: | ---
+[HG-5 High Gain Antenna](#hg-5) | 90.00 | 600 | No | 20.00 | 0.55 | 
+[Reflectron KR-7](#reflectron-kr-7) | 25.00 | 800 | Yes | 90.00 | 0.82 | 
+[RA-2 Relay Antenna](#ra-2) | 12.50 | 1,800 | Yes | 200.00 | 1.15 | 
+[RA-15 Relay Antenna](#ra-15) | 0.25 | 2,400 | Yes | 10,000.00 | 1.10 | 
+[Communotron HG-55](#communotron-hg-55) | 0.12 | 1,200 | No | 25,000.00 | 1.04 | 
+[Communotron 88-88](#communotron-88-88) | 0.06 | 1,500 | No | 40,000.00 | 0.93 | 
+[Communotron DTS-M1](#communotron-dts-m1) | 45.00 | 900 | No | 50,000.00 | 0.82 | 
+[Reflectron KR-14](#reflectron-kr-14) | 0.04 | 2,000 | Yes | 60,000.00 | 0.93  | 
+[RA-100 Relay Antenna](#ra-100) | 0.65 | 3,000 | Yes | 100,000.00 | 1.10 | 
+[CommTech-1](#commtech-1) | 0.01 | 9,500 | Yes | 350,000.00 | 2.60 | 
+[Reflectron GX-128](#reflectron-gx-128) | 0.01 | 11,000 | No | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbal System
+{:.data}
 
 ### Comms DTS-M1
 
