@@ -19,6 +19,8 @@ After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wik
 
 The probe cores are otherwise unchanged from their [stock versions](http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods).
 
+<hr>
+
 ## Overview
 
 {::comment}
@@ -59,6 +61,8 @@ CommTech-1 | Dish | 0.01 | 9,500 | Yes | 350,000.00 | 2.60
 Reflectron GX-128 | Dish | 0.01 | 11,000 | No | 400,000.00 | 2.80
 {:.data}
 
+<hr>
+
 ## Omnidirectional Antennas
 
 The following list is of all stock and RemoteTech antennas of the omnidirectional type.
@@ -70,7 +74,7 @@ Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
 [Communotron 16](#communotron-16) | 300 | No | 2.50 | 0.13 | 
 [CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 400 | No | 3.00 | 0.18 | 
 [Communotron 32](#communotron-32) | 600 | No | 5.00 | 0.60 | Upgraded version of Communotron 16
-[KSC Mission Control](#mission-control) | - | - | 75.00 | - | - | Kerbin's Command Station
+[KSC Mission Control](#mission-control) | - | - | 75.00 | - | Kerbin's Command Station
 {:.data}
 
 #### Reflectron DP-10
@@ -229,6 +233,8 @@ Minimum safe altitude at 2300 m/s   | 35 km
 ---------------
 
 </div>
+
+<hr>
 
 ## Dish Antennas
 
