@@ -19,7 +19,7 @@ After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wik
 
 The probe cores are otherwise unchanged from their [stock versions](http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods).
 
-<hr>
+<hr size="3">
 
 ## Overview
 
@@ -37,7 +37,7 @@ Antenna | Type | Cone angle (degree) | Cost | Atmosphere safe | Range (Mm) | Pow
 Communotron 16-S | Omni | - | 300 | Yes | 1.50 | 0.02
 Communotron 16 | Omni | - | 300 | No | 2.50 | 0.13
 HG-5 High Gain Antenna | Dish | 90.00 | 600 | No | 20.00 | 0.55
-KSC Mission Control | Omni | - | - | - | 75.00 | - | -
+KSC Mission Control | Omni | - | - | - | 75.00 | -
 RA-2 Relay Antenna | Dish | 12.50 | 1,800 | Yes | 200.00 | 1.15
 RA-15 Relay Antenna | Dish | 0.25 | 2,400 | Yes | 10,000.00 | 1.10
 Communotron HG-55 | Dish | 0.12 | 1,200 | No | 25,000.00 | 1.04
@@ -61,7 +61,7 @@ CommTech-1 | Dish | 0.01 | 9,500 | Yes | 350,000.00 | 2.60
 Reflectron GX-128 | Dish | 0.01 | 11,000 | No | 400,000.00 | 2.80
 {:.data}
 
-<hr>
+<hr size="3">
 
 ## Omnidirectional Antennas
 
@@ -234,7 +234,7 @@ Minimum safe altitude at 2300 m/s   | 35 km
 
 </div>
 
-<hr>
+<hr size="3">
 
 ## Dish Antennas
 
@@ -516,3 +516,4 @@ Minimum safe altitude at 2300 m/s   | 32 km
 ---------------
 
 </div>
+<br/>
