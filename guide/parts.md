@@ -217,44 +217,38 @@ Reach | Low Kerbin Orbit
 
 </div>
 
-### Communotron 32
-
 <div class="antenna" markdown="1">
+
+### Communotron 32
 
 ![Picture of Communotron 32](antenna_com32.png)
 
-The Communotron 32 is the most powerful omnidirectional antenna available in RemoteTech, capable of reaching past keosynchronous orbit and filling many moons' spheres of influence. However, it consumes a lot of energy when active, nearly as much as the low-end dishes.
+**Bill Kerman's notes**
+
+The Communotron 32 is the most powerful omnidirectional antenna available and capable of reaching kerbisynchronous equatorial orbits of almost 3 Mm. However, a large area of solar panels is required to satisfy the antenna's high energy demand, which is nearly as much as the low-tier dishes. Also, it is significantly larger than its cousin, the Communotron 16.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
-VAB Category        | Science Parts
-Manufacturer        | Ionic Protonic Electronics
-Cost                | 600
-Mass                | 0.01 tons
-Length              | 3 m
-Drag                | 0.2
-Comlink power       | 0.6 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [High-Power Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#High-Power_Electrics)
+Cost | 600
+Mass | 0.01 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 5000 km
-Reach                                 | Near-Kerbin space, synchronous orbit
+| Transmission Properties
+| ---
+Comlink power | 0.60 charge/s
+Science efficiency | 7.50 charge/Mit
+Maximum Range | 5,000 km
+Reach | Near-Kerbin space, synchronous orbit
 {:.xmit}
 
-|Atmosphere Performance
-------------------------------------|-------------------
-Maximum ram pressure when deployed  | 3 kN/m<sup>2</sup>
-Maximum safe speed at sea level     | 70 m/s
-Maximum safe speed at 10 km         | 190 m/s
-Minimum safe altitude at 2300 m/s   | 35 km
+| Atmosphere Safety
+| ---
+|Tear off in flight.
 {:.atm}
 
----------------
+---
 
 </div>
 
