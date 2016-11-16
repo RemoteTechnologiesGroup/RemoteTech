@@ -182,44 +182,38 @@ Reach | Low Kerbin Orbit
 
 </div>
 
-### CommTech EXP-VR-2T
-
 <div class="antenna" markdown="1">
+
+### CommTech EXP-VR-2T
 
 ![Picture of EXP-VR-2T](antenna_expvr2t.png)
 
-The CommTech EXP-VR-2T is an advanced antenna unlocked late in the tech tree. It is mounted on an extendable boom, making it much more compact than the Communotron 16 when retracted, but somewhat larger when deployed. It is slightly more powerful than the Communotron 16.
+**Bill Kerman's notes**
+
+The CommTech EXP-VR-2T is an advanced antenna unlocked late in the technology tree. Mounted on an extendable boom, the antenna is more compact than the Communotron 16 in a retracted state, but larger when deployed. Although it is inferior to the Communotron 32 in terms of maximum range, the CommTech EXP-VR-2T's comlink is incredibly efficient.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
-VAB Category        | Science Parts
-Manufacturer        | AIES Aerospace
-Cost                | 400
-Mass                | 0.005 tons
-Length              | 2 m
-Drag                | 0.2
-Comlink power       | 0.13 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Specialized_Electrics)
+Cost | 500
+Mass | 0.02 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 3000 km
-Reach                                 | Low Kerbin Orbit
+| Transmission Properties
+| ---
+Comlink power | 0.18 charge/s
+Science efficiency | 7.50 charge/Mit
+Maximum Range | 3,000 km
+Reach | Low Kerbin Orbit
 {:.xmit}
 
-|Atmosphere Performance
-------------------------------------|-------------------
-Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level     | 99 m/s
-Maximum safe speed at 10 km         | 269 m/s
-Minimum safe altitude at 2300 m/s   | 32 km
+| Atmosphere Safety
+| ---
+|Tear off in flight.
 {:.atm}
 
----------------
+---
 
 </div>
 
