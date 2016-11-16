@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Settings;
 using RemoteTech.Modules;
 using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;
@@ -312,6 +313,63 @@ namespace RemoteTech
         public void togglePower(bool powerswitch)
         {
             this.AntennaActivated = powerswitch;
+        }
+
+        /// <summary>
+        /// Adds a new ground station to the list. 
+        /// </summary>
+        /// <param name="name">Name of the ground station</param>
+        /// <param name="latitude">Latitude position</param>
+        /// <param name="longitude">Longitude position</param>
+        /// <param name="height">Height above sea level</param>
+        /// <param name="body">Reference body 1=Kerbin etc...</param>
+        /// <returns>A new <see cref="System.Guid"/> if a new station was successfully added otherwise a Guid.Empty.</returns>
+        public Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
+        {
+            RTLog.Notify("Trying to add ground station({0})", RTLogLevel.LVL1, name);
+
+            var newGroundStation = new MissionControlSatellite();
+            newGroundStation.SetDetails(name, latitude, longitude, height, body);
+
+            //
+            var groundStations = RTSettings.Instance.GroundStations;
+
+
+            // Already on the list?
+            var foundGroundStation = groundStations.FirstOrDefault(ms => ms.GetDetails().Equals(newGroundStation.GetDetails()));
+            if (foundGroundStation != null)
+            {
+                RTLog.Notify("Ground station already exists!");
+                return System.Guid.Empty;
+            }
+
+            groundStations.Add(newGroundStation);
+            RTSettings.Instance.Save();
+
+            return newGroundStation.mGuid;
+        }
+
+        /// <summary>Removes a ground station from the list by its unique <paramref name="stationid"/>.</summary>
+        /// <param name="stationid">Unique ground station id</param>
+        /// <returns>Returns true for a successful removed station, otherwise false.</returns>
+        public bool RemoveGroundStation(Guid stationid)
+        {
+            RTLog.Notify("Trying to remove ground station {0}", RTLogLevel.LVL1, stationid);
+
+            var groundStations = RTSettings.Instance.GroundStations;
+            for (var i = 0; i < groundStations.Count; i++)
+            {
+                if (!groundStations[i].mGuid.Equals(stationid))
+                    continue;
+
+                RTLog.Notify("Removing {0} ", RTLogLevel.LVL1, groundStations[i].GetName());
+                groundStations.RemoveAt(i);
+                RTSettings.Instance.Save();
+                return true;
+            }
+
+            RTLog.Notify("Cannot find station {0}", RTLogLevel.LVL1, stationid);
+            return false;
         }
     }
 }

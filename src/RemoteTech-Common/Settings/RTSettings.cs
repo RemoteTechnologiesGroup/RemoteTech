@@ -253,57 +253,5 @@ namespace RemoteTech.Common.Settings
 
             return successLoadPreSet?newPreSetSettings: previousSettings;
         }
-
-        /// <summary>
-        /// Adds a new ground station to the list. 
-        /// </summary>
-        /// <param name="name">Name of the ground station</param>
-        /// <param name="latitude">Latitude position</param>
-        /// <param name="longitude">Longitude position</param>
-        /// <param name="height">Height above sea level</param>
-        /// <param name="body">Reference body 1=Kerbin etc...</param>
-        /// <returns>A new <see cref="Guid"/> if a new station was successfully added otherwise a Guid.Empty.</returns>
-        public Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
-        {
-            RTLog.Notify("Trying to add ground station({0})", RTLogLevel.LVL1, name);
-
-            var newGroundStation = new MissionControlSatellite();
-            newGroundStation.SetDetails(name, latitude, longitude, height, body);
-
-            // Already on the list?
-            var foundGroundStation = GroundStations.FirstOrDefault(ms => ms.GetDetails().Equals(newGroundStation.GetDetails()));
-            if (foundGroundStation != null)
-            {
-                RTLog.Notify("Ground station already exists!");
-                return Guid.Empty;
-            }
-
-            GroundStations.Add(newGroundStation);
-            Save();
-
-            return newGroundStation.mGuid;
-        }
-
-        /// <summary>Removes a ground station from the list by its unique <paramref name="stationid"/>.</summary>
-        /// <param name="stationid">Unique ground station id</param>
-        /// <returns>Returns true for a successful removed station, otherwise false.</returns>
-        public bool RemoveGroundStation(Guid stationid)
-        {
-            RTLog.Notify("Trying to remove ground station {0}", RTLogLevel.LVL1, stationid);
-
-            for (var i = 0; i < GroundStations.Count; i++)
-            {
-                if (!GroundStations[i].mGuid.Equals(stationid))
-                    continue;
-
-                RTLog.Notify("Removing {0} ", RTLogLevel.LVL1, GroundStations[i].GetName());
-                GroundStations.RemoveAt(i);
-                Save();
-                return true;
-            }
-
-            RTLog.Notify("Cannot find station {0}", RTLogLevel.LVL1, stationid);
-            return false;
-        }
     }
 }
