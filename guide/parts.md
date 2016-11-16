@@ -77,33 +77,33 @@ Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
 [KSC Mission Control](#mission-control) | - | - | 75.00 | - | Kerbin's Command Station
 {:.data}
 
-#### Reflectron DP-10
-
 <div class="antenna" markdown="1">
+
+#### Reflectron DP-10
 
 ![Picture of Reflectron DP-10](antenna_dp10_B.png)
 
-**Summary**
-SOME SENTENCE
+**Bill Kerman's notes**
+The Reflectron DP-10 is a lightweight and cheap antenna. Its omnidirectional nature and its high-speed surivial in atmosphere make it an excellent choice for launches and landings. However, its short range rapidly renders it useless outside low Kerbin orbits.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Flight Control](http://wiki.kerbalspaceprogram.com/wiki/Flight_Control)
+| Basic Properties
+--- | ---
+Tech to Unlock      | [Start](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Start)
 Cost                | 60
-Mass                | 0.005 tons
-Comlink power       | 0.01 charge/s
-Science efficiency  | 7.5 charge/Mit
+Mass                | 0.015 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 500 km
-Reachability                          | Any line of sight to KSC Mission Control, if below 150 km altitude
+| Transmission Properties
+| ---
+Comlink power | 0.01 charge/s
+Science efficiency | 7.50 charge/Mit
+Maximum Range | 500 km
+Reach | Any line of sight to Mission Control under 150 km altitude
 {:.xmit}
 
-|Atmosphere Safety
-|------------------------------------
+| Atmosphere Safety
+| ---
 |Does not break off in flight.
 {:.atm}
 
@@ -516,4 +516,3 @@ Minimum safe altitude at 2300 m/s   | 32 km
 ---------------
 
 </div>
-<br/>
