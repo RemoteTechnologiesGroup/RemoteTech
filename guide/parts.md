@@ -74,7 +74,7 @@ Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
 [Communotron 16](#communotron-16) | 300 | No | 2.50 | 0.13 | 
 [CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 400 | No | 3.00 | 0.18 | 
 [Communotron 32](#communotron-32) | 600 | No | 5.00 | 0.60 | Upgraded version of Communotron 16
-[KSC Mission Control](#mission-control) | - | - | 75.00 | - | Kerbin's Command Station
+[KSC Mission Control](#ksc-mission-control) | - | - | 75.00 | - | Kerbin's Command Station
 {:.data}
 
 <div class="antenna" markdown="1">
@@ -246,6 +246,41 @@ Reach | Near-Kerbin space, synchronous orbit
 | Atmosphere Safety
 | ---
 |Tear off in flight.
+{:.atm}
+
+---
+
+</div>
+
+<div class="antenna" markdown="1">
+
+### KSC Mission Control
+
+![Picture of KSC Mission Control](ksc_mission_control.png)
+
+**Bill Kerman's notes**
+
+At the Kerbal Space Center, the Mission Control establishes and maintains connections through the Tracking Station with every antenna-equipped vessel in the Kerbol system. Moreover, it acts as a permanent command station to issue commands to an unmanned probe over its working connection.
+{:.blurb}
+
+| Basic Properties
+--- | ---
+Tech to Unlock | -
+Cost | -
+Mass | Immeasurable
+{:.basic}
+
+| Transmission Properties
+| ---
+Comlink power | -
+Science efficiency | -
+Maximum Range | 75,000 km
+Reach | Kerbin's two moons, Mun and Minmus
+{:.xmit}
+
+| Atmosphere Safety
+| ---
+| -
 {:.atm}
 
 ---
