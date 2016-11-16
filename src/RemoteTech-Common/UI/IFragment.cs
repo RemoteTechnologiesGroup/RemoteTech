@@ -1,6 +1,6 @@
-﻿namespace RemoteTech.UI
+﻿namespace RemoteTech.Common.UI
 {
-    interface IFragment
+    public interface IFragment
     {
         void Draw();
     }
