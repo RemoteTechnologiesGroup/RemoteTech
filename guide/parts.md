@@ -108,7 +108,38 @@ Reach | Any line of sight to Mission Control under 150 km altitude
 |Does not break off in flight.
 {:.atm}
 
----------------
+</div>
+
+<div class="antenna" markdown="1">
+
+### Communotron 16-S
+
+![Picture of Communotron 16-S](antenna_com16s.png)
+
+**Bill Kerman's notes**
+
+The Communotron 16-S is a surface mount version of the [Communotron 16](#communotron-16), in which this antenna will not break off during a high-speed flight. However, the trade-off for this survival is a reduction in its range. Along with the Communotron 16, it forms the backbone of most players' low-orbit communications networks until the CommTech EXP-VR-2T and Communotron 32 are researched.
+{:.blurb}
+
+| Basic Properties
+--- | ---
+Tech to Unlock      | [Engineering 101](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Engineering_101)
+Cost                | 300
+Mass                | 0.015 tons
+{:.basic}
+
+| Transmission Properties
+| ---
+Comlink power | 0.02 charge/s
+Science efficiency | 7.50 charge/Mit
+Maximum Range | 1,500 km
+Reach | Low Kerbin Orbit
+{:.xmit}
+
+| Atmosphere Safety
+| ---
+|Does not break off in flight.
+{:.atm}
 
 </div>
 
