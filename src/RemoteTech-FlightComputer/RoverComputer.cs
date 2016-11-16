@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RemoteTech.Common;
 using RemoteTech.Common.Utils;
 using UnityEngine;
 
@@ -9,46 +10,46 @@ namespace RemoteTech.FlightComputer
 {
     public class RoverComputer
     {
-        private Vessel mVessel;
-        private RoverPIDController mThrottlePID, mWheelPID;
+        private Vessel _vessel;
+        private readonly RoverPIDController _throttlePid;
+        private readonly RoverPIDController _wheelPid;
 
-        private float
-            mRoverAlt,
-            mRoverLat,
-            mRoverLon,
-            mTargetLat,
-            mTargetLon,
-            brakeDist;
+        private float _roverAltitude;
+        private float _roverLatitude;
+        private float _roverLongitude;
+        private float _targetLatitude;
+        private float _targetLongitude;
+        private float _brakeDistance;
 
-        private Quaternion mRoverRot;
+        private Quaternion _roverRotation;
 
-        private Vector3 ForwardAxis;
+        private Vector3 _forwardAxis;
 
         public float Delta { get; private set; }
         public float DeltaT { get; private set; }
 
         public RoverComputer()
         {
-            mThrottlePID = new RoverPIDController(10f, 1e-5F, 1e-5F, -1f, 1f);
-            mWheelPID = new RoverPIDController(10f, 1e-5F, 1e-5F, -1f, 1f, 5f);
+            _throttlePid = new RoverPIDController(10f, 1e-5F, 1e-5F, -1f, 1f);
+            _wheelPid = new RoverPIDController(10f, 1e-5F, 1e-5F, -1f, 1f, 5f);
         }
 
         public void SetVessel(Vessel v)
         {
-            mVessel = v;
+            _vessel = v;
         }
 
         private float RoverHDG
         {
             get
             {
-                Vector3d up = (mVessel.CoM - mVessel.mainBody.position).normalized;
-                Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
+                var up = (_vessel.CoM - _vessel.mainBody.position).normalized;
+                var north = Vector3d.Exclude(up, (_vessel.mainBody.position + _vessel.mainBody.transform.up * (float)_vessel.mainBody.Radius) - _vessel.CoM).normalized;
 
-                if (ForwardAxis == Vector3.zero)
-                    return GetHeading(mVessel.srf_velocity.normalized, up, north);
-                else
-                    return GetHeading(mVessel.ReferenceTransform.TransformDirection(ForwardAxis), up, north);
+                if (_forwardAxis == Vector3.zero)
+                    return GetHeading(_vessel.srf_velocity.normalized, up, north);
+
+                return GetHeading(_vessel.ReferenceTransform.TransformDirection(_forwardAxis), up, north);
             }
         }
 
@@ -56,156 +57,148 @@ namespace RemoteTech.FlightComputer
         {
             get
             {
-                Vector3d up = (mVessel.CoM - mVessel.mainBody.position).normalized;
-                Vector3d north = Vector3d.Exclude(up, (mVessel.mainBody.position + mVessel.mainBody.transform.up * (float)mVessel.mainBody.Radius) - mVessel.CoM).normalized;
-                return GetHeading((TargetPos - mVessel.CoM).normalized, up, north);
+                var up = (_vessel.CoM - _vessel.mainBody.position).normalized;
+                var north = Vector3d.Exclude(up, (_vessel.mainBody.position + _vessel.mainBody.transform.up * (float)_vessel.mainBody.Radius) - _vessel.CoM).normalized;
+                return GetHeading((TargetPos - _vessel.CoM).normalized, up, north);
             }
         }
 
-        private Vector3 TargetPos
-        {
-            get
-            {
-                return mVessel.mainBody.GetWorldSurfacePosition(mTargetLat, mTargetLon, mVessel.altitude);
-            }
-        }
+        private Vector3 TargetPos => _vessel.mainBody.GetWorldSurfacePosition(_targetLatitude, _targetLongitude, _vessel.altitude);
 
-        private Vector3 RoverOrigPos
-        {
-            get
-            {
-                return mVessel.mainBody.GetWorldSurfacePosition(mRoverLat, mRoverLon, mRoverAlt);
-            }
-        }
+        private Vector3 RoverOrigPos => _vessel.mainBody.GetWorldSurfacePosition(_roverLatitude, _roverLongitude, _roverAltitude);
 
         private float RoverSpeed
         {
             get
             {
-                if (ForwardAxis == Vector3.zero)
-                    return (float)mVessel.srf_velocity.magnitude;
-                else
-                    return Vector3.Dot(mVessel.srf_velocity, mVessel.ReferenceTransform.TransformDirection(ForwardAxis));
+                if (_forwardAxis == Vector3.zero)
+                    return (float)_vessel.srf_velocity.magnitude;
+
+                return Vector3.Dot(_vessel.srf_velocity, _vessel.ReferenceTransform.TransformDirection(_forwardAxis));
             }
         }
 
-        public void InitMode(RemoteTech.FlightComputer.Commands.DriveCommand dc)
+        public void InitMode(Commands.DriveCommand dc)
         {
-            if (mVessel == null) {
-                MonoBehaviour.print("mVessel was null!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if (_vessel == null) {
+                RTLog.Notify("RoverComputer.InitMode(): vessel is null!", RTLogLevel.LVL4);
+                return;
             }
 
-            ForwardAxis = Vector3.zero;
-            mRoverAlt = (float)mVessel.altitude;
-            mRoverLat = (float)mVessel.latitude;
-            mRoverLon = (float)mVessel.longitude;
+            _forwardAxis = Vector3.zero;
+            _roverAltitude = (float)_vessel.altitude;
+            _roverLatitude = (float)_vessel.latitude;
+            _roverLongitude = (float)_vessel.longitude;
             Delta = 0;
             DeltaT = 0;
-            brakeDist = 0;
+            _brakeDistance = 0;
 
             switch (dc.mode) {
-                case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Turn:
-                    mRoverRot = mVessel.ReferenceTransform.rotation;
+                case Commands.DriveCommand.DriveMode.Turn:
+                    _roverRotation = _vessel.ReferenceTransform.rotation;
                     break;
-                case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Distance:
-                    mWheelPID.setClamp(-1, 1);
+                case Commands.DriveCommand.DriveMode.Distance:
+                    _wheelPid.setClamp(-1, 1);
                     break;
-                case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.DistanceHeading:
-                    mWheelPID.setClamp(-dc.steering, dc.steering);
+                case Commands.DriveCommand.DriveMode.DistanceHeading:
+                    _wheelPid.setClamp(-dc.steering, dc.steering);
                     break;
-                case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Coord:
-                    mWheelPID.setClamp(-dc.steering, dc.steering);
-                    mTargetLat = dc.target;
-                    mTargetLon = dc.target2;
+                case Commands.DriveCommand.DriveMode.Coord:
+                    _wheelPid.setClamp(-dc.steering, dc.steering);
+                    _targetLatitude = dc.target;
+                    _targetLongitude = dc.target2;
                     break;
             }
-            mThrottlePID.Reset();
-            mWheelPID.Reset();
-            mVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, false);
+            _throttlePid.Reset();
+            _wheelPid.Reset();
+            _vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, false);
         }
 
-        public bool Drive(RemoteTech.FlightComputer.Commands.DriveCommand dc, FlightCtrlState fs)
+        public bool Drive(Commands.DriveCommand dc, FlightCtrlState fs)
         {
-            if (dc != null) {
-                if (mVessel.srf_velocity.magnitude > 0.5) {
-                    float degForward = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.forward)));
-                    float degUp = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.up)));
-                    float degRight = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(mVessel.srf_velocity, mVessel.ReferenceTransform.right)));
-
-                    if (degForward < degUp && degForward < degRight)
-                        ForwardAxis = Vector3.forward;
-                    else if (degRight < degUp && degRight < degForward)
-                        ForwardAxis = Vector3.right;
-                    else
-                        ForwardAxis = Vector3.up;
-                }
-
-                switch (dc.mode) {
-                    case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Turn:
-                        return Turn(dc, fs);
-                    case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Distance:
-                        return Distance(dc, fs);
-                    case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.DistanceHeading:
-                        return DistanceHeading(dc, fs);
-                    case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Coord:
-                        return Coord(dc, fs);
-                }
+            if (dc == null)
                 return true;
+
+            if (_vessel.srf_velocity.magnitude > 0.5) {
+                var degForward = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(_vessel.srf_velocity, _vessel.ReferenceTransform.forward)));
+                var degUp = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(_vessel.srf_velocity, _vessel.ReferenceTransform.up)));
+                var degRight = Mathf.Abs(ClampUtil.ClampDegrees90(Vector3.Angle(_vessel.srf_velocity, _vessel.ReferenceTransform.right)));
+
+                if (degForward < degUp && degForward < degRight)
+                    _forwardAxis = Vector3.forward;
+                else if (degRight < degUp && degRight < degForward)
+                    _forwardAxis = Vector3.right;
+                else
+                    _forwardAxis = Vector3.up;
+            }
+
+            switch (dc.mode) {
+                case Commands.DriveCommand.DriveMode.Turn:
+                    return Turn(dc, fs);
+                case Commands.DriveCommand.DriveMode.Distance:
+                    return Distance(dc, fs);
+                case Commands.DriveCommand.DriveMode.DistanceHeading:
+                    return DistanceHeading(dc, fs);
+                case Commands.DriveCommand.DriveMode.Coord:
+                    return Coord(dc, fs);
             }
             return true;
         }
 
-        private bool Turn(RemoteTech.FlightComputer.Commands.DriveCommand dc, FlightCtrlState fs)
+        private bool Turn(Commands.DriveCommand dc, FlightCtrlState fs)
         {
-            Delta = Math.Abs(Quaternion.Angle(mRoverRot, mVessel.ReferenceTransform.rotation));
-            DeltaT = Delta / mVessel.GetComponent<Rigidbody>().angularVelocity.magnitude;
-            if (Delta < dc.target) {
-                fs.wheelThrottle = mThrottlePID.Control(dc.speed - RoverSpeed);
+            Delta = Math.Abs(Quaternion.Angle(_roverRotation, _vessel.ReferenceTransform.rotation));
+            DeltaT = Delta / _vessel.GetComponent<Rigidbody>().angularVelocity.magnitude;
+            if (Delta < dc.target)
+            {
+                fs.wheelThrottle = _throttlePid.Control(dc.speed - RoverSpeed);
                 fs.wheelSteer = dc.steering;
                 return false;
-            } else {
-                fs.wheelThrottle = 0;
-                fs.wheelSteer = 0;
-                mVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
-                dc.mode = RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Off;
-                return true;
             }
+
+            fs.wheelThrottle = 0;
+            fs.wheelSteer = 0;
+            _vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+            dc.mode = Commands.DriveCommand.DriveMode.Off;
+            return true;
         }
 
-        private bool Distance(RemoteTech.FlightComputer.Commands.DriveCommand dc, FlightCtrlState fs)
+        private bool Distance(Commands.DriveCommand dc, FlightCtrlState fs)
         {
-            float speed = RoverSpeed;
-            Delta = Math.Abs(dc.target) - Vector3.Distance(RoverOrigPos, mVessel.CoM);
+            var speed = RoverSpeed;
+            Delta = Math.Abs(dc.target) - Vector3.Distance(RoverOrigPos, _vessel.CoM);
             DeltaT = Delta / Math.Abs(speed);
-            if (Delta > 0) {
-                fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed) - speed);
+            if (Delta > 0)
+            {
+                fs.wheelThrottle = _throttlePid.Control(BrakeSpeed(dc.speed, speed) - speed);
                 return false;
-            } else {
-                fs.wheelThrottle = 0;
-                fs.wheelSteer = 0;
-                mVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
-                dc.mode = RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Off;
-                return true;
             }
+
+            fs.wheelThrottle = 0;
+            fs.wheelSteer = 0;
+            _vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+            dc.mode = Commands.DriveCommand.DriveMode.Off;
+            return true;
         }
 
-        private bool DistanceHeading(RemoteTech.FlightComputer.Commands.DriveCommand dc, FlightCtrlState fs)
+        private bool DistanceHeading(Commands.DriveCommand dc, FlightCtrlState fs)
         {
-            float speed = RoverSpeed;
-            Delta = Math.Abs(dc.target) - Vector3.Distance(RoverOrigPos, mVessel.CoM);
+            var speed = RoverSpeed;
+            Delta = Math.Abs(dc.target) - Vector3.Distance(RoverOrigPos, _vessel.CoM);
             DeltaT = Delta / speed;
-            if (Delta > 0) {
-                fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed) - speed);
-                if (ForwardAxis != Vector3.zero)
-                    fs.wheelSteer = mWheelPID.Control(ClampUtil.AngleBetween(RoverHDG, dc.target2));
+            if (Delta > 0)
+            {
+                fs.wheelThrottle = _throttlePid.Control(BrakeSpeed(dc.speed, speed) - speed);
+                if (_forwardAxis != Vector3.zero)
+                    fs.wheelSteer = _wheelPid.Control(ClampUtil.AngleBetween(RoverHDG, dc.target2));
                 return false;
-            } else {
-                fs.wheelThrottle = 0;
-                fs.wheelSteer = 0;
-                mVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
-                dc.mode = RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Off;
-                return true;
             }
+
+            fs.wheelThrottle = 0;
+            fs.wheelSteer = 0;
+            _vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+            dc.mode = Commands.DriveCommand.DriveMode.Off;
+            return true;
         }
 
         public static float GetHeading(Vector3 dir, Vector3 up, Vector3 north)
@@ -215,36 +208,39 @@ namespace RemoteTech.FlightComputer
 
         private float BrakeSpeed(float speed, float actualSpeed)
         {
-            if (brakeDist == 0) {
-                if (DeltaT > actualSpeed / 2) {
+            if (Math.Abs(_brakeDistance) < float.Epsilon)
+            {
+                if (DeltaT > actualSpeed / 2)
+                {
                     return speed;
-                } else
-                    brakeDist = Delta;
+                }
+
+                _brakeDistance = Delta;
             }
-            return Math.Max(Math.Min(speed, (float)Math.Sqrt(Delta / brakeDist) * speed), speed / 10);
+            return Math.Max(Math.Min(speed, (float)Math.Sqrt(Delta / _brakeDistance) * speed), speed / 10);
         }
 
-        private bool Coord(RemoteTech.FlightComputer.Commands.DriveCommand dc, FlightCtrlState fs)
+        private bool Coord(Commands.DriveCommand dc, FlightCtrlState fs)
         {
-            float
-                deg = ClampUtil.AngleBetween(RoverHDG, TargetHDG),
-                speed = RoverSpeed;
+            var deg = ClampUtil.AngleBetween(RoverHDG, TargetHDG);
+            var speed = RoverSpeed;
 
-            Delta = Vector3.Distance(mVessel.CoM, TargetPos);
+            Delta = Vector3.Distance(_vessel.CoM, TargetPos);
             DeltaT = Delta / speed;
 
-            if (Delta > Math.Abs(deg) / 36) {
-                fs.wheelThrottle = mThrottlePID.Control(BrakeSpeed(dc.speed, speed) - speed);
-                if (ForwardAxis != Vector3.zero)
-                    fs.wheelSteer = mWheelPID.Control(deg);
+            if (Delta > Math.Abs(deg) / 36)
+            {
+                fs.wheelThrottle = _throttlePid.Control(BrakeSpeed(dc.speed, speed) - speed);
+                if (_forwardAxis != Vector3.zero)
+                    fs.wheelSteer = _wheelPid.Control(deg);
                 return false;
-            } else {
-                fs.wheelThrottle = 0;
-                fs.wheelSteer = 0;
-                mVessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
-                dc.mode = RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Off;
-                return true;
             }
+
+            fs.wheelThrottle = 0;
+            fs.wheelSteer = 0;
+            _vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
+            dc.mode = Commands.DriveCommand.DriveMode.Off;
+            return true;
         }
     }
 }
