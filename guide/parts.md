@@ -19,7 +19,7 @@ After the player develops [Unmanned Tech](http://wiki.kerbalspaceprogram.com/wik
 
 The probe cores are otherwise unchanged from their [stock versions](http://wiki.kerbalspaceprogram.com/wiki/Parts#Pods).
 
-<hr size="3">
+<hr>
 
 ## Overview
 
@@ -61,7 +61,7 @@ CommTech-1 | Dish | 0.01 | 9,500 | Yes | 350,000.00 | 2.60
 Reflectron GX-128 | Dish | 0.01 | 11,000 | No | 400,000.00 | 2.80
 {:.data}
 
-<hr size="3">
+<hr>
 
 ## Omnidirectional Antennas
 
@@ -234,7 +234,7 @@ Minimum safe altitude at 2300 m/s   | 35 km
 
 </div>
 
-<hr size="3">
+<hr>
 
 ## Dish Antennas
 

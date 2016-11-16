@@ -27,6 +27,7 @@ div.antenna table {
 /*	background-color: rgb(238,238,238);*/
 /*	border-color: rgb(227,227,227);*/
 	margin: 2px;
+	padding-bottom: 15px
 }
 
 div.antenna p.blurb {
