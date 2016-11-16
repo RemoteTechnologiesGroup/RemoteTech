@@ -18,7 +18,7 @@ namespace RemoteTech.FlightComputer.UI
         private readonly RoverFragment _roverFragment;
         private readonly QueueFragment _queueFragment;
         private bool _queueEnabled;
-        private readonly RemoteTech.FlightComputer.FlightComputer _flightComputer;
+        private readonly FlightComputer _flightComputer;
 
         private FragmentTab Tab
         {
@@ -39,7 +39,7 @@ namespace RemoteTech.FlightComputer.UI
             }
         }
 
-        public FlightComputerWindow(RemoteTech.FlightComputer.FlightComputer fc)
+        public FlightComputerWindow(FlightComputer fc)
             : base(Guid.NewGuid(), "FlightComputer", new Rect(100, 100, 0, 0), WindowAlign.Floating)
         {
             mSavePosition = true;
