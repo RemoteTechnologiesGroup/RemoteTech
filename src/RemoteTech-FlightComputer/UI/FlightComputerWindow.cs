@@ -1,8 +1,9 @@
 ﻿using System;
 using RemoteTech.Common.UI;
+using RemoteTech.UI;
 using UnityEngine;
 
-namespace RemoteTech.UI
+namespace RemoteTech.FlightComputer.UI
 {
     public class FlightComputerWindow : AbstractWindow
     {
@@ -12,56 +13,56 @@ namespace RemoteTech.UI
             Rover = 1,
         }
 
-        private FragmentTab mTab = FragmentTab.Attitude;
-        private readonly AttitudeFragment mAttitude;
-        private readonly RoverFragment mRover;
-        private readonly QueueFragment mQueue;
-        private bool mQueueEnabled;
-        private FlightComputer.FlightComputer mFlightComputer;
+        private FragmentTab _fragmentTab = FragmentTab.Attitude;
+        private readonly AttitudeFragment _attitudeFragment;
+        private readonly RoverFragment _roverFragment;
+        private readonly QueueFragment _queueFragment;
+        private bool _queueEnabled;
+        private readonly RemoteTech.FlightComputer.FlightComputer _flightComputer;
 
         private FragmentTab Tab
         {
             get
             {
-                return mTab;
+                return _fragmentTab;
             }
             set
             {
-                int NumberOfTabs = 2;
-                if ((int)value >= NumberOfTabs) {
-                    mTab = (FragmentTab)0;
-                } else if ((int)value < 0) {
-                    mTab = (FragmentTab)(NumberOfTabs - 1);
+                var numberOfTabs = Enum.GetNames(typeof(FragmentTab)).Length;
+                if ((int)value >= numberOfTabs) {
+                    _fragmentTab = 0;
+                } else if (value < 0) {
+                    _fragmentTab = (FragmentTab)(numberOfTabs - 1);
                 } else {
-                    mTab = value;
+                    _fragmentTab = value;
                 }
             }
         }
 
-        public FlightComputerWindow(FlightComputer.FlightComputer fc)
+        public FlightComputerWindow(RemoteTech.FlightComputer.FlightComputer fc)
             : base(Guid.NewGuid(), "FlightComputer", new Rect(100, 100, 0, 0), WindowAlign.Floating)
         {
             mSavePosition = true;
-            mFlightComputer = fc;
-            mAttitude = new AttitudeFragment(fc, () => OnQueue());
-            mRover = new RoverFragment(fc, () => OnQueue());
-            mQueue = new QueueFragment(fc);
-            mQueueEnabled = false;
+            _flightComputer = fc;
+            _attitudeFragment = new AttitudeFragment(fc, OnQueue);
+            _roverFragment = new RoverFragment(fc, OnQueue);
+            _queueFragment = new QueueFragment(fc);
+            _queueEnabled = false;
         }
 
         public override void Show()
         {
             base.Show();
-            mFlightComputer.OnActiveCommandAbort += mAttitude.Reset;
-            mFlightComputer.OnNewCommandPop += mAttitude.getActiveFlightMode;
+            _flightComputer.OnActiveCommandAbort += _attitudeFragment.Reset;
+            _flightComputer.OnNewCommandPop += _attitudeFragment.getActiveFlightMode;
 
-            mAttitude.getActiveFlightMode();
+            _attitudeFragment.getActiveFlightMode();
         }
 
         public override void Hide()
         {
-            mFlightComputer.OnActiveCommandAbort -= mAttitude.Reset;
-            mFlightComputer.OnNewCommandPop -= mAttitude.getActiveFlightMode;
+            _flightComputer.OnActiveCommandAbort -= _attitudeFragment.Reset;
+            _flightComputer.OnNewCommandPop -= _attitudeFragment.getActiveFlightMode;
             base.Hide();
         }
 
@@ -72,12 +73,12 @@ namespace RemoteTech.UI
             {
                 GUILayout.BeginHorizontal();
                 {
-                    switch (mTab) {
+                    switch (_fragmentTab) {
                         case FragmentTab.Attitude:
-                            mAttitude.Draw();
+                            _attitudeFragment.Draw();
                             break;
                         case FragmentTab.Rover:
-                            mRover.Draw();
+                            _roverFragment.Draw();
                             break;
                     }
                 }
@@ -91,8 +92,8 @@ namespace RemoteTech.UI
                     Tab++;
                 }
 
-                if (mQueueEnabled) {
-                    mQueue.Draw();
+                if (_queueEnabled) {
+                    _queueFragment.Draw();
                 } else {
                     GUILayout.BeginVertical();
                     {
@@ -108,16 +109,15 @@ namespace RemoteTech.UI
 
         private void OnQueue()
         {
-            mQueueEnabled = !mQueueEnabled;
-            if(mQueueEnabled)
+            _queueEnabled = !_queueEnabled;
+            if(_queueEnabled)
             {
-                this.Title = "Flight Computer: " + mFlightComputer.Vessel.vesselName.Substring(0, Math.Min(25, mFlightComputer.Vessel.vesselName.Length));
+                Title = "Flight Computer: " + _flightComputer.Vessel.vesselName.Substring(0, Math.Min(25, _flightComputer.Vessel.vesselName.Length));
             }
             else
             {
-                this.Title = "Flight Computer";
+                Title = "Flight Computer";
             }
-
         }
     }
 }
