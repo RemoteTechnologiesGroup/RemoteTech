@@ -20,6 +20,9 @@ div.antenna h3 {
 div.antenna img {
 	float: left;
 	clear: left;
+	min-height: 200px;
+	max-height: 400px;
+	max-width: 40%;
 	padding-right: 5px;
 }
 
