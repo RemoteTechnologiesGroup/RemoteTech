@@ -90,9 +90,9 @@ The Reflectron DP-10 is a lightweight and cheap antenna. Its omnidirectional nat
 
 | Basic Properties
 --- | ---
-Tech to Unlock      | [Start](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Start)
-Cost                | 60
-Mass                | 0.015 tons
+Tech to Unlock | [Start](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Start)
+Cost | 60
+Mass | 0.015 tons
 {:.basic}
 
 | Transmission Properties
@@ -107,6 +107,8 @@ Reach | Any line of sight to Mission Control under 150 km altitude
 | ---
 |Does not break off in flight.
 {:.atm}
+
+---------------
 
 </div>
 
@@ -123,9 +125,9 @@ The Communotron 16-S is a surface mount version of the [Communotron 16](#communo
 
 | Basic Properties
 --- | ---
-Tech to Unlock      | [Engineering 101](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Engineering_101)
-Cost                | 300
-Mass                | 0.015 tons
+Tech to Unlock | [Engineering 101](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Engineering_101)
+Cost | 300
+Mass | 0.015 tons
 {:.basic}
 
 | Transmission Properties
@@ -141,43 +143,37 @@ Reach | Low Kerbin Orbit
 |Does not break off in flight.
 {:.atm}
 
-</div>
+---------------
 
-### Communotron 16
+</div>
 
 <div class="antenna" markdown="1">
 
+### Communotron 16
+
 ![Picture of Communotron 16](antenna_com16.png)
 
-As in the stock game, the Communotron 16 is the starting omnidirectional antenna, essential for transmitting science from those early flights. It also forms the backbone of most players' low-orbit communications networks until the CommTech EXP-VR-2T and Communotron 32 are researched.
+The Communotron 16 is the versatile and lightweight antenna, essential for transmitting science from your early flights. Along with the Communotron 16-S, it forms the backbone of most players' low-orbit communications networks until the CommTech EXP-VR-2T and Communotron 32 are researched.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [None](http://wiki.kerbalspaceprogram.com/wiki/Start)
-VAB Category        | Science Parts
-Manufacturer        | Ionic Protonic Electronics
-Cost                | 300
-Mass                | 0.005 tons
-Length              | 1.5 m
-Drag                | 0.2
-Comlink power       | 0.13 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [Engineering 101](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Engineering_101)
+Cost | 300
+Mass | 0.005 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 2500 km
-Reach                                 | Low Kerbin Orbit
+| Transmission Properties
+| ---
+Comlink power | 0.13 charge/s
+Science efficiency | 7.50 charge/Mit
+Maximum Range | 2,500 km
+Reach | Low Kerbin Orbit
 {:.xmit}
 
-|Atmosphere Performance
-------------------------------------|-------------------
-Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level     | 99 m/s
-Maximum safe speed at 10 km         | 269 m/s
-Minimum safe altitude at 2300 m/s   | 32 km
+| Atmosphere Safety
+| ---
+|Tear off in flight.
 {:.atm}
 
 ---------------
