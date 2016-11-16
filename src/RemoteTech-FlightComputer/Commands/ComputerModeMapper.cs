@@ -1,4 +1,4 @@
-﻿using RemoteTech.UI;
+﻿using RemoteTech.FlightComputer.UI;
 
 namespace RemoteTech.FlightComputer.Commands
 {
