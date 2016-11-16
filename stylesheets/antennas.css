@@ -20,6 +20,9 @@ div.antenna h3 {
 div.antenna img {
 	float: left;
 	clear: left;
+	min-height: 200px;
+	max-height: 400px;
+	max-width: 40%;
 	padding-right: 5px;
 }
 
@@ -46,21 +49,24 @@ div.antenna .basic {
 	float: right;
 	clear: right;
 	width: 55%;
-	vertical-align: top;
+	margin-bottom: 10px;
 }
 
 div.antenna .xmit {
 	float: right;
 	clear: right;
 	width: 55%;
-	vertical-align: top;
 }
 
 div.antenna .atm {
 	float: right;
 	clear: none;
 	width: 55%;
-	vertical-align: top;
+	margin-top: 10px;
+}
+
+div.antenna .basic tbody, div.antenna .xmit tbody, div.antenna .atm tbody{
+	vertical-align: text-top;
 }
 
 div.antenna .basic td, div.antenna .xmit td {
