@@ -2,6 +2,7 @@
 using System.Collections;
 using RemoteTech.Common.Utils;
 using UnityEngine;
+using RemoteTech.FlightComputer.Commands;
 
 namespace RemoteTech.UI
 {

@@ -92,11 +92,9 @@
     <Compile Include="SimpleTypes\NetworkLink.cs" />
     <Compile Include="UI\AntennaFragment.cs" />
     <Compile Include="UI\AntennaWindow.cs" />
-    <Compile Include="UI\AttitudeFragment.cs" />
     <Compile Include="UI\DebugWindow.cs" />
     <Compile Include="UI\FocusOverlay.cs" />
     <Compile Include="UI\FocusFragment.cs" />
-    <Compile Include="UI\FlightComputerWindow.cs" />
     <Compile Include="UI\ManeuverNodeOverlay.cs" />
     <Compile Include="UI\NetworkCone.cs" />
     <Compile Include="UI\FlightUIPatcher.cs" />
@@ -104,8 +102,6 @@
     <Compile Include="UI\FilterOverlay.cs" />
     <Compile Include="UI\NetworkLine.cs" />
     <Compile Include="UI\OptionWindow.cs" />
-    <Compile Include="UI\QueueFragment.cs" />
-    <Compile Include="UI\RoverFragment.cs" />
     <Compile Include="UI\SatelliteFragment.cs" />
     <Compile Include="UI\TargetInfoFragment.cs" />
     <Compile Include="UI\TargetInfoWindow.cs" />

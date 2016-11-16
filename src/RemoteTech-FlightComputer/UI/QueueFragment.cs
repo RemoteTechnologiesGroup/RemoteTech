@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using RemoteTech.Common.Utils;
+using RemoteTech.FlightComputer.Commands;
 using UnityEngine;
 
 namespace RemoteTech.UI
