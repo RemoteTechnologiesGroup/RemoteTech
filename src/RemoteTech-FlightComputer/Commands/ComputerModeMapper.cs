@@ -1,6 +1,6 @@
 ﻿using RemoteTech.UI;
 
-namespace RemoteTech.SimpleTypes
+namespace RemoteTech.FlightComputer.Commands
 {
     /// <summary>
     /// This class converts the FlightMode from a AttitudeCommand into a ComputerMode for the AttitudeFragment 
