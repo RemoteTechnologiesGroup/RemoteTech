@@ -20,9 +20,6 @@ div.antenna h3 {
 div.antenna img {
 	float: left;
 	clear: left;
-	min-height: 200px;
-	max-height: 400px;
-	max-width: 40%;
 	padding-right: 5px;
 }
 
@@ -34,7 +31,6 @@ div.antenna p.blurb {
 }
 
 /* Spacer to ensure the visible box includes all the floats */
-/*
 div.antenna hr {
 	visibility: hidden;
 	height: 0px;
@@ -43,7 +39,6 @@ div.antenna hr {
 	float: none;
 	clear: both;
 }
-*/
 
 div.antenna .basic {
 	float: right;
