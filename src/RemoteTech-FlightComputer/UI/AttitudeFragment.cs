@@ -5,7 +5,7 @@ using RemoteTech.Common.Utils;
 using UnityEngine;
 using RemoteTech.FlightComputer.Commands;
 
-namespace RemoteTech.UI
+namespace RemoteTech.FlightComputer.UI
 {
     public enum ComputerMode
     {
