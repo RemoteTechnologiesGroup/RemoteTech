@@ -84,7 +84,8 @@ Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
 ![Picture of Reflectron DP-10](antenna_dp10_B.png)
 
 **Bill Kerman's notes**
-The Reflectron DP-10 is a lightweight and cheap antenna. Its omnidirectional nature and its high-speed surivial in atmosphere make it an excellent choice for launches and landings. However, its short range rapidly renders it useless outside low Kerbin orbits.
+
+The Reflectron DP-10 is a lightweight and cheap antenna. Its omnidirectional nature and high-speed survival in atmosphere make it an excellent choice for launches and landings. However, its short range rapidly renders it useless outside low Kerbin orbits.
 {:.blurb}
 
 | Basic Properties

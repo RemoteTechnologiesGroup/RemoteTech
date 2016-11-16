@@ -59,8 +59,7 @@ ul.buttonrow > li.right {
 }
 
 hr {
-	height: 3px;
-	color: black;
+	border: solid 3px dimgrey;
 }
 
 
