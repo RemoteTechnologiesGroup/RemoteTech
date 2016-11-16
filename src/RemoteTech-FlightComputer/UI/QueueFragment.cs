@@ -1,67 +1,71 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Commands;
 using UnityEngine;
 
-namespace RemoteTech.UI
+namespace RemoteTech.FlightComputer.UI
 {
     public class QueueFragment : IFragment
     {
-        private readonly FlightComputer.FlightComputer mFlightComputer;
+        private readonly FlightComputer _flightComputer;
 
-        private Vector2 mScrollPosition;
-        private String mExtraDelay;
+        private Vector2 _scrollPosition;
+        private string _extraDelay;
 
         private double Delay
         {
-            get { return TimeUtil.TryParseDuration(mExtraDelay); }
-            set { mExtraDelay = value.ToString(); }
+            get { return TimeUtil.TryParseDuration(_extraDelay); }
+            set { _extraDelay = value.ToString(CultureInfo.InvariantCulture); }
         }
 
         private GUIContent Status
         {
             get
             {
-                var tooltip = new List<String>();
-                var status = new List<String>();
-                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.NoConnection) == FlightComputer.FlightComputer.State.NoConnection)
+                var tooltip = new List<string>();
+                var status = new List<string>();
+                if ((_flightComputer.Status & FlightComputer.State.NoConnection) == FlightComputer.State.NoConnection)
                 {
                     status.Add("Connection Error");
                     tooltip.Add("Cannot queue commands");
                 }
-                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.OutOfPower) == FlightComputer.FlightComputer.State.OutOfPower)
+                if ((_flightComputer.Status & FlightComputer.State.OutOfPower) == FlightComputer.State.OutOfPower)
                 {
                     status.Add("Out of Power");
                     tooltip.Add("Commands can be missed");
                     tooltip.Add("Timers halt");
                 }
-                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.NotMaster) == FlightComputer.FlightComputer.State.NotMaster)
+                if ((_flightComputer.Status & FlightComputer.State.NotMaster) == FlightComputer.State.NotMaster)
                 {
                     status.Add("Slave");
                     tooltip.Add("Has no control");
                 }
-                if ((mFlightComputer.Status & FlightComputer.FlightComputer.State.Packed) == FlightComputer.FlightComputer.State.Packed)
+                if ((_flightComputer.Status & FlightComputer.State.Packed) == FlightComputer.State.Packed)
                 {
                     status.Add("Packed");
                     tooltip.Add("Frozen");
                 }
-                if (mFlightComputer.Status == FlightComputer.FlightComputer.State.Normal)
+                if (_flightComputer.Status == FlightComputer.State.Normal)
                 {
                     status.Add("All systems nominal");
                     tooltip.Add("None");
                 }
-                return new GUIContent("Status: " + String.Join(", ", status.ToArray()) + ".",
-                    "Effects: " + String.Join("; ", tooltip.ToArray()) + ".");
+
+                var guiText = $"Status: {string.Join(", ", status.ToArray())}.";
+                var guiTooltip = $"Effects: {string.Join("; ", tooltip.ToArray())}.";
+
+                return new GUIContent(guiText, guiTooltip);
             }
         }
 
-        public QueueFragment(FlightComputer.FlightComputer fc)
+        public QueueFragment(FlightComputer fc)
         {
-            mFlightComputer = fc;
+            _flightComputer = fc;
             Delay = 0;
         }
 
@@ -69,27 +73,27 @@ namespace RemoteTech.UI
         {
             if (Event.current.Equals(Event.KeyboardEvent("return")) && GUI.GetNameOfFocusedControl() == "rt_xd")
             {
-                RTCore.Instance.StartCoroutine(onClickAddExtraDelay());
+                FlightGlobals.fetch.StartCoroutine(OnClickAddExtraDelay());
             }
             GUILayout.BeginVertical();
             {
-                mScrollPosition = GUILayout.BeginScrollView(mScrollPosition, GUILayout.Width(250));
+                _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, GUILayout.Width(250));
                 {
                     {
                         GUILayout.BeginHorizontal(GUI.skin.box);
                         {
                             var s = new StringBuilder();
-                            foreach (var c in mFlightComputer.ActiveCommands)
+                            foreach (var c in _flightComputer.ActiveCommands)
                             {
                                 s.Append(c.Description);
                             }
                             GUILayout.Label(s.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
                             GUILayout.FlexibleSpace();
-                            GuiUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickReset()), GUILayout.Width(21), GUILayout.Height(21));
+                            GuiUtil.Button("x", () => FlightGlobals.fetch.StartCoroutine(OnClickReset()), GUILayout.Width(21), GUILayout.Height(21));
                         }
                         GUILayout.EndHorizontal();
 
-                        foreach (var c in mFlightComputer.QueuedCommands)
+                        foreach (var c in _flightComputer.QueuedCommands)
                         {
                             GUILayout.BeginHorizontal(GUI.skin.box);
                             {
@@ -97,8 +101,11 @@ namespace RemoteTech.UI
                                 GUILayout.FlexibleSpace();
                                 GUILayout.BeginVertical();
                                 {
-                                    GuiUtil.Button("x", () => RTCore.Instance.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
-                                    GuiUtil.Button(new GUIContent("v", string.Format("Set the signal delay right after this - Current: {0}", TimeUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false))), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelayFromQueuedCommand(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                    GuiUtil.Button("x", () => FlightGlobals.fetch.StartCoroutine(OnClickCancel(c)), GUILayout.Width(21), GUILayout.Height(21));
+                                    var delay = TimeUtil.FormatDuration(c.Delay + c.ExtraDelay + GetBurnTime(c), false);
+                                    GuiUtil.Button(
+                                        new GUIContent("v", $"Set the signal delay right after this - Current: {delay}"), 
+                                        () => FlightGlobals.fetch.StartCoroutine(OnClickAddExtraDelayFromQueuedCommand(c)), GUILayout.Width(21), GUILayout.Height(21));
                                 }
                                 GUILayout.EndVertical();
                             }
@@ -111,41 +118,44 @@ namespace RemoteTech.UI
                 GUILayout.Label(Status);
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.Label(new GUIContent("Delay (+ signal): " + TimeUtil.FormatDuration(mFlightComputer.TotalDelay), "Total delay including signal delay."));
+                    GUILayout.Label(new GUIContent("Delay (+ signal): " + TimeUtil.FormatDuration(_flightComputer.TotalDelay), "Total delay including signal delay."));
                     GUILayout.FlexibleSpace();
                     GUI.SetNextControlName("rt_xd");
-                    GuiUtil.TextField(ref mExtraDelay, GUILayout.Width(45));
-                    GuiUtil.Button(new GUIContent(">", "Add extra signal delay - Example: 125, 125s, 5m20s, 1d6h20m10s"), () => RTCore.Instance.StartCoroutine(onClickAddExtraDelay()), GUILayout.Width(21), GUILayout.Height(21));
+                    GuiUtil.TextField(ref _extraDelay, GUILayout.Width(45));
+                    GuiUtil.Button(
+                        new GUIContent(">", "Add extra signal delay - Example: 125, 125s, 5m20s, 1d6h20m10s"), 
+                        () => FlightGlobals.fetch.StartCoroutine(OnClickAddExtraDelay()), GUILayout.Width(21), GUILayout.Height(21));
                 }
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
         }
 
-        public IEnumerator onClickAddExtraDelay()
+        public IEnumerator OnClickAddExtraDelay()
         {
             yield return null;
-            mFlightComputer.TotalDelay = Delay;
+            _flightComputer.TotalDelay = Delay;
         }
 
-        public IEnumerator onClickAddExtraDelayFromQueuedCommand(ICommand c)
+        public IEnumerator OnClickAddExtraDelayFromQueuedCommand(ICommand c)
         {
             yield return null;
 
-            mExtraDelay = TimeUtil.FormatDuration(c.Delay + c.ExtraDelay + getBurnTime(c), false);
-            RTCore.Instance.StartCoroutine(onClickAddExtraDelay());
+            _extraDelay = TimeUtil.FormatDuration(c.Delay + c.ExtraDelay + GetBurnTime(c), false);
+            FlightGlobals.fetch.StartCoroutine(OnClickAddExtraDelay());
         }
 
         /// <summary>
         /// Get the burn time from the ManeuverCommand or BurnCommand
         /// </summary>
-        /// <param name="c">Current ocmmand</param>
+        /// <param name="c">Current command</param>
         /// <returns>Max burn time</returns>
-        public double getBurnTime(ICommand c)
+        public double GetBurnTime(ICommand c)
         {
+            //TODO : make an interface for commands having a getMaxBurnTime() method and get rid of those checks and casts.
             if (c is ManeuverCommand || c is BurnCommand)
             {
-                double burnTime = (c is ManeuverCommand) ? ((ManeuverCommand)c).getMaxBurnTime(mFlightComputer) : ((BurnCommand)c).getMaxBurnTime(mFlightComputer);
+                double burnTime = (c is ManeuverCommand) ? ((ManeuverCommand)c).getMaxBurnTime(_flightComputer) : ((BurnCommand)c).getMaxBurnTime(_flightComputer);
 
                 return burnTime;
             }
@@ -155,13 +165,13 @@ namespace RemoteTech.UI
         public IEnumerator OnClickCancel(ICommand c)
         {
             yield return null;
-            mFlightComputer.Enqueue(CancelCommand.WithCommand(c));
+            _flightComputer.Enqueue(CancelCommand.WithCommand(c));
         }
 
         public IEnumerator OnClickReset()
         {
             yield return null;
-            mFlightComputer.Enqueue(CancelCommand.ResetActive());
+            _flightComputer.Enqueue(CancelCommand.ResetActive());
         }
     }
 }
