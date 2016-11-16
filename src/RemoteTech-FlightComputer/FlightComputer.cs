@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using RemoteTech.FlightComputer.Commands;
-using RemoteTech.Modules;
-using RemoteTech.UI;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
 using RemoteTech.Common.Settings;

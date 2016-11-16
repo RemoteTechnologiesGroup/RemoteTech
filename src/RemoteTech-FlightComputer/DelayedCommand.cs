@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text;
 using RemoteTech.Common.Utils;
-using UnityEngine;
 
 namespace RemoteTech.FlightComputer
 {
