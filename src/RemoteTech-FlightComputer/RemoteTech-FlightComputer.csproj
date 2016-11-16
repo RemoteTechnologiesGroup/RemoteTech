@@ -55,6 +55,7 @@
     <Compile Include="Commands\AttitudeCommand.cs" />
     <Compile Include="Commands\BurnCommand.cs" />
     <Compile Include="Commands\CancelCommand.cs" />
+    <Compile Include="Commands\ComputerModeMapper.cs" />
     <Compile Include="Commands\DriveCommand.cs" />
     <Compile Include="Commands\EventCommand.cs" />
     <Compile Include="Commands\ExternalAPICommand.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Commands\TargetCommand.cs" />
     <Compile Include="DelayedCommand.cs" />
     <Compile Include="FlightComputer.cs" />
+    <Compile Include="FlightComputerKspAddon.cs" />
     <Compile Include="FlightCore.cs" />
     <Compile Include="PIDControllerV3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
