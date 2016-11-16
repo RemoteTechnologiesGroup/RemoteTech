@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Settings;
+using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
 using UnityEngine;
 

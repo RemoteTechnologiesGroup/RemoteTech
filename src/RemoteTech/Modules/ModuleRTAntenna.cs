@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using RemoteTech.Common;
+using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 using RemoteTech.UI;
 using UnityEngine;

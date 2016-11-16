@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Settings;
 using WrappedEvent = RemoteTech.FlightComputer.UIPartActionMenuPatcher.WrappedEvent;
 
 

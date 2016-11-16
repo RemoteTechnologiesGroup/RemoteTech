@@ -55,6 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RTLog.cs" />
     <Compile Include="Settings\ISettings.cs" />
+    <Compile Include="Settings\RTSettings.cs" />
     <Compile Include="UI\AbstractWindow.cs" />
     <Compile Include="Utils\ClampUtil.cs" />
     <Compile Include="Utils\FormatUtil.cs" />

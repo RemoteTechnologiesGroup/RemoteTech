@@ -77,7 +77,6 @@
     <Compile Include="Modules\ProtoAntenna.cs" />
     <Compile Include="RTCore.cs" />
     <Compile Include="RTPartInfoReloader.cs" />
-    <Compile Include="RTSettings.cs" />
     <Compile Include="RTSpaceCentre.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />

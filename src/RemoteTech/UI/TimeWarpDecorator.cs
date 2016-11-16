@@ -3,6 +3,7 @@ using System.Linq;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 using KSP.UI;
+using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 
 namespace RemoteTech.UI

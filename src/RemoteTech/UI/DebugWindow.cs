@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using RemoteTech.Common;
 using RemoteTech.Common.Utils;
 using UnityEngine;
+using RemoteTech.Common.Settings;
 
 namespace RemoteTech.UI
 {

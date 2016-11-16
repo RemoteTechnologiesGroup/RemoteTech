@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RemoteTech.Common.Settings;
 using RemoteTech.SimpleTypes;
 
 namespace RemoteTech.RangeModel

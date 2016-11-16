@@ -4,6 +4,8 @@ using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
 using RemoteTech.Common;
+using RemoteTech.Common.Settings;
+using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
 
 namespace RemoteTech

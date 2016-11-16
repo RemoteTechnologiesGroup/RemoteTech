@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RemoteTech.Common;
+using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 
 namespace RemoteTech.Modules

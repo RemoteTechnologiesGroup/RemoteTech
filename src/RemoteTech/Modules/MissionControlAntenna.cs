@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Settings;
 
 namespace RemoteTech.Modules
 {
