@@ -10,6 +10,8 @@ layout: content
 ## What is RemoteTech?
 RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which overhauls the unmanned space program. It does this by requiring unmanned vessels have a connection to Kerbal Space Center (KSC) to be able to be controlled. This adds a new layer of difficulty that compensates for the lack of live crew members.
 
+<hr>
+
 ## First steps
 
 * Like in stock KSP, you need to research Basic Science in the technology tree before you can build an unmanned probe.
@@ -17,6 +19,8 @@ RemoteTech is a modification for Squad's 'Kerbal Space Program' (KSP) which over
 * For farther flights, your probe should utilise more powerful antennas, such as the Communotron 16 or the Communotron DTS-M1. You need to manually activate these antennas once you are flying high enough that the airflow is too thin to break them off. If you are using the DTS-M1, you also need to target it at Mission Control. The activation and targeting can be performed by right-clicking on an antenna.
 * Once you place a few satellites in Kerbin orbit, consider adding some more communication satellites (comsats) to maintain a connection when out of sight of KSC. See the [tutorials](tutorials/#setting-up-satellite-constellations) for more details.
 * As you expand farther out into the system, you may need to expand and/or upgrade your comsat network to allow for connections to probes orbiting other moons or planets. Plan ahead!
+
+<hr>
 
 ## Overview of the core mechanics
 
@@ -49,6 +53,8 @@ Command Stations allow you to work without the signal delay to Kerbin, which mig
 
 ### 6. Science Transmissions
 Transmitting science back to KSC requires a working connection to KSC. Any other source of control, such as a crew pod or a working connection to a command station, does not count.
+
+<hr>
 
 ## Credits
 * RT1 Contributors: JDP, The_Duck, gresrun, Tosh, rkman, NovaSilisko, r4m0n, Alchemist, Kreuzung, Spaceghost, Tomato, BoJaN, Mortaq.

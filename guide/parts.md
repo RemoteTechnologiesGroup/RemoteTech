@@ -275,12 +275,12 @@ Mass | Immeasurable
 Comlink power | -
 Science efficiency | -
 Maximum Range | 75,000 km
-Reach | Kerbin's two moons, Mun and Minmus
+Reach | Kerbin's two natural satellites, Mun and Minmus
 {:.xmit}
 
 | Atmosphere Safety
 | ---
-| -
+| Not certified to fly
 {:.atm}
 
 ---
