@@ -108,7 +108,7 @@ Reach | Any line of sight to Mission Control under 150 km altitude
 |Does not break off in flight.
 {:.atm}
 
----------------
+---
 
 </div>
 
@@ -143,7 +143,7 @@ Reach | Low Kerbin Orbit
 |Does not break off in flight.
 {:.atm}
 
----------------
+---
 
 </div>
 
@@ -152,6 +152,8 @@ Reach | Low Kerbin Orbit
 ### Communotron 16
 
 ![Picture of Communotron 16](antenna_com16.png)
+
+**Bill Kerman's notes**
 
 The Communotron 16 is the versatile and lightweight antenna, essential for transmitting science from your early flights. Along with the Communotron 16-S, it forms the backbone of most players' low-orbit communications networks until the CommTech EXP-VR-2T and Communotron 32 are researched.
 {:.blurb}
@@ -176,7 +178,7 @@ Reach | Low Kerbin Orbit
 |Tear off in flight.
 {:.atm}
 
----------------
+---
 
 </div>
 
