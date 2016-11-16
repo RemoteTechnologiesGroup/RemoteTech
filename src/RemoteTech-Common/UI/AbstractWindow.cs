@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RemoteTech.Common.Utils;
 using UnityEngine;
+using RemoteTech.Common.Settings;
 
 namespace RemoteTech.Common.UI
 {
