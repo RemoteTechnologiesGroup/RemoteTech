@@ -6,7 +6,7 @@ using RemoteTech.Common;
 using UnityEngine;
 using RemoteTech.Common.Utils;
 
-namespace RemoteTech
+namespace RemoteTech.Common.Settings
 {
     public class RTSettings
     {
