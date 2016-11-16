@@ -79,7 +79,7 @@ Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
 
 <div class="antenna" markdown="1">
 
-#### Reflectron DP-10
+### Reflectron DP-10
 
 ![Picture of Reflectron DP-10](antenna_dp10_B.png)
 

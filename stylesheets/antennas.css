@@ -9,6 +9,7 @@ div.antenna {
 	border-width: 1px;
 	border-style: solid;
 	padding: 2px;
+	margin: 2px;
 	border-color: rgb(192,192,192);
 	background-color: rgb(248,248,248);
 }
@@ -19,7 +20,6 @@ div.antenna img {
 	min-height: 200px;
 	max-height: 400px;
 	max-width: 40%;
-	padding: 2px;
 	padding-right: 5px;
 }
 
@@ -27,7 +27,8 @@ div.antenna table {
 /*	background-color: rgb(238,238,238);*/
 /*	border-color: rgb(227,227,227);*/
 	margin: 2px;
-	padding-bottom: 15px
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 div.antenna p.blurb {
