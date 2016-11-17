@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.Common;
 using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
@@ -7,22 +8,22 @@ namespace RemoteTech.FlightComputer.Commands
     public class CancelCommand : AbstractCommand
     {
         public override double ExtraDelay { get { return base.ExtraDelay; } set { return; } }
-        private Guid CancelCmdGuid;
+        private Guid _cancelCmdGuid;
 
-        public override string Description { get { return "Cancelling a command." + Environment.NewLine + base.Description; } }
-        public override string ShortName { get { return "Cancel command"; } }
+        public override string Description => "Canceling a command." + Environment.NewLine + base.Description;
+        public override string ShortName => "Cancel command";
 
         public override bool Pop(FlightComputer computer)
         {
-            if (this.CancelCmdGuid != Guid.Empty)
+            if (_cancelCmdGuid != Guid.Empty)
             {
-                this.cancelQueuedCommand(this.CancelCmdGuid, computer);
+                CancelQueuedCommand(_cancelCmdGuid, computer);
             }
             else
             {
                 // we've no CancelCmdGuid for an active command. But
                 // maybe we'll use this later
-                this.cancelActiveCommand(this.CancelCmdGuid, computer);
+                CancelActiveCommand(_cancelCmdGuid, computer);
             }
 
             return false;
@@ -33,7 +34,7 @@ namespace RemoteTech.FlightComputer.Commands
             
             return new CancelCommand()
             {
-                CancelCmdGuid = cmd.CmdGuid,
+                _cancelCmdGuid = cmd.CmdGuid,
                 TimeStamp = TimeUtil.GameTime,
             };
         }
@@ -42,7 +43,7 @@ namespace RemoteTech.FlightComputer.Commands
         {
             return new CancelCommand()
             {
-                CancelCmdGuid = Guid.Empty,
+                _cancelCmdGuid = Guid.Empty,
                 TimeStamp = TimeUtil.GameTime,
             };
         }
@@ -50,34 +51,34 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Load the saved CancelCommand and find the element to cancel, based on the saved queue position
         /// </summary>
-        /// <returns>true - loaded successfull</returns>
+        /// <returns>true - loaded successful</returns>
         public override bool Load(ConfigNode n, FlightComputer computer)
         {
-            if(base.Load(n, computer))
+            if (!base.Load(n, computer))
+                return false;
+
+            if (n.HasValue("CancelCmdGuid"))
             {
-                if (n.HasValue("CancelCmdGuid"))
-                {
-                    this.CancelCmdGuid = new Guid(n.GetValue("CancelCmdGuid"));
-                }
-
-                // old way to cancel a command
-                if (n.HasValue("queueIndex"))
-                {
-                    try
-                    {
-                        int queueIndex = int.Parse(n.GetValue("queueIndex"));
-                        // try to find the command to cancel
-                        this.CancelCmdGuid = computer.QueuedCommands.ElementAt(queueIndex).CmdGuid;
-                    }
-                    catch (Exception)
-                    { }
-                }
-
-                // loaded successfull
-                if (this.CancelCmdGuid != Guid.Empty)
-                    return true;
+                _cancelCmdGuid = new Guid(n.GetValue("CancelCmdGuid"));
             }
-            return false;
+
+            // old way to cancel a command
+            if (n.HasValue("queueIndex"))
+            {
+                try
+                {
+                    var queueIndex = int.Parse(n.GetValue("queueIndex"));
+                    // try to find the command to cancel
+                    _cancelCmdGuid = computer.QueuedCommands.ElementAt(queueIndex).CmdGuid;
+                }
+                catch (Exception ex)
+                {
+                    RTLog.Notify($"CancelCommand.Load(): An exception occurred while trying to find the command: {ex}");
+                }
+            }
+
+            // loaded successfully?
+            return _cancelCmdGuid != Guid.Empty;
         }
 
         /// <summary>
@@ -86,35 +87,33 @@ namespace RemoteTech.FlightComputer.Commands
         public override void Save(ConfigNode n, FlightComputer computer)
         {
             base.Save(n, computer);
-            n.AddValue("CancelCmdGuid", this.CancelCmdGuid);
+            n.AddValue("CancelCmdGuid", _cancelCmdGuid);
         }
 
         /// <summary>
-        /// Cancels a queued command by it's guid
+        /// Cancels a queued command by it's <see cref="Guid"/>.
         /// </summary>
-        /// <param name="cmdGuid">Guid for the command to cancel</param>
-        /// <param name="computer">Current flightcomputer</param>
-        /// <returns>True if we canceld the command</returns>
-        private bool cancelQueuedCommand(Guid cmdGuid, FlightComputer computer)
+        /// <param name="cmdGuid"><see cref="Guid"/> for the command to cancel</param>
+        /// <param name="computer">Current FlightComputer</param>
+        /// <returns>True if we canceled the command, false otherwise.</returns>
+        private static bool CancelQueuedCommand(Guid cmdGuid, FlightComputer computer)
         {
-            ICommand searchCmd = computer.QueuedCommands.Where(cmd => cmd.CmdGuid == cmdGuid).FirstOrDefault();
-            if (searchCmd != null)
-            {
-                searchCmd.CommandCanceled(computer);
-                computer.Remove(searchCmd);
-                return true;
-            }
+            var searchCmd = computer.QueuedCommands.FirstOrDefault(cmd => cmd.CmdGuid == cmdGuid);
+            if (searchCmd == null)
+                return false;
 
-            return false;
+            searchCmd.CommandCanceled(computer);
+            computer.Remove(searchCmd);
+            return true;
         }
 
         /// <summary>
         /// Cancels the current active command.
         /// </summary>
         /// <param name="cmdGuid">Unused right now</param>
-        /// <param name="computer">Current flightcomputer</param>
+        /// <param name="computer">Current FlightComputer</param>
         /// <returns></returns>
-        private bool cancelActiveCommand(Guid cmdGuid, FlightComputer computer)
+        private static bool CancelActiveCommand(Guid cmdGuid, FlightComputer computer)
         {
             computer.Reset();
 

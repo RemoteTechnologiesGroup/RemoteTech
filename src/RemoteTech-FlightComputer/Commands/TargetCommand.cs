@@ -7,22 +7,16 @@ namespace RemoteTech.FlightComputer.Commands
     public class TargetCommand : AbstractCommand
     {
         /// Defines which target we have. Can be CelestialBody or Vessel
-        [Persistent] public String TargetType;
+        [Persistent] public string TargetType;
         /// Target identifier, CelestialBody=Body-id or Vessel=GUID. Depends on TargetType
-        [Persistent] public String TargetId;
+        [Persistent] public string TargetId;
 
-        public override double ExtraDelay { get { return 0.0; } set { return; } }
+        public override double ExtraDelay { get { return 0.0; } set { } }
         public ITargetable Target { get; set; }
-        public override int Priority { get { return 1; } }
+        public override int Priority => 1;
 
-        public override String Description
-        {
-            get
-            {
-                return ShortName + Environment.NewLine + base.Description;
-            }
-        }
-        public override string ShortName { get { return "Target: " + (Target != null ? Target.GetName() : "None"); } }
+        public override string Description => ShortName + Environment.NewLine + base.Description;
+        public override string ShortName => "Target: " + (Target != null ? Target.GetName() : "None");
 
         public override bool Pop(FlightComputer f)
         {
@@ -49,42 +43,41 @@ namespace RemoteTech.FlightComputer.Commands
         /// the objects id.
         /// </summary>
         /// <param name="n">Node with the command infos</param>
-        /// <param name="fc">Current flightcomputer</param>
-        /// <returns>true - loaded successfull</returns>
+        /// <param name="fc">Current FlightComputer</param>
+        /// <returns>true if loaded successfully, false otherwise.</returns>
         public override bool Load(ConfigNode n, FlightComputer fc)
         {
-            if(base.Load(n, fc))
+            if (!base.Load(n, fc))
+                return false;
+
+            switch (TargetType)
             {
-                switch (TargetType)
+                case "Vessel":
                 {
-                    case "Vessel":
-                        {
-                            Guid Vesselid = new Guid(TargetId);
-                            Target = VesselExtension.GetVesselById(Vesselid);
-                            break;
-                        }
-                    case "CelestialBody":
-                        {
-                            Target = FlightGlobals.Bodies.ElementAt(int.Parse(TargetId));
-                            break;
-                        }
-                    default:
-                        {
-                            Target = null;
-                            break;
-                        }
+                    var vesselid = new Guid(TargetId);
+                    Target = VesselExtension.GetVesselById(vesselid);
+                    break;
                 }
-                return true;
+                case "CelestialBody":
+                {
+                    Target = FlightGlobals.Bodies.ElementAt(int.Parse(TargetId));
+                    break;
+                }
+                default:
+                {
+                    Target = null;
+                    break;
+                }
             }
-            return false;
+            return true;
         }
 
         /// <summary>
-        /// Save the TargetCommand. By targeting a vessel we'll save the guid,
-        /// by a CelestialBody we save the bodys id.
+        /// Save the TargetCommand. By targeting a vessel we'll save the GUID,
+        /// by a CelestialBody we save the bodies id.
         /// </summary>
         /// <param name="n">Node to save in</param>
-        /// <param name="fc">Current flightcomputer</param>
+        /// <param name="fc">Current FlightComputer</param>
         public override void Save(ConfigNode n, FlightComputer fc)
         {
             if (Target != null)

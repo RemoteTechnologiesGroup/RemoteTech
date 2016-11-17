@@ -9,29 +9,30 @@ namespace RemoteTech.FlightComputer.Commands
         public double TimeStamp { get; set; }
         public Guid CmdGuid { get; private set; }
         public virtual double ExtraDelay { get; set; }
-        public virtual double Delay { get { return Math.Max(TimeStamp - TimeUtil.GameTime, 0); } }
-        public virtual String Description {
+        public virtual double Delay => Math.Max(TimeStamp - TimeUtil.GameTime, 0);
+
+        public virtual string Description {
             get
             {
-                double delay = this.Delay;
+                var delay = Delay;
                 if (delay > 0 || ExtraDelay > 0)
                 {
-                    var extra = ExtraDelay > 0 ? String.Format("{0} + {1}", TimeUtil.FormatDuration(delay), TimeUtil.FormatDuration(ExtraDelay)) 
+                    var extra = ExtraDelay > 0 ? string.Format("{0} + {1}", TimeUtil.FormatDuration(delay), TimeUtil.FormatDuration(ExtraDelay)) 
                                                : TimeUtil.FormatDuration(delay);
                     return "Signal delay: " + extra;
                 }
                 return "";
             }
         }
-        public abstract String ShortName { get; }
-        public virtual int Priority { get { return 255; } }
+        public abstract string ShortName { get; }
+        public virtual int Priority => 255;
 
         /// <summary>
-        /// Creates a new Guid for the current command
+        /// Creates a new <see cref="Guid"/> for the current command.
         /// </summary>
-        public AbstractCommand()
+        protected AbstractCommand()
         {
-            this.CmdGuid = Guid.NewGuid();
+            CmdGuid = Guid.NewGuid();
         }
 
         // true: move to active.
@@ -51,7 +52,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// Save the basic informations for every command.
         /// </summary>
         /// <param name="node">Node to save in</param>
-        /// <param name="computer">Current flightcomputer</param>
+        /// <param name="computer">Current flight computer</param>
         public virtual void Save(ConfigNode node, FlightComputer computer)
         {
             try
@@ -59,26 +60,30 @@ namespace RemoteTech.FlightComputer.Commands
                 // try to serialize 'this'
                 ConfigNode.CreateConfigFromObject(this, 0, node);
             }
-            catch (Exception) {}
-
-            if (this.Delay == 0) {
-                // only save the current gametime if we have no signal delay.
-                // We need this to calculate the correct delta time for the
-                // ExtraDelay if we come back to this satellite.
-                this.TimeStamp = TimeUtil.GameTime;
+            catch (Exception ex)
+            {
+                RTLog.Notify($"AbstractCommand.Save(); The command couldn't be saved because an exception occurred: {ex}", RTLogLevel.LVL4);
+                return;
             }
 
-            node.AddValue("TimeStamp", this.TimeStamp);
-            node.AddValue("ExtraDelay", this.ExtraDelay);
-            node.AddValue("CmdGuid", this.CmdGuid);
+            if (Delay == 0) {
+                // only save the current game time if we have no signal delay.
+                // We need this to calculate the correct delta time for the
+                // ExtraDelay if we come back to this satellite.
+                TimeStamp = TimeUtil.GameTime;
+            }
+
+            node.AddValue("TimeStamp", TimeStamp);
+            node.AddValue("ExtraDelay", ExtraDelay);
+            node.AddValue("CmdGuid", CmdGuid);
         }
 
         /// <summary>
         /// Load the basic informations for every command.
         /// </summary>
         /// <param name="n">Node with the command infos</param>
-        /// <param name="fc">Current flightcomputer</param>
-        /// <returns>true - loaded successfull</returns>
+        /// <param name="fc">Current flight computer</param>
+        /// <returns>true - loaded successful</returns>
         public virtual bool Load(ConfigNode n, FlightComputer fc)
         {
             // nothing
@@ -92,7 +97,7 @@ namespace RemoteTech.FlightComputer.Commands
             }
             if (n.HasValue("CmdGuid"))
             {
-                this.CmdGuid = new Guid(n.GetValue("CmdGuid"));
+                CmdGuid = new Guid(n.GetValue("CmdGuid"));
             }
 
             return true;
@@ -103,7 +108,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// has been loaded.
         /// </summary>
         /// <param name="n">Node with the command infos</param>
-        /// <param name="fc">Current flightcomputer</param>
+        /// <param name="fc">Current flight computer</param>
         public static ICommand LoadCommand(ConfigNode n, FlightComputer fc)
         {
             ICommand command = null;
@@ -123,28 +128,30 @@ namespace RemoteTech.FlightComputer.Commands
                 case "PartActionCommand":   { command = new PartActionCommand(); break; }
             }
 
-            if (command != null)
-            {
-                ConfigNode.LoadObjectFromConfig(command, n);
-                // additional loadings
-                var result = command.Load(n, fc);
-                RTLog.Verbose("Loading command {0}({1})={2}", RTLogLevel.LVL1, n.name, command.CmdGuid, result);
-                // delete command if we can't load the command correctlys
-                if (result == false)
-                    command = null;
-            }
+            if (command == null)
+                return null;
+
+            ConfigNode.LoadObjectFromConfig(command, n);
+
+            // additional loadings
+            var result = command.Load(n, fc);
+            RTLog.Verbose("Loading command {0}({1})={2}", RTLogLevel.LVL1, n.name, command.CmdGuid, result);
+
+            // delete command if we can't load the command correctly
+            if (result == false)
+                command = null;
 
             return command;
         }
 
         /// <summary>
-        /// This method will be triggerd right after the command was enqueued to
+        /// This method will be triggered right after the command was enqueued to
         /// the flight computer list.
         /// </summary>
-        /// <param name="computer">Current flightcomputer</param>
+        /// <param name="computer">Current flight computer</param>
         public virtual void CommandEnqueued(FlightComputer computer) { }
         /// <summary>
-        /// This method will be triggerd after deleting a command from the list.
+        /// This method will be triggered after deleting a command from the list.
         /// </summary>
         /// <param name="computer">Current flight computer</param>
         public virtual void CommandCanceled(FlightComputer computer) { }

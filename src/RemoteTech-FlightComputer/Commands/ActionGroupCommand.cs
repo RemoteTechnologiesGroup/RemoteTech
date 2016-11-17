@@ -8,11 +8,8 @@ namespace RemoteTech.FlightComputer.Commands
     {
         [Persistent] public KSPActionGroup ActionGroup;
 
-        public override string Description
-        {
-            get { return ShortName + Environment.NewLine + base.Description; }
-        }
-        public override string ShortName { get { return "Toggle " + ActionGroup; } }
+        public override string Description => ShortName + Environment.NewLine + base.Description;
+        public override string ShortName => "Toggle " + ActionGroup;
 
         public override bool Pop(FlightComputer f)
         {
@@ -25,7 +22,7 @@ namespace RemoteTech.FlightComputer.Commands
                 }
                 catch(Exception ex)
                 {
-                    RTLog.Notify("Exception during ActivateNextStage(): " + ex.Message, RTLogLevel.LVL4);
+                    RTLog.Notify("Exception during ActionGroupCommand.ActivateNextStage(): " + ex, RTLogLevel.LVL4);
                 }
                 KSP.UI.Screens.ResourceDisplay.Instance.Refresh();
             }

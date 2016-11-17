@@ -22,21 +22,21 @@ namespace RemoteTech.FlightComputer.Commands
         [Persistent] public float speed;
         [Persistent] public DriveMode mode;
 
-        private bool mAbort;
-        private RoverComputer mRoverComputer;
+        private bool _abort;
+        private RoverComputer _roverComputer;
 
-        public override void Abort() { mAbort = true; }
+        public override void Abort() { _abort = true; }
 
         public override bool Pop(FlightComputer f)
         {
-            mRoverComputer = f.RoverComputer;
-            mRoverComputer.InitMode(this);
+            _roverComputer = f.RoverComputer;
+            _roverComputer.InitMode(this);
             return true;
         }
 
         public override bool Execute(FlightComputer f, FlightCtrlState fcs)
         {
-            if (mAbort) {
+            if (_abort) {
                 fcs.wheelThrottle = 0.0f;
                 f.Vessel.ActionGroups.SetGroup(KSPActionGroup.Brakes, true);
                 return true;
@@ -99,22 +99,22 @@ namespace RemoteTech.FlightComputer.Commands
             };
         }
 
-        public override String Description
+        public override string Description
         {
             get
             {
-                StringBuilder s = new StringBuilder();
+                var s = new StringBuilder();
                 switch (mode) {
                     case DriveMode.Coord:
                         s.Append("Drive to: ");
                         s.Append(new Vector2(target, target2).ToString("0.000"));
                         s.Append(" @ ");
                         s.Append(FormatUtil.FormatSI(Math.Abs(speed), "m/s"));
-                        if (mRoverComputer != null) {
+                        if (_roverComputer != null) {
                             s.Append(" (");
-                            s.Append(FormatUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(FormatUtil.FormatSI(_roverComputer.Delta, "m"));
                             s.Append(" ");
-                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(_roverComputer.DeltaT, false));
                             s.Append(")"); ;
                         }
                         break;
@@ -126,11 +126,11 @@ namespace RemoteTech.FlightComputer.Commands
                         else
                             s.Append(" backwards @");
                         s.Append(FormatUtil.FormatSI(Math.Abs(speed), "m/s"));
-                        if (mRoverComputer != null) {
+                        if (_roverComputer != null) {
                             s.Append(" (");
-                            s.Append(FormatUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(FormatUtil.FormatSI(_roverComputer.Delta, "m"));
                             s.Append(" ");
-                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(_roverComputer.DeltaT, false));
                             s.Append(")"); ;
                         }
                         break;
@@ -143,11 +143,11 @@ namespace RemoteTech.FlightComputer.Commands
                             s.Append("° left @");
                         s.Append(Math.Abs(steering).ToString("P"));
                         s.Append(" Steering");
-                        if (mRoverComputer != null) {
+                        if (_roverComputer != null) {
                             s.Append(" (");
-                            s.Append(mRoverComputer.Delta.ToString("F2"));
+                            s.Append(_roverComputer.Delta.ToString("F2"));
                             s.Append("° ");
-                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(_roverComputer.DeltaT, false));
                             s.Append(")"); ;
                         }
                         break;
@@ -158,11 +158,11 @@ namespace RemoteTech.FlightComputer.Commands
                         s.Append(target2.ToString("0"));
                         s.Append("° @ ");
                         s.Append(FormatUtil.FormatSI(Math.Abs(speed), "m/s"));
-                        if (mRoverComputer != null) {
+                        if (_roverComputer != null) {
                             s.Append(" (");
-                            s.Append(FormatUtil.FormatSI(mRoverComputer.Delta, "m"));
+                            s.Append(FormatUtil.FormatSI(_roverComputer.Delta, "m"));
                             s.Append(" ");
-                            s.Append(TimeUtil.FormatDuration(mRoverComputer.DeltaT, false));
+                            s.Append(TimeUtil.FormatDuration(_roverComputer.DeltaT, false));
                             s.Append(")");
                         }
                         break;
@@ -171,14 +171,10 @@ namespace RemoteTech.FlightComputer.Commands
                         break;
                 }
 
-                return s.ToString() + Environment.NewLine + base.Description;
+                return s + Environment.NewLine + base.Description;
             }
         }
 
-        public override string ShortName
-        {
-            get { return "Drive"; }
-        }
-
+        public override string ShortName => "Drive";
     }
 }

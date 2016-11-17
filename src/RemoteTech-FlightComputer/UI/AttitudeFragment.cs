@@ -336,12 +336,12 @@ namespace RemoteTech.FlightComputer.UI
             }
 
             // get active command
-            var mappedCommand = _flightComputer.CurrentFlightMode.mapFlightMode();
-            _computerMode = mappedCommand.computerMode;
+            var mappedCommand = _flightComputer.CurrentFlightMode.MapFlightMode();
+            _computerMode = mappedCommand.ComputerMode;
             Attitude = FlightAttitude.Null;
 
             if(_computerMode == ComputerMode.Orbital || _computerMode == ComputerMode.Surface || _computerMode == ComputerMode.TargetPos || _computerMode == ComputerMode.TargetVel)
-                Attitude = mappedCommand.computerAttitude;
+                Attitude = mappedCommand.ComputerAttitude;
         }
 
         /// <summary>

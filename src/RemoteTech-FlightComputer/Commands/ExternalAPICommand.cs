@@ -6,97 +6,94 @@ namespace RemoteTech.FlightComputer.Commands
 {
     public class ExternalAPICommand : AbstractCommand
     {
-        /// <summary>original ConfigNode object passed from the api</summary>
-        private ConfigNode externalData;
+        /// <summary>original ConfigNode object passed from the API</summary>
+        private ConfigNode _externalData;
         /// <summary>Name of the mod who passed this command</summary>
-        private string Executor;
+        private string _executor;
         /// <summary>Label for this command on the queue</summary>
-        private string QueueLabel;
+        private string _queueLabel;
         /// <summary>Label for this command if its active</summary>
-        private string ActiveLabel;
+        private string _activeLabel;
         /// <summary>Label for alert on no power</summary>
-        private string ShortLabel;
+        private string _shortLabel;
         /// <summary>The ReflectionType for the methods to invoke</summary>
-        private string ReflectionType;
+        private string _reflectionType;
         /// <summary>Name of the Pop-method on the ReflectionType</summary>
-        private string ReflectionPopMethod = "";
+        private string _reflectionPopMethod = "";
         /// <summary>Name of the Execution-method on the ReflectionType</summary>
-        private string ReflectionExecuteMethod = "";
+        private string _reflectionExecuteMethod = "";
         /// <summary>Name of the Abort-method on the ReflectionType</summary>
-        private string ReflectionAbortMethod = "";
+        private string _reflectionAbortMethod = "";
         /// <summary>GUID of the vessel</summary>
-        private string GUIDString;
+        private string _guidString;
         /// <summary>true - when this command will be aborted</summary>
-        private bool AbortCommand = false;
+        private bool _abortCommand;
 
-        public override int Priority { get { return 0; } }
+        public override int Priority => 0;
 
         /// <summary>
-        /// Returns the <see cref="QueueLabel"/> of this command on the queue and the
-        /// <see cref="ActiveLabel"/> if this command is active. If no one is defined
-        /// the <see cref="Executor"/> will be returned.
+        /// Returns the <see cref="_queueLabel"/> of this command on the queue and the
+        /// <see cref="_activeLabel"/> if this command is active. If no one is defined
+        /// the <see cref="_executor"/> will be returned.
         /// </summary>
         public override string Description
         {
             get
             {
-                var desc = (this.QueueLabel == "") ? this.Executor : this.QueueLabel;
+                var desc = (_queueLabel == "") ? _executor : _queueLabel;
 
-                if(this.Delay <= 0 && this.ExtraDelay <= 0)
-                    desc = (this.ActiveLabel == "") ? this.Executor : this.ActiveLabel;
+                if(Delay <= 0 && ExtraDelay <= 0)
+                    desc = (_activeLabel == "") ? _executor : _activeLabel;
 
                 return desc + Environment.NewLine + base.Description;
             }
         }
 
         /// <summary>
-        /// Returns the <see cref="ShortLabel"/> of this command. If no <see cref="ShortLabel"/>
-        /// is defined the name of the <see cref="Executor"/> will be returned.
+        /// Returns the <see cref="_shortLabel"/> of this command. If no <see cref="_shortLabel"/>
+        /// is defined the name of the <see cref="_executor"/> will be returned.
         /// </summary>
-        public override string ShortName
-        {
-            get { return (this.ShortLabel == "") ? this.Executor : this.ShortLabel; }
-        }
+        public override string ShortName => (_shortLabel == "") ? _executor : _shortLabel;
 
         /// <summary>
-        /// Pops the command and invokes the <see cref="ReflectionPopMethod"/> on the
-        /// <see cref="ReflectionType"/>.
+        /// Pops the command and invokes the <see cref="_reflectionPopMethod"/> on the
+        /// <see cref="_reflectionType"/>.
         /// </summary>
-        /// <param name="computer">Current flightcomputer</param>
+        /// <param name="computer">Current FlightComputer</param>
         /// <returns>true: move to active.</returns>
         public override bool Pop(FlightComputer computer)
         {
-            bool moveToActive = false;
+            var moveToActive = false;
 
-            if (this.ReflectionPopMethod != "")
+            if (_reflectionPopMethod != "")
             {
                 // invoke the Pop-method
-                moveToActive = (bool)this.callReflectionMember(this.ReflectionPopMethod);
+                moveToActive = (bool)CallReflectionMember(_reflectionPopMethod);
 
                 // set moveToActive to false if we've no Execute-method.
-                if (this.ReflectionExecuteMethod == "") moveToActive = false;
+                if (_reflectionExecuteMethod == "") moveToActive = false;
             }
 
             return moveToActive;
         }
 
         /// <summary>
-        /// Executes this command and invokes the <see cref="ReflectionExecuteMethod"/>
-        /// on the <see cref="ReflectionType"/>. When this command is aborted the
-        /// fallback commnd is "KillRot".
+        /// Executes this command and invokes the <see cref="_reflectionExecuteMethod"/>
+        /// on the <see cref="_reflectionType"/>. When this command is aborted the
+        /// fall-back command is "KillRot".
         /// </summary>
-        /// <param name="computer">Current flightcomputer</param>
+        /// <param name="computer">Current FlightComputer.</param>
         /// <param name="ctrlState">Current FlightCtrlState</param>
         /// <returns>true: delete afterwards.</returns>
         public override bool Execute(FlightComputer computer, FlightCtrlState ctrlState)
         {
-            bool finished = true;
+            var finished = true;
 
-            if (this.ReflectionExecuteMethod != "")
+            if (_reflectionExecuteMethod != "")
             {
                 // invoke the Execution-method
-                finished = (bool)this.callReflectionMember(this.ReflectionExecuteMethod);
-                if (this.AbortCommand)
+                finished = (bool)CallReflectionMember(_reflectionExecuteMethod);
+                if (_abortCommand)
                 {
                     if (RTSettings.Instance.FCOffAfterExecute)
                     {
@@ -116,15 +113,15 @@ namespace RemoteTech.FlightComputer.Commands
 
         /// <summary>
         /// Aborts the active external command and invokes the
-        /// <see cref="ReflectionAbortMethod"/> on the <see cref="ReflectionType"/>. 
+        /// <see cref="_reflectionAbortMethod"/> on the <see cref="_reflectionType"/>. 
         /// </summary>
         public override void Abort()
         {
-            this.AbortCommand = true;
+            _abortCommand = true;
 
-            if (this.ReflectionAbortMethod != "")
+            if (_reflectionAbortMethod != "")
             {
-                this.callReflectionMember(this.ReflectionAbortMethod);
+                CallReflectionMember(_reflectionAbortMethod);
             }
         }
 
@@ -135,62 +132,61 @@ namespace RemoteTech.FlightComputer.Commands
         /// <returns>Configured ExternalAPICommand</returns>
         public static ExternalAPICommand FromExternal(ConfigNode externalData)
         {
-            ExternalAPICommand command =  new ExternalAPICommand();
-            command.TimeStamp = TimeUtil.GameTime;
+            var command = new ExternalAPICommand {TimeStamp = TimeUtil.GameTime};
             command.ConfigNodeToObject(command,externalData);
 
             return command;
         }
 
         /// <summary>
-        /// Maps the ConfigNode object passed from the api or loading to an ExternalAPICommand.
+        /// Maps the ConfigNode object passed from the API or loading to an ExternalAPICommand.
         /// </summary>
         /// <param name="command">Map the data to this object</param>
         /// <param name="data">Data to map onto the command</param>
         private void ConfigNodeToObject(ExternalAPICommand command, ConfigNode data)
         {
-            command.externalData = new ConfigNode("ExternalData").AddNode(data);
-            command.Executor = data.GetValue("Executor");
-            command.ReflectionType = data.GetValue("ReflectionType");
-            command.GUIDString = data.GetValue("GUIDString");
+            command._externalData = new ConfigNode("ExternalData").AddNode(data);
+            command._executor = data.GetValue("Executor");
+            command._reflectionType = data.GetValue("ReflectionType");
+            command._guidString = data.GetValue("GUIDString");
 
             if (data.HasValue("QueueLabel"))
-                command.QueueLabel = data.GetValue("QueueLabel");
+                command._queueLabel = data.GetValue("QueueLabel");
             if (data.HasValue("ActiveLabel"))
-                command.ActiveLabel = data.GetValue("ActiveLabel");
+                command._activeLabel = data.GetValue("ActiveLabel");
             if (data.HasValue("ShortLabel"))
-                command.ShortLabel = data.GetValue("ShortLabel");
+                command._shortLabel = data.GetValue("ShortLabel");
 
             if (data.HasValue("ReflectionPopMethod"))
-                command.ReflectionPopMethod = data.GetValue("ReflectionPopMethod");
+                command._reflectionPopMethod = data.GetValue("ReflectionPopMethod");
             if (data.HasValue("ReflectionExecuteMethod"))
-                command.ReflectionExecuteMethod = data.GetValue("ReflectionExecuteMethod");
+                command._reflectionExecuteMethod = data.GetValue("ReflectionExecuteMethod");
             if (data.HasValue("ReflectionAbortMethod"))
-                command.ReflectionAbortMethod = data.GetValue("ReflectionAbortMethod");
+                command._reflectionAbortMethod = data.GetValue("ReflectionAbortMethod");
         }
 
         /// <summary>
-        /// Saves the original configNode <see cref="externalData"/> passed from the api
+        /// Saves the original configNode <see cref="_externalData"/> passed from the API.
         /// to the persistent
         /// </summary>
         /// <param name="node">Node with the command infos to save in</param>
-        /// <param name="computer">Current flightcomputer</param>
+        /// <param name="computer">Current FlightComputer</param>
         public override void Save(ConfigNode node, FlightComputer computer)
         {
             base.Save(node, computer);
 
             node.AddNode("ExternalData");
-            node.SetNode("ExternalData", this.externalData);
+            node.SetNode("ExternalData", _externalData);
         }
 
         /// <summary>
         /// Loads the ExternalAPICommand from the persistent file. If the loading
-        /// can't find the <see cref="ReflectionType"/> we'll notify a ScreenMessage
+        /// can't find the <see cref="_reflectionType"/> we'll notify a ScreenMessage
         /// and remove the command.
         /// </summary>
         /// <param name="node">Node with the command infos to load</param>
-        /// <param name="computer">Current flightcomputer</param>
-        /// <returns>true - loaded successfull</returns>
+        /// <param name="computer">Current FlightComputer</param>
+        /// <returns>true if loaded successfully, false otherwise.</returns>
         public override bool Load(ConfigNode node, FlightComputer computer)
         {
             try
@@ -199,16 +195,16 @@ namespace RemoteTech.FlightComputer.Commands
                 {
                     if (node.HasNode("ExternalData"))
                     {
-                        this.ConfigNodeToObject(this, node.GetNode("ExternalData"));
+                        ConfigNodeToObject(this, node.GetNode("ExternalData"));
                         // try loading the reflectionType
-                        this.getReflectionType(this.ReflectionType);
+                        getReflectionType(_reflectionType);
                         return true;
                     }
                 }
             }
             catch(Exception)
             {
-                GuiUtil.ScreenMessage(string.Format("Mod '{0}' not found. Queued command '{1}' will be removed.", this.Executor, this.ShortName));
+                GuiUtil.ScreenMessage($"Mod '{_executor}' not found. Queued command '{ShortName}' will be removed.");
             }
             return false;
         }
@@ -217,40 +213,39 @@ namespace RemoteTech.FlightComputer.Commands
         /// Prepare the data to pass back to the mod.
         /// </summary>
         /// <returns>ConfigNode to pass over to the reflection methods</returns>
-        private ConfigNode prepareDataForExternalMod()
+        private ConfigNode PrepareDataForExternalMod()
         {
-            ConfigNode externalData = new ConfigNode();
-            this.externalData.CopyTo(externalData);
-            externalData.AddValue("AbortCommand",this.AbortCommand);
+            var externalData = new ConfigNode();
+            _externalData.CopyTo(externalData);
+            externalData.AddValue("AbortCommand",_abortCommand);
 
             return externalData;
         }
 
         /// <summary>
-        /// Calls the rflection method.
+        /// Calls the reflection method.
         /// </summary>
         /// <param name="reflectionMember">Name of the reflection method</param>
         /// <returns>Object from the invoked reflection method</returns>
-        private object callReflectionMember(string reflectionMember)
+        private object CallReflectionMember(string reflectionMember)
         {
-            Type externalType = this.getReflectionType(this.ReflectionType);
-            var result = externalType.InvokeMember(reflectionMember, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static, null, null, new System.Object[] { this.prepareDataForExternalMod() });
+            var externalType = getReflectionType(_reflectionType);
+            var result = externalType.InvokeMember(reflectionMember, BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static, null, null, new object[] { PrepareDataForExternalMod() });
             return result;
         }
 
         /// <summary>
-        /// Trys to load the reflectionType. Throws an exception if we can't
+        /// Try to load the reflectionType. Throws an exception if we can't
         /// find the type.
         /// </summary>
         /// <param name="reflectionType">Type to load</param>
         /// <returns>loaded type</returns>
         private Type getReflectionType(string reflectionType)
         {
-            Type type = Type.GetType(reflectionType);
+            var type = Type.GetType(reflectionType);
             if (type == null) throw new NullReferenceException();
 
             return type;
         }
-        
     }
 }

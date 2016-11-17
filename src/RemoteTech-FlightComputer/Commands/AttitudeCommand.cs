@@ -84,7 +84,7 @@ namespace RemoteTech.FlightComputer.Commands
         {
             get
             {
-                var res = "";
+                string res;
                 switch (Mode)
                 {
                     default: res = FormatMode[Mode]; break;
@@ -226,10 +226,10 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Convert this AttitudeCommand values to a ComputerMode
         /// </summary>
-        public ComputerModeMapper mapFlightMode()
+        public ComputerModeMapper MapFlightMode()
         {
             var computerMode = new ComputerModeMapper();
-            computerMode.mapFlightMode(Mode,Attitude,Frame);
+            computerMode.MapFlightMode(Mode,Attitude,Frame);
 
             return computerMode;
         }

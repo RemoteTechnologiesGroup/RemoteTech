@@ -7,28 +7,29 @@ namespace RemoteTech.FlightComputer.Commands
     /// </summary>
     public class ComputerModeMapper
     {
-        public ComputerMode computerMode;
-        public FlightAttitude computerAttitude;
+        public ComputerMode ComputerMode;
+        public FlightAttitude ComputerAttitude;
 
-        public void mapFlightMode(FlightMode flightMode, FlightAttitude flightAttitude, ReferenceFrame frame)
+        public void MapFlightMode(FlightMode flightMode, FlightAttitude flightAttitude, ReferenceFrame frame)
         {
-            computerMode = ComputerMode.Off;
-            computerAttitude = flightAttitude;
+            ComputerMode = ComputerMode.Off;
+            ComputerAttitude = flightAttitude;
 
             switch (flightMode)
             {
-                case FlightMode.Off: { computerMode = ComputerMode.Off; break; }
-                case FlightMode.KillRot: { computerMode = ComputerMode.Kill; break; }
+                case FlightMode.Off: { ComputerMode = ComputerMode.Off; break; }
+                case FlightMode.KillRot: { ComputerMode = ComputerMode.Kill; break; }
                 case FlightMode.AttitudeHold:
                 {
-                    computerMode = ComputerMode.Custom;
+                    ComputerMode = ComputerMode.Custom;
                     switch (frame)
                     {
-                        case ReferenceFrame.Maneuver: { computerMode = ComputerMode.Node; break; }
-                        case ReferenceFrame.Orbit: { computerMode = ComputerMode.Orbital; break; }
-                        case ReferenceFrame.Surface: { computerMode = ComputerMode.Surface; break; }
-                        case ReferenceFrame.TargetParallel: { computerMode = ComputerMode.TargetPos; break; }
-                        case ReferenceFrame.TargetVelocity: { computerMode = ComputerMode.TargetVel; break; }
+                        case ReferenceFrame.Maneuver: { ComputerMode = ComputerMode.Node; break; }
+                        case ReferenceFrame.Orbit: { ComputerMode = ComputerMode.Orbital; break; }
+                        case ReferenceFrame.Surface: { ComputerMode = ComputerMode.Surface; break; }
+                        case ReferenceFrame.TargetParallel: { ComputerMode = ComputerMode.TargetPos; break; }
+                        case ReferenceFrame.TargetVelocity: { ComputerMode = ComputerMode.TargetVel; break; }
+                                //TODO: North, World, default
                     }
                     break;
                 }

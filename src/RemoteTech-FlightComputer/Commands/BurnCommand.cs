@@ -10,26 +10,18 @@ namespace RemoteTech.FlightComputer.Commands
         [Persistent] public double DeltaV;
         [Persistent] public string KaCItemId = string.Empty;
 
-        public override int Priority { get { return 2; } }
+        public override int Priority => 2;
 
-        public override String Description
-        {
-            get
-            {
-                return String.Format("Burn {0}, {1}", Throttle.ToString("P2"), burnLength()) + Environment.NewLine + base.Description;
-            }
-        }
-        public override string ShortName 
-        { 
-            get { 
-                return String.Format("Execute burn for {0}", burnLength()); 
-            } 
-        }
-        private string burnLength() {
+        public override string Description =>
+            $"Burn {Throttle:P2}, {BurnLength()}{Environment.NewLine}{base.Description}";
+
+        public override string ShortName => $"Execute burn for {BurnLength()}";
+
+        private string BurnLength() {
             return Duration > 0 ? TimeUtil.FormatDuration(Duration) : (DeltaV.ToString("F2") + "m/s");
         }
 
-        private bool mAbort;
+        private bool _abort;
 
         public override bool Pop(FlightComputer f)
         {
@@ -38,7 +30,7 @@ namespace RemoteTech.FlightComputer.Commands
 
         public override bool Execute(FlightComputer f, FlightCtrlState fcs)
         {
-            if (mAbort)
+            if (_abort)
             {
                 fcs.mainThrottle = 0.0f;
                 return true;
@@ -65,22 +57,22 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Returns the total time for this burn in seconds
         /// </summary>
-        /// <param name="f">Flightcomputer for the current vessel</param>
+        /// <param name="f">FlightComputer for the current vessel</param>
         /// <returns>max burn time</returns>
-        public double getMaxBurnTime(FlightComputer f)
+        public double GetMaxBurnTime(FlightComputer f)
         {
             if (Duration > 0) return Duration;
 
             return DeltaV / (Throttle * FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
         }
 
-        public override void Abort() { mAbort = true; }
+        public override void Abort() { _abort = true; }
 
         public static BurnCommand Off()
         {
             return new BurnCommand()
             {
-                Throttle = Single.NaN,
+                Throttle = float.NaN,
                 Duration = 0,
                 DeltaV = 0,
                 TimeStamp = TimeUtil.GameTime,
@@ -110,10 +102,10 @@ namespace RemoteTech.FlightComputer.Commands
         }
 
         /// <summary>
-        /// This method will be triggerd right after the command was enqueued to
+        /// This method will be triggered right after the command was enqueued to
         /// the flight computer list.
         /// </summary>
-        /// <param name="computer">Current flightcomputer</param>
+        /// <param name="computer">Current FlightComputer</param>
         public override void CommandEnqueued(FlightComputer computer)
         {
             var timetoexec = (TimeStamp + ExtraDelay) - 180;

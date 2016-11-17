@@ -8,12 +8,9 @@ namespace RemoteTech.FlightComputer.Commands
         [Persistent]
         public UIPartActionFieldItem FieldItem;
 
-        public override string Description
-        {
-            get { return ShortName + Environment.NewLine + base.Description; }
-        }
+        public override string Description => ShortName + Environment.NewLine + base.Description;
 
-        public override string ShortName { get { return "Toggle field " + FieldItem.Field.name; } }
+        public override string ShortName => "Toggle field " + FieldItem.Field.name;
 
 
         public static PartActionFieldCommand FromField(UIPartActionFieldItem fieldItem)

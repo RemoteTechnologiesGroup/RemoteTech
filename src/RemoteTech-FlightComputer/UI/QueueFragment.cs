@@ -155,7 +155,7 @@ namespace RemoteTech.FlightComputer.UI
             //TODO : make an interface for commands having a getMaxBurnTime() method and get rid of those checks and casts.
             if (c is ManeuverCommand || c is BurnCommand)
             {
-                double burnTime = (c is ManeuverCommand) ? ((ManeuverCommand)c).getMaxBurnTime(_flightComputer) : ((BurnCommand)c).getMaxBurnTime(_flightComputer);
+                double burnTime = (c is ManeuverCommand) ? ((ManeuverCommand)c).getMaxBurnTime(_flightComputer) : ((BurnCommand)c).GetMaxBurnTime(_flightComputer);
 
                 return burnTime;
             }
