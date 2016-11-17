@@ -654,46 +654,39 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 14 Gm
 
 </div>
 
-### CommTech-1
-
 <div class="antenna" markdown="1">
+
+### CommTech-1
 
 ![Picture of CommTech-1](antenna_ct1.png)
 
-The CommTech-1 is the first antenna capable of returning signals to Kerbin from the outer solar system. Despite the in-game description, it can reach any planet available in version 0.23.5 of the game, even Eeloo at apoapsis. However, it has an extremely narrow cone; players should avoid using the dish in cone mode until they pass the orbit of Dres. Even a satellite in orbit around Jool may have occasional connection problems when using cone mode, as it can approach within 52 million km of Kerbin.
-
-For players using Planet Factory, the CommTech-1 can reach Inaccessable and Sentar, but not Serious, Stella, or Barry.
+The CommTech-1 is the first interplanetary antenna capable of reaching any planet, even Eeloo at apoapsis. However, the antenna has an extremely narrow cone of 0.01&deg; so players should avoid using it until they pass the orbit of Dres, and may be aware of its high energy consumption in its operation mode.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Specialized_Electrics)
-VAB Category        | Science Parts
-Manufacturer        | AIES Aerospace
-Cost                | 9500
-Mass                | 1.0 tons
-Diameter            | 3.5 m
-Drag                | 0.2
-Comlink power       | 2.60 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Specialized_Electrics)
+Cost | 9,500
+Mass | 0.300 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 350,000,000 km
-Reach                                 | Eeloo (all times)
-Cone Diameter                         | 0.006&deg;
-Cone covers Kerbin at                 | 11,000,000 km
-Cone covers keosynchronous orbit at | 66,000,000 km
+| Transmission Properties
+| ---
+Comlink power | 2.60 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 350 Gm
+Reach | Eeloo (all times)
+Cone angle | 0.01&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 8,100 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 40.1 Gm
 {:.xmit}
 
-|Atmosphere Performance
-|------------------------------------
-|Does not break in atmospheric flight.
+| Atmosphere Safety
+| ---
+| Does not break off in flight
 {:.atm}
 
----------------
+---
 
 </div>
 
