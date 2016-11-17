@@ -37,12 +37,12 @@ Antenna | Type | Cone angle (degree) | Cost | Atmosphere safe | Range (Mm) | Pow
 Communotron 16-S | Omni | - | 300 | Yes | 1.50 | 0.02
 Communotron 16 | Omni | - | 300 | No | 2.50 | 0.13
 HG-5 High Gain Antenna | Dish | 90.00 | 600 | No | 20.00 | 0.55
+Communotron DTS-M1 | Dish | 45.00 | 900 | No | 50.00 | 0.82
 KSC Mission Control | Omni | - | - | - | 75.00 | -
 RA-2 Relay Antenna | Dish | 12.50 | 1,800 | Yes | 200.00 | 1.15
 RA-15 Relay Antenna | Dish | 0.25 | 2,400 | Yes | 10,000.00 | 1.10
 Communotron HG-55 | Dish | 0.12 | 1,200 | No | 25,000.00 | 1.04
 Communotron 88-88 | Dish | 0.06 | 1,500 | No | 40,000.00 | 0.93
-Communotron DTS-M1 | Dish | 45.00 | 900 | No | 50,000.00 | 0.82
 RA-100 Relay Antenna | Dish | 0.65 | 3,000 | Yes | 100,000.00 | 1.10
 {:.data}
 
@@ -65,6 +65,11 @@ Reflectron GX-128 | Dish | 0.01 | 11,000 | No | 400,000.00 | 2.80
 
 ## Omnidirectional Antennas
 
+{::comment}
+Yes, the non-breaking spaces are necessary. Without them, when printing the table on a narrow screen, browsers won't be smart enough to realize that notes is the only column that word-wraps well, and will try to create eye-wrenching entries like 2500
+km
+{:/comment}
+
 The following list is of all stock and RemoteTech antennas of the omnidirectional type.
 
 Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
@@ -81,7 +86,7 @@ Antenna | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
 
 ### Reflectron DP-10
 
-![Picture of Reflectron DP-10](antenna_dp10_B.png)
+![Picture of Reflectron DP-10](antenna_dp10.png)
 
 **Bill Kerman's notes**
 
@@ -105,7 +110,7 @@ Reach | Any line of sight to Mission Control under 150 km altitude
 
 | Atmosphere Safety
 | ---
-|Does not break off in flight.
+|Does not break off in flight
 {:.atm}
 
 ---
@@ -140,7 +145,7 @@ Reach | Low Kerbin Orbit
 
 | Atmosphere Safety
 | ---
-|Does not break off in flight.
+|Does not break off in flight
 {:.atm}
 
 ---
@@ -175,7 +180,7 @@ Reach | Low Kerbin Orbit
 
 | Atmosphere Safety
 | ---
-|Tear off in flight.
+|Tear off in flight when deployed
 {:.atm}
 
 ---
@@ -197,7 +202,7 @@ The CommTech EXP-VR-2T is an advanced antenna unlocked late in the technology tr
 --- | ---
 Tech to Unlock | [Specialized Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Specialized_Electrics)
 Cost | 500
-Mass | 0.02 tons
+Mass | 0.020 tons
 {:.basic}
 
 | Transmission Properties
@@ -210,7 +215,7 @@ Reach | Low Kerbin Orbit
 
 | Atmosphere Safety
 | ---
-|Tear off in flight.
+|Tear off in flight when deployed
 {:.atm}
 
 ---
@@ -232,7 +237,7 @@ The Communotron 32 is the most powerful omnidirectional antenna available and ca
 --- | ---
 Tech to Unlock | [High-Power Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#High-Power_Electrics)
 Cost | 600
-Mass | 0.01 tons
+Mass | 0.010 tons
 {:.basic}
 
 | Transmission Properties
@@ -245,7 +250,7 @@ Reach | Near-Kerbin space, synchronous orbit
 
 | Atmosphere Safety
 | ---
-|Tear off in flight.
+|Tear off in flight when deployed
 {:.atm}
 
 ---
@@ -298,62 +303,56 @@ km
 
 The following list is of all stock and RemoteTech antennas of the dish type.
 
-Antenna | Cone angle (degree) | Cost | Atmosphere safe | Range (Mm) | Power Drain (charge/s) | Notes
+Antenna | Cost | Atmosphere safe | Cone angle (degree) | Range (Mm) | Power Drain (charge/s) | Notes
 --- | ---: | ---: | ---: | ---: | ---: | ---
-[HG-5 High Gain Antenna](#hg-5) | 90.00 | 600 | No | 20.00 | 0.55 | 
-[Reflectron KR-7](#reflectron-kr-7) | 25.00 | 800 | Yes | 90.00 | 0.82 | 
-[RA-2 Relay Antenna](#ra-2) | 12.50 | 1,800 | Yes | 200.00 | 1.15 | 
-[RA-15 Relay Antenna](#ra-15) | 0.25 | 2,400 | Yes | 10,000.00 | 1.10 | 
-[Communotron HG-55](#communotron-hg-55) | 0.12 | 1,200 | No | 25,000.00 | 1.04 | 
-[Communotron 88-88](#communotron-88-88) | 0.06 | 1,500 | No | 40,000.00 | 0.93 | 
-[Communotron DTS-M1](#communotron-dts-m1) | 45.00 | 900 | No | 50,000.00 | 0.82 | 
-[Reflectron KR-14](#reflectron-kr-14) | 0.04 | 2,000 | Yes | 60,000.00 | 0.93  | 
-[RA-100 Relay Antenna](#ra-100) | 0.65 | 3,000 | Yes | 100,000.00 | 1.10 | 
-[CommTech-1](#commtech-1) | 0.01 | 9,500 | Yes | 350,000.00 | 2.60 | 
-[Reflectron GX-128](#reflectron-gx-128) | 0.01 | 11,000 | No | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbal System
+[HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | No | 90.00 | 20.00 | 0.55 | 
+[Communotron DTS-M1](#communotron-dts-m1) | 900 | No | 45.00 | 50.00 | 0.82 | 
+[Reflectron KR-7](#reflectron-kr-7) | 800 | Yes | 25.00 | 90.00 | 0.82 | 
+[RA-2 Relay Antenna](#ra-2-relay-antenna) | 1,800 | Yes | 12.50 | 200.00 | 1.15 | 
+[RA-15 Relay Antenna](#ra-15-relay-antenna) | 2,400 | Yes | 0.25 | 10,000.00 | 1.10 | 
+[Communotron HG-55](#communotron-hg-55) | 1,200 | No | 0.12 | 25,000.00 | 1.04 | 
+[Communotron 88-88](#communotron-88-88) | 1,500 | No | 0.06 | 40,000.00 | 0.93 | 
+[Reflectron KR-14](#reflectron-kr-14) | 2,000 | Yes | 0.04 | 60,000.00 | 0.93  | 
+[RA-100 Relay Antenna](#ra-100-relay-antenna) | 3,000 | Yes | 0.65 | 100,000.00 | 1.10 | 
+[CommTech-1](#commtech-1) | 9,500 | Yes | 0.01 | 350,000.00 | 2.60 | 
+[Reflectron GX-128](#reflectron-gx-128) | 11,000 | No | 0.01 | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbal System
 {:.data}
-
-### Comms DTS-M1
 
 <div class="antenna" markdown="1">
 
-![Picture of Comms DTS-M1](antenna_dtsm1_B.png)
+### Communotron DTS-M1
 
-The Comms DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone makes it perfect for maintaining contact with multiple satellites within Kerbin's sphere of influence.
+![Picture of Communotron DTS-M1](antenna_dtsm1.png)
+
+**Bill Kerman's notes**
+
+The Communotron DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone makes it perfect for maintaining contact with multiple satellites within Kerbin's sphere of influence.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Science_Tech)
-VAB Category        | Science Parts
-Manufacturer        | Ionic Symphonic Protonic Electronics
-Cost                | 600
-Mass                | 0.03 tons
-Dimensions          | 1 &times; 0.75  m
-Drag                | 0.2
-Comlink power       | 0.82 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [Precision Engineering](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Precision_Engineering)
+Cost | 900
+Mass | 0.050 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 50,000 km
-Reach                                 | Minmus
-Cone Diameter                         | 45&deg;
-Cone covers Kerbin at                 | 1600 km
-Cone covers keosynchronous orbit at | 9100 km
+| Transmission Properties
+| ---
+Comlink power | 0.82 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 50,000 km
+Reach | Minmus
+Cone angle | 45.00 degree
+Cone covering Kerbin at | 1,600 km
+Cone covering keosynchronous orbit at | 9,100 km
 {:.xmit}
 
-|Atmosphere Performance
-------------------------------------|-------------------
-Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level     | 99 m/s
-Maximum safe speed at 10 km         | 269 m/s
-Minimum safe altitude at 2300 m/s   | 32 km
+| Atmosphere Safety
+| ---
+| Tear off in flight when deployed
 {:.atm}
 
----------------
+---
 
 </div>
 
