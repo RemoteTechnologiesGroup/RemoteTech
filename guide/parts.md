@@ -320,13 +320,51 @@ Antenna | Cost | Atmosphere safe | Cone angle (degree) | Range (Mm) | Power Drai
 
 <div class="antenna" markdown="1">
 
+### HG-5 High Gain Antenna
+
+![Picture of HG-5 High Gain Antenna](antenna_hg5.png)
+
+**Bill Kerman's notes**
+
+The HG-5 High Gain Antenna is the shortest-ranged of the directional dishes. With its wide cone, this antenna can easily maintain contact with multiple satellites orbiting Kerbin at 100 km from a relatively low altitude.
+{:.blurb}
+
+| Basic Properties
+--- | ---
+Tech to Unlock | [Basic Science](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Basic_Science)
+Cost | 600
+Mass | 0.070 tons
+{:.basic}
+
+| Transmission Properties
+| ---
+Comlink power | 0.55 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 20,000 km
+Reach | Mun
+Cone angle | 90.00 degree
+Cone covering Kerbin (0.7 Mm altitude) at | 700 km
+Cone covering keosynchronous orbit (2.9 Mm altitude) at | 3,500 km
+{:.xmit}
+
+| Atmosphere Safety
+| ---
+| Tear off in flight when deployed
+{:.atm}
+
+---
+
+</div>
+
+<div class="antenna" markdown="1">
+
 ### Communotron DTS-M1
 
 ![Picture of Communotron DTS-M1](antenna_dtsm1.png)
 
 **Bill Kerman's notes**
 
-The Communotron DTS-M1 is the shortest-ranged of the directional dishes. Its wide cone makes it perfect for maintaining contact with multiple satellites within Kerbin's sphere of influence.
+The Communotron DTS-M1 is the next step up from the HG-5 High Gain Antenna in terms of range, fund cost and power drain. Its cone is wide enough to comfortably command satellites orbiting Kerbin at 100 km from a relatively low altitude.
 {:.blurb}
 
 | Basic Properties
@@ -343,8 +381,8 @@ Science efficiency | 7.5 charge/Mit
 Maximum Range | 50,000 km
 Reach | Minmus
 Cone angle | 45.00 degree
-Cone covering Kerbin at | 1,600 km
-Cone covering keosynchronous orbit at | 9,100 km
+Cone covering Kerbin (0.7 Mm altitude) at | 1,700 km
+Cone covering keosynchronous orbit (2.9 Mm altitude) at | 8,500 km
 {:.xmit}
 
 | Atmosphere Safety
