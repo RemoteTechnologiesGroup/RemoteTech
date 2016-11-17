@@ -308,14 +308,14 @@ Antenna | Cost | Atmosphere safe | Cone angle (degree) | Range (Mm) | Power Drai
 [HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | No | 90.00 | 20.00 | 0.55 | 
 [Communotron DTS-M1](#communotron-dts-m1) | 900 | No | 45.00 | 50.00 | 0.82 | 
 [Reflectron KR-7](#reflectron-kr-7) | 800 | Yes | 25.00 | 90.00 | 0.82 | 
-[RA-2 Relay Antenna](#ra-2-relay-antenna) | 1,800 | Yes | 12.50 | 200.00 | 1.15 | 
+[RA-2 Relay Antenna](#ra-2-relay-antenna) | 1,800 | Yes | 12.50 | 200.00 | 1.15 | Cover Kerbin's sphere of influence
 [RA-15 Relay Antenna](#ra-15-relay-antenna) | 2,400 | Yes | 0.25 | 10,000.00 | 1.10 | 
 [Communotron HG-55](#communotron-hg-55) | 1,200 | No | 0.12 | 25,000.00 | 1.04 | 
 [Communotron 88-88](#communotron-88-88) | 1,500 | No | 0.06 | 40,000.00 | 0.93 | 
 [Reflectron KR-14](#reflectron-kr-14) | 2,000 | Yes | 0.04 | 60,000.00 | 0.93  | 
 [RA-100 Relay Antenna](#ra-100-relay-antenna) | 3,000 | Yes | 0.65 | 100,000.00 | 1.10 | 
 [CommTech-1](#commtech-1) | 9,500 | Yes | 0.01 | 350,000.00 | 2.60 | 
-[Reflectron GX-128](#reflectron-gx-128) | 11,000 | No | 0.01 | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbal System
+[Reflectron GX-128](#reflectron-gx-128) | 11,000 | No | 0.01 | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbol System
 {:.data}
 
 <div class="antenna" markdown="1">
