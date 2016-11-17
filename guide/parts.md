@@ -582,44 +582,39 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 6,700 Mm
 
 </div>
 
-### Reflectron KR-14
-
 <div class="antenna" markdown="1">
+
+### Reflectron KR-14
 
 ![Picture of Reflectron KR-14](antenna_refl14.png)
 
-The Reflectron KR-14 is an intermediate-range interplanetary antenna. It can easily reach all the inner planets as well as Dres. Like the Communotron-88, the KR-14 has a narrow cone and will have difficulty "seeing" communications satellites if pointed directly at Kerbin from too close a range.
+The Reflectron KR-14 is a large intermediate-range interplanetary antenna. It can easily reach all the inner planets as well as Dres. Like the Communotron-88, the KR-14 has a narrow cone and will have difficulty "seeing" communications satellites if pointed directly at Kerbin from too close a range.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Large Electrics](http://wiki.kerbalspaceprogram.com/wiki/Large_Electrics)
-VAB Category        | Science Parts
-Manufacturer        | Parabolic Industries
-Cost                | 2200
-Mass                | 1.0 tons
-Diameter            | 2.75 m
-Drag                | 0.2
-Comlink power       | 0.93 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [High-Power Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#High-Power_Electrics)
+Cost | 2,000
+Mass | 0.100 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 60,000,000 km
-Reach                                 | Dres (all times), Jool (same side of sun only), Eeloo (periapsis and same side of sun only)
-Cone Diameter                         | 0.04&deg;
-Cone covers Kerbin at                 | 1,700,000 km
-Cone covers keosynchronous orbit at | 9,900,000 km
+| Transmission Properties
+| ---
+Comlink power | 0.93 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 60 Gm
+Reach | Dres (all times), <br/>Jool (same side of sun only), <br/>Eeloo (periapsis and same side of sun only)
+Cone angle | 0.04&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 2,100 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 10 Gm
 {:.xmit}
 
-|Atmosphere Performance
-|------------------------------------
-|Does not break in atmospheric flight.
+| Atmosphere Safety
+| ---
+| Does not break off in flight
 {:.atm}
 
----------------
+---
 
 </div>
 
