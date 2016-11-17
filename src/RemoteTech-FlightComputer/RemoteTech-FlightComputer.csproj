@@ -66,7 +66,6 @@
     <Compile Include="Commands\TargetCommand.cs" />
     <Compile Include="DelayedCommand.cs" />
     <Compile Include="FlightComputer.cs" />
-    <Compile Include="FlightComputerKspAddon.cs" />
     <Compile Include="FlightCore.cs" />
     <Compile Include="PIDControllerV3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
