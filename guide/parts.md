@@ -342,9 +342,9 @@ Comlink power | 0.55 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 20,000 km
 Reach | Mun
-Cone angle | 90.00 degree
-Cone covering Kerbin (0.7 Mm altitude) at | 700 km
-Cone covering keosynchronous orbit (2.9 Mm altitude) at | 3,500 km
+Cone angle | 90.00&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 700 km
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 3,500 km
 {:.xmit}
 
 | Atmosphere Safety
@@ -380,9 +380,9 @@ Comlink power | 0.82 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 50,000 km
 Reach | Minmus
-Cone angle | 45.00 degree
-Cone covering Kerbin (0.7 Mm altitude) at | 1,700 km
-Cone covering keosynchronous orbit (2.9 Mm altitude) at | 8,500 km
+Cone angle | 45.00&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 1,700 km
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 8,500 km
 {:.xmit}
 
 | Atmosphere Safety
