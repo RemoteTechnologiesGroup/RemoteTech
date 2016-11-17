@@ -552,6 +552,8 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 3,400 Mm
 
 ![Picture of Communotron 88-88](antenna_com88-88.png)
 
+**Bill Kerman's notes**
+
 The Communotron 88-88 is by far the most compact interplanetary antenna in the retracted state. It can easily reach all the inner planets, and can even contact Dres when it is on the same side of the sun as Kerbin. However, its narrow cone means that players will have to point it at a specific comsat for a working connection.
 {:.blurb}
 
@@ -587,6 +589,8 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 6,700 Mm
 ### Reflectron KR-14
 
 ![Picture of Reflectron KR-14](antenna_refl14.png)
+
+**Bill Kerman's notes**
 
 The Reflectron KR-14 is a large intermediate-range interplanetary antenna. It can easily reach all the inner planets as well as Dres. Like the Communotron-88, the KR-14 has a narrow cone and will have difficulty "seeing" communications satellites if pointed directly at Kerbin from too close a range.
 {:.blurb}
@@ -624,6 +628,8 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 10 Gm
 
 ![Picture of RA-100 Relay Antenna](antenna_ra100.png)
 
+**Bill Kerman's notes**
+
 The RA-100 Relay Antenna is a long-range interplanetary antenna and can reliably contact a satellite at Jool at all the time. However, its large cross-section renders all but the largest rockets useless to send up. Like the other dishes, the direction to a specific satellite is required in order to establish a working connection as the antenna's cone is too narrow to cast a wide sweep on an entire satellite net.
 {:.blurb}
 
@@ -660,7 +666,9 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 14 Gm
 
 ![Picture of CommTech-1](antenna_ct1.png)
 
-The CommTech-1 is the first interplanetary antenna capable of reaching any planet, even Eeloo at apoapsis. However, the antenna has an extremely narrow cone of 0.01&deg; so players should avoid using it until they pass the orbit of Dres, and may be aware of its high energy consumption in its operation mode.
+**Bill Kerman's notes**
+
+The CommTech-1 is the first interplanetary antenna capable of reaching any planet, even Eeloo at apoapsis. However, the antenna has an extremely narrow cone of 0.01&deg; so players should avoid using it until they pass the orbit of Dres. It also may be emphasized that its energy consumption is high in the operation mode.
 {:.blurb}
 
 | Basic Properties
