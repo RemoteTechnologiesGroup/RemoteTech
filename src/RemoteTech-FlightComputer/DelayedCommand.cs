@@ -5,7 +5,7 @@ namespace RemoteTech.FlightComputer
 {
     public class DelayedFlightCtrlState : IComparable<DelayedFlightCtrlState>
     {
-        public FlightCtrlState State { get; private set; }
+        public FlightCtrlState State { get; }
         public double TimeStamp { get; set; }
 
         public DelayedFlightCtrlState(FlightCtrlState fcs)

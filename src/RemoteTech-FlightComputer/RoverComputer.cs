@@ -95,13 +95,13 @@ namespace RemoteTech.FlightComputer
                     _roverRotation = _vessel.ReferenceTransform.rotation;
                     break;
                 case Commands.DriveCommand.DriveMode.Distance:
-                    _wheelPid.setClamp(-1, 1);
+                    _wheelPid.SetClamp(-1, 1);
                     break;
                 case Commands.DriveCommand.DriveMode.DistanceHeading:
-                    _wheelPid.setClamp(-dc.steering, dc.steering);
+                    _wheelPid.SetClamp(-dc.steering, dc.steering);
                     break;
                 case Commands.DriveCommand.DriveMode.Coord:
-                    _wheelPid.setClamp(-dc.steering, dc.steering);
+                    _wheelPid.SetClamp(-dc.steering, dc.steering);
                     _targetLatitude = dc.target;
                     _targetLongitude = dc.target2;
                     break;

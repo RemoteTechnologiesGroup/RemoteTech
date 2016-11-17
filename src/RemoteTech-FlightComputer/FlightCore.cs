@@ -16,7 +16,7 @@ namespace RemoteTech.FlightComputer
             var v = f.Vessel;
             var forward = Vector3.zero;
             var up = Vector3.zero;
-            bool ignoreRoll = false;
+            var ignoreRoll = false;
 
             switch (frame)
             {
@@ -81,7 +81,7 @@ namespace RemoteTech.FlightComputer
                     break;
             }
             Vector3.OrthoNormalize(ref forward, ref up);
-            Quaternion rotationReference = Quaternion.LookRotation(forward, up);
+            var rotationReference = Quaternion.LookRotation(forward, up);
             
             switch (attitude)
             {
@@ -122,7 +122,7 @@ namespace RemoteTech.FlightComputer
         }
 
         /// <summary>
-        /// Checks the needed propellant of an engine. Its always true if infinite fuel is activ
+        /// Checks the needed propellant of an engine. Its always true if infinite fuel is active.
         /// </summary>
         /// <param name="propellants">Propellant for an engine</param>
         /// <returns>True if there are enough propellant to perform</returns>
@@ -134,7 +134,7 @@ namespace RemoteTech.FlightComputer
             {
                 var total = props.totalResourceCapacity;
                 var require = props.currentRequirement;
-                // check the total capacity and the required amount of proppelant
+                // check the total capacity and the required amount of propellant
                 if (total <= 0 || require > total)
                 {
                     return false;
@@ -151,14 +151,14 @@ namespace RemoteTech.FlightComputer
         /// <returns>Total thrust in kN</returns>
         public static double GetTotalThrust(Vessel v)
         {
-            double thrust = 0.0;
+            var thrust = 0.0;
 
             foreach (var pm in v.parts.SelectMany(p => p.FindModulesImplementing<ModuleEngines>()))
             {
-                // Notice: flameout is only true if you try to perform with this engine not before
+                // Notice: flame-out is only true if you try to perform with this engine not before
                 if (!pm.EngineIgnited || pm.flameout) continue;
                 // check for the needed propellant before changing the total thrust
-                if (!FlightCore.hasPropellant(pm.propellants)) continue;
+                if (!hasPropellant(pm.propellants)) continue;
                 thrust += (double)pm.maxThrust * (pm.thrustPercentage / 100);
             }
 
@@ -178,8 +178,8 @@ namespace RemoteTech.FlightComputer
         public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll)
         {
             // Add support for roll-less targets later -- Starstrider42
-            bool fixedRoll = !ignoreRoll;
-            Vessel vessel = fc.Vessel;
+            var fixedRoll = !ignoreRoll;
+            var vessel = fc.Vessel;
             Vector3d momentOfInertia = vessel.MOI;
             Vector3d torque = GetVesselTorque(vessel);
 
@@ -201,7 +201,7 @@ namespace RemoteTech.FlightComputer
             // -----------------------------------------------
             // prepare mechjeb values
 
-            Vector3d _axisControl = new Vector3d();
+            var _axisControl = new Vector3d();
             _axisControl.x = true ? 1 : 0;
             _axisControl.y = true ? 1 : 0;
             _axisControl.z = fixedRoll ? 1 : 0;
@@ -212,7 +212,7 @@ namespace RemoteTech.FlightComputer
             angularMomentum.y = momentOfInertia.y * vessel.angularVelocity.y;
             angularMomentum.z = momentOfInertia.z * vessel.angularVelocity.z;
 
-            Vector3d inertia = Vector3d.Scale(
+            var inertia = Vector3d.Scale(
                 angularMomentum.Sign(),
                 Vector3d.Scale(
                     Vector3d.Scale(angularMomentum, angularMomentum),
@@ -220,39 +220,39 @@ namespace RemoteTech.FlightComputer
                     )
                 );
 
-            Vector3d TfV = new Vector3d(0.3, 0.3, 0.3);
+            var TfV = new Vector3d(0.3, 0.3, 0.3);
 
             double kpFactor = 3;
             double kiFactor = 6;
-            double kdFactor = 0.5;
-            double kWlimit = 0.15;
-            double deadband = 0.0001;
+            var kdFactor = 0.5;
+            var kWlimit = 0.15;
+            var deadband = 0.0001;
 
             /* -------------------------------------------------------------------------------
              * Start MechJeb code; from MechJebModuleAttitudeController.cs in Drive() function 
              * Updated: 2016-10-22
              */
 
-            Transform vesselTransform = vessel.ReferenceTransform;
+            var vesselTransform = vessel.ReferenceTransform;
 
             // Find out the real shorter way to turn where we wan to.
             // Thanks to HoneyFox
             Vector3d tgtLocalUp = vesselTransform.transform.rotation.Inverse() * target * Vector3d.forward;
-            Vector3d curLocalUp = Vector3d.up;
+            var curLocalUp = Vector3d.up;
 
-            double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
-            Vector2d rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
+            var turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
+            var rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
             rotDirection = rotDirection.normalized * turnAngle / 180.0;
 
             // And the lowest roll
             // Thanks to Crzyrndm
-            Vector3 normVec = Vector3.Cross(target * Vector3.forward, vesselTransform.up);
-            Quaternion targetDeRotated = Quaternion.AngleAxis((float)turnAngle, normVec) * target;
-            float rollError = Vector3.Angle(vesselTransform.right, targetDeRotated * Vector3.right) * Math.Sign(Vector3.Dot(targetDeRotated * Vector3.right, vesselTransform.forward));
+            var normVec = Vector3.Cross(target * Vector3.forward, vesselTransform.up);
+            var targetDeRotated = Quaternion.AngleAxis((float)turnAngle, normVec) * target;
+            var rollError = Vector3.Angle(vesselTransform.right, targetDeRotated * Vector3.right) * Math.Sign(Vector3.Dot(targetDeRotated * Vector3.right, vesselTransform.forward));
 
 
             // From here everything should use MOI order for Vectors (pitch, roll, yaw)
-            Vector3d error = new Vector3d(
+            var error = new Vector3d(
                 -rotDirection.y * Math.PI,
                 rollError * Mathf.Deg2Rad,
                 rotDirection.x * Math.PI
@@ -260,14 +260,14 @@ namespace RemoteTech.FlightComputer
 
             error.Scale(_axisControl);
 
-            Vector3d err = error + inertia * 0.5;
+            var err = error + inertia * 0.5;
             err = new Vector3d(
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.y)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.z)));
 
             // ( MoI / available torque ) factor:
-            Vector3d NormFactor = Vector3d.Scale(momentOfInertia, torque.InvertNoNaN());
+            var NormFactor = Vector3d.Scale(momentOfInertia, torque.InvertNoNaN());
 
             err.Scale(NormFactor);
 
@@ -282,7 +282,7 @@ namespace RemoteTech.FlightComputer
                                        Math.Sqrt(NormFactor.y * Math.PI * kWlimit),
                                        Math.Sqrt(NormFactor.z * Math.PI * kWlimit));
 
-            Vector3d pidAction = fc.pid.Compute(err, omega, Wlimit);
+            var pidAction = fc.pid.Compute(err, omega, Wlimit);
 
             // deadband
             pidAction.x = Math.Abs(pidAction.x) >= deadband ? pidAction.x : 0.0;
@@ -290,7 +290,7 @@ namespace RemoteTech.FlightComputer
             pidAction.z = Math.Abs(pidAction.z) >= deadband ? pidAction.z : 0.0;
 
             // low pass filter,  wf = 1/Tf:
-            Vector3d act = fc.lastAct;
+            var act = fc.lastAct;
             act.x += (pidAction.x - fc.lastAct.x) * (1.0 / ((TfV.x / TimeWarp.fixedDeltaTime) + 1.0));
             act.y += (pidAction.y - fc.lastAct.y) * (1.0 / ((TfV.y / TimeWarp.fixedDeltaTime) + 1.0));
             act.z += (pidAction.z - fc.lastAct.z) * (1.0 / ((TfV.z / TimeWarp.fixedDeltaTime) + 1.0));
@@ -324,7 +324,7 @@ namespace RemoteTech.FlightComputer
         {
             var pid = fc.pid;
 
-            Vector3d invTf = TfV.InvertNoNaN();
+            var invTf = TfV.InvertNoNaN();
             pid.Kd = kdFactor * invTf;
 
             pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * pid.Kd;
@@ -365,10 +365,10 @@ namespace RemoteTech.FlightComputer
 
             public static Vector3d operator *(Matrix3x3 m, Vector3d v)
             {
-                Vector3d ret = Vector3d.zero;
-                for (int i = 0; i < 3; i++)
+                var ret = Vector3d.zero;
+                for (var i = 0; i < 3; i++)
                 {
-                    for (int j = 0; j < 3; j++)
+                    for (var j = 0; j < 3; j++)
                     {
                         ret[i] += m.e[i, j] * v[j];
                     }
@@ -380,29 +380,29 @@ namespace RemoteTech.FlightComputer
         /// <summary>
         /// Get the total torque for a vessel.
         /// </summary>
-        /// <param name="vessel">The vessel from which ot get the total torque.</param>
+        /// <param name="vessel">The vessel from which to get the total torque.</param>
         /// <returns>The vessel torque as a Vector3.</returns>
         public static Vector3 GetVesselTorque(Vessel vessel)
         {
             // the resulting torque
-            Vector3 vesselTorque = Vector3.zero;
+            var vesselTorque = Vector3.zero;
 
             // positive and negative vessel torque for all part modules that are torque providers
-            Vector3 positiveTorque = Vector3.zero;
-            Vector3 negativeTorque = Vector3.zero;
+            var positiveTorque = Vector3.zero;
+            var negativeTorque = Vector3.zero;
 
             // cycle through all vessel parts.
-            int partCount = vessel.Parts.Count;
-            for(int iPart = 0; iPart < partCount; ++iPart)
+            var partCount = vessel.Parts.Count;
+            for(var iPart = 0; iPart < partCount; ++iPart)
             {
-                Part part = vessel.Parts[iPart];
+                var part = vessel.Parts[iPart];
 
                 // loop through all modules for the part
-                int moduleCount = part.Modules.Count;
-                for (int iModule = 0; iModule < moduleCount; ++iModule)
+                var moduleCount = part.Modules.Count;
+                for (var iModule = 0; iModule < moduleCount; ++iModule)
                 {
                     // find modules in part that are torque providers.
-                    ITorqueProvider torqueProvider = part.Modules[iModule] as ITorqueProvider;
+                    var torqueProvider = part.Modules[iModule] as ITorqueProvider;
                     if (torqueProvider == null)
                         continue;
 

@@ -29,7 +29,7 @@ namespace RemoteTech.FlightComputer
             mSum = mOldVal = mOldD = mValue = 0;
         }
 
-        public void setClamp(float clampMin, float clampMax)
+        public void SetClamp(float clampMin, float clampMax)
         {
             McMin = clampMin;
             McMax = clampMax;
@@ -57,10 +57,7 @@ namespace RemoteTech.FlightComputer
             return mValue;
         }
 
-        public float value
-        {
-            get { return mValue; }
-        }
+        public float value => mValue;
 
         public static implicit operator float(RoverPIDController v)
         {
