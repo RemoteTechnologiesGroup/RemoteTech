@@ -508,6 +508,44 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 1,700 Mm
 
 </div>
 
+<div class="antenna" markdown="1">
+
+### Communotron HG-55
+
+![Picture of Communotron HG-55](antenna_hg55.png)
+
+**Bill Kerman's notes**
+
+The Communotron HG-55 is mounted on a foldable arm, allowing it to be attached to a smaller satellite than the RA-15 Relay Antenna, which requires a larger cross-section area. In addition, the longer range enables it to reach Moho and Eve easily all the times. Like the other antenna, this antenna requires a specific direction to a single comsat instead of a wide communication net.
+{:.blurb}
+
+| Basic Properties
+--- | ---
+Tech to Unlock | [Electronics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Electronics)
+Cost | 1,200
+Mass | 0.075 tons
+{:.basic}
+
+| Transmission Properties
+| ---
+Comlink power | 1.04 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 25 Gm
+Reach | Moho (all times), Eve (all times), <br/>Duna (same side of sun only)
+Cone angle | 0.12&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 670 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 3,400 Mm
+{:.xmit}
+
+| Atmosphere Safety
+| ---
+| Tear off in flight when deployed
+{:.atm}
+
+---
+
+</div>
+
 ### Communotron 88-88
 
 <div class="antenna" markdown="1">
