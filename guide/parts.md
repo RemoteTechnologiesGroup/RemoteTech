@@ -516,7 +516,7 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 1,700 Mm
 
 **Bill Kerman's notes**
 
-The Communotron HG-55 is mounted on a foldable arm, allowing it to be attached to a smaller satellite than the RA-15 Relay Antenna, which requires a larger cross-section area. In addition, the longer range enables it to reach Moho and Eve easily all the times. Like the other antenna, this antenna requires a specific direction to a single comsat instead of a wide communication net.
+The Communotron HG-55 is mounted on a foldable arm, allowing it to be attached to a smaller satellite than the RA-15 Relay Antenna, which requires a larger cross-section area. In addition, the longer range enables it to reach Moho and Eve easily at all the times. Like the other antenna, this antenna requires a specific direction to a single comsat instead of a wide communication net.
 {:.blurb}
 
 | Basic Properties
@@ -607,6 +607,42 @@ Reach | Dres (all times), <br/>Jool (same side of sun only), <br/>Eeloo (periaps
 Cone angle | 0.04&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 2,100 Mm
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 10 Gm
+{:.xmit}
+
+| Atmosphere Safety
+| ---
+| Does not break off in flight
+{:.atm}
+
+---
+
+</div>
+
+<div class="antenna" markdown="1">
+
+### RA-100 Relay Antenna
+
+![Picture of RA-100 Relay Antenna](antenna_ra100.png)
+
+The RA-100 Relay Antenna is a long-range interplanetary antenna and can reliably contact a satellite at Jool at all the time. However, its large cross-section renders all but the largest rockets useless to send up. Like the other dishes, the direction to a specific satellite is required in order to establish a working connection as the antenna's cone is too narrow to cast a wide sweep on an entire satellite net.
+{:.blurb}
+
+| Basic Properties
+--- | ---
+Tech to Unlock | [Automation](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Automation)
+Cost | 3,000
+Mass | 0.650 tons
+{:.basic}
+
+| Transmission Properties
+| ---
+Comlink power | 1.10 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 100 Gm
+Reach | Jool (all times), Eeloo (periapsis only)
+Cone angle | 0.03&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 2,800 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 14 Gm
 {:.xmit}
 
 | Atmosphere Safety
