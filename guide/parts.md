@@ -454,11 +454,49 @@ Mass | 0.150 tons
 | ---
 Comlink power | 1.15 charge/s
 Science efficiency | 7.5 charge/Mit
-Maximum Range | 200,000 km
+Maximum Range | 200 Mm
 Reach | Kerbin's sphere of influence
 Cone angle | 12.50&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 6,400 km
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 32,000 km
+{:.xmit}
+
+| Atmosphere Safety
+| ---
+| Does not break off in flight
+{:.atm}
+
+---
+
+</div>
+
+<div class="antenna" markdown="1">
+
+### RA-15 Relay Antenna
+
+![Picture of RA-15 Relay Antenna](antenna_ra15.png)
+
+**Bill Kerman's notes**
+
+The RA-15 Relay Antenna is the first antenna to break the 1-Gm range barrier. However, the antenna is suitable for short-range and temporary interplanetary communications only. Moreover, its narrow cone of less than 1&deg; requires players to aim the antenna at a specific comsat instead of a constellation of satellites when maintaing a working connection.
+{:.blurb}
+
+| Basic Properties
+--- | ---
+Tech to Unlock | [Electronics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Electronics)
+Cost | 2,400
+Mass | 0.300 tons
+{:.basic}
+
+| Transmission Properties
+| ---
+Comlink power | 1.10 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 10 Gm
+Reach | Moho (same side of sun only), Eve (same side of sun only), Duna (same side of sun only)
+Cone angle | 0.25&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 320 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 1,700 Mm
 {:.xmit}
 
 | Atmosphere Safety
