@@ -394,44 +394,41 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 8,500 km
 
 </div>
 
-### Reflectron KR-7
-
 <div class="antenna" markdown="1">
+
+### Reflectron KR-7
 
 ![Picture of Reflectron KR-7](antenna_refl7.png)
 
-The Reflectron KR-7 is the second short-range antenna available from RemoteTech. It has a longer range than the Comms DTS-M1, making it well-suited for spacecraft beyond Minmus's orbit. However, its narrow cone reduces its effectiveness at the Mun's distance or closer. The Reflectron KR-7 is too sturdy to be ripped off by atmospheric flight, so if properly targeted it can replace the Reflectron DP-10 as a launch antenna.
+**Bill Kerman's notes**
+
+The Reflectron KR-7 has a longer range than the Communotron DTS-M1, making it well-suited for a spacecraft beyond Minmus's orbit. However, its narrower cone reduces its coverage effectiveness at the Mun's altitude or lower.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Tech_tree#Electrics)
-VAB Category        | Science Parts
-Manufacturer        | Parabolic Industries
-Cost                | 800
-Mass                | 0.5 tons
-Diameter            | 1.375 m
-Drag                | 0.2
-Comlink power       | 0.82 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Electrics)
+Cost | 800
+Mass | 0.050 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 90,000 km
-Reach                                 | Kerbin sphere of influence
-Cone Diameter                         | 25&deg;
-Cone covers Kerbin at                 | 2800 km
-Cone covers keosynchronous orbit at | 16,000 km
+| Transmission Properties
+| ---
+Comlink power | 0.82 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 90,000 km
+Reach | Kerbin's sphere of influence
+Cone angle | 25.00&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 3,200 km
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 16,000 km
 {:.xmit}
 
-|Atmosphere Performance
-|------------------------------------
-|Does not break in atmospheric flight.
+| Atmosphere Safety
+| ---
+| Does not break off in flight
 {:.atm}
 
----------------
+---
 
 </div>
 
