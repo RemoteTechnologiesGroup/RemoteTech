@@ -478,7 +478,7 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 32,000 km
 
 **Bill Kerman's notes**
 
-The RA-15 Relay Antenna is the first antenna to break the 1-Gm range barrier. However, the antenna is suitable for short-range and temporary interplanetary communications only. Moreover, its narrow cone of less than 1&deg; requires players to aim the antenna at a specific comsat instead of a constellation of satellites when maintaing a working connection.
+The RA-15 Relay Antenna is the first antenna to break the 1-Gm range barrier. However, the antenna is suitable for short-range and temporary interplanetary communications only. Moreover, its narrow cone of less than 1&deg; requires players to aim the antenna at a specific comsat instead of a constellation of satellites when maintaining a working connection.
 {:.blurb}
 
 | Basic Properties
@@ -493,7 +493,7 @@ Mass | 0.300 tons
 Comlink power | 1.10 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 10 Gm
-Reach | Moho (same side of sun only), Eve (same side of sun only), Duna (same side of sun only)
+Reach | Moho (same side of sun only), <br/>Eve (same side of sun only), <br/>Duna (same side of sun only)
 Cone angle | 0.25&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 320 Mm
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 1,700 Mm
