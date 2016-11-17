@@ -546,47 +546,39 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 3,400 Mm
 
 </div>
 
-### Communotron 88-88
-
 <div class="antenna" markdown="1">
+
+### Communotron 88-88
 
 ![Picture of Communotron 88-88](antenna_com88-88.png)
 
-The Communotron 88-88 is by far the lightest interplanetary antenna. It can easily reach all the inner planets, and can even contact Dres when it is on the same side of the sun as Kerbin. However, its narrow cone means that players will have to point it at a specific satellite if they wish to make course corrections while en route to Eve or Duna.
+The Communotron 88-88 is by far the most compact interplanetary antenna in the retracted state. It can easily reach all the inner planets, and can even contact Dres when it is on the same side of the sun as Kerbin. However, its narrow cone means that players will have to point it at a specific comsat for a working connection.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Electronics](http://wiki.kerbalspaceprogram.com/wiki/Electronics)
-VAB Category        | Science Parts
-Manufacturer        | Ionic Protonic Electronics
-Cost                | 1100
-Mass                | 0.025 tons
-Diameter            | 2.375 m
-Drag                | 0.2
-Comlink power       | 0.93 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [Automation](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Automation)
+Cost | 1,500
+Mass | 0.100 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 40,000,000 km
-Reach                                 | Duna (all times), Dres (same side of sun only)
-Cone Diameter                         | 0.06&deg;
-Cone covers Kerbin at                 | 1,100,000 km
-Cone covers keosynchronous orbit at | 6,600,000 km
+| Transmission Properties
+| ---
+Comlink power | 0.93 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 40 Gm
+Reach | Duna (all times), <br/>Dres (same side of sun only)
+Cone angle | 0.06&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 1,400 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 6,700 Mm
 {:.xmit}
 
-|Atmosphere Performance
-------------------------------------|-------------------
-Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level     | 99 m/s
-Maximum safe speed at 10 km         | 269 m/s
-Minimum safe altitude at 2300 m/s   | 32 km
+| Atmosphere Safety
+| ---
+| Tear off in flight when deployed
 {:.atm}
 
----------------
+---
 
 </div>
 
