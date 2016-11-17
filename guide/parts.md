@@ -686,7 +686,7 @@ Maximum Range | 350 Gm
 Reach | Eeloo (all times)
 Cone angle | 0.01&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 8,100 Mm
-Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 40.1 Gm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 41 Gm
 {:.xmit}
 
 | Atmosphere Safety
@@ -698,46 +698,40 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 40.1 Gm
 
 </div>
 
-### Reflectron GX-128
-
 <div class="antenna" markdown="1">
 
-![Picture of GX-128](antenna_gx128.png)
+### Reflectron GX-128
 
-The Reflectron-GX-128 is the longest-range antenna available in RemoteTech. While it has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter.
+![Picture of Reflectron GX-128](antenna_gx128.png)
+
+**Bill Kerman's notes**
+
+The Reflectron GX-128 is a marvel of engineering, transmitting at tremendous power through the dozen lights of void. It is one of the most advanced radio transmitters the KSC's engineering division had ever developed, and capable to reach Eeloo at ease. While this antenna has, for all practical purposes, the same abilities as the CommTech-1, its foldable construction makes it much lighter and small in cross-section.
 {:.blurb}
 
-|Basic Properties
---------------------|-------------------
-Tech to Unlock      | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Advanced_Science_Tech)
-VAB Category        | Science Parts
-Manufacturer        | Parabolic Industries
-Cost                | 11000
-Mass                | 0.5 tons
-Diameter            | 6.5 m
-Drag                | 0.2
-Comlink power       | 2.80 charge/s
-Science power       | 50 charge/s
-Science efficiency  | 7.5 charge/Mit
+| Basic Properties
+--- | ---
+Tech to Unlock | [Advanced Science Tech](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Advanced_Science_Tech)
+Cost | 11,000
+Mass | 0.240 tons
 {:.basic}
 
-|Transmission Properties
---------------------------------------|-------------------
-Maximum Range                         | 400,000,000 km
-Reach                                 | Eeloo (all times)
-Cone Diameter                         | 0.005&deg;
-Cone covers Kerbin at                 | 14,000,000 km
-Cone covers keosynchronous orbit at | 79,000,000 km
+| Transmission Properties
+| ---
+Comlink power | 2.80 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 400 Gm
+Reach | Eeloo (all times)
+Cone angle | 0.01&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 8,100 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 41 Gm
 {:.xmit}
 
-|Atmosphere Performance
-------------------------------------|-------------------
-Maximum ram pressure when deployed  | 6 kN/m<sup>2</sup>
-Maximum safe speed at sea level     | 99 m/s
-Maximum safe speed at 10 km         | 269 m/s
-Minimum safe altitude at 2300 m/s   | 32 km
+| Atmosphere Safety
+| ---
+| Tear off in flight when deployed
 {:.atm}
 
----------------
+---
 
 </div>
