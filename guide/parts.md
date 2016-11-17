@@ -402,7 +402,7 @@ Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 8,500 km
 
 **Bill Kerman's notes**
 
-The Reflectron KR-7 has a longer range than the Communotron DTS-M1, making it well-suited for a spacecraft beyond Minmus's orbit. However, its narrower cone reduces its coverage effectiveness at the Mun's altitude or lower.
+The Reflectron KR-7 has a longer range than the Communotron DTS-M1, making it well-suited for a spacecraft beyond Minmus's orbit. However, its narrower cone reduces its coverage effectiveness at the Mun's altitude or lower. 
 {:.blurb}
 
 | Basic Properties
@@ -421,6 +421,44 @@ Reach | Kerbin's sphere of influence
 Cone angle | 25.00&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 3,200 km
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 16,000 km
+{:.xmit}
+
+| Atmosphere Safety
+| ---
+| Does not break off in flight
+{:.atm}
+
+---
+
+</div>
+
+<div class="antenna" markdown="1">
+
+### RA-2 Relay Antenna
+
+![Picture of RA-2 Relay Antenna](antenna_ra2.png)
+
+**Bill Kerman's notes**
+
+This adorable antenna, RA-2 Relay Antenna, represents a compromise on the cone angle, range and fund cost. It packs a broad and serious punch for a reasonable price.
+{:.blurb}
+
+| Basic Properties
+--- | ---
+Tech to Unlock | [Precision Engineering](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#Precision_Engineering)
+Cost | 1,800
+Mass | 0.150 tons
+{:.basic}
+
+| Transmission Properties
+| ---
+Comlink power | 1.15 charge/s
+Science efficiency | 7.5 charge/Mit
+Maximum Range | 200,000 km
+Reach | Kerbin's sphere of influence
+Cone angle | 12.50&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 6,400 km
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 32,000 km
 {:.xmit}
 
 | Atmosphere Safety
