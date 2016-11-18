@@ -82,6 +82,10 @@
       <Project>{d93d9a84-2a93-4cd8-b543-0ae5728554c5}</Project>
       <Name>RemoteTech-Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RemoteTech\RemoteTech.csproj">
+      <Project>{42155d82-1f25-4e59-9f65-64abc583f420}</Project>
+      <Name>RemoteTech</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

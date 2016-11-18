@@ -46,6 +46,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\BinaryHeap.cs" />
+    <Compile Include="Collections\PriorityQueue.cs" />
     <Compile Include="Extensions\CelestialBodyExtension.cs" />
     <Compile Include="Extensions\PartModuleExtension.cs" />
     <Compile Include="Extensions\ProtoPartModuleSnapshotExtension.cs" />
