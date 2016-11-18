@@ -36,14 +36,14 @@ Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Atmosphere<br/>safe | Ran
 --- | ---: | ---: | ---: | ---: | ---: | ---:
 Communotron 16-S | Omni | - | 300 | Yes | 1.50 | 0.02
 Communotron 16 | Omni | - | 300 | No | 2.50 | 0.13
-HG-5 High Gain Antenna | Dish | 90.00 | 600 | No | 20.00 | 0.55
-Communotron DTS-M1 | Dish | 45.00 | 900 | No | 50.00 | 0.82
+HG-5 High Gain Antenna | Dish | 90.000 | 600 | No | 20.00 | 0.55
+Communotron DTS-M1 | Dish | 45.000 | 900 | No | 50.00 | 0.82
 KSC Mission Control | Omni | - | - | - | 75.00 | -
-RA-2 Relay Antenna | Dish | 12.50 | 1,800 | Yes | 200.00 | 1.15
-RA-15 Relay Antenna | Dish | 0.25 | 2,400 | Yes | 10,000.00 | 1.10
-Communotron HG-55 | Dish | 0.12 | 1,200 | No | 25,000.00 | 1.04
-Communotron 88-88 | Dish | 0.06 | 1,500 | No | 40,000.00 | 0.93
-RA-100 Relay Antenna | Dish | 0.65 | 3,000 | Yes | 100,000.00 | 1.10
+RA-2 Relay Antenna | Dish | 12.500 | 1,800 | Yes | 200.00 | 1.15
+RA-15 Relay Antenna | Dish | 0.250 | 2,400 | Yes | 10,000.00 | 1.10
+Communotron HG-55 | Dish | 0.120 | 1,200 | No | 25,000.00 | 1.04
+Communotron 88-88 | Dish | 0.060 | 1,500 | No | 40,000.00 | 0.93
+RA-100 Relay Antenna | Dish | 0.025 | 3,000 | Yes | 100,000.00 | 1.10
 {:.data}
 
 ### RemoteTech antennas
@@ -55,10 +55,10 @@ Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Atmosphere<br/>safe | Ran
 Reflectron DP-10 | Omni | - | 60 | Yes | 0.50 | 0.01
 CommTech EXP-VR-2T | Omni | - | 400 | No | 3.00 | 0.18
 Communotron 32 | Omni | - | 600 | No | 5.00 | 0.60
-Reflectron KR-7 | Dish | 25.00 | 800 | Yes | 90.00 | 0.82
-Reflectron KR-14 | Dish | 0.04 | 2,000 | Yes | 60,000.00 | 0.93 
-CommTech-1 | Dish | 0.01 | 9,500 | Yes | 350,000.00 | 2.60
-Reflectron GX-128 | Dish | 0.01 | 11,000 | No | 400,000.00 | 2.80
+Reflectron KR-7 | Dish | 25.000 | 800 | Yes | 90.00 | 0.82
+Reflectron KR-14 | Dish | 0.040 | 2,000 | Yes | 60,000.00 | 0.93 
+CommTech-1 | Dish | 0.006 | 9,500 | Yes | 350,000.00 | 2.60
+Reflectron GX-128 | Dish | 0.005 | 11,000 | No | 400,000.00 | 2.80
 {:.data}
 
 <hr>
@@ -305,17 +305,17 @@ The following list is of all stock and RemoteTech antennas of the dish type.
 
 Antenna | Cost | Atmosphere<br/>safe | Cone&nbsp;angle<br/>(degree) | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
 --- | ---: | ---: | ---: | ---: | ---: | ---:
-[HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | No | 90.00 | 20.00 | 0.55 | 
-[Communotron DTS-M1](#communotron-dts-m1) | 900 | No | 45.00 | 50.00 | 0.82 | 
-[Reflectron KR-7](#reflectron-kr-7) | 800 | Yes | 25.00 | 90.00 | 0.82 | 
-[RA-2 Relay Antenna](#ra-2-relay-antenna) | 1,800 | Yes | 12.50 | 200.00 | 1.15 | Cover Kerbin's sphere of influence
-[RA-15 Relay Antenna](#ra-15-relay-antenna) | 2,400 | Yes | 0.25 | 10,000.00 | 1.10 | 
-[Communotron HG-55](#communotron-hg-55) | 1,200 | No | 0.12 | 25,000.00 | 1.04 | 
-[Communotron 88-88](#communotron-88-88) | 1,500 | No | 0.06 | 40,000.00 | 0.93 | 
-[Reflectron KR-14](#reflectron-kr-14) | 2,000 | Yes | 0.04 | 60,000.00 | 0.93  | 
-[RA-100 Relay Antenna](#ra-100-relay-antenna) | 3,000 | Yes | 0.65 | 100,000.00 | 1.10 | 
-[CommTech-1](#commtech-1) | 9,500 | Yes | 0.01 | 350,000.00 | 2.60 | 
-[Reflectron GX-128](#reflectron-gx-128) | 11,000 | No | 0.01 | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbol System
+[HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | No | 90.000 | 20.00 | 0.55 | 
+[Communotron DTS-M1](#communotron-dts-m1) | 900 | No | 45.000 | 50.00 | 0.82 | 
+[Reflectron KR-7](#reflectron-kr-7) | 800 | Yes | 25.000 | 90.00 | 0.82 | 
+[RA-2 Relay Antenna](#ra-2-relay-antenna) | 1,800 | Yes | 12.500 | 200.00 | 1.15 | Cover Kerbin's sphere of influence
+[RA-15 Relay Antenna](#ra-15-relay-antenna) | 2,400 | Yes | 0.250 | 10,000.00 | 1.10 | 
+[Communotron HG-55](#communotron-hg-55) | 1,200 | No | 0.120 | 25,000.00 | 1.04 | 
+[Communotron 88-88](#communotron-88-88) | 1,500 | No | 0.060 | 40,000.00 | 0.93 | 
+[Reflectron KR-14](#reflectron-kr-14) | 2,000 | Yes | 0.040 | 60,000.00 | 0.93  | 
+[RA-100 Relay Antenna](#ra-100-relay-antenna) | 3,000 | Yes | 0.025 | 100,000.00 | 1.10 | 
+[CommTech-1](#commtech-1) | 9,500 | Yes | 0.006 | 350,000.00 | 2.60 | 
+[Reflectron GX-128](#reflectron-gx-128) | 11,000 | No | 0.005 | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbol System
 {:.data}
 
 <div class="antenna" markdown="1">
@@ -342,7 +342,7 @@ Comlink power | 0.55 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 20,000 km
 Reach | Mun
-Cone angle | 90.00&deg;
+Cone angle | 90.000&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 700 km
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 3,500 km
 {:.xmit}
@@ -380,7 +380,7 @@ Comlink power | 0.82 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 50,000 km
 Reach | Minmus
-Cone angle | 45.00&deg;
+Cone angle | 45.000&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 1,700 km
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 8,500 km
 {:.xmit}
@@ -418,7 +418,7 @@ Comlink power | 0.82 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 90,000 km
 Reach | Kerbin's sphere of influence
-Cone angle | 25.00&deg;
+Cone angle | 25.000&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 3,200 km
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 16,000 km
 {:.xmit}
@@ -456,7 +456,7 @@ Comlink power | 1.15 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 200 Mm
 Reach | Kerbin's sphere of influence
-Cone angle | 12.50&deg;
+Cone angle | 12.500&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 6,400 km
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 32,000 km
 {:.xmit}
@@ -494,7 +494,7 @@ Comlink power | 1.10 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 10 Gm
 Reach | Moho (same side of sun only), <br/>Eve (same side of sun only), <br/>Duna (same side of sun only)
-Cone angle | 0.25&deg;
+Cone angle | 0.250&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 320 Mm
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 1,700 Mm
 {:.xmit}
@@ -532,7 +532,7 @@ Comlink power | 1.04 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 25 Gm
 Reach | Moho (all times), Eve (all times), <br/>Duna (same side of sun only)
-Cone angle | 0.12&deg;
+Cone angle | 0.120&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 670 Mm
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 3,400 Mm
 {:.xmit}
@@ -570,7 +570,7 @@ Comlink power | 0.93 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 40 Gm
 Reach | Duna (all times), <br/>Dres (same side of sun only)
-Cone angle | 0.06&deg;
+Cone angle | 0.060&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 1,400 Mm
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 6,700 Mm
 {:.xmit}
@@ -608,7 +608,7 @@ Comlink power | 0.93 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 60 Gm
 Reach | Dres (all times), <br/>Jool (same side of sun only), <br/>Eeloo (periapsis and same side of sun only)
-Cone angle | 0.04&deg;
+Cone angle | 0.040&deg;
 Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 2,100 Mm
 Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 10 Gm
 {:.xmit}
@@ -646,9 +646,9 @@ Comlink power | 1.10 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 100 Gm
 Reach | Jool (all times), Eeloo (periapsis only)
-Cone angle | 0.03&deg;
-Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 2,800 Mm
-Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 14 Gm
+Cone angle | 0.025&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 3,300 Mm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 17 Gm
 {:.xmit}
 
 | Atmosphere Safety
@@ -684,9 +684,9 @@ Comlink power | 2.60 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 350 Gm
 Reach | Eeloo (all times)
-Cone angle | 0.01&deg;
-Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 8,100 Mm
-Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 41 Gm
+Cone angle | 0.006&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 14 Gm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 67 Gm
 {:.xmit}
 
 | Atmosphere Safety
@@ -722,9 +722,9 @@ Comlink power | 2.80 charge/s
 Science efficiency | 7.5 charge/Mit
 Maximum Range | 400 Gm
 Reach | Eeloo (all times)
-Cone angle | 0.01&deg;
-Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 8,100 Mm
-Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 41 Gm
+Cone angle | 0.005&deg;
+Cone covering Kerbin (0.7&nbsp;Mm altitude) at | 17 Gm
+Cone covering keosynchronous orbit (2.9&nbsp;Mm altitude) at | 81 Gm
 {:.xmit}
 
 | Atmosphere Safety
