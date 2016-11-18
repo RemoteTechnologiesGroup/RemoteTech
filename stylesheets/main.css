@@ -109,15 +109,19 @@ table.data{
 table.data thead{
 	background-color: lightgrey;
 	vertical-align: top;
+}
+
+table.data thead th {
 	text-align: center;
+	font-weight: bold;
 }
 
 table.data td, table.data th {
 	padding: 5px;
 }
 
-table.data th, table.sidehead td:first-child {
-	font-weight: bold;
+table.data tbody td {
+	vertical-align: top;
 }
 
 table.data tbody tr:nth-child(2n) {
