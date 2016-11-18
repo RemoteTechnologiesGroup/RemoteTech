@@ -6,38 +6,38 @@ namespace RemoteTech.Common.Collections
     // PriorityQueue based on a minimum-BinaryHeap.
     public class PriorityQueue<T> : IEnumerable<T>
     {
-        public int Count { get { return mHeap.Count; } }
+        public int Count => _binaryHeap.Count;
 
-        private readonly BinaryHeap<T> mHeap;
+        private readonly BinaryHeap<T> _binaryHeap;
 
         public PriorityQueue()
         {
-            mHeap = new BinaryHeap<T>();
+            _binaryHeap = new BinaryHeap<T>();
         }
 
         public void Clear()
         {
-            mHeap.Clear();
+            _binaryHeap.Clear();
         }
 
         public void Enqueue(T item)
         {
-            mHeap.Add(item);
+            _binaryHeap.Add(item);
         }
 
         public T Peek()
         {
-            return mHeap.Peek();
+            return _binaryHeap.Peek();
         }
 
         public T Dequeue()
         {
-            return mHeap.Remove();
+            return _binaryHeap.Remove();
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return mHeap.GetEnumerator();
+            return _binaryHeap.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
