@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace RemoteTech.SimpleTypes
+namespace RemoteTech.Common.Collections
 {
     // Sadly there is no way to enforce immutability C#.
     // Do not modify sorting order externally! Increase/Decrease().

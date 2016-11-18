@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace RemoteTech.SimpleTypes
+namespace RemoteTech.Common.Collections
 {
     // PriorityQueue based on a minimum-BinaryHeap.
     public class PriorityQueue<T> : IEnumerable<T>
