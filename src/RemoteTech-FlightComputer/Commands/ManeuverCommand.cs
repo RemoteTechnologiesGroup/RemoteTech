@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 using UnityEngine;
 
@@ -23,6 +24,8 @@ namespace RemoteTech.FlightComputer.Commands
         private double _throttle = 1.0f;
         private double _lowestDeltaV;
         private bool _abortOnNextExecute;
+
+        private static RTCore CoreInstance => RTCore.Instance;
 
         public override string Description
         {
@@ -264,9 +267,9 @@ namespace RemoteTech.FlightComputer.Commands
             {
                 var kaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
 
-                if (RTCore.Instance != null && RTCore.Instance.KacAddon != null)
+                if (CoreInstance != null && CoreInstance.KacAddon != null)
                 {
-                    KaCItemId = RTCore.Instance.KacAddon.CreateAlarm(RemoteTech_KACWrapper.KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, kaCAddonLabel, timetoexec, computer.Vessel.id);
+                    KaCItemId = CoreInstance.KacAddon.CreateAlarm(RemoteTech_KACWrapper.KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, kaCAddonLabel, timetoexec, computer.Vessel.id);
                 }
             }
 
@@ -280,11 +283,11 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flight computer</param>
         public override void CommandCanceled(FlightComputer computer)
         {
-            if (KaCItemId == string.Empty || RTCore.Instance == null || RTCore.Instance.KacAddon == null)
+            if (KaCItemId == string.Empty || CoreInstance == null || CoreInstance.KacAddon == null)
                 return;
 
             // Cancel also the KAC entry
-            RTCore.Instance.KacAddon.DeleteAlarm(KaCItemId);
+            CoreInstance.KacAddon.DeleteAlarm(KaCItemId);
             KaCItemId = string.Empty;
         }
     }

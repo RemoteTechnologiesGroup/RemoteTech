@@ -4,10 +4,12 @@ using System.Linq;
 using UnityEngine;
 using RemoteTech.FlightComputer.Commands;
 using RemoteTech.Common;
+using RemoteTech.Common.Collections;
 using RemoteTech.Common.Extensions;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.UI;
+using RemoteTech.Modules;
 
 namespace RemoteTech.FlightComputer
 {
@@ -17,7 +19,7 @@ namespace RemoteTech.FlightComputer
     /// </summary>
     public class FlightComputer : IDisposable
     {
-        private RTCore CoreInstance => RTCore.Instance;
+        private static RTCore CoreInstance => RTCore.Instance;
 
         /// <summary>Flight computer loaded configuration from persistent save.</summary>
         private ConfigNode _fcLoadedConfigs;
