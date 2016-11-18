@@ -125,16 +125,19 @@ table.data tbody td {
 }
 
 table.data tbody tr:nth-child(2n) {
-	background-color: rgb(240,240,240);
+	background-color: #F0F0F0;
 }
 
+/*
 table.shadecol th:nth-child(2n), table.shadecol td:nth-child(2n) {
 	background-color: rgb(240,240,240);
 }
-/* Overlapping shaded rows and columns should be darker */
+
+Overlapping shaded rows and columns should be darker
 table.data.shadecol tbody tr:nth-child(2n) td:nth-child(2n) {
 	background-color: #E1E1E1;
 }
+*/
 
 /* Text just after images */
 p.caption {
