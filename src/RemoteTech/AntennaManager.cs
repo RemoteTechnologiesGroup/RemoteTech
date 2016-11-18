@@ -6,6 +6,10 @@ using RemoteTech.Modules;
 
 namespace RemoteTech
 {
+    /// <summary>
+    /// Class keeping track of RemoteTech antennas.
+    /// Acts as a list of antennas managed by RemoteTech.
+    /// </summary>
     public class AntennaManager : IDisposable, IEnumerable<IAntenna>
     {
         public event Action<IAntenna> OnRegister = delegate { };

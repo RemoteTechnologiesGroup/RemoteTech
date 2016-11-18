@@ -41,10 +41,6 @@
       <HintPath>Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KSPUtil">
-      <HintPath>KSPUtil.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -61,10 +57,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddOns\ControlLockAPI.cs" />
     <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
+    <Compile Include="FlightComputer\Commands\EventCommand.cs" />    
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
     <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
     <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
@@ -72,9 +68,9 @@
     <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
     <Compile Include="FlightComputer\Commands\DriveCommand.cs" />
     <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
+    <Compile Include="FlightComputer\Commands\PartActionCommand.cs" />    
     <Compile Include="FlightComputer\RoverComputer.cs" />
     <Compile Include="FlightComputer\RoverPIDController.cs" />
-    <Compile Include="FlightComputer\EventCommand.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
     <Compile Include="FlightComputer\Commands\ICommand.cs" />
     <Compile Include="FlightComputer\Commands\TargetCommand.cs" />

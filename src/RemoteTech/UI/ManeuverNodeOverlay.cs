@@ -5,6 +5,9 @@ using RemoteTech.FlightComputer.Commands;
 
 namespace RemoteTech.UI
 {
+    /// <summary>
+    /// Class adding and handling a new button to maneuver nodes.
+    /// </summary>
     public class ManeuverNodeOverlay : IFragment, IDisposable
     {
         private readonly GUIStyle mManeuverNodeButtonAdd;
@@ -95,11 +98,11 @@ namespace RemoteTech.UI
                         UnityEngine.UI.Button gizmoDeleteBtn = gizmo.deleteBtn;
 
                         // We are on the right gizmo but no buttons are visible so skip the rest
-						if (!gizmoDeleteBtn.GetComponent<Renderer>().isVisible)
+                        if (!gizmoDeleteBtn.isActiveAndEnabled)
                         {
                             continue;
                         }
-                        
+
                         Vector3 screenCoord = gizmo.camera.WorldToScreenPoint(gizmo.transform.position);
                         //Vector3 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
                         
@@ -110,7 +113,7 @@ namespace RemoteTech.UI
                         Rect screenPos = new Rect(screenCoord.x - btnWidth - 5.0f, Screen.height - screenCoord.y - btnWidth, btnWidth, btnWidth);
                         
                         GUIStyle maneuverCtrl = mManeuverNodeButtonAdd;
-                        bool nodeAlreadyQueued = flightComputer.hasManeuverCommandByNode(node);
+                        bool nodeAlreadyQueued = flightComputer.HasManeuverCommandByNode(node);
 
                         // switch the button style
                         if (nodeAlreadyQueued)
@@ -127,7 +130,7 @@ namespace RemoteTech.UI
                             }
                             else
                             {
-                                flightComputer.removeManeuverCommandByNode(node);
+                                flightComputer.RemoveManeuverCommandByNode(node);
                             }
                         }
                         GUILayout.EndArea();

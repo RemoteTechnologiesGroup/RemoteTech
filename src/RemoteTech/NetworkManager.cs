@@ -9,6 +9,10 @@ using UnityEngine;
 
 namespace RemoteTech
 {
+    /// <summary>
+    /// Class managing the satellites network.
+    /// Acts as a list of vessels in one or more networks.
+    /// </summary>
     public partial class NetworkManager : IEnumerable<ISatellite>
     {
         public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkAdd = delegate { };

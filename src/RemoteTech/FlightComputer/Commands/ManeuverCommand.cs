@@ -258,16 +258,15 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flightcomputer</param>
         public override void CommandEnqueued(FlightComputer computer)
         {
-            string KaCAddonLabel = String.Empty;
-            double timetoexec = (this.TimeStamp + this.ExtraDelay) - RTSettings.Instance.FCLeadTime;
+            var timetoexec = (TimeStamp + ExtraDelay) - RTSettings.Instance.FCLeadTime;
 
-            if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
+            if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts)
             {
-                KaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
+                var kaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
 
-                if (RTCore.Instance != null && RTCore.Instance.kacAddon != null)
+                if (RTCore.Instance != null && RTCore.Instance.KacAddon != null)
                 {
-                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Maneuver, KaCAddonLabel, timetoexec);
+                    KaCItemId = RTCore.Instance.KacAddon.CreateAlarm(RemoteTech_KACWrapper.KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, kaCAddonLabel, timetoexec, computer.Vessel.id);
                 }
             }
 
@@ -281,12 +280,12 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flight computer</param>
         public override void CommandCanceled(FlightComputer computer)
         {
+            if (KaCItemId == string.Empty || RTCore.Instance == null || RTCore.Instance.KacAddon == null)
+                return;
+
             // Cancel also the kac entry
-            if (this.KaCItemId != String.Empty && RTCore.Instance != null && RTCore.Instance.kacAddon != null)
-            {
-                RTCore.Instance.kacAddon.DeleteAlarm(this.KaCItemId);
-                this.KaCItemId = String.Empty;
-            }
+            RTCore.Instance.KacAddon.DeleteAlarm(KaCItemId);
+            this.KaCItemId = string.Empty;
         }
     }
 }

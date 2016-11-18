@@ -145,12 +145,14 @@ namespace RemoteTech
         {
             String timeindicator = "sec";
 
+            /* Disabled to follow the stock consumption format
             if(consumption < 1)
             {
                 // minutes
                 consumption *= 60;
                 timeindicator = "min";
             }
+            */
             
             return String.Format("{0:F2}/{1}.", consumption, timeindicator);
         }
@@ -220,27 +222,37 @@ namespace RemoteTech
             return Boolean.TryParse(n.GetValue(value) ?? "False", out result) && result;
         }
 
-        /// <summary>
-        /// Searches a ProtoPartModuleSnapshot for an integer field
-        /// </summary>
-        /// 
-        /// <returns>The value of the field named by <paramref name="value"/> in the PartModule represented 
-        ///     by <paramref name="ppms"/></returns>
-        /// <param name="ppms">The ProtoPartModule to query</param>
-        /// <param name="value">The name of a member PartModule </param>
-        /// 
-        /// <exception cref="System.ArgumentException">Thrown if <paramref name="value"/> does not exist 
-        ///     or cannot be parsed as an integer.</exception>
-        /// <exceptionsafe>The program state is unchanged in the event of an exception.</exceptionsafe>
-        public static int GetInt(this ProtoPartModuleSnapshot ppms, String value)
+        /// <summary>Searches a ProtoPartModuleSnapshot for an integer field.</summary>
+        /// <returns>True if the member <paramref name="valueName"/> exists, false otherwise.</returns>
+        /// <param name="ppms">The <see cref="ProtoPartModuleSnapshot"/> to query.</param>
+        /// <param name="valueName">The name of a member in the  ProtoPartModuleSnapshot.</param>
+        /// <param name="value">The value of the member <paramref name="valueName"/> on success. An undefined value on failure.</param>
+        public static bool GetInt(this ProtoPartModuleSnapshot ppms, string valueName, out int value)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
-            int result;
-            if (Int32.TryParse(n.GetValue(value) ?? "", out result)) {
-                return result;
+            value = 0;
+            var result = ppms.moduleValues.TryGetValue(valueName, ref value);
+            if (!result)
+            {
+                RTLog.Notify($"No integer '{value}' in ProtoPartModule '{ppms.moduleName}'");
             }
-            throw new ArgumentException (String.Format ("No integer '{0}' in ProtoPartModule", value), "value");
+
+            return result;
+        }
+
+        //Note: Keep this method even if it has no reference, it is useful to track some bugs.
+        /// <summary>
+        /// Get a private field value from an object instance though reflection.
+        /// </summary>
+        /// <param name="type">The type of the object instance from which to obtain the private field.</param>
+        /// <param name="instance">The object instance</param>
+        /// <param name="fieldName">The field name in the object instance, from which to obtain the value.</param>
+        /// <returns>The value of the <paramref name="fieldName"/> instance or null if no such field exist in the instance.</returns>
+        internal static object GetInstanceField(Type type, object instance, string fieldName)
+        {
+            const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                                           | BindingFlags.Static;
+            var field = type.GetField(fieldName, bindFlags);
+            return field?.GetValue(instance);
         }
 
         public static void Button(Texture2D icon, Action onClick, params GUILayoutOption[] options)

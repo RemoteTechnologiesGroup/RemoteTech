@@ -8,7 +8,7 @@ namespace RemoteTech
         String Name { get; }
         String VesselName { get; set; }
         bool VesselLoaded { get; }
-        Guid Guid { get; }
+        Guid VesselId { get; }
         Vector3 Position { get; }
         CelestialBody Body { get; }
 

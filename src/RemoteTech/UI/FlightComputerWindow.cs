@@ -51,16 +51,16 @@ namespace RemoteTech.UI
         public override void Show()
         {
             base.Show();
-            mFlightComputer.onActiveCommandAbort += mAttitude.Reset;
-            mFlightComputer.onNewCommandPop += mAttitude.getActiveFlightMode;
+            mFlightComputer.OnActiveCommandAbort += mAttitude.Reset;
+            mFlightComputer.OnNewCommandPop += mAttitude.getActiveFlightMode;
 
             mAttitude.getActiveFlightMode();
         }
 
         public override void Hide()
         {
-            mFlightComputer.onActiveCommandAbort -= mAttitude.Reset;
-            mFlightComputer.onNewCommandPop -= mAttitude.getActiveFlightMode;
+            mFlightComputer.OnActiveCommandAbort -= mAttitude.Reset;
+            mFlightComputer.OnNewCommandPop -= mAttitude.getActiveFlightMode;
             base.Hide();
         }
 

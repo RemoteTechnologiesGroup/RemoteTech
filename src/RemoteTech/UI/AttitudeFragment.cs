@@ -142,7 +142,12 @@ namespace RemoteTech.UI
                 }
                 GUILayout.EndHorizontal();
 
-                RTUtil.FakeStateButton(new GUIContent("CUSTOM", "Prograde fixed as pitch, heading, roll relative to north pole."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Custom)), (int)mMode, (int)ComputerMode.Custom, GUILayout.ExpandWidth(true));
+                GUILayout.BeginHorizontal();
+                {
+                    RTUtil.FakeStateButton(new GUIContent("OFF", "Set Attitude to Off."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Off)), (int)mMode, (int)ComputerMode.Off, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("CUSTOM", "Prograde fixed as pitch, heading, roll relative to north pole."), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Custom)), (int)mMode, (int)ComputerMode.Custom, GUILayout.ExpandWidth(true));
+                }
+                GUILayout.EndHorizontal();
                 GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
@@ -318,14 +323,14 @@ namespace RemoteTech.UI
         public void getActiveFlightMode()
         {
             // check the current flight mode
-            if (mFlightComputer.currentFlightMode == null)
+            if (mFlightComputer.CurrentFlightMode == null)
             {
                 Reset();
                 return;
             }
 
             // get active command
-            SimpleTypes.ComputerModeMapper mappedCommand = mFlightComputer.currentFlightMode.mapFlightMode();
+            SimpleTypes.ComputerModeMapper mappedCommand = mFlightComputer.CurrentFlightMode.mapFlightMode();
             mMode = mappedCommand.computerMode;
             mAttitude = FlightAttitude.Null;
 

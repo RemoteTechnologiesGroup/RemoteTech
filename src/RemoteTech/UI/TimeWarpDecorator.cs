@@ -7,6 +7,10 @@ using KSP.UI.Screens.Flight;
 
 namespace RemoteTech.UI
 {
+    /// <summary>
+    /// Class used to display and handle the status quadrant (time delay) and the flight computer button.
+    /// This is located right below the time warp UI, hence its name.
+    /// </summary>
     public class TimeWarpDecorator
     {
         /// <summary>
