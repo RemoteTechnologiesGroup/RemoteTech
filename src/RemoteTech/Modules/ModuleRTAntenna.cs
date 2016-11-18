@@ -146,7 +146,7 @@ namespace RemoteTech.Modules
 
             if (ShowEditor_DishAngle && CanTarget)
             {
-                info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F2")).AppendLine();
+                info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F3")).AppendLine();
             }
 
             if (IsRTActive)
