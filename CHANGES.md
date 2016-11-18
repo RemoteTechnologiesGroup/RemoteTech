@@ -1,3 +1,174 @@
+#Version 1.8.1
+**Released November 18, 2016**
+
+What's New?
+===========
+
+* Updated for KSP 1.2.1 (should work on KSP 1.2.0)
+* Removed "Addon controller" support (deprecated addon). [#237]
+* Flight computer can now issue an Attitude "Off" command after other commands. [#530]
+* Module fields are now delayed by RT (if delay is enabled). [#587]
+    * See Warning / Known issues
+* Completely reworked the way RT settings are loaded (added a new option to revert to the default settings). [#624]
+* Completely revised and beautified the RemoteTech wiki's antenna parts. [#635]
+    * See https://remotetechnologiesgroup.github.io/RemoteTech/guide/parts
+* USI Karibou Rover support for RemoteTech: many thanks to RoverDude, Vranir and Li0n-0 for making this patch. [#637]
+* Updated torque calculation in the flight computer. [#643]
+* Configuration file for station cores from Stockalike Station Parts Expansion. [#656]
+* Fixed an old bug when science didn't transmit correctly despite UI displaying that 100% was transmitted. [#667; #675]
+* Now possible to use "Jump to ship" in a KAC alarm set by RT. [#676]
+* "Aim Camera" advanced tweakable in no more delayed by RT. [#682]
+* Setting a maneuver node doesn't result in NRE spamming. [#685]
+* Fixed a problem with RT and dmagic / Universal Storage parts. [#686]
+* The RT debug window doesn't spam NRE under some circumstances. [#688]
+* All stock antennas can be used with RT. [#690]
+* Internal code cleanup.
+
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #237: Removed "Addon controller" support (deprecated Addon) [request by: Starstrider42]
+* Issue #530: Inability to switch "mode" to "off" [requested by: rsparkyc]
+* Issue #587: gimbal and thrust 'tweakables' available in flight with no connection [requested by: gnivler]
+* Issue #603: Options window not blocking mouse wheel zooming at KSC [requested by: gnivler]
+* Issue #624: Adding Ground Stations in the config file doesn't work [multiple requests]
+* Issue #635: Communotron HG-55 is not listed on the RemoteTech wiki [requested by: ttencate]
+* Issue #637: Karibou radial probe needs SPU [requested by: toric55]
+* Issue #643: FC is overcompensating or even spinning out with RCS enabled but ports set to ignore rotation [requested by: jdmj]
+* Issue #667: Antennas don't transmit science in 1.1.2 [requested by: Kyoyashi]
+* Issue #675: Science often fails to transmit from L-Tech's Skylab [requested by: scatterlogical]
+* Issue #676: Cannot use the "Jump to ship" in KAC alarms [requested by: petersohn]
+* Issue #682: Aim camera action delayed [requested by: YamoriYuki]
+* Issue #685: NRE spamming when setting a maneuver node [requested by: Torih]
+* Issue #686: NRE Spam with Universal Storage or dmagic parts [requested by: Torih]
+* Issue #688: GUIClips spam from the debug-tool window at KSC scene [requested by: KSP-TaxiService]
+* Issue #690: Not all antennas work [requested by: esseivan]
+
+Pull Requests
+-------------
+
+* PR #656: Stockalike Station Parts Expansion support [PR by: Darkenator]
+* PR #689: Fixed the issue of the GUIClips spam [PR by: KSP-TaxiService]
+* PR #691: RT config for new stock antennas [PR by: YamoriYuki]
+* PR #694: Fixed the issue of any changes in RemoteTech_Settings.cfg being ignored [PR by: KSP-TaxiService]
+* PR #695: Added the mechanism of preventing clicks and scrolling through various RT windows [PR by: KSP-TaxiService]
+* PR #697: Minor fix to patch for issue #667. [PR by: neitsa]
+
+Future
+======
+
+We are already moving to make the next RT major release. Issues and feedback are still welcome!
+
+Next Major Release
+------------------
+
+Dubbed RT v2.x
+
+* Current features will stay as is (probably with some tweaks) unless we receive
+  different feedback from the community.
+
+* We are currently gathering the feedback made on the forum and our bug tracker
+   on GitHub to add feature requests to the 2.x branch.
+
+Planned features
+----------------
+
+* More code cleanup: more speed, less garbage collection.
+
+* RT will be built on top of CommNet.
+
+* RT will be split into multiple packages (with compulsory RT-Core component), so players can choose what they want:
+    - RT-Antennas             [Antenna pack: models + configs only; No code]
+    - RT-FlightComputer  [Flight computer only]
+    - RT-Delay                   [Delay feature only]
+
+* Complete Flight Computer overhaul
+    * Complete rework of the attitude control
+    * New autopilot (on top of the stock autopilot)
+    * Player can build a queue of commands before transmitting to a vessel (see CommandPlanner section below)
+    * New trigger conditions (altitude, height, speed, etc) for commands
+
+* Sub-components are still being discussed (Work in progress!)
+    * ModularCommNetManipulator - APIs for third-party mods to add their codes to manipulate CommNet (eg 
+       OnNetworkPreUpdate or OnNetWorkPostUpdate)
+    * TimedCommandManager - backend module to handle a queue of planned/sent commands
+    * CommandPlanner: user interface for command objects
+        1) schedule commands for a vessel by selecting from a list of vessel's parts and their actions
+        2) build and edit the queue of commands before sending to the vessel (one delay for multiple commands)
+        3) replace the existing queue with new queue transmitted
+        4) attach an optional trigger condition to each command like extend landing gears only when terrain-altitude=10m
+        5) timed and trigger (passive) commands
+    * FlightComputer - allow player to instruct a vessel over a working connection (same but enhanced functionality)
+        1) allow player to precisely control vessel's attitude in real time by clicking NODE/TARGET/NORMAL buttons etc
+        2) strictly closed platform with a public APIs for internal RT calls and third-party mods to prevent an
+            eventual scenario of FC being wired undesirably to everything in RT
+        3) contain a queue of commands uploaded to read and execute accordingly (not editable?)
+    * DelayManager - calculate information about signal delay between a vessel and KSC or another vessel
+    * ModuleRTDeployableAntenna - subclass of KSP's ModuleDeployableAntenna module to
+        add EC cost for active (stock and RT) antennas
+
+* A new module:
+    * RT-Viz  [Antenna range visualization, satellite groups, sorting, etc.]
+    * An interface for the module's functions is yet to be determined. Add to the
+       RT 4-button bar or as a launcher button?
+
+Warning / Known issues
+======================
+
+* CommNet is disabled by default if RemoteTech is enabled.
+    - CommNet can still be enabled alongside RemoteTech in the RT option window
+    but this has not been tested.
+
+* A word about module fields:
+    * There's a known problem with some module (PartModule) fields.
+
+    - Quick problem overview:
+        - When in flight if you right click a part it opens a context menu to
+          change some part behaviors (technically fields or events in the part
+          PartModule) for that part. The visual display of the change is also
+          delayed, so players don't get a visual cue of what's happening
+          directly and this might seem strange to have no visual feedback for
+          the action that was requested.
+
+    - Example: sliding a slider on the contextual menu of a part with a big
+    delay will not move the slider although the slide is actually taken care
+    of internally by RT (the sliding action will be visible *once* the command
+    delay is over).
+
+    - Technical explanation:
+        - If RT delay is ON, getting a visual cue on the change is not possible
+        directly as setting the value to be visible in the context menu will
+        actually, set that value (immediately, without delay) thus defeating the
+        purpose of the RT delay feature. Our current implementation takes care
+        if the internal change but can't update the visual elements.
+
+    - Fix:
+        We might be able to make something better, but only after the complete
+        overhaul in RT 2.x branch.
+
+    Workarounds:
+
+    - Sliders:
+    If you want to set a slider value on a part (in Flight), the best you can do
+    is to click on the desired location on the slider rather than sliding it
+    (i.e. clicking in the middle of the slider will set it to 50%: you won't see
+    the change immediately if the delay is big enough, just wait for the delay to
+    expire.).  You can still slide the slider, but it will set a massive amount
+    of commands in the flight computer.
+
+    - Cycle buttons (buttons that cycle though at least 3 options):
+    Cycle buttons are delayed properly but the text on the context menu doesn't
+    change. Close the menu and reopen it (after RT command has been executed) to
+    see the change.
+
+***
+
+
+
 Version 1.8.0
 =============
 Released October 15, 2016
