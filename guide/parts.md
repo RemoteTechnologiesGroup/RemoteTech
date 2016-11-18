@@ -32,7 +32,7 @@ km
 
 Kerbal Space Program has a number of antennas available, which ranges and power consumptions vary widely.
 
-Antenna | Type | Cone angle<br/>(degree) | Cost | Atmosphere<br/>safe | Range (Mm) | Power Drain<br/>(charge/s)
+Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
 --- | ---: | ---: | ---: | ---: | ---: | ---:
 Communotron 16-S | Omni | - | 300 | Yes | 1.50 | 0.02
 Communotron 16 | Omni | - | 300 | No | 2.50 | 0.13
@@ -50,7 +50,7 @@ RA-100 Relay Antenna | Dish | 0.65 | 3,000 | Yes | 100,000.00 | 1.10
 
 RemoteTech integrates the additional antennas into Kerbal Space Program. Among these antennas, the antenna, Reflectron DP-10, is the cheapest one while the Reflectron GX-128 wields the power so immense that a crash-party video can be streamed directly to Eeloo from Moho.
 
-Antenna | Type | Cone angle<br/>(degree) | Cost | Atmosphere<br/>safe | Range (Mm) | Power Drain<br/>(charge/s)
+Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
 --- | ---: | ---: | ---: | ---: | ---: | ---:
 Reflectron DP-10 | Omni | - | 60 | Yes | 0.50 | 0.01
 CommTech EXP-VR-2T | Omni | - | 400 | No | 3.00 | 0.18
@@ -72,7 +72,7 @@ km
 
 The following list is of all stock and RemoteTech antennas of the omnidirectional type.
 
-Antenna | Cost | Atmosphere<br/>safe | Range (Mm) | Power Drain<br/>(charge/s) | Notes
+Antenna | Cost | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
 --- | ---: | ---: | ---: | ---: | ---:
 [Reflectron DP-10](#reflectron-dp-10) | 60 | Yes | 0.50 | 0.01 | Activated by default
 [Communotron 16-S](#communotron-16-s) | 300 | Yes | 1.50 | 0.02 | Activated by default
@@ -303,7 +303,7 @@ km
 
 The following list is of all stock and RemoteTech antennas of the dish type.
 
-Antenna | Cost | Atmosphere<br/>safe | Cone angle<br/>(degree) | Range (Mm) | Power Drain<br/>(charge/s) | Notes
+Antenna | Cost | Atmosphere<br/>safe | Cone&nbsp;angle<br/>(degree) | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
 --- | ---: | ---: | ---: | ---: | ---: | ---:
 [HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | No | 90.00 | 20.00 | 0.55 | 
 [Communotron DTS-M1](#communotron-dts-m1) | 900 | No | 45.00 | 50.00 | 0.82 | 
