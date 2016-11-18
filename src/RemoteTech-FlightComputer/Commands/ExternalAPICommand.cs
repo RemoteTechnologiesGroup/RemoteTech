@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
