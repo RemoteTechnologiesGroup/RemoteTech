@@ -98,16 +98,32 @@ code {
 	background-color: #f5f5f5
 }
 
-/* Default table style makes them illegible */
+/* Override the default table styles that render data illegible */
+table.data{
+	width: 95%;
+	border: solid 1px lightgrey;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table.data thead{
+	background-color: lightgrey;
+}
+
 table.data td, table.data th {
 	padding: 3px;
 }
+
+/*
 table.data th {
 	text-align: center;
 }
+*/
+
 table.data th, table.sidehead td:first-child {
 	font-weight: bold;
 }
+
 table.data tbody tr:nth-child(2n) {
 	background-color: rgb(240,240,240);
 }
@@ -117,7 +133,7 @@ table.shadecol th:nth-child(2n), table.shadecol td:nth-child(2n) {
 }
 /* Overlapping shaded rows and columns should be darker */
 table.data.shadecol tbody tr:nth-child(2n) td:nth-child(2n) {
-	background-color: rgb(225,225,225);
+	background-color: #E1E1E1;
 }
 
 /* Text just after images */
