@@ -73,7 +73,7 @@ km
 The following list is of all stock and RemoteTech antennas of the omnidirectional type.
 
 Antenna | Cost | Atmosphere<br/>safe | Range (Mm) | Power Drain<br/>(charge/s) | Notes
---- | ---: | ---: | ---: | ---: | ---: | ---
+--- | ---: | ---: | ---: | ---: | ---:
 [Reflectron DP-10](#reflectron-dp-10) | 60 | Yes | 0.50 | 0.01 | Activated by default
 [Communotron 16-S](#communotron-16-s) | 300 | Yes | 1.50 | 0.02 | Activated by default
 [Communotron 16](#communotron-16) | 300 | No | 2.50 | 0.13 | 
@@ -304,7 +304,7 @@ km
 The following list is of all stock and RemoteTech antennas of the dish type.
 
 Antenna | Cost | Atmosphere<br/>safe | Cone angle<br/>(degree) | Range (Mm) | Power Drain<br/>(charge/s) | Notes
---- | ---: | ---: | ---: | ---: | ---: | ---
+--- | ---: | ---: | ---: | ---: | ---: | ---:
 [HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | No | 90.00 | 20.00 | 0.55 | 
 [Communotron DTS-M1](#communotron-dts-m1) | 900 | No | 45.00 | 50.00 | 0.82 | 
 [Reflectron KR-7](#reflectron-kr-7) | 800 | Yes | 25.00 | 90.00 | 0.82 | 

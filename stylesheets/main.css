@@ -100,7 +100,7 @@ code {
 
 /* Override the default table styles that render data illegible */
 table.data{
-	width: 95%;
+	width: 90%;
 	border: solid 1px lightgrey;
 	margin-left: auto;
 	margin-right: auto;
@@ -108,17 +108,13 @@ table.data{
 
 table.data thead{
 	background-color: lightgrey;
+	vertical-align: top;
+	text-align: center;
 }
 
 table.data td, table.data th {
-	padding: 3px;
+	padding: 5px;
 }
-
-/*
-table.data th {
-	text-align: center;
-}
-*/
 
 table.data th, table.sidehead td:first-child {
 	font-weight: bold;
