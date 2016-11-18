@@ -1,5 +1,5 @@
 #Version 1.8.1
-**Released November 18, 2016**
+**Released November 19, 2016**
 
 What's New?
 ===========
