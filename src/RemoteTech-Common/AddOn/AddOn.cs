@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using RemoteTech.Common;
 
-namespace RemoteTech.SimpleTypes
+namespace RemoteTech.Common.AddOn
 {
     public abstract class AddOn
     {
