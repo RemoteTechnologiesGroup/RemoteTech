@@ -27,7 +27,7 @@ namespace RemoteTech.Common.AddOn
             if (loadedAssembly == null)
                 return;
 
-            RTLog.Notify("Successfull connected to Assembly {0}", RTLogLevel.Assembly, assemblyName);
+            RTLog.Notify("Successfully connected to Assembly {0}", RTLogLevel.Assembly, assemblyName);
             AssemblyType = loadedAssembly.assembly.GetTypes().FirstOrDefault(t => t.FullName.Equals(assemblyType));
 
             AssemblyLoaded = true;
