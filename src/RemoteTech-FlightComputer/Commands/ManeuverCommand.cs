@@ -3,6 +3,7 @@ using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.FlightComputer.Settings;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer.Commands
@@ -26,6 +27,8 @@ namespace RemoteTech.FlightComputer.Commands
         private bool _abortOnNextExecute;
 
         private static RTCore CoreInstance => RTCore.Instance;
+
+        private FlightComputerSettings FcSettingsInstance => FlightComputerSettingsManager.Instance;
 
         public override string Description
         {
@@ -91,11 +94,11 @@ namespace RemoteTech.FlightComputer.Commands
             }
 
             // Flight Computer mode after execution based on settings
-            if (RTSettings.Instance.FCOffAfterExecute)
+            if (FcSettingsInstance.FCOffAfterExecute)
             {
                 computer.Enqueue(AttitudeCommand.Off(), true, true, true);
             }
-            if (!RTSettings.Instance.FCOffAfterExecute)
+            if (!FcSettingsInstance.FCOffAfterExecute)
             {
                 computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
             }
@@ -261,7 +264,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current FlightComputer.</param>
         public override void CommandEnqueued(FlightComputer computer)
         {
-            var timetoexec = (TimeStamp + ExtraDelay) - RTSettings.Instance.FCLeadTime;
+            var timetoexec = (TimeStamp + ExtraDelay) - FcSettingsInstance.FCLeadTime;
 
             if (timetoexec - TimeUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts)
             {

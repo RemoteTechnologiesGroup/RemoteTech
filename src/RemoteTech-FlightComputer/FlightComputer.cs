@@ -6,8 +6,8 @@ using RemoteTech.FlightComputer.Commands;
 using RemoteTech.Common;
 using RemoteTech.Common.Collections;
 using RemoteTech.Common.Extensions;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.FlightComputer.Settings;
 using RemoteTech.FlightComputer.UI;
 using RemoteTech.Modules;
 
@@ -35,6 +35,8 @@ namespace RemoteTech.FlightComputer
 
         /// <summary>The window of the flight computer.</summary>
         private FlightComputerWindow _flightComputerWindow;
+
+        private FlightComputerSettings FcSettingsInstance => FlightComputerSettingsManager.Instance;
 
         /// <summary>Current state of the flight computer.</summary>
         [Flags]
@@ -95,7 +97,7 @@ namespace RemoteTech.FlightComputer
         }
 
         /// <summary>Returns true to keep the throttle on the current position without a connection, otherwise false.</summary>
-        public bool KeepThrottleNoConnect => !RTSettings.Instance.ThrottleZeroOnNoConnection;
+        public bool KeepThrottleNoConnect => !FcSettingsInstance.ThrottleZeroOnNoConnection;
 
         /// <summary>Gets or sets the total delay which is the usual light speed delay + any manual delay.</summary>
         public double TotalDelay { get; set; }
@@ -386,7 +388,7 @@ namespace RemoteTech.FlightComputer
                 return;
 
             // Can come out of time warp even if ship is not powered; workaround for KSP 0.24 power consumption bug
-            if (RTSettings.Instance.ThrottleTimeWarp && TimeWarp.CurrentRate > 4.0f)
+            if (FcSettingsInstance.ThrottleTimeWarp && TimeWarp.CurrentRate > 4.0f)
             {
                 var time = TimeWarp.deltaTime;
                 foreach (var dc in _commandQueue.TakeWhile(c => c.TimeStamp <= TimeUtil.GameTime + (2 * time + 1.0)))

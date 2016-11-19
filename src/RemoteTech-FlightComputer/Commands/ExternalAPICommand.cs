@@ -2,6 +2,7 @@
 using System.Reflection;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.FlightComputer.Settings;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -29,6 +30,8 @@ namespace RemoteTech.FlightComputer.Commands
         private string _guidString;
         /// <summary>true - when this command will be aborted</summary>
         private bool _abortCommand;
+
+        private FlightComputerSettings FcSettingsInstance => FlightComputerSettingsManager.Instance;
 
         public override int Priority => 0;
 
@@ -96,12 +99,12 @@ namespace RemoteTech.FlightComputer.Commands
                 finished = (bool)CallReflectionMember(_reflectionExecuteMethod);
                 if (_abortCommand)
                 {
-                    if (RTSettings.Instance.FCOffAfterExecute)
+                    if (FcSettingsInstance.FCOffAfterExecute)
                     {
                         computer.Enqueue(AttitudeCommand.Off(), true, true, true);
                         finished = true;
                     }
-                    if (!RTSettings.Instance.FCOffAfterExecute)
+                    if (!FcSettingsInstance.FCOffAfterExecute)
                     {
                         computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
                         finished = true;
