@@ -599,7 +599,7 @@ The Reflectron KR-14 is a large intermediate-range interplanetary antenna. It ca
 --- | ---
 Tech to Unlock | [High-Power Electrics](http://wiki.kerbalspaceprogram.com/wiki/Technology_tree#High-Power_Electrics)
 Cost | 2,000
-Mass | 0.100 tons
+Mass | 0.200 tons
 {:.basic}
 
 | Transmission Properties
