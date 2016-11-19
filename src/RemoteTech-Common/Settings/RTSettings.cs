@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RemoteTech.Common;
 using UnityEngine;
 using RemoteTech.Common.Utils;
 
@@ -50,9 +49,9 @@ namespace RemoteTech.Common.Settings
         [Persistent] public string ActiveVesselGuid;
         [Persistent] public string NoTargetGuid;
         [Persistent] public float SpeedOfLight;
-        [Persistent] public MapFilter MapFilter;
+        /*[Persistent] public MapFilter MapFilter;*/
         [Persistent] public bool EnableSignalDelay;
-        [Persistent] public RangeModel.RangeModel RangeModelType;
+        /*[Persistent] public RangeModel.RangeModel RangeModelType;*/
         [Persistent] public double MultipleAntennaMultiplier;
         [Persistent] public bool ThrottleTimeWarp;
         [Persistent] public bool ThrottleZeroOnNoConnection;
@@ -69,7 +68,7 @@ namespace RemoteTech.Common.Settings
         [Persistent] public Color OmniConnectionColor;
         [Persistent] public Color ActiveConnectionColor;
         [Persistent] public Color RemoteStationColorDot;
-        [Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;
+        /*[Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;*/
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 
         public const string SaveFileName = "RemoteTech_Settings.cfg";
@@ -239,7 +238,7 @@ namespace RemoteTech.Common.Settings
 
                 // Preserve important information of RT, such as the single ID
                 var importantInfoNode = new ConfigNode();
-                importantInfoNode.AddValue("MapFilter", previousSettings.MapFilter);
+                /*importantInfoNode.AddValue("MapFilter", previousSettings.MapFilter);*/ //TODO re-enable
                 importantInfoNode.AddValue("ActiveVesselGuid", previousSettings.ActiveVesselGuid);
                 importantInfoNode.AddValue("NoTargetGuid", previousSettings.NoTargetGuid);
 
