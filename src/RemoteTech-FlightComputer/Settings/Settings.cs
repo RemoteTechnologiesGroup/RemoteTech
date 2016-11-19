@@ -35,6 +35,7 @@ namespace RemoteTech.FlightComputer.Settings
         }
     }
 
+    [SettingsAttribute(DefaultSettingFileName = "RemoteTech_FlightComputer_default.cfg", NodeName = "RemoteTech_FlightComputer", SaveFileName = "RemoteTech_FlightComputer.cfg")]
     public class FlightComputerSettings : AbstractSettings
     {
         [Persistent]
@@ -45,6 +46,20 @@ namespace RemoteTech.FlightComputer.Settings
         public bool ThrottleTimeWarp;
         [Persistent]
         public bool ThrottleZeroOnNoConnection;
+
+        public FlightComputerSettings()
+        {
+            var attribute = (SettingsAttribute) System.Attribute.GetCustomAttribute(typeof(FlightComputerSettings), typeof(SettingsAttribute));
+            if (attribute == null)
+            {
+                RTLog.Notify("FlightComputerSettings: No attribute could be found.");
+                return;
+            }
+
+            DefaultSettingFileName = attribute.DefaultSettingFileName;
+            NodeName = attribute.NodeName;
+            SaveFileName = attribute.SaveFileName;
+        }
 
         public static FlightComputerSettings LoadPreset(FlightComputerSettings previousSettings, string presetCfgUrl)
         {
