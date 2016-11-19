@@ -71,6 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoverComputer.cs" />
     <Compile Include="RoverPIDController.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="UIPartActionMenuPatcher.cs" />
     <Compile Include="UI\AttitudeFragment.cs" />
     <Compile Include="UI\FlightComputerWindow.cs" />
