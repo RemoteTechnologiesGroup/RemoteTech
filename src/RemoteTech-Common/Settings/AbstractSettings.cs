@@ -7,10 +7,11 @@ using RemoteTech.Common.Utils;
 namespace RemoteTech.Common.Settings
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class SettingsFileNames : Attribute
+    public class SettingsAttribute : Attribute
     {
         public string SaveFileName;
-        public string DefaultSettingName;
+        public string DefaultSettingFileName;
+        public string NodeName;
     }
 
     public abstract class AbstractSettings : ISettings
@@ -20,8 +21,9 @@ namespace RemoteTech.Common.Settings
         /// <summary>True if its the first start of RemoteTech for this save, false otherwise.</summary>
         public bool FirstStart;
 
-        public string SaveFileName = "RemoteTech_Settings.cfg";
-        public string DefaultSettingFileName = "Default_Settings.cfg";
+        public string SaveFileName;
+        public string DefaultSettingFileName;
+        public string NodeName;
 
         /// <summary>
         /// Returns the full path of the Default_Settings of the RemoteTech mod
