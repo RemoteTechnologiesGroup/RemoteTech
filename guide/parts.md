@@ -32,7 +32,7 @@ km
 
 Kerbal Space Program has a number of antennas available, which ranges and power consumptions vary widely.
 
-Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
+Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Mass<br/>(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
 --- | ---: | ---: | ---: | ---: | ---: | ---: | ---:
 Communotron 16-S | Omni | - | 300 | 0.015 | Yes | 1.50 | 0.02
 Communotron 16 | Omni | - | 300 | 0.005 | No | 2.50 | 0.13
@@ -50,7 +50,7 @@ RA-100 Relay Antenna | Dish | 0.025 | 3,000 | 0.650 | Yes | 100,000.00 | 1.10
 
 RemoteTech integrates the additional antennas into Kerbal Space Program. Among these antennas, the antenna, Reflectron DP-10, is the cheapest one while the Reflectron GX-128 wields the power so immense that a crash-party video can be streamed directly to Eeloo from Moho.
 
-Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
+Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Mass<br/>(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
 --- | ---: | ---: | ---: | ---: | ---: | ---: | ---:
 Reflectron DP-10 | Omni | - | 60 | 0.015 | Yes | 0.50 | 0.01
 CommTech EXP-VR-2T | Omni | - | 400 | 0.020 | No | 3.00 | 0.18
@@ -72,7 +72,7 @@ km
 
 The following list is of all stock and RemoteTech antennas of the omnidirectional type.
 
-Antenna | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
+Antenna | Cost | Mass<br/>(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
 --- | ---: | ---: | ---: | ---: | ---: | ---:
 [Reflectron DP-10](#reflectron-dp-10) | 60 | 0.015 | Yes | 0.50 | 0.01 | Activated by default
 [Communotron 16-S](#communotron-16-s) | 300 | 0.015 | Yes | 1.50 | 0.02 | Activated by default
@@ -303,7 +303,7 @@ km
 
 The following list is of all stock and RemoteTech antennas of the dish type.
 
-Antenna | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Cone&nbsp;angle<br/>(degree) | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
+Antenna | Cost | Mass<br/>(tons) | Atmosphere<br/>safe | Cone&nbsp;angle<br/>(degree) | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
 --- | ---: | ---: | ---: | ---: | ---: | ---: | ---:
 [HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | 0.070 | No | 90.000 | 20.00 | 0.55 | 
 [Communotron DTS-M1](#communotron-dts-m1) | 900 | 0.050 | No | 45.000 | 50.00 | 0.82 | 
