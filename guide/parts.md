@@ -32,33 +32,33 @@ km
 
 Kerbal Space Program has a number of antennas available, which ranges and power consumptions vary widely.
 
-Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
---- | ---: | ---: | ---: | ---: | ---: | ---:
-Communotron 16-S | Omni | - | 300 | Yes | 1.50 | 0.02
-Communotron 16 | Omni | - | 300 | No | 2.50 | 0.13
-HG-5 High Gain Antenna | Dish | 90.000 | 600 | No | 20.00 | 0.55
-Communotron DTS-M1 | Dish | 45.000 | 900 | No | 50.00 | 0.82
-KSC Mission Control | Omni | - | - | - | 75.00 | -
-RA-2 Relay Antenna | Dish | 12.500 | 1,800 | Yes | 200.00 | 1.15
-RA-15 Relay Antenna | Dish | 0.250 | 2,400 | Yes | 10,000.00 | 1.10
-Communotron HG-55 | Dish | 0.120 | 1,200 | No | 25,000.00 | 1.04
-Communotron 88-88 | Dish | 0.060 | 1,500 | No | 40,000.00 | 0.93
-RA-100 Relay Antenna | Dish | 0.025 | 3,000 | Yes | 100,000.00 | 1.10
+Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
+--- | ---: | ---: | ---: | ---: | ---: | ---: | ---:
+Communotron 16-S | Omni | - | 300 | 0.015 | Yes | 1.50 | 0.02
+Communotron 16 | Omni | - | 300 | 0.005 | No | 2.50 | 0.13
+HG-5 High Gain Antenna | Dish | 90.000 | 600 | 0.070 | No | 20.00 | 0.55
+Communotron DTS-M1 | Dish | 45.000 | 900 | 0.050 | No | 50.00 | 0.82
+KSC Mission Control | Omni | - | - | - | - | 75.00 | -
+RA-2 Relay Antenna | Dish | 12.500 | 1,800 | 0.150 | Yes | 200.00 | 1.15
+RA-15 Relay Antenna | Dish | 0.250 | 2,400 | 0.300 | Yes | 10,000.00 | 1.10
+Communotron HG-55 | Dish | 0.120 | 1,200 | 0.075 | No | 25,000.00 | 1.04
+Communotron 88-88 | Dish | 0.060 | 1,500 | 0.100 | No | 40,000.00 | 0.93
+RA-100 Relay Antenna | Dish | 0.025 | 3,000 | 0.650 | Yes | 100,000.00 | 1.10
 {:.data}
 
 ### RemoteTech antennas
 
 RemoteTech integrates the additional antennas into Kerbal Space Program. Among these antennas, the antenna, Reflectron DP-10, is the cheapest one while the Reflectron GX-128 wields the power so immense that a crash-party video can be streamed directly to Eeloo from Moho.
 
-Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
---- | ---: | ---: | ---: | ---: | ---: | ---:
-Reflectron DP-10 | Omni | - | 60 | Yes | 0.50 | 0.01
-CommTech EXP-VR-2T | Omni | - | 400 | No | 3.00 | 0.18
-Communotron 32 | Omni | - | 600 | No | 5.00 | 0.60
-Reflectron KR-7 | Dish | 25.000 | 800 | Yes | 90.00 | 0.82
-Reflectron KR-14 | Dish | 0.040 | 2,000 | Yes | 60,000.00 | 0.93 
-CommTech-1 | Dish | 0.006 | 9,500 | Yes | 350,000.00 | 2.60
-Reflectron GX-128 | Dish | 0.005 | 11,000 | No | 400,000.00 | 2.80
+Antenna | Type | Cone&nbsp;angle<br/>(degree) | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s)
+--- | ---: | ---: | ---: | ---: | ---: | ---: | ---:
+Reflectron DP-10 | Omni | - | 60 | 0.015 | Yes | 0.50 | 0.01
+CommTech EXP-VR-2T | Omni | - | 400 | 0.020 | No | 3.00 | 0.18
+Communotron 32 | Omni | - | 600 | 0.010 | No | 5.00 | 0.60
+Reflectron KR-7 | Dish | 25.000 | 800 | 0.050 | Yes | 90.00 | 0.82
+Reflectron KR-14 | Dish | 0.040 | 2,000 | 0.200 | Yes | 60,000.00 | 0.93 
+CommTech-1 | Dish | 0.006 | 9,500 | 0.300 | Yes | 350,000.00 | 2.60
+Reflectron GX-128 | Dish | 0.005 | 11,000 | 0.240 | No | 400,000.00 | 2.80
 {:.data}
 
 <hr>
@@ -72,14 +72,14 @@ km
 
 The following list is of all stock and RemoteTech antennas of the omnidirectional type.
 
-Antenna | Cost | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
---- | ---: | ---: | ---: | ---: | ---:
-[Reflectron DP-10](#reflectron-dp-10) | 60 | Yes | 0.50 | 0.01 | Activated by default
-[Communotron 16-S](#communotron-16-s) | 300 | Yes | 1.50 | 0.02 | Activated by default
-[Communotron 16](#communotron-16) | 300 | No | 2.50 | 0.13 | 
-[CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 400 | No | 3.00 | 0.18 | 
-[Communotron 32](#communotron-32) | 600 | No | 5.00 | 0.60 | Upgraded version of Communotron 16
-[KSC Mission Control](#ksc-mission-control) | - | - | 75.00 | - | Kerbin's Command Station
+Antenna | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
+--- | ---: | ---: | ---: | ---: | ---: | ---:
+[Reflectron DP-10](#reflectron-dp-10) | 60 | 0.015 | Yes | 0.50 | 0.01 | Activated by default
+[Communotron 16-S](#communotron-16-s) | 300 | 0.015 | Yes | 1.50 | 0.02 | Activated by default
+[Communotron 16](#communotron-16) | 300 | 0.005 | No | 2.50 | 0.13 | 
+[CommTech EXP-VR-2T](#commtech-exp-vr-2t) | 400 | 0.020 | No | 3.00 | 0.18 | 
+[Communotron 32](#communotron-32) | 600 | 0.010 | No | 5.00 | 0.60 | Upgraded version of Communotron 16
+[KSC Mission Control](#ksc-mission-control) | - | - | - | 75.00 | - | Kerbin's Command Station
 {:.data}
 
 <div class="antenna" markdown="1">
@@ -303,19 +303,19 @@ km
 
 The following list is of all stock and RemoteTech antennas of the dish type.
 
-Antenna | Cost | Atmosphere<br/>safe | Cone&nbsp;angle<br/>(degree) | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
---- | ---: | ---: | ---: | ---: | ---: | ---:
-[HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | No | 90.000 | 20.00 | 0.55 | 
-[Communotron DTS-M1](#communotron-dts-m1) | 900 | No | 45.000 | 50.00 | 0.82 | 
-[Reflectron KR-7](#reflectron-kr-7) | 800 | Yes | 25.000 | 90.00 | 0.82 | 
-[RA-2 Relay Antenna](#ra-2-relay-antenna) | 1,800 | Yes | 12.500 | 200.00 | 1.15 | Cover Kerbin's sphere of influence
-[RA-15 Relay Antenna](#ra-15-relay-antenna) | 2,400 | Yes | 0.250 | 10,000.00 | 1.10 | 
-[Communotron HG-55](#communotron-hg-55) | 1,200 | No | 0.120 | 25,000.00 | 1.04 | 
-[Communotron 88-88](#communotron-88-88) | 1,500 | No | 0.060 | 40,000.00 | 0.93 | 
-[Reflectron KR-14](#reflectron-kr-14) | 2,000 | Yes | 0.040 | 60,000.00 | 0.93  | 
-[RA-100 Relay Antenna](#ra-100-relay-antenna) | 3,000 | Yes | 0.025 | 100,000.00 | 1.10 | 
-[CommTech-1](#commtech-1) | 9,500 | Yes | 0.006 | 350,000.00 | 2.60 | 
-[Reflectron GX-128](#reflectron-gx-128) | 11,000 | No | 0.005 | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbol System
+Antenna | Cost | Mass&nbsp;(tons) | Atmosphere<br/>safe | Cone&nbsp;angle<br/>(degree) | Range (Mm) | Power&nbsp;Drain<br/>(charge/s) | Notes
+--- | ---: | ---: | ---: | ---: | ---: | ---: | ---:
+[HG-5 High Gain Antenna](#hg-5-high-gain-antenna) | 600 | 0.070 | No | 90.000 | 20.00 | 0.55 | 
+[Communotron DTS-M1](#communotron-dts-m1) | 900 | 0.050 | No | 45.000 | 50.00 | 0.82 | 
+[Reflectron KR-7](#reflectron-kr-7) | 800 | 0.050 | Yes | 25.000 | 90.00 | 0.82 | 
+[RA-2 Relay Antenna](#ra-2-relay-antenna) | 1,800 | 0.150 | Yes | 12.500 | 200.00 | 1.15 | Cover Kerbin's sphere of influence
+[RA-15 Relay Antenna](#ra-15-relay-antenna) | 2,400 | 0.300 | Yes | 0.250 | 10,000.00 | 1.10 | 
+[Communotron HG-55](#communotron-hg-55) | 1,200 | 0.075 | No | 0.120 | 25,000.00 | 1.04 | 
+[Communotron 88-88](#communotron-88-88) | 1,500 | 0.100 | No | 0.060 | 40,000.00 | 0.93 | 
+[Reflectron KR-14](#reflectron-kr-14) | 2,000 | 0.200 | Yes | 0.040 | 60,000.00 | 0.93  | 
+[RA-100 Relay Antenna](#ra-100-relay-antenna) | 3,000 | 0.650 | Yes | 0.025 | 100,000.00 | 1.10 | 
+[CommTech-1](#commtech-1) | 9,500 | 0.300 | Yes | 0.006 | 350,000.00 | 2.60 | 
+[Reflectron GX-128](#reflectron-gx-128) | 11,000 | 0.240 | No | 0.005 | 400,000.00 | 2.80 | Range is more than twice as wide as Kerbol System
 {:.data}
 
 <div class="antenna" markdown="1">
