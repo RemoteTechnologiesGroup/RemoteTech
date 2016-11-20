@@ -131,6 +131,20 @@ table.data tbody tr:nth-child(2n) {
 	background-color: #F0F0F0;
 }
 
+table.sidehead td:first-child {
+	font-weight: bold;
+	background-color: lightgrey;
+}
+
+table.shadecol td:nth-child(2n+3) {
+	background-color: #F0F0F0;
+}
+
+/* Overlapping shaded rows and columns should be darker */
+table.data.shadecol tbody tr:nth-child(2n) td:nth-child(2n+3) {
+    background-color: #E1E1E1;
+}
+
 /* Text just after images */
 p.caption {
 	font-size: 90%;
