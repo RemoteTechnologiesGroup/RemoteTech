@@ -4,6 +4,22 @@ using RemoteTech.Common.Interfaces.FlightComputer.Commands;
 
 namespace RemoteTech.Common.Interfaces.FlightComputer
 {
+    /// <summary>Current state of the flight computer.</summary>
+    [Flags]
+    public enum State
+    {
+        /// <summary>Normal state.</summary>
+        Normal = 0,
+        /// <summary>The flight computer (and its vessel) are packed: vessels are only packed when they come within about 300m of the active vessel.</summary>
+        Packed = 2,
+        /// <summary>The flight computer (and its vessel) are out of power.</summary>
+        OutOfPower = 4,
+        /// <summary>The flight computer (and its vessel) have no connection.</summary>
+        NoConnection = 8,
+        /// <summary>The flight computer signal processor is not the vessel main signal processor (see <see cref="ModuleSPU.IsMaster"/>).</summary>
+        NotMaster = 16,
+    }
+
     public interface IFlightComputer : IDisposable
     {
         /// <summary>Gets whether or not it is possible to give input to the flight computer (and consequently, to the vessel).</summary>
@@ -13,7 +29,7 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
         double Delay { get; }
 
         /// <summary>Gets the current status of the flight computer.</summary>
-        FlightComputer.State Status { get; }
+        State Status { get; }
 
         /// <summary>Returns true to keep the throttle on the current position without a connection, otherwise false.</summary>
         bool KeepThrottleNoConnect { get; }

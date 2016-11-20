@@ -7,6 +7,7 @@ using RemoteTech.Common;
 using RemoteTech.Common.Collections;
 using RemoteTech.Common.Extensions;
 using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.Common.Interfaces.FlightComputer.Commands;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Settings;
 using RemoteTech.FlightComputer.UI;
@@ -38,22 +39,6 @@ namespace RemoteTech.FlightComputer
         private FlightComputerWindow _flightComputerWindow;
 
         private FlightComputerSettings FcSettingsInstance => FlightComputerSettingsManager.Instance;
-
-        /// <summary>Current state of the flight computer.</summary>
-        [Flags]
-        public enum State
-        {
-            /// <summary>Normal state.</summary>
-            Normal = 0,
-            /// <summary>The flight computer (and its vessel) are packed: vessels are only packed when they come within about 300m of the active vessel.</summary>
-            Packed = 2,
-            /// <summary>The flight computer (and its vessel) are out of power.</summary>
-            OutOfPower = 4,
-            /// <summary>The flight computer (and its vessel) have no connection.</summary>
-            NoConnection = 8,
-            /// <summary>The flight computer signal processor is not the vessel main signal processor (see <see cref="ModuleSPU.IsMaster"/>).</summary>
-            NotMaster = 16,
-        }
 
         /// <summary>Gets whether or not it is possible to give input to the flight computer (and consequently, to the vessel).</summary>
         public bool InputAllowed
