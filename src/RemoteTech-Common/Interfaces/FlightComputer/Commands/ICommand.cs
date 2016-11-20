@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RemoteTech.FlightComputer.Commands
+namespace RemoteTech.Common.Interfaces.FlightComputer.Commands
 {
     public interface ICommand : IComparable<ICommand>
     {
@@ -14,14 +14,14 @@ namespace RemoteTech.FlightComputer.Commands
         string ShortName { get; }
         int Priority { get; }
 
-        bool Pop(FlightComputer f);
-        bool Execute(FlightComputer f, FlightCtrlState fcs);
+        bool Pop(IFlightComputer f);
+        bool Execute(IFlightComputer f, FlightCtrlState fcs);
         void Abort();
         /// 
-        void Save(ConfigNode n, FlightComputer fc);
-        bool Load(ConfigNode n, FlightComputer fc);
+        void Save(ConfigNode n, IFlightComputer fc);
+        bool Load(ConfigNode n, IFlightComputer fc);
         ///
-        void CommandEnqueued(FlightComputer computer);
-        void CommandCanceled(FlightComputer computer);
+        void CommandEnqueued(IFlightComputer computer);
+        void CommandCanceled(IFlightComputer computer);
     }
 }

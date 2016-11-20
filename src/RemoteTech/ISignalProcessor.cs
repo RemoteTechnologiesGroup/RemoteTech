@@ -1,4 +1,5 @@
 ﻿using System;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using UnityEngine;
 
 namespace RemoteTech
@@ -18,7 +19,7 @@ namespace RemoteTech
         bool IsMaster { get; }
 
         // Reserved for Flight Computer
-        FlightComputer.FlightComputer FlightComputer { get; }
+        IFlightComputer FlightComputer { get; }
         Vessel Vessel { get; }
     }
 }

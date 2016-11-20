@@ -1,6 +1,7 @@
 ﻿using System;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using UnityEngine;
 
 namespace RemoteTech.Modules
@@ -21,7 +22,7 @@ namespace RemoteTech.Modules
         public bool IsCommandStation { get; }
         public Guid VesselId => Vessel.id;
         public Vessel Vessel { get; }
-        public FlightComputer.FlightComputer FlightComputer => null;
+        public IFlightComputer FlightComputer => null;
         public bool IsMaster => true;
 
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v)

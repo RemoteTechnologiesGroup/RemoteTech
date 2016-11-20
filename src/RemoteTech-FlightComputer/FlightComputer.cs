@@ -6,6 +6,7 @@ using RemoteTech.FlightComputer.Commands;
 using RemoteTech.Common;
 using RemoteTech.Common.Collections;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Settings;
 using RemoteTech.FlightComputer.UI;
@@ -17,7 +18,7 @@ namespace RemoteTech.FlightComputer
     /// This class describe the RemoteTech Flight Computer (FC).
     /// A FC is mostly used to handle the delay ('normal' + manual delay) if any and queue commands.
     /// </summary>
-    public class FlightComputer : IDisposable
+    public class FlightComputer : IFlightComputer
     {
         private static RTCore CoreInstance => RTCore.Instance;
 
