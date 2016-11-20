@@ -46,6 +46,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddOn\AddOn.cs" />
+    <Compile Include="AddOn\KACWrapper.cs" />
+    <Compile Include="AddOn\KerbalAlarmClockAPI.cs" />
     <Compile Include="Collections\BinaryHeap.cs" />
     <Compile Include="Collections\PriorityQueue.cs" />
     <Compile Include="Extensions\CelestialBodyExtension.cs" />
@@ -54,6 +57,9 @@
     <Compile Include="Extensions\QuaternionExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Extensions\Vector3dExtension.cs" />
+    <Compile Include="Interfaces\FlightComputer\Commands\ICommand.cs" />
+    <Compile Include="Interfaces\FlightComputer\IFlightComputer.cs" />
+    <Compile Include="Interfaces\SignalProcessor\ISignalProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RTLog.cs" />
     <Compile Include="Settings\AbstractSettings.cs" />
@@ -69,6 +75,7 @@
     <Compile Include="Utils\TimeStringConverter.cs" />
     <Compile Include="Utils\TimeUtil.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

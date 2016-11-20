@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\API.cs" />
     <Compile Include="Commands\AbstractCommand.cs" />
     <Compile Include="Commands\ActionGroupCommand.cs" />
     <Compile Include="Commands\AttitudeCommand.cs" />
@@ -59,7 +60,6 @@
     <Compile Include="Commands\DriveCommand.cs" />
     <Compile Include="Commands\EventCommand.cs" />
     <Compile Include="Commands\ExternalAPICommand.cs" />
-    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ManeuverCommand.cs" />
     <Compile Include="Commands\PartActionCommand.cs" />
     <Compile Include="Commands\PartActionFieldCommand.cs" />

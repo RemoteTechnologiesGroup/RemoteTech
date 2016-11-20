@@ -53,7 +53,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="Modules\MissionControlAntenna.cs" />
     <Compile Include="Modules\ProtoSignalProcessor.cs" />
@@ -64,7 +63,6 @@
     <Compile Include="RTDebugUnit.cs" />
     <Compile Include="IAntenna.cs" />
     <Compile Include="ISatellite.cs" />
-    <Compile Include="ISignalProcessor.cs" />
     <Compile Include="Modules\ModuleRTAntennaPassive.cs" />
     <Compile Include="Modules\ModuleSPUPassive.cs" />
     <Compile Include="Modules\ModuleRTAntenna.cs" />
@@ -80,7 +78,6 @@
     <Compile Include="RTSpaceCentre.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />
-    <Compile Include="SimpleTypes\AddOn.cs" />
     <Compile Include="SimpleTypes\BidirectionalEdge.cs" />
     <Compile Include="SimpleTypes\CachedField.cs" />
     <Compile Include="SimpleTypes\Dish.cs" />
