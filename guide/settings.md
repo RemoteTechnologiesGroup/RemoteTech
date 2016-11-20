@@ -73,19 +73,25 @@ The settings are as follows:
 
 ## Appendix: Root Range Model
 
-In the root range model, the minimum distance to achieve a link depends on the ranges of both antennas. The following table shows the ranges for each pair of RemoteTech antennas, assuming `RangeMultiplier = 0.5`.
+In the root range model, the minimum distance to achieve a link depends on the ranges of both antennas. The following table shows the ranges for each antenna pair, assuming `RangeMultiplier = 1.0`.
 
-&nbsp;             | Reflectron GX-128 | CommTech-1      | Reflectron KR-14 | Communotron 88-88 | Reflectron KR-7 | Comms DTS-M1   | Mission Control | Communotron 32 | CommTech EXP-VR-2T | Communotron 16 | Reflectron DP-10
-:------------------|------------------:|----------------:|-----------------:|------------------:|----------------:|---------------:|----------------:|---------------:|-------------------:|---------------:|-----------------:
-Reflectron DP-10   |    25,000&nbsp;km |  25,000&nbsp;km |   25,000&nbsp;km |    25,000&nbsp;km |    3600&nbsp;km |   2800&nbsp;km |    3300&nbsp;km |   1000&nbsp;km |        860&nbsp;km |    810&nbsp;km |      500&nbsp;km
-Communotron 16     |   125,000&nbsp;km | 125,000&nbsp;km |  125,000&nbsp;km |   125,000&nbsp;km |    8800&nbsp;km |   6800&nbsp;km |    8100&nbsp;km |   3000&nbsp;km |       2600&nbsp;km |   2500&nbsp;km
-CommTech EXP-VR-2T |   150,000&nbsp;km | 150,000&nbsp;km |  150,000&nbsp;km |   150,000&nbsp;km |    9700&nbsp;km |   7600&nbsp;km |    9000&nbsp;km |   3400&nbsp;km |       3000&nbsp;km
-Communotron 32     |   250,000&nbsp;km | 250,000&nbsp;km |  250,000&nbsp;km |   230,000&nbsp;km |  13,000&nbsp;km | 10,000&nbsp;km |  12,000&nbsp;km |   5000&nbsp;km
-Mission Control    |      2.8M&nbsp;km |    2.6M&nbsp;km |     1.1M&nbsp;km |   900,000&nbsp;km |  79,000&nbsp;km | 56,000&nbsp;km
-Comms DTS-M1       |      2.3M&nbsp;km |    2.1M&nbsp;km |     0.9M&nbsp;km |   730,000&nbsp;km |  59,000&nbsp;km | 50,000&nbsp;km
-Reflectron KR-7    |      3.0M&nbsp;km |    2.9M&nbsp;km |     1.2M&nbsp;km |   990,000&nbsp;km |  90,000&nbsp;km
-Communotron 88-88  |     83M&nbsp;km   |   79M&nbsp;km   |    44M&nbsp;km   |       40M&nbsp;km
-Reflectron KR-14   |    110M&nbsp;km   |  100M&nbsp;km   |    60M
-CommTech-1         |    360M&nbsp;km   |  350M&nbsp;km
-Reflectron GX-128  |    400M&nbsp;km
+&nbsp; | DP-10 | 16-S | 16 | EXP-VR-2T | 32 | HG-5 | DTS-M1 | Mission<br/>Control | KR-7 | RA-2 | RA-15 | HG-55 | 88-88 | KR-14 | RA-100 | CT-1 | GX-128
+:--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---:
+GX-128 | 
+CT-1 | 
+RA-100 | 
+KR-14 |
+88-88 | 
+HG-55 |
+RA-15 | 
+RA-2 | 
+KR-7 | 
+Mission<br/>Control | 
+DTS-M1 | 
+32 | 
+EXP-VR-2T | 
+16 | 
+16-S | 
+DP-10 | 
+
 {:.data .shadecol .sidehead}
