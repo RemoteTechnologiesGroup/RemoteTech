@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 using RemoteTech.Common.Settings;
 using UnityEngine;
 
@@ -32,7 +34,7 @@ namespace RemoteTech.Modules
         public bool Powered => IsRTPowered;
 
         public bool IsCommandStation => IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
-        public FlightComputer.FlightComputer FlightComputer { get; private set; }
+        public IFlightComputer FlightComputer { get; private set; }
         public Vessel Vessel => vessel;
         public bool IsMaster => Satellite != null && ReferenceEquals(Satellite.SignalProcessor, this);
 

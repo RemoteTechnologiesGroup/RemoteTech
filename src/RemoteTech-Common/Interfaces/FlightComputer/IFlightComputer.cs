@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RemoteTech.Common.Interfaces.FlightComputer.Commands;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 
 namespace RemoteTech.Common.Interfaces.FlightComputer
 {
@@ -51,9 +52,6 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
 
         /// <summary>List of queued commands in the flight computer.</summary>
         IEnumerable<ICommand> QueuedCommands { get; }
-
-        /// <summary>Get the active Flight mode as an (<see cref="AttitudeCommand"/>).</summary>
-        AttitudeCommand CurrentFlightMode { get; }
 
         /// <summary>Called when the flight computer is disposed. This happens when the <see cref="ModuleSPU"/> is destroyed.</summary>
         new void Dispose();

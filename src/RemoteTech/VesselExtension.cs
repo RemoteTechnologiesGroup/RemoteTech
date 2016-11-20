@@ -2,6 +2,7 @@
 using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 using RemoteTech.Modules;
 
 namespace RemoteTech

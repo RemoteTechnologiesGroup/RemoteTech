@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 using RemoteTech.Common.Settings;
 using UnityEngine;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech
 {
@@ -81,7 +83,7 @@ namespace RemoteTech
         public IEnumerable<IAntenna> Antennas => RTCore.Instance.Antennas[this];
 
         /// <summary>Gets the flight computer for this satellite.</summary>
-        public FlightComputer.FlightComputer FlightComputer => SignalProcessor.FlightComputer;
+        public IFlightComputer FlightComputer => SignalProcessor.FlightComputer;
 
         /*
          * Helpers

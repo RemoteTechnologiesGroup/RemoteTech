@@ -2,12 +2,12 @@
 using RemoteTech.Common.Interfaces.FlightComputer;
 using UnityEngine;
 
-namespace RemoteTech
+namespace RemoteTech.Common.Interfaces.SignalProcessor
 {
     public interface ISignalProcessor
     {
-        String Name { get; }
-        String VesselName { get; set; }
+        string Name { get; }
+        string VesselName { get; set; }
         bool VesselLoaded { get; }
         Guid VesselId { get; }
         Vector3 Position { get; }

@@ -2,6 +2,7 @@
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
 using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 using UnityEngine;
 
 namespace RemoteTech.Modules

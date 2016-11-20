@@ -8,6 +8,7 @@ using RemoteTech.Common.Collections;
 using RemoteTech.Common.Extensions;
 using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Interfaces.FlightComputer.Commands;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Settings;
 using RemoteTech.FlightComputer.UI;
