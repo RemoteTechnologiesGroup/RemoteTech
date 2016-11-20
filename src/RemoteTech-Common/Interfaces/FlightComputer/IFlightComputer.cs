@@ -47,6 +47,9 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
         /// <summary>The signal processor (<see cref="ISignalProcessor"/>; <seealso cref="ModuleSPU"/>) used by this flight computer.</summary>
         ISignalProcessor SignalProcessor { get; }
 
+        /// <summary>List of autopilots for this flight computer. Used by external mods to add their own autopilots (<see cref="API"/> class).</summary>
+        List<Action<FlightCtrlState>> SanctionedPilots { get; }
+
         /// <summary>List of commands that are currently active (not queued).</summary>
         IEnumerable<ICommand> ActiveCommands { get; }
 
@@ -69,6 +72,10 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
         /// <param name="node">Node to search in the queued commands</param>
         bool HasManeuverCommandByNode(ManeuverNode node);
 
+        /// <summary>Restores the flight computer from the persistent save.</summary>
+        /// <param name="configNode">Node with the informations for the flight computer</param>
+        void Load(ConfigNode configNode);
+
         /// <summary>Remove a command from the flight computer command queue.</summary>
         /// <param name="cmd">The command to be removed from the command queue.</param>
         void Remove(ICommand cmd);
@@ -80,12 +87,27 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
         /// <summary>Abort all active commands.</summary>
         void Reset();
 
+        /// <summary>Saves all values for the flight computer to the persistent.</summary>
+        /// <param name="n">Node to save in</param>
+        void Save(ConfigNode n);
+
         /// <summary>Called by the <see cref="ModuleSPU.OnUpdate"/> method during the Update() "Game Logic" engine phase.</summary>
         /// <remarks>This checks if there are any commands that can be removed from the FC queue if their delay has elapsed.</remarks>
         void OnUpdate();
 
         /// <summary>Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.</summary>
         void OnFixedUpdate();
+
+        /*
+         * MechJeb required
+         * TODO: remove that on branch 2.x
+         */
+         
+        /// <summary>Proportional Integral Derivative vessel controller.</summary>
+        IPIDController pid { get; }
+
+        Vector3d lastAct { get; set; }
+
     }
 
 }

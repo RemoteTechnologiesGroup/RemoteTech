@@ -112,7 +112,7 @@ namespace RemoteTech.FlightComputer
 
 
         /// <summary>Proportional Integral Derivative vessel controller.</summary>
-        public PIDControllerV3 pid { get; }
+        public IPIDController pid { get; }
         // Flight controller parameters from MechJeb, copied from master on June 27, 2014
         public Vector3d lastAct { get; set; }
         public double Tf = 0.3;
@@ -489,7 +489,7 @@ namespace RemoteTech.FlightComputer
             pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * pid.Kp;
             pid.Ki.Scale(invTf);
 
-            pid.intAccum = pid.intAccum.Clamp(-5, 5);
+            pid.IntAccum = pid.IntAccum.Clamp(-5, 5);
         }
 
         // Calculations of Tf are not safe during FlightComputer constructor

@@ -1,11 +1,12 @@
 ﻿using System;
 using RemoteTech.Common;
 using RemoteTech.Common.Utils;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using UnityEngine;
 
 namespace RemoteTech.FlightComputer
 {
-    public class RoverComputer
+    public class RoverComputer : IRoverComputer
     {
         private Vessel _vessel;
         private readonly RoverPIDController _throttlePid;

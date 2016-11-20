@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Globalization;
+using RemoteTech.Common.Interfaces.FlightComputer.Commands;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
 using UnityEngine;

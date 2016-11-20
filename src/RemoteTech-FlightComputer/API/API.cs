@@ -1,5 +1,6 @@
 using System;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer.API
 {
@@ -74,7 +75,7 @@ namespace RemoteTech.FlightComputer.API
                 // immediately
 
                 // get the flightcomputer
-                FlightComputer computer = RTCore.Instance.Satellites[externalVesselId].FlightComputer;
+                var computer = RTCore.Instance.Satellites[externalVesselId].FlightComputer;
 
                 var extCmd = Commands.ExternalAPICommand.FromExternal(externalData);
 

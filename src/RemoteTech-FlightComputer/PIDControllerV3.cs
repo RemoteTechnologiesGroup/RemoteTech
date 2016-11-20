@@ -1,16 +1,22 @@
-﻿/// <summary>
-/// Proportional controller for KSP autopilots
-/// </summary>
-
-using System;
+﻿using System;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer
 {
     // -----------------------------------------------
     // Copied from MechJeb master on 18.04.2016
-    public class PIDControllerV3 : IConfigNode 
+
+    /// <summary>
+    /// Proportional controller for KSP autopilots
+    /// </summary>
+    public class PIDControllerV3 : IConfigNode, IPIDController
     {
-        public Vector3d Kp, Ki, Kd, intAccum, derivativeAct, propAct;
+        public Vector3d Kp { get; set; }
+        public Vector3d Ki { get; set; }
+        public Vector3d Kd { get; set; }
+        public Vector3d IntAccum { get; set; }
+
+        public Vector3d derivativeAct, propAct;
         public double max, min;
 
         public PIDControllerV3(Vector3d Kp, Vector3d Ki, Vector3d Kd, double max = double.MaxValue, double min = double.MinValue) 
@@ -28,14 +34,16 @@ namespace RemoteTech.FlightComputer
             derivativeAct = Vector3d.Scale(omega, Kd);
             Wlimit = Vector3d.Scale(Wlimit, Kd);
 
+            var accum = IntAccum;
+
             // integral actíon + Anti Windup
-            intAccum.x = (Math.Abs(derivativeAct.x) < 0.6 * max) ? intAccum.x + (error.x * Ki.x * TimeWarp.fixedDeltaTime) : 0.9 * intAccum.x;
-            intAccum.y = (Math.Abs(derivativeAct.y) < 0.6 * max) ? intAccum.y + (error.y * Ki.y * TimeWarp.fixedDeltaTime) : 0.9 * intAccum.y;
-            intAccum.z = (Math.Abs(derivativeAct.z) < 0.6 * max) ? intAccum.z + (error.z * Ki.z * TimeWarp.fixedDeltaTime) : 0.9 * intAccum.z;
+            accum.x = (Math.Abs(derivativeAct.x) < 0.6 * max) ? accum.x + (error.x * Ki.x * TimeWarp.fixedDeltaTime) : 0.9 * accum.x;
+            accum.y = (Math.Abs(derivativeAct.y) < 0.6 * max) ? accum.y + (error.y * Ki.y * TimeWarp.fixedDeltaTime) : 0.9 * accum.y;
+            accum.z = (Math.Abs(derivativeAct.z) < 0.6 * max) ? accum.z + (error.z * Ki.z * TimeWarp.fixedDeltaTime) : 0.9 * accum.z;
 
             propAct = Vector3d.Scale(error, Kp);
 
-            Vector3d action = propAct + intAccum;
+            Vector3d action = propAct + IntAccum;
 
             // Clamp (propAct + intAccum) to limit the angular velocity:
             action = new Vector3d(Math.Max(-Wlimit.x, Math.Min(Wlimit.x, action.x)),
@@ -54,7 +62,7 @@ namespace RemoteTech.FlightComputer
 
         public void Reset() 
         {
-            intAccum = Vector3d.zero;
+            IntAccum = Vector3d.zero;
         }
 
         public void Load(ConfigNode node) 

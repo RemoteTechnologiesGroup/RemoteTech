@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.Common.Interfaces.FlightComputer.Commands;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Commands;
@@ -12,7 +14,7 @@ namespace RemoteTech.FlightComputer.UI
 {
     public class QueueFragment : IFragment
     {
-        private readonly FlightComputer _flightComputer;
+        private readonly IFlightComputer _flightComputer;
 
         private Vector2 _scrollPosition;
         private string _extraDelay;
@@ -29,28 +31,28 @@ namespace RemoteTech.FlightComputer.UI
             {
                 var tooltip = new List<string>();
                 var status = new List<string>();
-                if ((_flightComputer.Status & FlightComputer.State.NoConnection) == FlightComputer.State.NoConnection)
+                if ((_flightComputer.Status & State.NoConnection) == State.NoConnection)
                 {
                     status.Add("Connection Error");
                     tooltip.Add("Cannot queue commands");
                 }
-                if ((_flightComputer.Status & FlightComputer.State.OutOfPower) == FlightComputer.State.OutOfPower)
+                if ((_flightComputer.Status & State.OutOfPower) == State.OutOfPower)
                 {
                     status.Add("Out of Power");
                     tooltip.Add("Commands can be missed");
                     tooltip.Add("Timers halt");
                 }
-                if ((_flightComputer.Status & FlightComputer.State.NotMaster) == FlightComputer.State.NotMaster)
+                if ((_flightComputer.Status & State.NotMaster) == State.NotMaster)
                 {
                     status.Add("Slave");
                     tooltip.Add("Has no control");
                 }
-                if ((_flightComputer.Status & FlightComputer.State.Packed) == FlightComputer.State.Packed)
+                if ((_flightComputer.Status & State.Packed) == State.Packed)
                 {
                     status.Add("Packed");
                     tooltip.Add("Frozen");
                 }
-                if (_flightComputer.Status == FlightComputer.State.Normal)
+                if (_flightComputer.Status == State.Normal)
                 {
                     status.Add("All systems nominal");
                     tooltip.Add("None");

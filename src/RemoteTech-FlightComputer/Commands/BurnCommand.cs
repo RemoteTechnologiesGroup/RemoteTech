@@ -64,7 +64,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="f">FlightComputer for the current vessel</param>
         /// <returns>max burn time</returns>
-        public double GetMaxBurnTime(FlightComputer f)
+        public double GetMaxBurnTime(IFlightComputer f)
         {
             if (Duration > 0) return Duration;
 

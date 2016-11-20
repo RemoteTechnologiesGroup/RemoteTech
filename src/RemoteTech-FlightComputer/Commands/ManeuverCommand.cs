@@ -191,14 +191,14 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="f">FlightComputer for the current vessel</param>
         /// <returns>max burn time</returns>
-        public double getMaxBurnTime(FlightComputer f)
+        public double getMaxBurnTime(IFlightComputer f)
         {
             if (Node == null) return 0;
 
             return Node.DeltaV.magnitude / (FlightCore.GetTotalThrust(f.Vessel) / f.Vessel.GetTotalMass());
         }
 
-        public static ManeuverCommand WithNode(int nodeIndex, FlightComputer f)
+        public static ManeuverCommand WithNode(int nodeIndex, IFlightComputer f)
         {
             var thrust = FlightCore.GetTotalThrust(f.Vessel);
             var node = f.Vessel.patchedConicSolver.maneuverNodes[nodeIndex];

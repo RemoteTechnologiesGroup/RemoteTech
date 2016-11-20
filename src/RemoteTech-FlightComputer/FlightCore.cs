@@ -12,7 +12,7 @@ namespace RemoteTech.FlightComputer
     {
         public static bool UseSas = true;
 
-        public static void HoldAttitude(FlightCtrlState fs, FlightComputer f, ReferenceFrame frame, FlightAttitude attitude, Quaternion extra)
+        public static void HoldAttitude(FlightCtrlState fs, IFlightComputer f, ReferenceFrame frame, FlightAttitude attitude, Quaternion extra)
         {
             var v = f.Vessel;
             var forward = Vector3.zero;
@@ -321,7 +321,7 @@ namespace RemoteTech.FlightComputer
             */
         }
 
-        private static void SetPIDParameters(FlightComputer fc, Vector3d TfV, double kdFactor, double kpFactor, double kiFactor)
+        private static void SetPIDParameters(IFlightComputer fc, Vector3d TfV, double kdFactor, double kpFactor, double kiFactor)
         {
             var pid = fc.pid;
 
@@ -334,7 +334,7 @@ namespace RemoteTech.FlightComputer
             pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * pid.Kp;
             pid.Ki.Scale(invTf);
 
-            pid.intAccum = pid.intAccum.Clamp(-5, 5);
+            pid.IntAccum = pid.IntAccum.Clamp(-5, 5);
         }
 
         public static Vector3d SwapYZ(Vector3d input)
