@@ -73,11 +73,11 @@ The settings are as follows:
 
 ## Appendix: Root Range Model
 
-In the root range model, the minimum distance to achieve a link depends on the ranges of both antennas. The following table shows the ranges for each antenna pair, assuming `RangeMultiplier = 1.0`.
+In the root range model, the minimum distance to achieve a link depends on the ranges of both antennas. The following table shows the ranges in **Mm** for each antenna pair, assuming `RangeMultiplier = 1.0`.
 
 &nbsp; | DP-10 | 16-S | 16 | EXP-VR-2T | 32 | HG-5 | DTS-M1 | Mission<br/>Control | KR-7 | RA-2 | RA-15 | HG-55 | 88-88 | KR-14 | RA-100 | CT-1 | GX-128
 ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---:
-GX-128 | 
+GX-128 | 447.7 | 776.1 | 1,002.5 | 1,098.4 | 1,419.2 | 2,848.4 | 4,522.1 | 5,552.2 | 6,090.0 | 9,144.3 | 73,245.6 | 125,000.0 | 166,491.1 | 214,919.3 | 300,000.0 | 724,165.7 | 800,000.0
 CT-1 | 
 RA-100 | 
 KR-14 |
