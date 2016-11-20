@@ -30,7 +30,12 @@ namespace RemoteTech.FlightComputer.Commands
 
         public override bool Pop(IFlightComputer f)
         {
-            _roverComputer = f.RoverComputer;
+            // TODO this is a patch for keeping compiler errors down; should be reworked in 2.x branch
+            var computer = f as FlightComputer;
+            if (computer == null)
+                return true;
+
+            _roverComputer = computer.RoverComputer;
             _roverComputer.InitMode(this);
             return true;
         }
@@ -43,7 +48,12 @@ namespace RemoteTech.FlightComputer.Commands
                 return true;
             }
 
-            return f.RoverComputer.Drive(this, fcs);
+            // TODO this is a patch for keeping compiler errors down; should be reworked in 2.x branch
+            var computer = f as FlightComputer;
+            if (computer == null)
+                return true;
+
+            return computer.RoverComputer.Drive(this, fcs);
         }
 
         public static DriveCommand Off()

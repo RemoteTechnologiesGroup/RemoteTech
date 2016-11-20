@@ -245,6 +245,13 @@ namespace RemoteTech.FlightComputer
             }
         }
 
+        public void EnqueueManeuverCommand(int nodeIndex, bool ignoreControl = false, bool ignoreDelay = false,
+            bool ignoreExtra = false)
+        {
+            var maneuverCommand = ManeuverCommand.WithNode(nodeIndex, this);
+            Enqueue(maneuverCommand, ignoreControl, ignoreDelay, ignoreExtra);
+        }
+
         /// <summary>Remove a command from the flight computer command queue.</summary>
         /// <param name="cmd">The command to be removed from the command queue.</param>
         public void Remove(ICommand cmd)

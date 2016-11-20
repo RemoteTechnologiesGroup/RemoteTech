@@ -127,7 +127,8 @@ namespace RemoteTech.UI
                         {
                             if (!nodeAlreadyQueued)
                             {
-                                flightComputer.Enqueue(ManeuverCommand.WithNode(i, flightComputer), false, false, true);
+                                // flightComputer.Enqueue(ManeuverCommand.WithNode(i, flightComputer), false, false, true);
+                                flightComputer.EnqueueManeuverCommand(i, false, false, true);
                             }
                             else
                             {

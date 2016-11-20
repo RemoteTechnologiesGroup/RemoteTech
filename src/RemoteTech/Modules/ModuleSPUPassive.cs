@@ -1,5 +1,7 @@
 ﻿using System;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 using UnityEngine;
 
 namespace RemoteTech.Modules
@@ -23,7 +25,7 @@ namespace RemoteTech.Modules
         public bool Visible => MapViewFiltering.CheckAgainstFilter(vessel);
         public bool Powered => Vessel.IsControllable;
         public bool IsCommandStation => false;
-        public FlightComputer.FlightComputer FlightComputer => null;
+        public IFlightComputer FlightComputer => null;
         public Vessel Vessel => vessel;
         public bool IsMaster => false;
 

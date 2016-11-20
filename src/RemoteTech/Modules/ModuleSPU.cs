@@ -134,7 +134,7 @@ namespace RemoteTech.Modules
                 {
                     RTCore.Instance.Satellites.Register(vessel, this);
                     if (FlightComputer == null)
-                        FlightComputer = new FlightComputer.FlightComputer(this);
+                        FlightComputer = new FlightComputer(this);
                 }
             }
 
@@ -185,7 +185,7 @@ namespace RemoteTech.Modules
                 if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
                 {
                     if (FlightComputer == null)
-                        FlightComputer = new FlightComputer.FlightComputer(this);
+                        FlightComputer = new FlightComputer(this);
                     FlightComputer.Save(node);
                 }
 
@@ -205,7 +205,7 @@ namespace RemoteTech.Modules
                 if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
                 {
                     if (FlightComputer == null)
-                        FlightComputer = new FlightComputer.FlightComputer(this);
+                        FlightComputer = new FlightComputer(this);
                     FlightComputer.Load(node);
                 }
             }

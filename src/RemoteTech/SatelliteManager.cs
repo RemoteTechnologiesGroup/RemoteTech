@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.SignalProcessor;
 
 namespace RemoteTech
 {

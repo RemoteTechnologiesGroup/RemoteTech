@@ -63,9 +63,19 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
         /// <param name="ignoreExtra">If true, the command is executed without manual delay (if any). The normal light speed delay still applies.</param>
         void Enqueue(ICommand cmd, bool ignoreControl = false, bool ignoreDelay = false, bool ignoreExtra = false);
 
+        void EnqueueManeuverCommand(int nodeIndex, bool ignoreControl = false, bool ignoreDelay = false, bool ignoreExtra = false);
+
+        /// <summary>Looks for the passed <paramref name="node"/> on the command queue and returns true if the node is already on the list.</summary>
+        /// <param name="node">Node to search in the queued commands</param>
+        bool HasManeuverCommandByNode(ManeuverNode node);
+
         /// <summary>Remove a command from the flight computer command queue.</summary>
         /// <param name="cmd">The command to be removed from the command queue.</param>
         void Remove(ICommand cmd);
+
+        /// <summary>Triggers a <see cref="CancelCommand"/> for the given <paramref name="node"/></summary>
+        /// <param name="node">Node to cancel from the queue</param>
+        void RemoveManeuverCommandByNode(ManeuverNode node);
 
         /// <summary>Abort all active commands.</summary>
         void Reset();
