@@ -132,6 +132,7 @@ namespace RemoteTech.FlightComputer
             }
         }
 
+        //TODO delegate window behavior to a FC window interface (or use an MVC pattern)
         public void ShowWindow()
         {
             Window.Show();
@@ -255,6 +256,12 @@ namespace RemoteTech.FlightComputer
         {
             var maneuverCommand = ManeuverCommand.WithNode(nodeIndex, this);
             Enqueue(maneuverCommand, ignoreControl, ignoreDelay, ignoreExtra);
+        }
+
+        public void EnqueueActionGroupCommand(KSPActionGroup actionGroup)
+        {
+            var actionGroupCommand = ActionGroupCommand.WithGroup(actionGroup);
+            Enqueue(actionGroupCommand);
         }
 
         /// <summary>Remove a command from the flight computer command queue.</summary>

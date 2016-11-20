@@ -52,7 +52,7 @@ namespace RemoteTech.UI
             var satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
             if (satellite != null && satellite.FlightComputer != null)
             {
-                satellite.SignalProcessor.FlightComputer.Enqueue(ActionGroupCommand.WithGroup(ag));
+                satellite.SignalProcessor.FlightComputer.EnqueueActionGroupCommand(ag);
             }
             else if (satellite == null || (satellite != null && satellite.HasLocalControl))
             {
