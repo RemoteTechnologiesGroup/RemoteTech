@@ -132,6 +132,11 @@ namespace RemoteTech.FlightComputer
             }
         }
 
+        public void ShowWindow()
+        {
+            Window.Show();
+        }
+
         /// <summary>Computer able to pilot a rover (part of the flight computer).</summary>
         public RoverComputer RoverComputer { get; }
 

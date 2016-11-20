@@ -177,7 +177,7 @@ namespace RemoteTech.UI
             {
                 var satellite = RTCore.Instance.Satellites[FlightGlobals.ActiveVessel];
                 if (satellite == null || satellite.SignalProcessor.FlightComputer == null) return;
-                satellite.SignalProcessor.FlightComputer.Window.Show();
+                satellite.SignalProcessor.FlightComputer.ShowWindow();
             }
             GUILayout.EndArea();
         }

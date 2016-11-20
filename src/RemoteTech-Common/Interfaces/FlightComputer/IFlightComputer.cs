@@ -98,6 +98,9 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
         /// <summary>Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.</summary>
         void OnFixedUpdate();
 
+        /* HACK */
+        void ShowWindow();
+
         /*
          * MechJeb required
          * TODO: remove that on branch 2.x
