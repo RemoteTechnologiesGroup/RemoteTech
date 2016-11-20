@@ -264,6 +264,18 @@ namespace RemoteTech.FlightComputer
             Enqueue(actionGroupCommand);
         }
 
+        public void EnqueuePartActionCommand(BaseField baseField, object newValue)
+        {
+            var partActionCommand = PartActionCommand.Field(baseField, newValue);
+            Enqueue(partActionCommand);
+        }
+
+        public void EnqueueEventCommand(BaseEvent baseEvent)
+        {
+            var eventCommand = EventCommand.Event(baseEvent);
+            Enqueue(eventCommand);
+        }
+
         /// <summary>Remove a command from the flight computer command queue.</summary>
         /// <param name="cmd">The command to be removed from the command queue.</param>
         public void Remove(ICommand cmd)

@@ -70,6 +70,10 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
 
         void EnqueueActionGroupCommand(KSPActionGroup group);
 
+        void EnqueuePartActionCommand(BaseField baseField, object newValue);
+
+        void EnqueueEventCommand(BaseEvent baseEvent);
+
         /// <summary>Looks for the passed <paramref name="node"/> on the command queue and returns true if the node is already on the list.</summary>
         /// <param name="node">Node to search in the queued commands</param>
         bool HasManeuverCommandByNode(ManeuverNode node);

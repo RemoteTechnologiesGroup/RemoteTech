@@ -318,7 +318,7 @@ namespace RemoteTech.Modules
                 }
                 else
                 {
-                    vs.SignalProcessor.FlightComputer.Enqueue(EventCommand.Event(baseEvent));
+                    vs.SignalProcessor.FlightComputer.EnqueueEventCommand(baseEvent);
                 }
             }
             else if (baseEvent.listParent.part.Modules.OfType<IAntenna>().Any() &&
@@ -370,7 +370,7 @@ namespace RemoteTech.Modules
                 else
                 {
                     // queue command into FC
-                    vs.SignalProcessor.FlightComputer.Enqueue(PartActionCommand.Field(baseField, field.NewValue));
+                    vs.SignalProcessor.FlightComputer.EnqueuePartActionCommand(baseField, field.NewValue);
                 }
             }            
             else if (field.host is PartModule && ((PartModule)field.host).part.Modules.OfType<IAntenna>().Any() &&
