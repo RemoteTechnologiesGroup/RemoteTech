@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Settings;
@@ -65,7 +66,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="computer">Current FlightComputer</param>
         /// <returns>true: move to active.</returns>
-        public override bool Pop(FlightComputer computer)
+        public override bool Pop(IFlightComputer computer)
         {
             var moveToActive = false;
 
@@ -89,7 +90,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current FlightComputer.</param>
         /// <param name="ctrlState">Current FlightCtrlState</param>
         /// <returns>true: delete afterwards.</returns>
-        public override bool Execute(FlightComputer computer, FlightCtrlState ctrlState)
+        public override bool Execute(IFlightComputer computer, FlightCtrlState ctrlState)
         {
             var finished = true;
 
@@ -175,7 +176,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="node">Node with the command infos to save in</param>
         /// <param name="computer">Current FlightComputer</param>
-        public override void Save(ConfigNode node, FlightComputer computer)
+        public override void Save(ConfigNode node, IFlightComputer computer)
         {
             base.Save(node, computer);
 
@@ -191,7 +192,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="node">Node with the command infos to load</param>
         /// <param name="computer">Current FlightComputer</param>
         /// <returns>true if loaded successfully, false otherwise.</returns>
-        public override bool Load(ConfigNode node, FlightComputer computer)
+        public override bool Load(ConfigNode node, IFlightComputer computer)
         {
             try
             {

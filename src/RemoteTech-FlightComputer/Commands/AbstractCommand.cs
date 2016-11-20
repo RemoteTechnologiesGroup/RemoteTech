@@ -1,5 +1,6 @@
 ﻿using System;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Interfaces.FlightComputer.Commands;
 using RemoteTech.Common.Utils;
 
@@ -37,10 +38,10 @@ namespace RemoteTech.FlightComputer.Commands
         }
 
         // true: move to active.
-        public virtual bool Pop(FlightComputer f) { return false; }
+        public virtual bool Pop(IFlightComputer f) { return false; }
 
         // true: delete afterwards.
-        public virtual bool Execute(FlightComputer f, FlightCtrlState fcs) { return true; }
+        public virtual bool Execute(IFlightComputer f, FlightCtrlState fcs) { return true; }
 
         public virtual void Abort() { }
 
@@ -54,7 +55,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="node">Node to save in</param>
         /// <param name="computer">Current flight computer</param>
-        public virtual void Save(ConfigNode node, FlightComputer computer)
+        public virtual void Save(ConfigNode node, IFlightComputer computer)
         {
             try
             {
@@ -85,7 +86,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="n">Node with the command infos</param>
         /// <param name="fc">Current flight computer</param>
         /// <returns>true - loaded successful</returns>
-        public virtual bool Load(ConfigNode n, FlightComputer fc)
+        public virtual bool Load(ConfigNode n, IFlightComputer fc)
         {
             // nothing
             if (n.HasValue("TimeStamp"))
@@ -110,7 +111,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="n">Node with the command infos</param>
         /// <param name="fc">Current flight computer</param>
-        public static ICommand LoadCommand(ConfigNode n, FlightComputer fc)
+        public static ICommand LoadCommand(ConfigNode n, IFlightComputer fc)
         {
             ICommand command = null;
 
@@ -150,11 +151,11 @@ namespace RemoteTech.FlightComputer.Commands
         /// the flight computer list.
         /// </summary>
         /// <param name="computer">Current flight computer</param>
-        public virtual void CommandEnqueued(FlightComputer computer) { }
+        public virtual void CommandEnqueued(IFlightComputer computer) { }
         /// <summary>
         /// This method will be triggered after deleting a command from the list.
         /// </summary>
         /// <param name="computer">Current flight computer</param>
-        public virtual void CommandCanceled(FlightComputer computer) { }
+        public virtual void CommandCanceled(IFlightComputer computer) { }
     }
 }

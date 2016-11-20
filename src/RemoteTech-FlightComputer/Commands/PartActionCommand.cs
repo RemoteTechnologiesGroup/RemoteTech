@@ -4,6 +4,7 @@ using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Utils;
 using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -51,7 +52,7 @@ namespace RemoteTech.FlightComputer.Commands
         }
         public override string ShortName => (BaseField != null) ? BaseField.guiName : "none";
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             if (BaseField == null)
                 return false;
@@ -103,7 +104,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// Load infos into this object and create a new BaseEvent
         /// </summary>
         /// <returns>true if loaded successfully, false otherwise.</returns>
-        public override bool Load(ConfigNode n, FlightComputer fc)
+        public override bool Load(ConfigNode n, IFlightComputer fc)
         {
             if (!base.Load(n, fc))
                 return false;
@@ -156,7 +157,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Save the BaseEvent to the persistent
         /// </summary>
-        public override void Save(ConfigNode n, FlightComputer fc)
+        public override void Save(ConfigNode n, IFlightComputer fc)
         {
             var pm = (BaseField.host as PartModule);
             if(pm == null)

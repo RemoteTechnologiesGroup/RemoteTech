@@ -67,6 +67,9 @@ namespace RemoteTech.Common.Interfaces.FlightComputer
         /// <param name="cmd">The command to be removed from the command queue.</param>
         void Remove(ICommand cmd);
 
+        /// <summary>Abort all active commands.</summary>
+        void Reset();
+
         /// <summary>Called by the <see cref="ModuleSPU.OnUpdate"/> method during the Update() "Game Logic" engine phase.</summary>
         /// <remarks>This checks if there are any commands that can be removed from the FC queue if their delay has elapsed.</remarks>
         void OnUpdate();

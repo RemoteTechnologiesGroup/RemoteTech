@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.FlightComputer.Commands;
 using RemoteTech.Common.Utils;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -13,7 +15,7 @@ namespace RemoteTech.FlightComputer.Commands
         public override string Description => "Canceling a command." + Environment.NewLine + base.Description;
         public override string ShortName => "Cancel command";
 
-        public override bool Pop(FlightComputer computer)
+        public override bool Pop(IFlightComputer computer)
         {
             if (_cancelCmdGuid != Guid.Empty)
             {
@@ -52,7 +54,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// Load the saved CancelCommand and find the element to cancel, based on the saved queue position
         /// </summary>
         /// <returns>true - loaded successful</returns>
-        public override bool Load(ConfigNode n, FlightComputer computer)
+        public override bool Load(ConfigNode n, IFlightComputer computer)
         {
             if (!base.Load(n, computer))
                 return false;
@@ -84,7 +86,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Saves the queue index for this command to the persist
         /// </summary>
-        public override void Save(ConfigNode n, FlightComputer computer)
+        public override void Save(ConfigNode n, IFlightComputer computer)
         {
             base.Save(n, computer);
             n.AddValue("CancelCmdGuid", _cancelCmdGuid);
@@ -96,7 +98,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="cmdGuid"><see cref="Guid"/> for the command to cancel</param>
         /// <param name="computer">Current FlightComputer</param>
         /// <returns>True if we canceled the command, false otherwise.</returns>
-        private static bool CancelQueuedCommand(Guid cmdGuid, FlightComputer computer)
+        private static bool CancelQueuedCommand(Guid cmdGuid, IFlightComputer computer)
         {
             var searchCmd = computer.QueuedCommands.FirstOrDefault(cmd => cmd.CmdGuid == cmdGuid);
             if (searchCmd == null)
@@ -113,7 +115,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="cmdGuid">Unused right now</param>
         /// <param name="computer">Current FlightComputer</param>
         /// <returns></returns>
-        private static bool CancelActiveCommand(Guid cmdGuid, FlightComputer computer)
+        private static bool CancelActiveCommand(Guid cmdGuid, IFlightComputer computer)
         {
             computer.Reset();
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using UnityEngine;
 using RemoteTech.FlightComputer.Commands;
 
@@ -115,7 +116,7 @@ namespace RemoteTech.FlightComputer
             HoldOrientation(fs, f, rotationReference, ignoreRoll);
         }
 
-        public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target, bool ignoreRoll = false)
+        public static void HoldOrientation(FlightCtrlState fs, IFlightComputer f, Quaternion target, bool ignoreRoll = false)
         {
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
             SteeringHelper.SteerShipToward(target, fs, f, ignoreRoll);
@@ -175,7 +176,7 @@ namespace RemoteTech.FlightComputer
         /// <param name="c">The FlightCtrlState for the current vessel.</param>
         /// <param name="fc">The flight computer carrying out the slew</param>
         /// <param name="ignoreRoll">[optional] to ignore the roll</param>
-        public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll)
+        public static void SteerShipToward(Quaternion target, FlightCtrlState c, IFlightComputer fc, bool ignoreRoll)
         {
             // Add support for roll-less targets later -- Starstrider42
             var fixedRoll = !ignoreRoll;

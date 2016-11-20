@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.AddOn;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Settings;
@@ -49,7 +51,7 @@ namespace RemoteTech.FlightComputer.Commands
         }
         public override string ShortName => "Execute maneuver node";
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             var burn = f.ActiveCommands.FirstOrDefault(c => c is BurnCommand);
             if (burn != null) {
@@ -76,7 +78,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="computer">FlightComputer instance to determine remaining delta velocity by.</param>
         /// <returns>Remaining delta velocity in m/s^2</returns>
-        private double GetRemainingDeltaV(FlightComputer computer)
+        private double GetRemainingDeltaV(IFlightComputer computer)
         {
             return Node.GetBurnVector(computer.Vessel.orbit).magnitude;
         }
@@ -85,7 +87,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// 
         /// </summary>
         /// <param name="computer">FlightComputer instance of the computer of the vessel.</param>
-        private void AbortManeuver(FlightComputer computer)
+        private void AbortManeuver(IFlightComputer computer)
         {
             GuiUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
             if (computer.Vessel.patchedConicSolver != null)
@@ -110,7 +112,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">FlightComputer instance of the computer of the vessel the ManeuverCommand is for.</param>
         /// <param name="ctrlState">FlightCtrlState instance of the current state of the vessel.</param>
         /// <returns>true if the command has finished its work, false otherwise.</returns>
-        public override bool Execute(FlightComputer computer, FlightCtrlState ctrlState)
+        public override bool Execute(IFlightComputer computer, FlightCtrlState ctrlState)
         {
             // Halt the command if we reached our target or were command to abort by the previous tick
             if (RemainingDelta <= 0.1 || _abortOnNextExecute)
@@ -222,7 +224,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="n">Node with the command infos</param>
         /// <param name="fc">Current FlightComputer</param>
         /// <returns>true if loaded successfully, false otherwise.</returns>
-        public override bool Load(ConfigNode n, FlightComputer fc)
+        public override bool Load(ConfigNode n, IFlightComputer fc)
         {
             if (!base.Load(n, fc))
                 return false;
@@ -245,7 +247,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <summary>
         /// Save the index of the maneuver node to the persistent
         /// </summary>
-        public override void Save(ConfigNode n, FlightComputer fc)
+        public override void Save(ConfigNode n, IFlightComputer fc)
         {
             // search the node on the List
             NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.IndexOf(Node);
@@ -262,7 +264,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// the flight computer list.
         /// </summary>
         /// <param name="computer">Current FlightComputer.</param>
-        public override void CommandEnqueued(FlightComputer computer)
+        public override void CommandEnqueued(IFlightComputer computer)
         {
             var timetoexec = (TimeStamp + ExtraDelay) - FcSettingsInstance.FCLeadTime;
 
@@ -272,7 +274,7 @@ namespace RemoteTech.FlightComputer.Commands
 
                 if (CoreInstance != null && CoreInstance.KacAddon != null)
                 {
-                    KaCItemId = CoreInstance.KacAddon.CreateAlarm(RemoteTech_KACWrapper.KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, kaCAddonLabel, timetoexec, computer.Vessel.id);
+                    KaCItemId = CoreInstance.KacAddon.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, kaCAddonLabel, timetoexec, computer.Vessel.id);
                 }
             }
 
@@ -284,7 +286,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// This method will be triggered after deleting a command from the list.
         /// </summary>
         /// <param name="computer">Current flight computer</param>
-        public override void CommandCanceled(FlightComputer computer)
+        public override void CommandCanceled(IFlightComputer computer)
         {
             if (KaCItemId == string.Empty || CoreInstance == null || CoreInstance.KacAddon == null)
                 return;

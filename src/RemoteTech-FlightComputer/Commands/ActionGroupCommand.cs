@@ -1,5 +1,6 @@
 ﻿using System;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Utils;
 
 namespace RemoteTech.FlightComputer.Commands
@@ -11,7 +12,7 @@ namespace RemoteTech.FlightComputer.Commands
         public override string Description => ShortName + Environment.NewLine + base.Description;
         public override string ShortName => "Toggle " + ActionGroup;
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             f.Vessel.ActionGroups.ToggleGroup(ActionGroup);
             if (ActionGroup == KSPActionGroup.Stage && !(f.Vessel == FlightGlobals.ActiveVessel && FlightInputHandler.fetch.stageLock))

@@ -2,6 +2,7 @@
 using System.Text;
 using RemoteTech.Common.Utils;
 using UnityEngine;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -27,14 +28,14 @@ namespace RemoteTech.FlightComputer.Commands
 
         public override void Abort() { _abort = true; }
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             _roverComputer = f.RoverComputer;
             _roverComputer.InitMode(this);
             return true;
         }
 
-        public override bool Execute(FlightComputer f, FlightCtrlState fcs)
+        public override bool Execute(IFlightComputer f, FlightCtrlState fcs)
         {
             if (_abort) {
                 fcs.wheelThrottle = 0.0f;

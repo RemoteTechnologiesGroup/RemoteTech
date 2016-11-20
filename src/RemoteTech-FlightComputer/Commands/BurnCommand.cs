@@ -1,6 +1,8 @@
 ﻿using System;
+using RemoteTech.Common.AddOn;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -26,12 +28,12 @@ namespace RemoteTech.FlightComputer.Commands
 
         private static RTCore CoreInstance => RTCore.Instance;
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             return true;
         }
 
-        public override bool Execute(FlightComputer f, FlightCtrlState fcs)
+        public override bool Execute(IFlightComputer f, FlightCtrlState fcs)
         {
             if (_abort)
             {
@@ -109,7 +111,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// the flight computer list.
         /// </summary>
         /// <param name="computer">Current FlightComputer</param>
-        public override void CommandEnqueued(FlightComputer computer)
+        public override void CommandEnqueued(IFlightComputer computer)
         {
             var timetoexec = (TimeStamp + ExtraDelay) - 180;
 
@@ -127,7 +129,7 @@ namespace RemoteTech.FlightComputer.Commands
             // create the alarm
             if (CoreInstance != null && CoreInstance.KacAddon != null)
             {
-                KaCItemId = CoreInstance.KacAddon.CreateAlarm(RemoteTech_KACWrapper.KACWrapper.KACAPI.AlarmTypeEnum.Raw, kaCAddonLabel, timetoexec, computer.Vessel.id);
+                KaCItemId = CoreInstance.KacAddon.CreateAlarm(KACWrapper.KACAPI.AlarmTypeEnum.Raw, kaCAddonLabel, timetoexec, computer.Vessel.id);
             }
         }
 
@@ -135,7 +137,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// This method will be triggered after deleting a command from the list.
         /// </summary>
         /// <param name="computer">Current flight computer</param>
-        public override void CommandCanceled(FlightComputer computer)
+        public override void CommandCanceled(IFlightComputer computer)
         {
             if (KaCItemId == string.Empty || CoreInstance == null || CoreInstance.KacAddon == null)
                 return;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common;
+using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Utils;
 using RemoteTech.FlightComputer.Commands;
 
@@ -29,7 +30,7 @@ namespace RemoteTech.FlightComputer
         }
         public override string ShortName => (BaseEvent != null) ? BaseEvent.GUIName : "none";
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             if (BaseEvent == null)
                 return false;
@@ -62,7 +63,7 @@ namespace RemoteTech.FlightComputer
         /// Load infos into this object and create a new BaseEvent.
         /// </summary>
         /// <returns>true if loaded successfully.</returns>
-        public override bool Load(ConfigNode n, FlightComputer fc)
+        public override bool Load(ConfigNode n, IFlightComputer fc)
         {
             if (!base.Load(n, fc))
                 return false;
@@ -114,7 +115,7 @@ namespace RemoteTech.FlightComputer
         /// <summary>
         /// Save the BaseEvent to the persistent
         /// </summary>
-        public override void Save(ConfigNode n, FlightComputer fc)
+        public override void Save(ConfigNode n, IFlightComputer fc)
         {
             GUIName = BaseEvent.GUIName;
             flightID = BaseEvent.listParent.module.part.flightID;

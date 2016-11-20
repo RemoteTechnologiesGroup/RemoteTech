@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common.Utils;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -18,13 +19,13 @@ namespace RemoteTech.FlightComputer.Commands
         public override string Description => ShortName + Environment.NewLine + base.Description;
         public override string ShortName => "Target: " + (Target != null ? Target.GetName() : "None");
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             f.DelayedTarget = Target;
             return true;
         }
 
-        public override bool Execute(FlightComputer f, FlightCtrlState fcs) {
+        public override bool Execute(IFlightComputer f, FlightCtrlState fcs) {
 
             return false;
         }
@@ -45,7 +46,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="n">Node with the command infos</param>
         /// <param name="fc">Current FlightComputer</param>
         /// <returns>true if loaded successfully, false otherwise.</returns>
-        public override bool Load(ConfigNode n, FlightComputer fc)
+        public override bool Load(ConfigNode n, IFlightComputer fc)
         {
             if (!base.Load(n, fc))
                 return false;
@@ -78,7 +79,7 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         /// <param name="n">Node to save in</param>
         /// <param name="fc">Current FlightComputer</param>
-        public override void Save(ConfigNode n, FlightComputer fc)
+        public override void Save(ConfigNode n, IFlightComputer fc)
         {
             if (Target != null)
             {

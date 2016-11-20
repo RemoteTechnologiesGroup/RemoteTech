@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RemoteTech.Common.Utils;
 using UnityEngine;
+using RemoteTech.Common.Interfaces.FlightComputer;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -106,7 +107,7 @@ namespace RemoteTech.FlightComputer.Commands
 
         private bool mAbort;
 
-        public override bool Pop(FlightComputer f)
+        public override bool Pop(IFlightComputer f)
         {
             if (Mode == FlightMode.KillRot)
             {
@@ -115,7 +116,7 @@ namespace RemoteTech.FlightComputer.Commands
             return true;
         }
 
-        public override bool Execute(FlightComputer f, FlightCtrlState fcs)
+        public override bool Execute(IFlightComputer f, FlightCtrlState fcs)
         {
             if (mAbort)
             {
