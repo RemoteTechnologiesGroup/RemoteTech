@@ -58,7 +58,10 @@
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Extensions\Vector3dExtension.cs" />
     <Compile Include="Interfaces\FlightComputer\Commands\ICommand.cs" />
+    <Compile Include="Interfaces\FlightComputer\Commands\IDriveCommand.cs" />
     <Compile Include="Interfaces\FlightComputer\IFlightComputer.cs" />
+    <Compile Include="Interfaces\FlightComputer\IPIDController.cs" />
+    <Compile Include="Interfaces\FlightComputer\IRoverComputer.cs" />
     <Compile Include="Interfaces\SignalProcessor\ISignalProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RTLog.cs" />

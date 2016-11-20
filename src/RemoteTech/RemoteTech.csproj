@@ -78,6 +78,7 @@
     <Compile Include="RTSpaceCentre.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="SimpleTypes\BidirectionalEdge.cs" />
     <Compile Include="SimpleTypes\CachedField.cs" />
     <Compile Include="SimpleTypes\Dish.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="UI\TargetInfoFragment.cs" />
     <Compile Include="UI\TargetInfoWindow.cs" />
     <Compile Include="UI\TimeWarpDecorator.cs" />
+    <Compile Include="UI\UIPartActionMenuPatcher.cs" />
     <Compile Include="VesselExtension.cs" />
     <Compile Include="VesselSatellite.cs" />
     <Compile Include="RangeModel\AbstractRangeModel.cs" />
