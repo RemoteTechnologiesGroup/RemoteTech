@@ -137,7 +137,7 @@ namespace RemoteTech.Modules
                         msgStatus.message = String.Format("[{0}]: Uploading Data... {1:P0}", part.partInfo.title, progress);
                         ScreenMessages.PostScreenMessage(msgStatus);
 
-                        RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mbits/sec. Packets to go: {2} - Other experiments waiting to transfer: {3}",
+                        RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Other experiments waiting to transfer: {3}",
                             scienceData.title, (PacketSize / PacketInterval).ToString("0.00"), packets, scienceDataQueue.Count);
 
                         // if we've a defined callback parameter so skip to stream each packet

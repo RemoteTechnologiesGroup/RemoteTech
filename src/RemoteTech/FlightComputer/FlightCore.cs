@@ -179,42 +179,21 @@ namespace RemoteTech.FlightComputer
             bool fixedRoll = !ignoreRoll;
             Vessel vessel = fc.Vessel;
             Vector3d momentOfInertia = vessel.MOI;
+            Transform vesselReference = vessel.GetTransform();
             Vector3d torque = GetVesselTorque(vessel);
-
-            if (FlightCore.UseSas)
-            {
-                if (vessel.ActionGroups[KSPActionGroup.SAS])
-                    return;
-
-                InputLockManager.RemoveControlLock("RTLockSAS");
-                vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, true);
-                InputLockManager.SetControlLock(ControlTypes.SAS, "RTLockSAS");
-                RTLog.Notify("Autopilot enabled: {0}", vessel.Autopilot.Enabled);
-                RTLog.Notify("Autopilot CanEngageSAS: {0}", vessel.Autopilot.SAS.CanEngageSAS());
-                vessel.Autopilot.SAS.SetTargetOrientation(target * Vector3.up, false);
-
-                return;
-            }
-
             // -----------------------------------------------
-            // prepare mechjeb values
+            // Copied from MechJeb master on 18.04.2016 with some modifications to adapt to RemoteTech
 
             Vector3d _axisControl = new Vector3d();
             _axisControl.x = true ? 1 : 0;
             _axisControl.y = true ? 1 : 0;
             _axisControl.z = fixedRoll ? 1 : 0;
 
-            // see mechjeb UpdateMoIAndAngularMom() in VesselState.cs
-            var angularMomentum = Vector3d.zero;
-            angularMomentum.x = momentOfInertia.x * vessel.angularVelocity.x;
-            angularMomentum.y = momentOfInertia.y * vessel.angularVelocity.y;
-            angularMomentum.z = momentOfInertia.z * vessel.angularVelocity.z;
-
             Vector3d inertia = Vector3d.Scale(
-                angularMomentum.Sign(),
+                new Vector3d(vessel.angularMomentum.x, vessel.angularMomentum.y, vessel.angularMomentum.z).Sign(),
                 Vector3d.Scale(
-                    Vector3d.Scale(angularMomentum, angularMomentum),
-                    Vector3d.Scale(torque, momentOfInertia).InvertNoNaN()
+                    Vector3d.Scale(vessel.angularMomentum, vessel.angularMomentum),
+                    Vector3d.Scale(torque, momentOfInertia).Invert()
                     )
                 );
 
@@ -226,16 +205,16 @@ namespace RemoteTech.FlightComputer
             double kWlimit = 0.15;
             double deadband = 0.0001;
 
-            /* -------------------------------------------------------------------------------
-             * Start MechJeb code; from MechJebModuleAttitudeController.cs in Drive() function 
-             * Updated: 2016-10-22
-             */
+            Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vesselReference.rotation) * target);
 
-            Transform vesselTransform = vessel.ReferenceTransform;
+            Vector3d deltaEuler = delta.DeltaEuler();
 
-            // Find out the real shorter way to turn where we wan to.
+            // ( MoI / available torque ) factor:
+            Vector3d NormFactor = Vector3d.Scale(momentOfInertia, torque.Invert()).Reorder(132);
+
+            // Find out the real shorter way to turn were we want to.
             // Thanks to HoneyFox
-            Vector3d tgtLocalUp = vesselTransform.transform.rotation.Inverse() * target * Vector3d.forward;
+            Vector3d tgtLocalUp = vesselReference.rotation.Inverse() * target * Vector3d.forward;
             Vector3d curLocalUp = Vector3d.up;
 
             double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
@@ -244,36 +223,46 @@ namespace RemoteTech.FlightComputer
 
             // And the lowest roll
             // Thanks to Crzyrndm
-            Vector3 normVec = Vector3.Cross(target * Vector3.forward, vesselTransform.up);
+            Vector3 normVec = Vector3.Cross(target * Vector3.forward, vesselReference.up);
             Quaternion targetDeRotated = Quaternion.AngleAxis((float)turnAngle, normVec) * target;
-            float rollError = Vector3.Angle(vesselTransform.right, targetDeRotated * Vector3.right) * Math.Sign(Vector3.Dot(targetDeRotated * Vector3.right, vesselTransform.forward));
+            float rollError = Vector3.Angle(vesselReference.right, targetDeRotated * Vector3.right) * Math.Sign(Vector3.Dot(targetDeRotated * Vector3.right, vesselReference.forward));
 
-
-            // From here everything should use MOI order for Vectors (pitch, roll, yaw)
-            Vector3d error = new Vector3d(
+            var error = new Vector3d(
                 -rotDirection.y * Math.PI,
-                rollError * Mathf.Deg2Rad,
-                rotDirection.x * Math.PI
+                rotDirection.x * Math.PI,
+                rollError * Mathf.Deg2Rad
                 );
 
             error.Scale(_axisControl);
 
-            Vector3d err = error + inertia * 0.5;
+            Vector3d err = error + inertia.Reorder(132) / 2d;
             err = new Vector3d(
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.y)),
                 Math.Max(-Math.PI, Math.Min(Math.PI, err.z)));
 
-            // ( MoI / available torque ) factor:
-            Vector3d NormFactor = Vector3d.Scale(momentOfInertia, torque.InvertNoNaN());
-
             err.Scale(NormFactor);
 
             // angular velocity:
-            Vector3d omega = vessel.angularVelocity;
+            Vector3d omega;
+            omega.x = vessel.angularVelocity.x;
+            omega.y = vessel.angularVelocity.z; // y <=> z
+            omega.z = vessel.angularVelocity.y; // z <=> y
             omega.Scale(NormFactor);
 
-            SetPIDParameters(fc, TfV, kdFactor, kpFactor, kiFactor);
+            //if (Tf_autoTune)
+            //    tuneTf(torque);
+
+            Vector3d invTf = TfV.Invert();
+            fc.pid.Kd = kdFactor * invTf;
+
+            fc.pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * fc.pid.Kd;
+            fc.pid.Kp.Scale(invTf);
+
+            fc.pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * fc.pid.Kp;
+            fc.pid.Ki.Scale(invTf);
+
+            fc.pid.intAccum = fc.pid.intAccum.Clamp(-5, 5);
 
             // angular velocity limit:
             var Wlimit = new Vector3d(Math.Sqrt(NormFactor.x * Math.PI * kWlimit),
@@ -297,25 +286,16 @@ namespace RemoteTech.FlightComputer
             // end MechJeb import
             //---------------------------------------
 
-            /*
             float precision = Mathf.Clamp((float)(torque.x * 20f / momentOfInertia.magnitude), 0.5f, 10f);
             float driveLimit = Mathf.Clamp01((float)(err.magnitude * 380.0f / precision));
 
             act.x = Mathf.Clamp((float)act.x, -driveLimit, driveLimit);
             act.y = Mathf.Clamp((float)act.y, -driveLimit, driveLimit);
             act.z = Mathf.Clamp((float)act.z, -driveLimit, driveLimit);
-            */
-            float driveLimit = 1;
 
-            if (!double.IsNaN(act.y)) c.roll = Mathf.Clamp((float)(act.y), -driveLimit, driveLimit);
-            if (!double.IsNaN(act.x)) c.pitch = Mathf.Clamp((float)(act.x), -driveLimit, driveLimit);
-            if (!double.IsNaN(act.z)) c.yaw = Mathf.Clamp((float)(act.z), -driveLimit, driveLimit);
-
-            /*
             c.roll = Mathf.Clamp((float)(c.roll + act.z), -driveLimit, driveLimit);
             c.pitch = Mathf.Clamp((float)(c.pitch + act.x), -driveLimit, driveLimit);
             c.yaw = Mathf.Clamp((float)(c.yaw + act.y), -driveLimit, driveLimit);
-            */
         }
 
         private static void SetPIDParameters(FlightComputer fc, Vector3d TfV, double kdFactor, double kpFactor, double kiFactor)
