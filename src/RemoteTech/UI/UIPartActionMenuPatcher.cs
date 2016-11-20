@@ -7,7 +7,7 @@ using System.Globalization;
 using RemoteTech.Common;
 using UnityEngine;
 
-namespace RemoteTech.FlightComputer
+namespace RemoteTech.UI
 {
     public static class UIPartActionMenuPatcher
     {

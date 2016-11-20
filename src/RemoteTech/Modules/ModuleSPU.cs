@@ -5,6 +5,7 @@ using RemoteTech.Common;
 using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Interfaces.SignalProcessor;
 using RemoteTech.Settings;
+using RemoteTech.UI;
 using UnityEngine;
 
 namespace RemoteTech.Modules
