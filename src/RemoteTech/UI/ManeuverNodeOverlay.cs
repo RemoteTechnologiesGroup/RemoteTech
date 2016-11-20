@@ -134,8 +134,8 @@ namespace RemoteTech.UI
                                 flightComputer.RemoveManeuverCommandByNode(node);
                             }
                         }
-                        GUILayout.EndArea();
 
+                        GUILayout.EndArea();
                     }
                 }
             }
