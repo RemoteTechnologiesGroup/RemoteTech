@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Extensions;
-using RemoteTech.Common.Settings;
+using RemoteTech.Settings;
 
 namespace RemoteTech.API
 {
@@ -82,12 +82,12 @@ namespace RemoteTech.API
 
         public static IEnumerable<string> GetGroundStations()
         {
-            return RTSettings.Instance.GroundStations.Select(s => ((ISatellite)s).Name);
+            return CoreSettingsManager.Instance.GroundStations.Select(s => ((ISatellite)s).Name);
         }
 
         public static Guid GetGroundStationGuid(String name)
         {
-            MissionControlSatellite groundStation = RTSettings.Instance.GroundStations.Where(station => station.GetName().Equals(name)).FirstOrDefault();
+            MissionControlSatellite groundStation = CoreSettingsManager.Instance.GroundStations.Where(station => station.GetName().Equals(name)).FirstOrDefault();
 
             if (groundStation == null)
             {
@@ -103,11 +103,11 @@ namespace RemoteTech.API
         }
 
         public static Guid GetNoTargetGuid() {
-            return new Guid(RTSettings.Instance.NoTargetGuid);
+            return new Guid(CoreSettingsManager.Instance.NoTargetGuid);
         }
 
         public static Guid GetActiveVesselGuid() {
-            return new Guid(RTSettings.Instance.ActiveVesselGuid);
+            return new Guid(CoreSettingsManager.Instance.ActiveVesselGuid);
         }
 
         public static double GetShortestSignalDelay(Guid id)
@@ -154,7 +154,7 @@ namespace RemoteTech.API
 		public static Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
 		{
 			RTLog.Notify ("Trying to add groundstation {0}", RTLogLevel.API, name);
-            Guid newStationId = RTSettings.Instance.AddGroundStation(name, latitude, longitude, height, body);
+            Guid newStationId = MissionControlSatellite.AddGroundStation(name, latitude, longitude, height, body);
 
             return newStationId;
 		}
@@ -170,7 +170,7 @@ namespace RemoteTech.API
 				return false;
 			}
 
-            return RTSettings.Instance.RemoveGroundStation(stationid);
+            return MissionControlSatellite.RemoveGroundStation(stationid);
         }
 
         /// <summary>
@@ -184,12 +184,12 @@ namespace RemoteTech.API
         {
             RTLog.Notify("Trying to change groundstation {0} Omni range to {1}", RTLogLevel.API, stationId.ToString(), newRange);
 
-            if (RTSettings.Instance == null)
+            if (CoreSettingsManager.Instance == null)
                 return false;
 
-            if(RTSettings.Instance.GroundStations.Count > 0)
+            if(CoreSettingsManager.Instance.GroundStations.Count > 0)
             {
-                MissionControlSatellite groundStation = RTSettings.Instance.GroundStations.First(gs => gs.mGuid == stationId);
+                MissionControlSatellite groundStation = CoreSettingsManager.Instance.GroundStations.First(gs => gs.mGuid == stationId);
                 if (groundStation == null)
                     return false;
 

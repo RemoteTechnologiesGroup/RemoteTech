@@ -7,6 +7,7 @@ using RemoteTech.Common.Extensions;
 using RemoteTech.Common.Settings;
 using RemoteTech.Modules;
 using RemoteTech.RangeModel;
+using RemoteTech.Settings;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace RemoteTech
 
         public int Count { get { return RTCore.Instance.Satellites.Count + GroundStations.Count; } }
 
-        public static Guid ActiveVesselGuid = new Guid(RTSettings.Instance.ActiveVesselGuid);
+        public static Guid ActiveVesselGuid = new Guid(CoreSettingsManager.Instance.ActiveVesselGuid);
 
         public ISatellite this[Guid guid]
         {
@@ -72,7 +73,7 @@ namespace RemoteTech
 
             // Load all ground stations into a dictionary;
             GroundStations = new Dictionary<Guid, ISatellite>();
-            foreach (ISatellite sat in RTSettings.Instance.GroundStations)
+            foreach (ISatellite sat in CoreSettingsManager.Instance.GroundStations)
             {
                 try
                 {
@@ -144,7 +145,7 @@ namespace RemoteTech
             bool los = sat_a.HasLineOfSightWith(sat_b) || CheatOptions.InfinitePropellant;
             if (!los) return null;
 
-            switch (RTSettings.Instance.RangeModelType)
+            switch (CoreSettingsManager.Instance.RangeModelType)
             {
                 case RangeModel.RangeModel.Additive: // NathanKell
                     return RangeModelRoot.GetLink(sat_a, sat_b);
@@ -324,7 +325,7 @@ namespace RemoteTech
         /// <param name="height">Height above sea level</param>
         /// <param name="body">Reference body 1=Kerbin etc...</param>
         /// <returns>A new <see cref="System.Guid"/> if a new station was successfully added otherwise a Guid.Empty.</returns>
-        public Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
+        public static Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
         {
             RTLog.Notify("Trying to add ground station({0})", RTLogLevel.LVL1, name);
 
@@ -332,7 +333,7 @@ namespace RemoteTech
             newGroundStation.SetDetails(name, latitude, longitude, height, body);
 
             //
-            var groundStations = RTSettings.Instance.GroundStations;
+            var groundStations = CoreSettingsManager.Instance.GroundStations;
 
 
             // Already on the list?
@@ -344,7 +345,7 @@ namespace RemoteTech
             }
 
             groundStations.Add(newGroundStation);
-            RTSettings.Instance.Save();
+            CoreSettingsManager.Instance.Save();
 
             return newGroundStation.mGuid;
         }
@@ -352,11 +353,11 @@ namespace RemoteTech
         /// <summary>Removes a ground station from the list by its unique <paramref name="stationid"/>.</summary>
         /// <param name="stationid">Unique ground station id</param>
         /// <returns>Returns true for a successful removed station, otherwise false.</returns>
-        public bool RemoveGroundStation(Guid stationid)
+        public static bool RemoveGroundStation(Guid stationid)
         {
             RTLog.Notify("Trying to remove ground station {0}", RTLogLevel.LVL1, stationid);
 
-            var groundStations = RTSettings.Instance.GroundStations;
+            var groundStations = CoreSettingsManager.Instance.GroundStations;
             for (var i = 0; i < groundStations.Count; i++)
             {
                 if (!groundStations[i].mGuid.Equals(stationid))
@@ -364,7 +365,7 @@ namespace RemoteTech
 
                 RTLog.Notify("Removing {0} ", RTLogLevel.LVL1, groundStations[i].GetName());
                 groundStations.RemoveAt(i);
-                RTSettings.Instance.Save();
+                CoreSettingsManager.Instance.Save();
                 return true;
             }
 
