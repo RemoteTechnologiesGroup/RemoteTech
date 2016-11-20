@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using RemoteTech.Common;
 using RemoteTech.Common.Utils;
 using UnityEngine;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.UI;
+using RemoteTech.Settings;
 
 namespace RemoteTech.UI
 {
@@ -174,11 +174,11 @@ namespace RemoteTech.UI
         }
 
         /// <summary>
-        /// Draws the RTSettings section
+        /// Draws the Settings section
         /// </summary>
         private void drawRTSettingsTab()
         {
-            var settings = RTSettings.Instance;
+            var settings = CoreSettingsManager.Instance;
             int firstColWidth = 250;
 
             var pushLabelSize = GUI.skin.label.fontSize;

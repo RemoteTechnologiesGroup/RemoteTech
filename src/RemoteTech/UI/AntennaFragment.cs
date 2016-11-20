@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
+using RemoteTech.Settings;
 using UnityEngine;
 
 namespace RemoteTech.UI
@@ -226,7 +226,7 @@ namespace RemoteTech.UI
             mSelection = new Entry()
             {
                 Text = "No Target",
-                Guid = new Guid(RTSettings.Instance.NoTargetGuid),
+                Guid = new Guid(CoreSettingsManager.Instance.NoTargetGuid),
                 Color = Color.white,
                 Depth = 0,
             };

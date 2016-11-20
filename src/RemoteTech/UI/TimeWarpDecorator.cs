@@ -3,8 +3,8 @@ using System.Linq;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 using KSP.UI;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.Settings;
 
 namespace RemoteTech.UI
 {
@@ -58,7 +58,7 @@ namespace RemoteTech.UI
                 }
                 else if (vs.Connections.Any())
                 {
-                    if (RTSettings.Instance.EnableSignalDelay)
+                    if (CoreSettingsManager.Instance.EnableSignalDelay)
                     {
                         return "D+ " + vs.Connections[0].Delay.ToString("F5") + "s";
                     }

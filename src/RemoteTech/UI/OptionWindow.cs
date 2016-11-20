@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
+using RemoteTech.Settings;
 using UnityEngine;
 
 
@@ -58,8 +58,8 @@ namespace RemoteTech.UI
         private Texture2D mTexHeadline;
         /// <summary>Positionvector for the content scroller</summary>
         private Vector2 mOptionScrollPosition;
-        /// <summary>Reference to the RTSettings</summary>
-        private Settings mSettings { get { return RTSettings.Instance; } }
+        /// <summary>Reference to the Settings</summary>
+        private CoreSettings mSettings { get { return CoreSettingsManager.Instance; } }
         /// <summary>Current selected menu item</summary>
         private int mMenuValue;
         #endregion
@@ -78,7 +78,7 @@ namespace RemoteTech.UI
 
         public override void Hide()
         {
-            RTSettings.Instance.Save();
+            CoreSettingsManager.Instance.Save();
 
             // Set the AppLauncherbutton to false
             if(RemoteTech.RTSpaceCentre.LauncherButton != null)
@@ -115,7 +115,7 @@ namespace RemoteTech.UI
             if (GUILayout.Button("Close"))
             {
                 this.Hide();
-                RTSettings.OnSettingsChanged.Fire();
+                CoreSettingsManager.OnSettingsChanged.Fire();
             }
 
             base.Window(uid);
@@ -452,7 +452,7 @@ namespace RemoteTech.UI
                     GUILayout.Label("- " + folderName, this.mGuiListText, GUILayout.ExpandWidth(true));
                     if(GUILayout.Button("Overwrite", this.mGuiListButton, GUILayout.Width(70), GUILayout.Height(20)))
                     {
-                        RTSettings.ReloadSettings(this.mSettings, presetList[i]);
+                        CoreSettingsManager.ReloadSettings(this.mSettings, presetList[i]);
                         ScreenMessages.PostScreenMessage(string.Format("Your RemoteTech settings are set to {0}", folderName), 15);
                         RTLog.Notify("Overwrote current settings with this cfg {0}", RTLogLevel.LVL3, presetList[i]);
                     }

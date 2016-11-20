@@ -4,7 +4,7 @@ using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Interfaces.FlightComputer;
 using RemoteTech.Common.Interfaces.SignalProcessor;
-using RemoteTech.Common.Settings;
+using RemoteTech.Settings;
 using UnityEngine;
 
 namespace RemoteTech.Modules
@@ -323,7 +323,7 @@ namespace RemoteTech.Modules
             }
             else if (baseEvent.listParent.part.Modules.OfType<IAntenna>().Any() &&
                      !baseEvent.listParent.part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
-                     RTSettings.Instance.ControlAntennaWithoutConnection)
+                     CoreSettingsManager.Instance.ControlAntennaWithoutConnection)
             {
                 baseEvent.Invoke();
             }
@@ -375,7 +375,7 @@ namespace RemoteTech.Modules
             }            
             else if (field.host is PartModule && ((PartModule)field.host).part.Modules.OfType<IAntenna>().Any() &&
                      !((PartModule)field.host).part.Modules.OfType<ModuleRTAntennaPassive>().Any() &&
-                     RTSettings.Instance.ControlAntennaWithoutConnection)
+                     CoreSettingsManager.Instance.ControlAntennaWithoutConnection)
             {
                 field.Invoke();
             }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common;
-using RemoteTech.Common.Settings;
+using RemoteTech.Settings;
 
 namespace RemoteTech.Modules
 {
@@ -34,10 +34,10 @@ namespace RemoteTech.Modules
         bool IAntenna.Activated { get { return true; } set { return; } }
         float IAntenna.Consumption { get { return 0.0f; } }
         bool IAntenna.CanTarget { get { return false; } }
-        Guid IAntenna.Target { get { return new Guid(RTSettings.Instance.ActiveVesselGuid); } set { return; } }
+        Guid IAntenna.Target { get { return new Guid(CoreSettingsManager.Instance.ActiveVesselGuid); } set { return; } }
         float IAntenna.Dish { get { return Dish; } }
         double IAntenna.CosAngle { get { return CosAngle; } }
-        private float MissionControlRangeMultiplier { get { return RTSettings.Instance.MissionControlRangeMultiplier; } }
+        private float MissionControlRangeMultiplier { get { return CoreSettingsManager.Instance.MissionControlRangeMultiplier; } }
 
         public void reloadUpgradeableAntennas(int techlvl = 0)
         {
@@ -51,7 +51,7 @@ namespace RemoteTech.Modules
             }
 
             // when the option is disabled, use always the thrid tech lvl
-            if (!RTSettings.Instance.UpgradeableMissionControlAntennas)
+            if (!CoreSettingsManager.Instance.UpgradeableMissionControlAntennas)
             {
                 missionControlTechLevel = 3;
             }

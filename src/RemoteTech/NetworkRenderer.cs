@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.Settings;
 using RemoteTech.SimpleTypes;
 using RemoteTech.UI;
 using UnityEngine;
@@ -32,12 +32,12 @@ namespace RemoteTech
         public MapFilter Filter { 
             get 
             {
-                return RTSettings.Instance.MapFilter;
+                return CoreSettingsManager.Instance.MapFilter;
             } 
             set 
             {
-                RTSettings.Instance.MapFilter = value;
-                RTSettings.Instance.Save(); 
+                CoreSettingsManager.Instance.MapFilter = value;
+                CoreSettingsManager.Instance.Save(); 
             } 
         }
 
@@ -109,10 +109,10 @@ namespace RemoteTech
                     var screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
                     
                     // Hide the current ISatellite if it is behind its body
-                    if (RTSettings.Instance.HideGroundStationsBehindBody && IsOccluded(s.Position, s.Body))
+                    if (CoreSettingsManager.Instance.HideGroundStationsBehindBody && IsOccluded(s.Position, s.Body))
                         showOnMapview = false;
 
-                    if (RTSettings.Instance.HideGroundStationsOnDistance && !IsOccluded(s.Position, s.Body) && this.IsCamDistanceToWide(s.Position))
+                    if (CoreSettingsManager.Instance.HideGroundStationsOnDistance && !IsOccluded(s.Position, s.Body) && this.IsCamDistanceToWide(s.Position))
                         showOnMapview = false;
 
                     // orbiting remote stations are always shown
@@ -129,7 +129,7 @@ namespace RemoteTech
                         GUI.color = pushColor;
 
                         // Show Mouse over informations to the ground station
-                        if (RTSettings.Instance.ShowMouseOverInfoGroundStations && s is MissionControlSatellite && screenRect.ContainsMouse())
+                        if (CoreSettingsManager.Instance.ShowMouseOverInfoGroundStations && s is MissionControlSatellite && screenRect.ContainsMouse())
                         {
                             Rect headline = screenRect;
                             Vector2 nameDim = this.smallStationHead.CalcSize(new GUIContent(s.Name));
@@ -201,7 +201,7 @@ namespace RemoteTech
             float distance = Vector3.Distance(camPos, loc);
             
             // distance to wide?
-            if(distance >= RTSettings.Instance.DistanceToHideGroundStations)
+            if(distance >= CoreSettingsManager.Instance.DistanceToHideGroundStations)
                 return true;
 
             return false;
@@ -302,12 +302,12 @@ namespace RemoteTech
             {
                 var connections = RTCore.Instance.Network[satellite];
                 if (connections.Any() && connections[0].Contains(edge))
-                    return RTSettings.Instance.ActiveConnectionColor;
+                    return CoreSettingsManager.Instance.ActiveConnectionColor;
             }
             if (edge.Type == LinkType.Omni)
-                return RTSettings.Instance.OmniConnectionColor;
+                return CoreSettingsManager.Instance.OmniConnectionColor;
             if (edge.Type == LinkType.Dish)
-                return RTSettings.Instance.DishConnectionColor;
+                return CoreSettingsManager.Instance.DishConnectionColor;
 
             return XKCDColors.Grey;
         }

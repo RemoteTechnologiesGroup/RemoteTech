@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RemoteTech.Common.Settings;
+using RemoteTech.Settings;
 using RemoteTech.SimpleTypes;
 
 namespace RemoteTech.RangeModel
@@ -120,9 +120,9 @@ namespace RemoteTech.RangeModel
         /// <returns>The boost to all omni antenna ranges, if MultipleAntennaMultiplier is enabled;
         /// otherwise zero.</returns>
         private static double GetMultipleAntennaBonus(IEnumerable<IAntenna> omniList, double maxOmni) {
-            if (RTSettings.Instance.MultipleAntennaMultiplier > 0.0) {
+            if (CoreSettingsManager.Instance.MultipleAntennaMultiplier > 0.0) {
                 double total = omniList.Sum(a => a.Omni);
-                return (total - maxOmni) * RTSettings.Instance.MultipleAntennaMultiplier;
+                return (total - maxOmni) * CoreSettingsManager.Instance.MultipleAntennaMultiplier;
             } else {
                 return 0.0;
             }

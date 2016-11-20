@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Interfaces.SignalProcessor;
-using RemoteTech.Common.Settings;
 using UnityEngine;
 using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.Settings;
 
 namespace RemoteTech
 {
@@ -35,7 +35,7 @@ namespace RemoteTech
         public CelestialBody Body => SignalProcessor.Body;
 
         /// <summary>Gets the color of the ground station mark in Tracking station or Flight map view.</summary>
-        public Color MarkColor => RTSettings.Instance.RemoteStationColorDot;
+        public Color MarkColor => CoreSettingsManager.Instance.RemoteStationColorDot;
 
         /// <summary>Gets or sets the list of signal processor (<see cref="ISignalProcessor"/>) for the satellite.</summary>
         public List<ISignalProcessor> SignalProcessors { get; set; }

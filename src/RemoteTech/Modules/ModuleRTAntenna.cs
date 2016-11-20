@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using RemoteTech.Common;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.Settings;
 using RemoteTech.UI;
 using UnityEngine;
 
@@ -49,8 +49,8 @@ namespace RemoteTech.Modules
         public float Consumption { get { return IsRTBroken ? 0.0f : IsRTActive ? EnergyCost * ConsumptionMultiplier : 0.0f; } }
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
-        private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
-        private float ConsumptionMultiplier { get { return RTSettings.Instance.ConsumptionMultiplier; } }
+        private float RangeMultiplier { get { return CoreSettingsManager.Instance.RangeMultiplier; } }
+        private float ConsumptionMultiplier { get { return CoreSettingsManager.Instance.ConsumptionMultiplier; } }
 
         [KSPField]
         public bool
@@ -185,15 +185,15 @@ namespace RemoteTech.Modules
         /// <summary>
         /// Displaying the stored "range" of the antenna/dish is confusing to players when rangeModel Root is selected, because that's not actually the 'range'.
         /// </summary>
-        /// <returns>Returns a description for an antenna given the current range model (either 'range' or 'power'). An empty string if RTSettings instance is not available.</returns>
+        /// <returns>Returns a description for an antenna given the current range model (either 'range' or 'power'). An empty string if CoreSettingsManager instance is not available.</returns>
         private string AntennaInfoDescriptionFromRangeModel()
         {
             string description = string.Empty;
 
-            if (RTSettings.Instance == null)
+            if (CoreSettingsManager.Instance == null)
                 return description;
             
-            switch(RTSettings.Instance.RangeModelType)
+            switch(CoreSettingsManager.Instance.RangeModelType)
             {
                 case RangeModel.RangeModel.Standard:
                     description = "range";

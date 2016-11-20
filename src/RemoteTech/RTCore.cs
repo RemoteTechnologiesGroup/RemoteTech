@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using RemoteTech.Common;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
 using RemoteTech.Common.AddOn;
+using RemoteTech.Settings;
 using RemoteTech.UI;
 using UnityEngine;
 
@@ -106,7 +106,7 @@ namespace RemoteTech
         public void Start()
         {
             // Destroy the Core instance if != null or if RemoteTech is disabled
-            if (Instance != null || !RTSettings.Instance.RemoteTechEnabled)
+            if (Instance != null || !CoreSettingsManager.Instance.RemoteTechEnabled)
             {
                 Destroy(this);
                 return;
@@ -115,7 +115,7 @@ namespace RemoteTech
             Instance = this;
 
             // enable or disable KSP CommNet depending on settings.
-            HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = RTSettings.Instance.CommNetEnabled;
+            HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = CoreSettingsManager.Instance.CommNetEnabled;
 
             // add-ons
             KacAddon = new KerbalAlarmClockAddon();
@@ -348,7 +348,7 @@ namespace RemoteTech
             // settings after selecting a save game. This is necessary
             // for switching between saves without shutting down the KSP
             // instance.
-            RTSettings.Instance.SettingsLoaded = false;
+            CoreSettingsManager.Instance.SettingsLoaded = false;
         }
     }
 }

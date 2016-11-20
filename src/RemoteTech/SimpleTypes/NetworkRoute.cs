@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RemoteTech.Common.Settings;
+using RemoteTech.Settings;
 
 namespace RemoteTech.SimpleTypes
 {
@@ -12,8 +12,8 @@ namespace RemoteTech.SimpleTypes
         public bool Exists { get { return Links.Count > 0; } }
 
         public double Length { get; private set; }
-        public double Delay { get { return RTSettings.Instance.EnableSignalDelay 
-                    ? Length / RTSettings.Instance.SpeedOfLight 
+        public double Delay { get { return CoreSettingsManager.Instance.EnableSignalDelay 
+                    ? Length / CoreSettingsManager.Instance.SpeedOfLight 
                     : 0.0; } }
         public List<NetworkLink<T>> Links { get; private set; }
 

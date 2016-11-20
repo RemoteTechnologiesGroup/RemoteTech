@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEngine;
 using KSP.UI.Screens;
 using RemoteTech.Common;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
+using RemoteTech.Settings;
 
 namespace RemoteTech
 {
@@ -31,7 +31,7 @@ namespace RemoteTech
             
             GameEvents.onLevelWasLoaded.Add(onLevelWasLoaded);
             GameEvents.OnUpgradeableObjLevelChange.Add(OnUpgradeableObjLevelChange);
-            RTSettings.OnSettingsChanged.Add(OnRtSettingsChanged);
+            CoreSettingsManager.OnSettingsChanged.Add(OnRtSettingsChanged);
 
             _rtOptionBtn = GameUtil.LoadImage("gitpagessat");
 
@@ -54,7 +54,7 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Callback-Event when the RTSettings are changed
+        /// Callback-Event when the Settings are changed
         /// </summary>
         private void OnRtSettingsChanged()
         {
@@ -67,13 +67,13 @@ namespace RemoteTech
             if (scene != GameScenes.SPACECENTER)
                 return;
 
-            if (!RTSettings.Instance.FirstStart)
+            if (!CoreSettingsManager.Instance.FirstStart)
                 return;
 
             // open here the option dialog for the first start
             RTLog.Notify("First start of RemoteTech!");
             _optionWindow.Show();
-            RTSettings.Instance.FirstStart = false;
+            CoreSettingsManager.Instance.FirstStart = false;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace RemoteTech
         /// <param name="techlvl">The level applied to the antennas range.</param>
         private void ReloadUpgradableAntennas(int techlvl = 0)
         {
-            foreach ( var satellite in RTSettings.Instance.GroundStations)
+            foreach ( var satellite in CoreSettingsManager.Instance.GroundStations)
             {
                 satellite.reloadUpgradeableAntennas(techlvl);
             }
@@ -109,7 +109,7 @@ namespace RemoteTech
         /// </summary>
         public void OnDestroy()
         {
-            RTSettings.OnSettingsChanged.Remove(OnRtSettingsChanged);
+            CoreSettingsManager.OnSettingsChanged.Remove(OnRtSettingsChanged);
             GameEvents.onLevelWasLoaded.Remove(onLevelWasLoaded);
             GameEvents.OnUpgradeableObjLevelChange.Remove(OnUpgradeableObjLevelChange);
 

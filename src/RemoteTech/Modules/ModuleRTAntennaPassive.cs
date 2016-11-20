@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RemoteTech.Common;
-using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
+using RemoteTech.Settings;
 
 namespace RemoteTech.Modules
 {
@@ -30,7 +30,7 @@ namespace RemoteTech.Modules
         public float Consumption { get { return 0.0f; } }
         public Vector3d Position { get { return vessel.GetWorldPos3D(); } }
 
-        private float RangeMultiplier { get { return RTSettings.Instance.RangeMultiplier; } }
+        private float RangeMultiplier { get { return CoreSettingsManager.Instance.RangeMultiplier; } }
         public bool Unlocked { get { return GameUtil.IsTechUnlocked(TechRequired); } }
 
         [KSPField]
