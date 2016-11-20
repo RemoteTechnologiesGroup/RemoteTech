@@ -4,6 +4,7 @@ using RemoteTech.Common;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.UI;
 using RemoteTech.Common.Utils;
+using RemoteTech.Common.AddOn;
 using RemoteTech.UI;
 using UnityEngine;
 
@@ -49,7 +50,7 @@ namespace RemoteTech
         /// <summary>
         /// Kerbal Alarm Clock Add-on.
         /// </summary>
-        public AddOns.KerbalAlarmClockAddon KacAddon { get; protected set; }
+        public KerbalAlarmClockAddon KacAddon { get; protected set; }
 
         /*
          * Events
@@ -117,7 +118,7 @@ namespace RemoteTech
             HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = RTSettings.Instance.CommNetEnabled;
 
             // add-ons
-            KacAddon = new AddOns.KerbalAlarmClockAddon();
+            KacAddon = new KerbalAlarmClockAddon();
 
             // managers
             Satellites = new SatelliteManager();
