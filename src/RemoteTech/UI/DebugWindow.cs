@@ -247,7 +247,14 @@ namespace RemoteTech.UI
                 {
                     try
                     {
-                        var result = RemoteTech.API.API.HasFlightComputer(new Guid(this.HasFlightComputerGuidInput));
+                        var result = false;
+                        var vesselGuid = new Guid(this.HasFlightComputerGuidInput);
+                        if (RTCore.Instance != null)
+                        {
+                            var vesselSatellite = RTCore.Instance.Satellites[vesselGuid];
+                            if(vesselSatellite != null)
+                                result = vesselSatellite.FlightComputer != null;
+                        }
                         RTLog.Verbose("API.HasFlightComputer({0}) = {1}", this.currentLogLevel, this.HasFlightComputerGuidInput, result);
                     }
                     catch (Exception ex)
