@@ -7,7 +7,7 @@ using UnityEngine;
 namespace RemoteTech.Modules
 {
     /// <summary>Used to transmit science from a vessel with an antenna.</summary>
-    public sealed class ModuleRTDataTransmitter : PartModule, IScienceDataTransmitter
+    public sealed class ModuleRTDataTransmitter : PartModule, IScienceDataTransmitter, IContractObjectiveModule
     {
         [KSPField]
         public float
@@ -226,6 +226,31 @@ namespace RemoteTech.Modules
                 callback.Invoke();
 
             GUIStatus = "Idle";
+        }
+
+        /*
+         *  IContractObjectiveModule implementation; required for contracts verification.
+         *  Note that it must be implemented on a PartModule, which means we could implement it on ModuleRTAntenna rather than here. 
+         *  KSP implements it on its ModuleDataTransmitter though, so we do the same here.
+         */
+
+        /// <summary>
+        /// Return the type of contracts this module can fulfill. In this case "Antenna".
+        /// </summary>
+        /// <returns>The type of contract that can be fulfilled.</returns>
+        public string GetContractObjectiveType()
+        {
+            return "Antenna";
+        }
+
+        /// <summary>
+        /// Check that the part implementing this <see cref="ModuleRTDataTransmitter"/> is actually really an antenna. This check is quite redundant, but it does no harm.
+        /// </summary>
+        /// <returns>True if the owning part is an antenna (implementing <see cref="ModuleRTAntenna"/>, false otherwise.</returns>
+        public bool CheckContractObjectiveValidity()
+        {
+            var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
+            return antennas != null && antennas.Any();
         }
     }
 }
