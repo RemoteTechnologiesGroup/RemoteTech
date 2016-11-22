@@ -3,6 +3,7 @@ using RemoteTech.Common.AddOn;
 using RemoteTech.Common.Settings;
 using RemoteTech.Common.Utils;
 using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.FlightComputer.Settings;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -116,7 +117,7 @@ namespace RemoteTech.FlightComputer.Commands
             var timetoexec = (TimeStamp + ExtraDelay) - 180;
 
             // only insert if we've no negative time and the option is set
-            if (!(timetoexec - TimeUtil.GameTime > 0) || !RTSettings.Instance.AutoInsertKaCAlerts)
+            if (!(timetoexec - TimeUtil.GameTime > 0) || !FlightComputerSettingsManager.Instance.AutoInsertKaCAlerts)
                 return;
 
             // set KAC alarm label

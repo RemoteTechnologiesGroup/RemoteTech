@@ -3,8 +3,8 @@ using System.Text;
 using System.Linq;
 using RemoteTech.Common;
 using RemoteTech.Common.Utils;
-using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
 using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.UI;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -59,12 +59,12 @@ namespace RemoteTech.FlightComputer.Commands
 
             try
             {
-                var field = (BaseField as WrappedField);
+                var field = (BaseField as UIPartActionMenuPatcher.WrappedField);
                 if (field == null) // we lost the Wrapped field instance, this is due to the fact that the command was loaded from a save
                 {                        
                     if (NewValue != null)
                     {
-                        var newfield = new WrappedField(BaseField, WrappedField.KspFieldFromBaseField(BaseField));
+                        var newfield = new UIPartActionMenuPatcher.WrappedField(BaseField, UIPartActionMenuPatcher.WrappedField.KspFieldFromBaseField(BaseField));
                         if(newfield.NewValueFromString(NewValueString))
                         {
                             newfield.Invoke();

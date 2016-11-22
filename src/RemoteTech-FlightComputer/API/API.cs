@@ -1,6 +1,7 @@
 using System;
 using RemoteTech.Common;
 using RemoteTech.Common.Interfaces.FlightComputer;
+using RemoteTech.UI;
 
 namespace RemoteTech.FlightComputer.API
 {

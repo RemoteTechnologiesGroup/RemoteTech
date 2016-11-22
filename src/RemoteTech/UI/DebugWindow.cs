@@ -402,7 +402,8 @@ namespace RemoteTech.UI
                         dataNode.AddValue("YourData1", "RemoteTech");
                         dataNode.AddValue("YourDataN", "TechRemote");
 
-                        var result = RemoteTech.API.API.QueueCommandToFlightComputer(dataNode);
+                        /*var result = RemoteTech.API.API.QueueCommandToFlightComputer(dataNode);*/ //TODO re-enable
+                        var result = false;
 
                         RTLog.Verbose("API.QueueCommandToFlightComputer(ConfigNode) = {0}", this.currentLogLevel, result);
                     }

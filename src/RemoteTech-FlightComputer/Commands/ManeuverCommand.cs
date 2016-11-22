@@ -268,7 +268,7 @@ namespace RemoteTech.FlightComputer.Commands
         {
             var timetoexec = (TimeStamp + ExtraDelay) - FcSettingsInstance.FCLeadTime;
 
-            if (timetoexec - TimeUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts)
+            if (timetoexec - TimeUtil.GameTime >= 0 && FlightComputerSettingsManager.Instance.AutoInsertKaCAlerts)
             {
                 var kaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
 

@@ -135,7 +135,11 @@ namespace RemoteTech.Modules
                 {
                     RTCore.Instance.Satellites.Register(vessel, this);
                     if (FlightComputer == null)
-                        FlightComputer = new FlightComputer(this);
+                    {
+                        FlightComputerLoader.GetTypes();
+                        var computer = (IFlightComputer)FlightComputerLoader.Constructor.Invoke(new object[] {this});
+                        FlightComputer = computer;
+                    }
                 }
             }
 
@@ -186,7 +190,11 @@ namespace RemoteTech.Modules
                 if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
                 {
                     if (FlightComputer == null)
-                        FlightComputer = new FlightComputer(this);
+                    {
+                        FlightComputerLoader.GetTypes();
+                        var computer = (IFlightComputer)FlightComputerLoader.Constructor.Invoke(new object[] { this });
+                        FlightComputer = computer;
+                    }
                     FlightComputer.Save(node);
                 }
 
@@ -205,9 +213,9 @@ namespace RemoteTech.Modules
             {
                 if (HighLogic.fetch && HighLogic.LoadedSceneIsFlight)
                 {
-                    if (FlightComputer == null)
-                        FlightComputer = new FlightComputer(this);
-                    FlightComputer.Load(node);
+                    FlightComputerLoader.GetTypes();
+                    var computer = (IFlightComputer)FlightComputerLoader.Constructor.Invoke(new object[] { this });
+                    FlightComputer = computer;
                 }
             }
             catch (Exception e)
