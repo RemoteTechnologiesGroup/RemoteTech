@@ -255,7 +255,7 @@ namespace RemoteTech.UI
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(90);
-                this.mSettings.CommNetEnabled = GUILayout.Toggle(this.mSettings.CommNetEnabled, (this.mSettings.CommNetEnabled) ? "CommNet enabled" : "CommNet disabled");
+                this.mSettings.CommNetEnabled = (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = GUILayout.Toggle(this.mSettings.CommNetEnabled, (this.mSettings.CommNetEnabled) ? "CommNet enabled" : "CommNet disabled"));
             }
             GUILayout.EndHorizontal();
 
