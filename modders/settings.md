@@ -10,16 +10,29 @@ navbar: false
 
 {% include toc.html %}
 
-RemoteTech has a configuration of default settings, such as the `EnableSignalDelay` flag and a `GroundStations` node of ground stations. These settings are loaded from the `GameData/RemoteTech/Default_Settings.cfg` file during Kerbal Space Program's startup screen.
+RemoteTech has a configuration of default settings, such as the `EnableSignalDelay` flag or a `GroundStations` node of ground stations. These settings are loaded from RemoteTech's default-setting cfg file during Kerbal Space Program's startup screen.
 
-## When a player starts a new game
+If a player starts a new game from the main menu, RemoteTech executes a sequence of actions:
 
-## When resuming an existing game
+1. Probe KSP's `GameDatabase` to obtain a list of configurations contained the `RemoteTechSettings` node
+2. Iterate through this list to find the configuration of `Default_Settings.cfg`
+3. Load the configuration into the RemoteTech's internal settings
+4. Check if there is the RemoteTech settings in the player's newly-created save
+5. As they do not exist in the save, RemoteTech proceeds to begin its operations
 
-## Full settings (Nov 2016)
+However, if a player resumes an existing game, the RemoteTech settings should be present in the game save.
 
-All of the RemoteTech settings are outlined along with their brief descriptions below:
+4. Check if there is the RemoteTech settings in the player's newly-created save
+5. When the settings are found, RemoteTech replaces the default values in its internal settings with the save values
+6. RemoteTech proceeds to begin its operations
 
+## Full settings
+
+**Last updated: Nov 2016**
+
+In the `GameData/RemoteTech/Default_Settings.cfg` file, all of the RemoteTech settings are stored inside a root node, `RemoteTechSettings`. See this [page](http://remotetechnologiesgroup.github.io/RemoteTech/guide/settings/) for the most of the settings.
+
+`Default_Settings.cfg`
 ```
 RemoteTechSettings
 {
@@ -84,7 +97,7 @@ RemoteTechSettings
 
 ### Ground stations
 
-The `GroundStations` section of `RemoteTech/RemoteTech_Settings.cfg` (which will be created when you start KSP) controls the number, range, and placement of satellite uplink stations. Each `STATION{}` block represents a station. By default, there is only one ground station, coinciding with the KSC Tracking Station.
+The `GroundStations` node controls the number, range, and placement of satellite uplink stations. Each `STATION{}` block represents a station. By default, there is a single ground station, coinciding with the Tracking Station of the Kerbal Space Center.
 
 Each `STATION{}` block needs the following fields:
 
@@ -92,7 +105,7 @@ Each `STATION{}` block needs the following fields:
 : A unique idenfier for the station. **Must** be unique, or your network will exhibit undefined behavior. If you need a way to generate new guids, try [random.org](http://www.random.org/cgi-bin/randbyte?nbytes=16&format=h).
 
 `Name`
-: The name that shows up in the target selection menu.
+: The name that a player see in-game.
 
 `Latitude`, `Longitude`
 : The position of the station on the planet's surface in degrees north and degrees east, respectively.
@@ -103,10 +116,13 @@ Each `STATION{}` block needs the following fields:
 `Body`
 : The internal ID number of the planet on which the station is located. You can find a list of ID numbers for stock Kerbal Space Program [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72). If you are playing with Real Solar System or other planet packs, edit this value with caution.
 
-`Antennas`
-: This block should contain a single `ANTENNA` block, which itself should contain a single `Omni` field. The value of the field is the antenna range in meters.
+`MarkColor` ** (RGBα quadruplet) (default = Red, fully opaque)**
+: The color in which the ground station will be drawn as a solid circle on the map view and tracking station.
 
-## RemoteTech settings in a player's existing save
+`Antennas`
+: This block should contain a single `ANTENNA` block, which itself should contain a single `Omni` field. The value of the field is the antenna range in meters. Except for the three-level `UpgradeableOmni` field, the other fields are currently unused.
+
+## Upgrading your RemoteTech tweaks
 
 ## Examples of MM patches
 
@@ -114,6 +130,6 @@ Assumed that you are familiar with the Module Manager's [Handbook](https://githu
 
 ### Edit a setting
 
-### Add one or more ground station
+### Add one or more ground stations
 
 ### Precedence order of third-party RemoteTech patches
