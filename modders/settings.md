@@ -28,11 +28,10 @@ However, if a player resumes an existing game, the RemoteTech settings should be
 
 ## Full settings
 
-**Last updated: Nov 2016**
-
 In the `GameData/RemoteTech/Default_Settings.cfg` file, all of the RemoteTech settings are stored inside a root node, `RemoteTechSettings`. See this [page](http://remotetechnologiesgroup.github.io/RemoteTech/guide/settings/) for the most of the settings.
 
-`Default_Settings.cfg`
+`Default_Settings.cfg` (**Last updated: Nov 2016**)
+
 ```
 RemoteTechSettings
 {
@@ -116,7 +115,7 @@ Each `STATION{}` block needs the following fields:
 `Body`
 : The internal ID number of the planet on which the station is located. You can find a list of ID numbers for stock Kerbal Space Program [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72). If you are playing with Real Solar System or other planet packs, edit this value with caution.
 
-`MarkColor` ** (RGBα quadruplet) (default = Red, fully opaque)**
+`MarkColor` (RGBα quadruplet) (default = Red, fully opaque)
 : The color in which the ground station will be drawn as a solid circle on the map view and tracking station.
 
 `Antennas`
