@@ -16,7 +16,8 @@ Can't generate this automatically at present
 {:/comment}
 
 <div class="toc" markdown="1">
-* [Adding Ground Stations](ground/)
+* [Modifying the RemoteTech settings](settings/)
+* ~~[Adding Ground Stations](ground/)~~
 * [Configuring Parts for RemoteTech](modules/)
 * [Software API](api/)
 {: #markdown-toc}
