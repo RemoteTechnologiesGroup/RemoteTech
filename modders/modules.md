@@ -6,7 +6,7 @@ navbar: false
 
 {% include banner.html %}
 
-**UNDER CONSTRUCTION:** Please watch your step!
+**Outdated:** In progress of switching to KSP CommNet's stock modules
 {: .alert .alert-danger}
 
 # Configuring Parts for RemoteTech
