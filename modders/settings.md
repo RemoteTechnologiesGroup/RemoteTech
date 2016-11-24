@@ -12,25 +12,34 @@ navbar: false
 
 RemoteTech has a configuration of default settings, such as the `EnableSignalDelay` flag or a `GroundStations` node of ground stations. These settings are loaded from RemoteTech's default-setting cfg file during Kerbal Space Program's startup screen.
 
-If a player starts a new game from the main menu, RemoteTech executes a sequence of actions:
+If a player starts a new game or resumes an existing game, RemoteTech executes a sequence of actions:
 
 1. Probe KSP's `GameDatabase` to obtain a list of configurations contained the `RemoteTechSettings` node
 2. Iterate through this list to find the configuration of `Default_Settings.cfg`
 3. Load the configuration into the RemoteTech's internal settings
-4. Check if there is the RemoteTech settings in the player's newly-created save
-5. As they do not exist in the save, RemoteTech proceeds to begin its operations
+4. Check if there are RemoteTech settings in the player's save (newly-created or existing)
+   1. If the existing settings are found in the save, RemoteTech replaces the default values in its internal settings with the save values
+5. RemoteTech proceeds to begin its operations
 
-However, if a player resumes an existing game, the RemoteTech settings should be present in the game save.
+In addition, the developer of a third-party mod, interested in bringing RemoteTech into the mod's functionality, can deliver his/her own RemoteTech settings into a player's RemoteTech installation. For example, the author of a planet package could relocate RemoteTech's ground station(s) to a different planet.
 
-4. Check if there is the RemoteTech settings in the player's newly-created save
-5. When the settings are found, RemoteTech replaces the default values in its internal settings with the save values
-6. RemoteTech proceeds to begin its operations
+<hr>
+
+## Deliver your RemoteTech tweaks
+
+**unfinished**
+
+RemoteTech's old approach of accepting a third-party mod's `RemoteTech_Settings.cfg` was dropped in favour for a better and safer approach of using a [`Module Manager`](https://github.com/sarbian/ModuleManager) patch to deliver the same setting tweaks.
+
+upgrading thing
+
+<hr>
 
 ## Full settings
 
 In the `GameData/RemoteTech/Default_Settings.cfg` file, all of the RemoteTech settings are stored inside a root node, `RemoteTechSettings`. See this [page](http://remotetechnologiesgroup.github.io/RemoteTech/guide/settings/) for the most of the settings.
 
-`Default_Settings.cfg` (**Last updated: Nov 2016**)
+`Default_Settings.cfg` **(Last updated: Nov 2016)**
 
 ```
 RemoteTechSettings
@@ -121,7 +130,7 @@ Each `STATION{}` block needs the following fields:
 `Antennas`
 : This block should contain a single `ANTENNA` block, which itself should contain a single `Omni` field. The value of the field is the antenna range in meters. Except for the three-level `UpgradeableOmni` field, the other fields are currently unused.
 
-## Upgrading your RemoteTech tweaks
+<hr>
 
 ## Examples of MM patches
 
