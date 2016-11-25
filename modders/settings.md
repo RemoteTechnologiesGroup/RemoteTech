@@ -10,34 +10,58 @@ navbar: false
 
 {% include toc.html %}
 
-RemoteTech has a configuration of default settings, such as the `EnableSignalDelay` flag or a `GroundStations` node of ground stations. These settings are loaded from RemoteTech's default-setting cfg file during Kerbal Space Program's startup screen.
+RemoteTech has a configuration of default settings, such as the `EnableSignalDelay` flag or a `GroundStations` block of ground stations. These settings are loaded from RemoteTech's setting file during Kerbal Space Program's startup screen.
 
-If a player starts a new game or resumes an existing game, RemoteTech executes a sequence of actions:
+**For add-on developers**
 
-1. Probe KSP's `GameDatabase` to obtain a list of configurations contained the `RemoteTechSettings` node
-2. Iterate through this list to find the configuration of `Default_Settings.cfg`
-3. Load the configuration into the RemoteTech's internal settings
+If you are interested in reconfiguring a player's RemoteTech installation to work on your mod, you can [deliver your own tweaks](#deliver-your-remotetech-tweaks) into the RemoteTech settings. For example, the author of a planet package could relocate RemoteTech's ground station(s) to a different planet.
+
+**For players**
+
+If you want to edit additional ground stations into the RemoteTech settings of your existing save, the settings are found in either `RemoteTech_Settings.cfg` or `persistent.sfs`. Refer to the [section](#ground-stations) on how to add one or more ground stations.
+
+<hr>
+
+## How does RemoteTech initialise its settings?
+
+When a player starts a new game or resumes an existing game, a sequence of actions is executed:
+
+1. Probe KSP's `GameDatabase` to obtain a list of configurations contained the `RemoteTechSettings` block
+2. Iterate through this list to find the configuration of RemoteTech's `Default_Settings.cfg`
+3. Load the configuration into the internal settings
 4. Check if there are RemoteTech settings in the player's save (newly-created or existing)
-   1. If the existing settings are found in the save, RemoteTech replaces the default values in its internal settings with the save values
+   1. If the existing settings are found in the save, the default values in the internal settings are overwrote by the save values
 5. RemoteTech proceeds to begin its operations
 
-In addition, the developer of a third-party mod, interested in bringing RemoteTech into the mod's functionality, can deliver his/her own RemoteTech settings into a player's RemoteTech installation. For example, the author of a planet package could relocate RemoteTech's ground station(s) to a different planet.
+In summary, the default settings of RemoteTech are loaded into KSP's memory when launching the game. There, the [Module Manager](https://github.com/sarbian/ModuleManager) add-on will modify these settings on behalf of third-party mods targeting RemoteTech. Therefore, if a player starts a new game on his/her setup of installed mods, these modified settings will be used and stored persistently.
+
+However, the RemoteTech settings in a player's save folder cannot be modified externally due to the KSP's restriction. So even if a player installs a new mod that has a patch for RemoteTech, the RemoteTech settings in his/her save, would not be changed unless the player starts a new game.
 
 <hr>
 
 ## Deliver your RemoteTech tweaks
 
-**unfinished**
+RemoteTech dropped the approach of accepting a third-party mod's `RemoteTech_Settings.cfg` in favour for a better and safer approach of using a [Module Manager](https://github.com/sarbian/ModuleManager) patch for the same tweaks.
+{: .alert .alert-danger}
 
-RemoteTech's old approach of accepting a third-party mod's `RemoteTech_Settings.cfg` was dropped in favour for a better and safer approach of using a [`Module Manager`](https://github.com/sarbian/ModuleManager) patch to deliver the same setting tweaks.
+You can use a Module Manager patch to do the following actions:
 
-upgrading thing
+1. Edit one or more settings of RemoteTech
+2. Edit or add ground station(s)
+3. Set a precedence order for yourr own mod in relation to other mods, which have their own RemoteTech patches
+
+However, this is only applicable to a player's new game that takes in the modified RemoteTech settings. The existing saves cannot be modified due to KSP's restriction.
+
+To convert a third-party mod's `RemoteTech_Settings.cfg`, take those settings you want to affect and translate them into a Module Manager patch according to the Module Manager's [Handbook](https://github.com/sarbian/ModuleManager/wiki/Module-Manager-Handbook).
+
+
+Lastly, if such patch of a mod is not provided (not updated for while), RemoteTech's "fallback" mechanism will list the mod's `RemoteTech_Settings.cfg` in the setting window at the KSC scene for a player to manually apply a chosen preset.
 
 <hr>
 
 ## Full settings
 
-In the `GameData/RemoteTech/Default_Settings.cfg` file, all of the RemoteTech settings are stored inside a root node, `RemoteTechSettings`. See this [page](http://remotetechnologiesgroup.github.io/RemoteTech/guide/settings/) for the most of the settings.
+In the `GameData/RemoteTech/Default_Settings.cfg` file, all of the RemoteTech settings are stored inside a root block, `RemoteTechSettings`. See this [page](http://remotetechnologiesgroup.github.io/RemoteTech/guide/settings/) for the most of the settings.
 
 `Default_Settings.cfg` **(Last updated: Nov 2016)**
 
@@ -105,9 +129,9 @@ RemoteTechSettings
 
 ### Ground stations
 
-The `GroundStations` node controls the number, range, and placement of satellite uplink stations. Each `STATION{}` block represents a station. By default, there is a single ground station, coinciding with the Tracking Station of the Kerbal Space Center.
+The `GroundStations` block controls the number, range, and placement of satellite uplink stations. Each `STATION{}` block represents a station. By default, there is a single ground station, coinciding with the Tracking Station of the Kerbal Space Center.
 
-Each `STATION{}` block needs the following fields:
+Each `STATION{}` block has the following fields:
 
 `Guid`
 : A unique idenfier for the station. **Must** be unique, or your network will exhibit undefined behavior. If you need a way to generate new guids, try [random.org](http://www.random.org/cgi-bin/randbyte?nbytes=16&format=h).
@@ -116,13 +140,13 @@ Each `STATION{}` block needs the following fields:
 : The name that a player see in-game.
 
 `Latitude`, `Longitude`
-: The position of the station on the planet's surface in degrees north and degrees east, respectively.
+: The position of the station on the planet's surface in degrees north and degrees east respectively.
 
 `Height`
 : The station's altitude above sea level, in meters.
 
 `Body`
-: The internal ID number of the planet on which the station is located. You can find a list of ID numbers for stock Kerbal Space Program [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72). If you are playing with Real Solar System or other planet packs, edit this value with caution.
+: The internal ID number of the planet on which the station is located. You can find a list of body IDs for the stock game [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72). If you are playing with Real Solar System or other planet packs, edit this value with caution.
 
 `MarkColor` (RGBα quadruplet) (default = Red, fully opaque)
 : The color in which the ground station will be drawn as a solid circle on the map view and tracking station.
@@ -138,6 +162,6 @@ Assumed that you are familiar with the Module Manager's [Handbook](https://githu
 
 ### Edit a setting
 
-### Add one or more ground stations
+### Add extra ground stations
 
 ### Precedence order of third-party RemoteTech patches
