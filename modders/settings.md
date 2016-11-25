@@ -241,5 +241,5 @@ Therefore, a lexicographic [scheme](http://forum.kerbalspaceprogram.com/index.ph
 @RemoteTechSettings:FOR[zzSolarSystem] {...}
 ```
 
-Then, the Module Manager would patch these patches alphabetically. The `AsteroidFactory`, `zSuperRangeAntennas` and `zzSolarSystem` patches are patched in the particular order. 
+Then, the Module Manager would apply these patches alphabetically i.e. the `AsteroidFactory`, `zSuperRangeAntennas` and `zzSolarSystem` patches in this particular order. 
 
