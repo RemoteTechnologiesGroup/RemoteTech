@@ -224,21 +224,21 @@ For demonstration purpose, let your mod be named `ExampleMod`.
 The `NEEDS` keyword in the Module Manager is useful if you do not apply your RemoteTech tweaks for a player who has a particular mod. For example, you want your Kerbin-scope patch not to be applied when it is "detected" that another mod, SupersizeKerbin , is applying its Earth-scope patch to RemoteTech.
 
 ```
-@RemoteTechSettings:NEEDS[<b>!</b>SupersizeKerbin]:FOR[ExampleMod] {...}
+@RemoteTechSettings:NEEDS[!SupersizeKerbin]:FOR[ExampleMod] {...}
 ```
 
 ### Precedence order of third-party RemoteTech patches
 
 The Module Manager offers the `BEFORE` and `AFTER` keywords to control in what order your patch is applied. However, this standard ordering is only useful for a small number of known mods targeting the same values. It does not work well when a mod developer doesn't and can't know all other mods in advance to write against (eg they do not exist yet).
 
-Therefore, a lexicographic [scheme](http://forum.kerbalspaceprogram.com/index.php?/topic/139167-12-remotetech-v181-2016-11-19/&do=findComment&comment=2859196) of `z`, `zz`, `zzz` and `...` prefixes is introduced to keep track of other mods patching on the same `z` level. For example, let be three patches from the separate mods, `AsteroidFactory`, `**z**SuperRangeAntennas` and `**zz**SolarSystem` below. 
+Therefore, a lexicographic [scheme](http://forum.kerbalspaceprogram.com/index.php?/topic/139167-12-remotetech-v181-2016-11-19/&do=findComment&comment=2859196) of prefixes `{z, zz, zzz, ...}` is introduced to keep track of other mods patching on the same `z` level. For example, let be three patches from the separate mods, `AsteroidFactory`, **`z`**`SuperRangeAntennas` and **`zz`**`SolarSystem` below. 
 
 ```
 @RemoteTechSettings:FOR[AsteroidFactory] {...}
 
-@RemoteTechSettings:FOR[**z**SuperRangeAntennas] {...}
+@RemoteTechSettings:FOR[zSuperRangeAntennas] {...}
 
-@RemoteTechSettings:FOR[**zz**SolarSystem] {...}
+@RemoteTechSettings:FOR[zzSolarSystem] {...}
 ```
 
 Then, the Module Manager would patch these patches alphabetically. The `AsteroidFactory`, `zSuperRangeAntennas` and `zzSolarSystem` patches are patched in the particular order. 
