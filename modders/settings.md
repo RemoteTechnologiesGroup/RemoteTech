@@ -224,7 +224,7 @@ For demonstration purpose, let your mod be named `ExampleMod`.
 The `NEEDS` keyword in the Module Manager is useful if you do not apply your RemoteTech tweaks for a player who has a particular mod. For example, you want your Kerbin-scope patch not to be applied when it is "detected" that another mod, SupersizeKerbin , is applying its Earth-scope patch to RemoteTech.
 
 ```
-@RemoteTechSettings:NEEDS[`**`!`**`SupersizeKerbin]:FOR[ExampleMod] {...}
+@RemoteTechSettings:NEEDS[<b>!</b>SupersizeKerbin]:FOR[ExampleMod] {...}
 ```
 
 ### Precedence order of third-party RemoteTech patches
