@@ -49,6 +49,7 @@ You can use a Module Manager patch to do the following actions:
 1. Edit one or more settings of RemoteTech
 2. Edit or add ground station(s)
 3. Set a precedence order for yourr own mod in relation to other mods, which have their own RemoteTech patches
+4. Skip if another mod, which would render your tweaks unnecessary/useless, is detected
 
 However, this is only applicable to a player's new game that takes in the modified RemoteTech settings. The existing saves cannot be modified due to KSP's restriction.
 
@@ -160,8 +161,87 @@ Each `STATION{}` block has the following fields:
 
 Assumed that you are familiar with the Module Manager's [Handbook](https://github.com/sarbian/ModuleManager/wiki/Module-Manager-Handbook), a number of examples are provided to show how you could modify one or more settings through a patch.
 
+For demonstration purpose, let your mod be named `ExampleMod`.
+
 ### Edit a setting
+
+```
+@RemoteTechSettings:FOR[ExampleMod]
+{
+	%EnableSignalDelay = False
+}
+```
 
 ### Add extra ground stations
 
+```
+// The GroundStation block needs to be deleted first before adding more stations
+@RemoteTechSettings:FOR[ExampleMod]
+{
+	!GroundStations,* {}
+	GroundStations
+	{
+		STATION
+		{
+			Guid = 5105f5a9-d628-41c6-ad4b-21154e8fc488
+			Name = Mission Control
+			Latitude = -0.131331503391266
+			Longitude = -74.594841003418
+			Height = 100
+			Body = 1
+			MarkColor = 1,0,0,1
+			Antennas
+			{
+				ANTENNA
+				{
+					Omni = 9E+11
+				}
+			}
+		}
+		STATION
+		{
+			Guid = 74dc7a4e-e22e-35d6-eee6-39be668a23c4 
+			Name = KSC Northern Control
+			Latitude = 19.65
+			Longitude = -77.4
+			Height = 3200
+			Body = 1
+			MarkColor = 1,0.8,0,0.7
+			Antennas
+			{
+				ANTENNA
+				{
+					Omni = 1E+06
+				}
+			}
+		}
+	}
+}
+```
+
+### Mutually exclusiveness
+
+The `NEEDS` keyword in the Module Manager is useful if you do not apply your RemoteTech tweaks for a player who has a particular mod. For example, you want your Kerbin-scope patch not to be applied when it is "detected" that another mod, SupersizeKerbin , is applying its Earth-scope patch to RemoteTech.
+
+```
+@RemoteTechSettings:NEEDS[**!**SupersizeKerbin]:FOR[ExampleMod] {...}
+```
+
 ### Precedence order of third-party RemoteTech patches
+
+The Module Manager offers the `BEFORE` and `AFTER` keywords to control in what order your patch is applied. However, this standard ordering is only useful for a small number of known mods targeting the same values. It does not work well when a mod developer doesn't and can't know all other mods in advance to write against (eg they do not exist yet).
+
+Therefore, a lexicographic [scheme](http://forum.kerbalspaceprogram.com/index.php?/topic/139167-12-remotetech-v181-2016-11-19/&do=findComment&comment=2859196) of `z`, `zz, `zzz` and `...` levels is introduced to keep track of other mods patching on the same `z` level. For example, let be three patches from the separate mods, `AsteroidFactory`, `*z*SuperRangeAntennas` and `**zz**SolarSystem` below. 
+
+```
+@RemoteTechSettings:FOR[AsteroidFactory] {...}
+
+@RemoteTechSettings:FOR[**z**SuperRangeAntennas] {...}
+
+@RemoteTechSettings:FOR[**zz**SolarSystem] {...}
+```
+
+Then, the Module Manager would patch these patches alphabetically. The `AsteroidFactory`, `zSuperRangeAntennas` and `zzSolarSystem` patches are patched in the particular order. 
+
+As long as modders stick to this standardized scheme, unnecessary problems, such as patch conflict, are avoided.
+
