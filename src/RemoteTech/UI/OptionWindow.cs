@@ -412,6 +412,8 @@ namespace RemoteTech.UI
         private void drawMiscellaneousContent()
         {
             GUILayout.Space(10);
+            //TODO enable this
+            /*
             this.mSettings.ThrottleTimeWarp = GUILayout.Toggle(this.mSettings.ThrottleTimeWarp, (this.mSettings.ThrottleTimeWarp) ? "RemoteTech will throttle time warp" : "RemoteTech will not throttle time warp");
             GUILayout.Label("ON: The flight computer will automatically stop time warp a few seconds before executing a queued command.\nOFF: The player is responsible for controlling time warp during scheduled actions.", this.mGuiHintText);
 
@@ -423,6 +425,7 @@ namespace RemoteTech.UI
 
             this.mSettings.AutoInsertKaCAlerts = GUILayout.Toggle(this.mSettings.AutoInsertKaCAlerts, (this.mSettings.AutoInsertKaCAlerts) ? "Alarms added to Kerbal Alarm Clock" : "No alarms added to Kerbal Alarm Clock");
             GUILayout.Label("ON: The flight computer will automatically add alarms to the Kerbal Alarm Clock mod for burn and maneuver commands.  The alarm goes off 3 minutes before the command executes.\nOFF: No alarms are added to Kerbal Alarm Clock", this.mGuiHintText);
+            */
         }
 
         /// <summary>

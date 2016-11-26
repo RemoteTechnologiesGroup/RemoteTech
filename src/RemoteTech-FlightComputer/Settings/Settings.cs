@@ -139,8 +139,6 @@ namespace RemoteTech.FlightComputer.Settings
         public int FCLeadTime;
         [Persistent]
         public bool FCOffAfterExecute;
-        [Persistent]
-        public float DistanceToHideGroundStations;
         [Persistent(collectionIndex = "PRESETS")]
         public List<string> PreSets;
 

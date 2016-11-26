@@ -67,10 +67,8 @@ namespace RemoteTech.Settings
         [Persistent] public RangeModel.RangeModel RangeModelType;
         [Persistent]
         public double MultipleAntennaMultiplier;
-        [Persistent]
-        public bool ThrottleTimeWarp;
-        [Persistent]
-        public bool ThrottleZeroOnNoConnection;
+        /*[Persistent] public bool ThrottleTimeWarp;
+        [Persistent] public bool ThrottleZeroOnNoConnection;*/
         [Persistent]
         public bool HideGroundStationsBehindBody;
         [Persistent]
@@ -81,9 +79,8 @@ namespace RemoteTech.Settings
         public bool HideGroundStationsOnDistance;
         [Persistent]
         public bool ShowMouseOverInfoGroundStations;
-        [Persistent]
-        public bool AutoInsertKaCAlerts;
-        /*[Persistent] public int FCLeadTime;
+        /* [Persistent] public bool AutoInsertKaCAlerts;
+        [Persistent] public int FCLeadTime;
         [Persistent] public bool FCOffAfterExecute;*/
         [Persistent]
         public float DistanceToHideGroundStations;

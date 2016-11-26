@@ -71,9 +71,9 @@ namespace RemoteTech.Common.UI
                 onPositionChanged += storePosition;
 
                 // read the saved position
-                if (RTSettings.Instance.SavedWindowPositions.ContainsKey(GetType().ToString()))
+                if (CommonSettingsManager.Instance.SavedWindowPositions.ContainsKey(GetType().ToString()))
                 {
-                    Position = RTSettings.Instance.SavedWindowPositions[GetType().ToString()];
+                    Position = CommonSettingsManager.Instance.SavedWindowPositions[GetType().ToString()];
                 }
             }
 
@@ -207,8 +207,8 @@ namespace RemoteTech.Common.UI
 
         private void storePosition()
         {
-            RTSettings.Instance.SavedWindowPositions.Remove(GetType().ToString());
-            RTSettings.Instance.SavedWindowPositions.Add(GetType().ToString(), Position);
+            CommonSettingsManager.Instance.SavedWindowPositions.Remove(GetType().ToString());
+            CommonSettingsManager.Instance.SavedWindowPositions.Add(GetType().ToString(), Position);
         }
 
         /// <summary>
