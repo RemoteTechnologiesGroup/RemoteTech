@@ -1,3 +1,52 @@
+#Version 1.8.2
+**Released November 27, 2016**
+
+What's New?
+===========
+
+* Switch to MM-patched default-settings configuration instead of static settings file.
+    * Please see: http://remotetechnologiesgroup.github.io/RemoteTech/modders/settings/
+* Fixed a problem with contracts (requiring an antenna to be present on a vessel) that couldn't be fulfilled.
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #701: Power and Antenna parts not recognized for contract generation [requested by: symmeclept]
+* Issue #703: CommNet still disabled despite enabling CommNet in RT settings [requested by: diomedea, KSP-TaxiService]
+
+Pull Requests
+-------------
+
+* None
+
+Future
+======
+
+We are already moving to make the next RT major release.
+
+Issues and feedbacks are still welcome!
+
+Next Major Release
+------------------
+
+Dubbed RT v2.x
+
+* Currently implemented features will stay as is (probably with some tweaks) 
+  unless we receive different feedbacks from the community.
+  
+* We are currently gathering the feedbacks made on the forum and our bugtracker
+on github to add feature requests to the 2.x branch.
+    
+Planned features
+----------------
+
+* A call to vote will be made soon for features to be implemented in RT 2.0.
+
+***
+
 #Version 1.8.1
 **Released November 19, 2016**
 
