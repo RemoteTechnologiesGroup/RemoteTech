@@ -106,8 +106,8 @@ namespace RemoteTech
 
             Instance = this;
 
-            // enable or disable KSP CommNet depending on settings.
-            HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = RTSettings.Instance.CommNetEnabled;
+            // disable KSP CommNet
+            HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = (RTSettings.Instance.CommNetEnabled = false);
 
             // add-ons
             KacAddon = new AddOns.KerbalAlarmClockAddon();

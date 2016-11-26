@@ -71,7 +71,7 @@ namespace RemoteTech
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 
         public const string SaveFileName = "RemoteTech_Settings.cfg";
-        public const string DefaultSettingFileName = "Default_Settings.cfg";
+        public const string DefaultSettingCfgURL = "RemoteTech/Default_Settings/RemoteTechSettings";
 
         /// <summary>Trigger to force a reloading of the settings if a selected save is running.</summary>
         public bool SettingsLoaded;
@@ -98,11 +98,6 @@ namespace RemoteTech
         }
 
         /// <summary>
-        /// Returns the full path of the Default_Settings of the RemoteTech mod
-        /// </summary>
-        private static string DefaultSettingFile => KSPUtil.ApplicationRootPath + "/GameData/RemoteTech/" + DefaultSettingFileName;
-
-        /// <summary>
         /// Saves the current RTSettings object to the RemoteTech_Settings.cfg
         /// </summary>
         public void Save()
@@ -127,20 +122,38 @@ namespace RemoteTech
             }
         }
 
+        /// <summary>
+        /// Utilise KSP's GameDatabase to get a list of cfgs, included our Default_Settings.cfg, contained the 'RemoteTechSettings'
+        /// node and process each cfg accordingly
+        /// 
+        /// NOTE: Please do not use the static 'Default_Settings.cfg' file directly because we want third-party modders to apply
+        /// ModuleManager patches of their tweaks, like no signal delay, to our default-settings cfg that will be used when a
+        /// player starts a new game. (refer to our online manual for more details)
+        /// </summary>
         public static Settings Load()
         {
-            // Create a new settings object from the stored default settings
+            // Create a blank object of settings
             var settings = new Settings();
-            var defaultLoad = ConfigNode.Load(DefaultSettingFile);
-            if(defaultLoad == null) // disable itself and write explanation to KSP's log
+            var defaultSuccess = false;
+
+            // Exploit KSP's GameDatabase to find our MM-patched cfg of default settings (from GameData/RemoteTech/Default_Settings.cfg)
+            var cfgs = GameDatabase.Instance.GetConfigs("RemoteTechSettings");
+            for (var i = 0; i < cfgs.Length; i++)
             {
-                RTLog.Notify("RemoteTech is disabled because the default file '{0}' is not found", DefaultSettingFile);
+                if(cfgs[i].url.Equals(DefaultSettingCfgURL))
+                {
+                    defaultSuccess = ConfigNode.LoadObjectFromConfig(settings, cfgs[i].config);
+                    RTLog.Notify("Load default settings into object with {0}: LOADED {1}", cfgs[i].config, defaultSuccess ? "OK" : "FAIL");
+                    break;
+                }
+            }
+
+            if (!defaultSuccess) // disable itself and write explanation to KSP's log
+            {
+                RTLog.Notify("RemoteTech is disabled because the default cfg '{0}' is not found", DefaultSettingCfgURL);
                 return null;
                 // the main impact of returning null is the endless loop of invoking Load() in the KSP's loading screen
             }
-            defaultLoad = defaultLoad.GetNode("RemoteTechSettings"); // defaultLoad has root{...} so need to traverse downwards
-            var success = ConfigNode.LoadObjectFromConfig(settings, defaultLoad);
-            RTLog.Notify("Load default settings into object with {0}: LOADED {1}", defaultLoad, success ? "OK" : "FAIL");
 
             settings.SettingsLoaded = true;
 
@@ -157,7 +170,7 @@ namespace RemoteTech
                 return settings;
             }
 
-            // try to load from the save-settings.cfg
+            // try to load from the save-settings.cfg (MM-patches will not touch because it is outside GameData)
             var load = ConfigNode.Load(SaveSettingFile);
             if (load == null)
             {
@@ -172,7 +185,7 @@ namespace RemoteTech
                     load = load.GetNode("RemoteTechSettings");
                 
                 // replace the default settings with save-setting file
-                success = ConfigNode.LoadObjectFromConfig(settings, load);
+                var success = ConfigNode.LoadObjectFromConfig(settings, load);
                 RTLog.Notify("Found and load save settings into object with {0}: LOADED {1}", load, success ? "OK" : "FAIL");
             }
 

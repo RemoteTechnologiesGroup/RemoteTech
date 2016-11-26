@@ -243,6 +243,7 @@ namespace RemoteTech.UI
             GUILayout.Space(10);
             GUILayout.Label("Use the small menu buttons above to navigate through the different options.", this.mGuiRunningText);
 
+            /* Commented out because there is an issue of conflicts between RT and CommNet (stock and RT modules in each antenna) and RT is moving into CommNet inevitably
             GUILayout.Space(10);
             GUILayout.BeginHorizontal();
             {
@@ -255,11 +256,12 @@ namespace RemoteTech.UI
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Space(90);
-                this.mSettings.CommNetEnabled = GUILayout.Toggle(this.mSettings.CommNetEnabled, (this.mSettings.CommNetEnabled) ? "CommNet enabled" : "CommNet disabled");
+                this.mSettings.CommNetEnabled = (HighLogic.fetch.currentGame.Parameters.Difficulty.EnableCommNet = GUILayout.Toggle(this.mSettings.CommNetEnabled, (this.mSettings.CommNetEnabled) ? "CommNet enabled" : "CommNet disabled"));
             }
             GUILayout.EndHorizontal();
+            */
 
-            GUILayout.Space(10);
+            GUILayout.Space(90);
             GUILayout.Label("Need some help with RemoteTech?  Check out the online manual and tutorials.  If you can't find your answer, post in the forum thread.\n(Browser opens on click)", this.mGuiRunningText);
             GUILayout.BeginHorizontal();
             {
