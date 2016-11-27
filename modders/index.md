@@ -17,7 +17,6 @@ Can't generate this automatically at present
 
 <div class="toc" markdown="1">
 * [Modifying the RemoteTech settings](settings/)
-* ~~[Adding Ground Stations](ground/)~~
 * [Configuring Parts for RemoteTech](modules/)
 * [Software API](api/)
 {: #markdown-toc}
