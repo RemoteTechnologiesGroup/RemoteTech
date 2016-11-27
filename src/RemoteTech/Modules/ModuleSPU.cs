@@ -146,12 +146,12 @@ namespace RemoteTech.Modules
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
         }
 
-        public override void OnUpdate()
+        public void Update()
         {
             FlightComputer?.OnUpdate();
         }
 
-        public override void OnFixedUpdate()
+        public void FixedUpdate()
         {
             FlightComputer?.OnFixedUpdate();
 

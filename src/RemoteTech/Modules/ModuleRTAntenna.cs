@@ -15,7 +15,7 @@ namespace RemoteTech.Modules
     /// <summary>This module represents a part that can receive control transmissions from another vessel or a ground station.</summary>
     /// <remarks>You must remove any <see cref="ModuleDataTransmitter"/> modules from the antenna if using <see cref="ModuleRTAntenna"/>.</remarks>
     [KSPModule("Antenna")]
-    public class ModuleRTAntenna : PartModule, IAntenna
+    public class ModuleRTAntenna : PartModule, IAntenna, IContractObjectiveModule
     {
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return mRegisteredId; } }
@@ -155,7 +155,7 @@ namespace RemoteTech.Modules
 
             if (ShowEditor_DishAngle && CanTarget)
             {
-                info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F2")).AppendLine();
+                info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F3")).AppendLine();
             }
 
             if (IsRTActive)
@@ -673,6 +673,7 @@ namespace RemoteTech.Modules
             return String.Format("ModuleRTAntenna(Name: {0}, Guid: {1}, Dish: {2}, Omni: {3}, Target: {4}, CosAngle: {5})", Name, mRegisteredId, Dish, Omni, Target, CosAngle);
         }
 
+
         public static string TargetName(Guid guid)
         {
             if (RTCore.Instance != null && RTCore.Instance.Network != null && RTCore.Instance.Satellites != null)
@@ -696,6 +697,31 @@ namespace RemoteTech.Modules
                 }
             }
             return "Unknown Target";
+        }
+
+        /*
+        *  IContractObjectiveModule implementation; required for contracts verification.
+        *  Note that it must be implemented on a PartModule. 
+        *  KSP implements it on its ModuleDataTransmitter though, so we do the same here.
+        */
+
+        /// <summary>
+        /// Return the type of contracts this module can fulfill. In this case "Antenna".
+        /// </summary>
+        /// <returns>The type of contract that can be fulfilled.</returns>
+        public string GetContractObjectiveType()
+        {
+            return "Antenna";
+        }
+
+        /// <summary>
+        /// Check that the part implementing this <see cref="ModuleRTDataTransmitter"/> is actually really an antenna. This check is quite redundant, but it does no harm.
+        /// </summary>
+        /// <returns>True if the owning part is an antenna (implementing <see cref="ModuleRTAntenna"/>, false otherwise.</returns>
+        public bool CheckContractObjectiveValidity()
+        {
+            var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
+            return antennas != null && antennas.Any();
         }
     }
 }
