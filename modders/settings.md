@@ -10,7 +10,7 @@ navbar: false
 
 {% include toc.html %}
 
-RemoteTech has a configuration of default settings, such as the `EnableSignalDelay` flag or a `GroundStations` block of ground stations. These settings are loaded from RemoteTech's setting file during Kerbal Space Program's startup screen.
+RemoteTech has a configuration of default settings, such as the `EnableSignalDelay` flag or a `GroundStations` block. These settings are loaded from RemoteTech's setting file during Kerbal Space Program's startup screen.
 
 **For add-on developers**
 
@@ -30,10 +30,10 @@ When a player starts a new game or resumes an existing game, a sequence of actio
 2. Iterate through this list to find the configuration of RemoteTech's `Default_Settings.cfg`
 3. Load the configuration into the internal settings
 4. Check if there are RemoteTech settings in the player's save (newly-created or existing)
-   1. If the existing settings are found in the save, the default values in the internal settings are overwrote by the save values
+   a. If the existing settings are found in the save, the default values in the internal settings are overwrote by the save values
 5. RemoteTech proceeds to begin its operations
 
-In summary, the default settings of RemoteTech are loaded into KSP's memory when launching the game. There, the [Module Manager](https://github.com/sarbian/ModuleManager) add-on will modify these settings on behalf of third-party mods targeting RemoteTech. Therefore, if a player starts a new game on his/her setup of installed mods, these modified settings will be used and stored persistently.
+In summary, the default settings of RemoteTech are loaded into KSP's memory when launching the game. There, the [Module Manager](https://github.com/sarbian/ModuleManager) add-on will modify these settings on behalf of third-party mods targeting RemoteTech. Therefore, if a player starts a new game on his/her current setup of installed mods, these modified settings will be used and stored persistently.
 
 However, the RemoteTech settings in a player's save folder cannot be modified externally due to the KSP's restriction. So even if a player installs a new mod that has a patch for RemoteTech, the RemoteTech settings in his/her save, would not be changed unless the player starts a new game.
 
@@ -41,7 +41,7 @@ However, the RemoteTech settings in a player's save folder cannot be modified ex
 
 ## Deliver your RemoteTech tweaks
 
-RemoteTech dropped the approach of accepting a third-party mod's `RemoteTech_Settings.cfg` in favour for a better and safer approach of using a [Module Manager](https://github.com/sarbian/ModuleManager) patch for the same tweaks.
+RemoteTech dropped the approach of accepting a third-party mod's `RemoteTech_Settings.cfg` in favour for a better and safer approach of using a [Module Manager](https://github.com/sarbian/ModuleManager) patch for the same tweaks. To upgrade, take those settings you want to affect and translate them into a MM patch according to the [handbook](https://github.com/sarbian/ModuleManager/wiki/Module-Manager-Handbook).
 {: .alert .alert-danger}
 
 You can use a Module Manager patch to do the following actions:
@@ -53,10 +53,7 @@ You can use a Module Manager patch to do the following actions:
 
 However, this is only applicable to a player's new game that takes in the modified RemoteTech settings. The existing saves cannot be modified due to KSP's restriction.
 
-To convert a third-party mod's `RemoteTech_Settings.cfg`, take those settings you want to affect and translate them into a Module Manager patch according to the Module Manager's [Handbook](https://github.com/sarbian/ModuleManager/wiki/Module-Manager-Handbook).
-
-
-Lastly, if such patch of a mod is not provided (not updated for while), RemoteTech's "fallback" mechanism will list the mod's `RemoteTech_Settings.cfg` in the setting window at the KSC scene for a player to manually apply a chosen preset.
+Lastly, if such patch of a third-party mod is not provided (eg not updated for while), RemoteTech's "fallback" mechanism will list the mod's `RemoteTech_Settings.cfg` in the setting window at the KSC scene for a player to manually apply.
 
 <hr>
 
@@ -135,7 +132,7 @@ The `GroundStations` block controls the number, range, and placement of satellit
 Each `STATION{}` block has the following fields:
 
 `Guid`
-: A unique idenfier for the station. **Must** be unique, or your network will exhibit undefined behavior. If you need a way to generate new guids, try [random.org](http://www.random.org/cgi-bin/randbyte?nbytes=16&format=h).
+: A **unique** idenfier for the station. Your network would exhibit undefined behavior on duplicate guids. Use the [random.org](http://www.random.org/cgi-bin/randbyte?nbytes=16&format=h) to get some new guids.
 
 `Name`
 : The name that a player see in-game.
@@ -147,13 +144,13 @@ Each `STATION{}` block has the following fields:
 : The station's altitude above sea level, in meters.
 
 `Body`
-: The internal ID number of the planet on which the station is located. You can find a list of body IDs for the stock game [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72). If you are playing with Real Solar System or other planet packs, edit this value with caution.
+: The internal ID number of the planet on which the station is located. You can find a list of body IDs for the stock game [here](https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/FlightGlobals.cs#L72-L91). If you are playing with Real Solar System or other planet packs, edit this value with caution.
 
 `MarkColor` (RGBα quadruplet) (default = Red, fully opaque)
 : The color in which the ground station will be drawn as a solid circle on the map view and tracking station.
 
 `Antennas`
-: This block should contain a single `ANTENNA` block, which itself should contain a single `Omni` field. The value of the field is the antenna range in meters. Except for the three-level `UpgradeableOmni` field, the other fields are currently unused.
+: This block should contain a single `ANTENNA` block, which in turn should contain a single `Omni` field of the antenna range in meters. Except for the three-level `UpgradeableOmni` field, the other fields are currently unused.
 
 <hr>
 
@@ -169,6 +166,20 @@ For demonstration purpose, let your mod be named `ExampleMod`.
 @RemoteTechSettings:FOR[ExampleMod]
 {
 	%EnableSignalDelay = False
+}
+```
+
+```
+//Relocate Mission Control to Duna
+@RemoteTechSettings:FOR[ExampleMod]
+{
+	@GroundStations
+	{
+		@STATION:HAS[#Name[Mission?Control]]
+		{
+			@Body = 6
+		}
+	}
 }
 ```
 
@@ -221,7 +232,7 @@ For demonstration purpose, let your mod be named `ExampleMod`.
 
 ### Mutually exclusiveness
 
-The `NEEDS` keyword in the Module Manager is useful if you do not apply your RemoteTech tweaks for a player who has a particular mod. For example, you want your Kerbin-scope patch not to be applied when it is "detected" that another mod, SupersizeKerbin , is applying its Earth-scope patch to RemoteTech.
+The `NEEDS` keyword is useful if you do not want your tweaks to be applied for a player who has a particular mod. For example, your Kerbin-scope patch should not be applied when it is "detected" that another mod, SupersizeKerbin, is applying its Earth-scope patch to RemoteTech.
 
 ```
 @RemoteTechSettings:NEEDS[!SupersizeKerbin]:FOR[ExampleMod] {...}
@@ -229,9 +240,9 @@ The `NEEDS` keyword in the Module Manager is useful if you do not apply your Rem
 
 ### Precedence order of third-party RemoteTech patches
 
-The Module Manager offers the `BEFORE` and `AFTER` keywords to control in what order your patch is applied. However, this standard ordering is only useful for a small number of known mods targeting the same values. It does not work well when a mod developer doesn't and can't know all other mods in advance to write against (eg they do not exist yet).
+The `BEFORE` and `AFTER` keywords can control the order in which your patch is applied. This standard ordering is, however, useful for a small number of **known** mods targeting the same values. A mod developer doesn't and can't know all other mods in advance to write against (eg they do not exist yet).
 
-Therefore, a lexicographic [scheme](http://forum.kerbalspaceprogram.com/index.php?/topic/139167-12-remotetech-v181-2016-11-19/&do=findComment&comment=2859196) of prefixes `{z, zz, zzz, ...}` is introduced to keep track of other mods patching on the same `z` level. For example, let be three patches from the separate mods, `AsteroidFactory`, **`z`**`SuperRangeAntennas` and **`zz`**`SolarSystem` below. 
+Therefore, a lexicographic [scheme](http://forum.kerbalspaceprogram.com/index.php?/topic/139167-12-remotetech-v181-2016-11-19/&do=findComment&comment=2859196) of prefixes `{z, zz, zzz, ...}` is introduced to keep track of other mods patching on each prefix level. For example, let two mods be `AsteroidFactory` and `SolarSystem`, whose `FOR` names are `AsteroidFactory` and `zzSolarSystem` respectively. If you want your `SuperRangeAntennas` patch to be applied between these two patches in order, then append the prefix `z` to your `FOR` name.
 
 ```
 @RemoteTechSettings:FOR[AsteroidFactory] {...}
@@ -241,5 +252,5 @@ Therefore, a lexicographic [scheme](http://forum.kerbalspaceprogram.com/index.ph
 @RemoteTechSettings:FOR[zzSolarSystem] {...}
 ```
 
-Then, the Module Manager would apply these patches alphabetically i.e. the `AsteroidFactory`, `zSuperRangeAntennas` and `zzSolarSystem` patches in this particular order. 
+From the above, the Module Manager would apply these patches alphabetically i.e. the `AsteroidFactory`, `zSuperRangeAntennas` and `zzSolarSystem` patches in this particular order. 
 
