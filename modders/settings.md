@@ -30,7 +30,7 @@ When a player starts a new game or resumes an existing game, a sequence of actio
 2. Iterate through this list to find the configuration of RemoteTech's `Default_Settings.cfg`
 3. Load the configuration into the internal settings
 4. Check if there are RemoteTech settings in the player's save (newly-created or existing)
-   a. If the existing settings are found in the save, the default values in the internal settings are overwrote by the save values
+   1. If the existing settings are found in the save, the default values in the internal settings are overwrote by the save values
 5. RemoteTech proceeds to begin its operations
 
 In summary, the default settings of RemoteTech are loaded into KSP's memory when launching the game. There, the [Module Manager](https://github.com/sarbian/ModuleManager) add-on will modify these settings on behalf of third-party mods targeting RemoteTech. Therefore, if a player starts a new game on his/her current setup of installed mods, these modified settings will be used and stored persistently.
