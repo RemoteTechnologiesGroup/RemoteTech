@@ -12,7 +12,7 @@ namespace RemoteTech.Modules
     /// <summary>This module represents a part that can receive control transmissions from another vessel or a ground station.</summary>
     /// <remarks>You must remove any <see cref="ModuleDataTransmitter"/> modules from the antenna if using <see cref="ModuleRTAntenna"/>.</remarks>
     [KSPModule("Antenna")]
-    public class ModuleRTAntenna : PartModule, IAntenna, IContractObjectiveModule
+    public class ModuleRTAntenna : PartModule, IAntenna, IContractObjectiveModule, IResourceConsumer
     {
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return mRegisteredId; } }
@@ -75,7 +75,8 @@ namespace RemoteTech.Modules
             Mode1Name = "Operational",
             ActionMode0Name = "Deactivate",
             ActionMode1Name = "Activate",
-            ActionToggleName = "Toggle";
+            ActionToggleName = "Toggle",
+            resourceName = "ElectricCharge";
 
         [KSPField]
         public float
@@ -119,6 +120,7 @@ namespace RemoteTech.Modules
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
         private int killCounter;
+        private List<PartResourceDefinition> consumedResources;
 
         private enum State
         {
@@ -331,6 +333,15 @@ namespace RemoteTech.Modules
                 if (mTransmitterConfig.HasValue("PacketResourceCost"))
                     RTPacketResourceCost = float.Parse(mTransmitterConfig.GetValue("PacketResourceCost"));
             }
+            if (this.resHandler.inputResources.Count == 0)
+            {
+                ModuleResource moduleResource = new ModuleResource();
+                moduleResource.name = this.resourceName;
+                moduleResource.title = KSPUtil.PrintModuleName(this.resourceName);
+                moduleResource.id = this.resourceName.GetHashCode();
+                moduleResource.rate = EnergyCost * ConsumptionMultiplier;
+                this.resHandler.inputResources.Add(moduleResource);
+            }
         }
 
         public override void OnSave(ConfigNode node)
@@ -346,6 +357,23 @@ namespace RemoteTech.Modules
             }
         }
 
+        public override void OnAwake()
+        {
+            base.OnAwake();
+            if (consumedResources == null)
+			{
+                consumedResources = new List<PartResourceDefinition>();
+            }
+			else
+			{
+                consumedResources.Clear();
+            }
+            for (var i = 0; i < resHandler.inputResources.Count; i++)
+            {
+                consumedResources.Add(PartResourceLibrary.Instance.GetDefinition(resHandler.inputResources[i].name));
+            }
+        }
+        
         public override void OnStart(StartState state)
         {
             Actions["ActionOpen"].guiName = ActionMode1Name;
@@ -393,6 +421,11 @@ namespace RemoteTech.Modules
 
             LoadAnimations();
             SetState(IsRTActive);
+        }
+
+        public List<PartResourceDefinition> GetConsumedResources()
+        {
+            return consumedResources;
         }
 
         private void LoadAnimations()
@@ -443,9 +476,9 @@ namespace RemoteTech.Modules
 
             if (!IsRTActive) return State.Off;
 
-            float resourceRequest = Consumption * TimeWarp.fixedDeltaTime;
-            float resourceAmount = part.RequestResource("ElectricCharge", resourceRequest);
-            if (resourceAmount < resourceRequest * 0.9) return State.NoResources;
+            string resErr = "";
+            double resourceAmount = resHandler.UpdateModuleResourceInputs(ref resErr, Consumption > 0 ? 1.0 : 0.0, 0.9, true, false, false);
+            if (resourceAmount < 0.9) return State.NoResources;
             
             return Connected ? State.Connected : State.Operational;
         }
