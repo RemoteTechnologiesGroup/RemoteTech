@@ -24,14 +24,11 @@ namespace RemoteTech.Modules
         private bool isBusy;
         private readonly List<ScienceData> scienceDataQueue = new List<ScienceData>();
 
-
         /// <summary> When a transmission almost succeed but not totally (issue #667), 
-        /// e.g. the probe transmitted 9.999999 instead of 10 due to a floating point error in KSP, 
-        /// we use this constant value as the maximum size that can be left to transmit. 
-        /// If the remaining size is less or equal than this constant value, RT will push the remaining science by itself (like a ghost packet, to alleviate the rounding error).
-        /// If it's bigger than this constant value, RT will not do anything to push the remaining size to the R & D center.
+        /// e.g. the probe transmitted 9.999999 instead of 10 due to a floating point error in KSP.
+        /// We use this constant value as a size to be added to the last sent packet.
         /// </summary>
-        private const float PacketRemainingSize = 0.1f;
+        private const float LastPacketAddtionalSize = 0.1f;
 
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
@@ -150,50 +147,23 @@ namespace RemoteTech.Modules
                             // use try / catch to prevent NRE spamming in KSP code when RT is used with other mods.
                             try
                             {
+                                // check if it's the last packet to send
+                                if (packets == 0)
+                                {
+                                    // issue #667 ; floating point error in RnDCommsStream.StreamData method when adding to dataIn private field
+                                    // e.g scienceData.dataAmount is 10 but in the end RnDCommsStream.dataIn will be 9.999999, so the science never
+                                    //     gets registered to the ResearchAndDevelopment center.
+                                    // we just need to add a little amount to the last packet so it goes over the packet size:
+                                    // KSP will clamp the final size to PacketSize anyway.
+                                    frame += LastPacketAddtionalSize;
+                                }
+
                                 commStream.StreamData(frame, vessel.protoVessel);
                             }
                             catch (NullReferenceException nre)
                             {
-                                RTLog.Notify("A problem occurred during science transmission: {0}", RTLogLevel.LVL2, nre);
+                                RTLog.Notify("[Transmitter] A problem occurred during science transmission: {0}", RTLogLevel.LVL2, nre);
                             }
-
-                            // TODO: remove this when fixed in stock
-                            // Fix a problem in stock KSP (discovered in 1.1.3, and still here in 1.2.1)
-                            // issue #667 ; floating point error in RnDCommsStream.StreamData method when adding to dataIn private field
-                            // e.g scienceData.dataAmount is 10 but in the end RnDCommsStream.dataIn will be 9.999999, so the science never
-                            //     gets registered to the ResearchAndDevelopment center.
-                            if (packets == 0) // check that we have no packet left to send.
-                            {
-                                // get the private field (dataIn) in RnDCommsStream. This field is subject to floating point rounding error
-                                // We handle this problem on our side.
-                                var dataIn = RTUtil.GetInstanceField(typeof(RnDCommsStream), commStream, "dataIn");
-                                if (dataIn != null)
-                                {
-                                    // check if we have a delta (e.g. 10 - 9.999999999 will give us a tiny delta)
-                                    var delta = scienceData.dataAmount - (float) dataIn;
-                                    RTLog.Notify("[Transmitter]: delta: {0}", delta);
-
-                                    // the delta must be positive and less than this constant to push / transmit the remaining size.
-                                    // This prevent us pushing packets with too much leftover to transmit (e.g if there was a connection loss).
-                                    if ((delta > 0f) && (delta <= PacketRemainingSize))
-                                    {
-                                        try
-                                        {
-                                            // we have a delta, try to send the remaining little bit of science
-                                            commStream.StreamData(delta, vessel.protoVessel);
-                                        }
-                                        catch (NullReferenceException nre)
-                                        {
-                                            RTLog.Notify("A problem occurred during science transmission (delta): {0}",
-                                                RTLogLevel.LVL2, nre);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    RTLog.Notify("[Transmitter]: dataIn is null.");
-                                }
-                            } // end stock fix
                         }
                         else
                         {
