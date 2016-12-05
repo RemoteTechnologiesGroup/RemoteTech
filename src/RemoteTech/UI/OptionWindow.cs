@@ -428,7 +428,7 @@ namespace RemoteTech.UI
         /// </summary>
         private void drawPresetsContent()
         {
-            GUILayout.Label("A third-party mod can replace your current RemoteTech settings with its own settings (GameData/ExampleMod/RemoteTechSettings.cfg).\nAlso, you can revert to RemoteTech's default settings.\nHere you can see what presets are available:", this.mGuiRunningText);
+            GUILayout.Label("You can revert your current settings to the starting settings, constructed from installed mods's MM patches. Also, you can reload your current settings with a third-party mod's own RemoteTech settings (the fallback in the event of no MM patch).\n\nHere you can see what presets are available:", this.mGuiRunningText);
             GUILayout.Space(15);
 
             List<String> presetList = this.mSettings.PreSets;
@@ -443,15 +443,22 @@ namespace RemoteTech.UI
                 GUILayout.BeginHorizontal("box", GUILayout.MaxHeight(15));
                 {
                     string folderName = presetList[i];
+
+                    //remove the node name
                     int index = folderName.LastIndexOf("/RemoteTechSettings");
-                    folderName = folderName.Substring(0, index) + folderName.Substring(index).Replace("/RemoteTechSettings", ".cfg").Trim();
+                    folderName = folderName.Substring(0, index) + folderName.Substring(index).Replace("/RemoteTechSettings", "").Trim();
+
+                    //change default name to better name for MM-patched settings
+                    index = folderName.LastIndexOf("/Default_Settings");
+                    if(index>=0)
+                        folderName = folderName.Substring(0, index) + " " + folderName.Substring(index).Replace("/Default_Settings", "starting settings");
 
                     GUILayout.Space(15);
-                    GUILayout.Label("- " + folderName, this.mGuiListText, GUILayout.ExpandWidth(true));
-                    if(GUILayout.Button("Overwrite", this.mGuiListButton, GUILayout.Width(70), GUILayout.Height(20)))
+                    GUILayout.Label(folderName, this.mGuiListText, GUILayout.ExpandWidth(true));
+                    if(GUILayout.Button("Reload", this.mGuiListButton, GUILayout.Width(70), GUILayout.Height(20)))
                     {
                         RTSettings.ReloadSettings(this.mSettings, presetList[i]);
-                        ScreenMessages.PostScreenMessage(string.Format("Your RemoteTech settings are set to {0}", folderName), 15);
+                        ScreenMessages.PostScreenMessage(string.Format("Your RemoteTech settings are set to {0}", folderName), 10);
                         RTLog.Notify("Overwrote current settings with this cfg {0}", RTLogLevel.LVL3, presetList[i]);
                     }
                 }
