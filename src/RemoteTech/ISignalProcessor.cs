@@ -16,7 +16,6 @@ namespace RemoteTech
         bool Powered { get; }
         bool IsCommandStation { get; }
         bool IsMaster { get; }
-        bool AllowsLocalControl { get; }
 
         // Reserved for Flight Computer
         FlightComputer.FlightComputer FlightComputer { get; }
