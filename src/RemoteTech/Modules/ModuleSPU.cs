@@ -40,6 +40,7 @@ namespace RemoteTech.Modules
         [KSPField(isPersistant = true)] public bool IsRTSignalProcessor = true;
         [KSPField(isPersistant = true)] public bool IsRTCommandStation = false;
         [KSPField(isPersistant = true)] public int RTCommandMinCrew = 6;
+        [KSPField(isPersistant = true)] public bool AlwaysAllowLocalControl = false;
 
         [KSPField] public bool ShowGUI_Status = true;
         [KSPField] public bool ShowEditor_Type = true;
