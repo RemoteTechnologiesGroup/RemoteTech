@@ -12,7 +12,8 @@ namespace RemoteTech
         public static bool HasLocalControl(this Vessel vessel)
         {
             // vessel must be a control source and it must be crewed or not implementing a module processor
-            var hasLocalControl = vessel.parts.Any(p => (p.isControlSource > Vessel.ControlLevel.NONE) && (p.protoModuleCrew.Any() || !p.FindModulesImplementing<ISignalProcessor>().Any()));
+            var hasLocalControl = vessel.parts.Any(p => (p.isControlSource > Vessel.ControlLevel.NONE) &&
+                (p.protoModuleCrew.Any() || !p.FindModulesImplementing<ISignalProcessor>().Any() || p.FindModulesImplementing<ISignalProcessor>().Any(s => s.AllowsLocalControl)));
             if (!hasLocalControl)
             {
                 // check if theres's a SPU which is a command station. 

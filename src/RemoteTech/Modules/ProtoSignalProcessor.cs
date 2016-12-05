@@ -21,6 +21,7 @@ namespace RemoteTech.Modules
         public Vessel Vessel { get; }
         public FlightComputer.FlightComputer FlightComputer => null;
         public bool IsMaster => true;
+        public bool AllowsLocalControl => false;
 
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v)
         {

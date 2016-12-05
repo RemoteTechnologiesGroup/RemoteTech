@@ -34,12 +34,14 @@ namespace RemoteTech.Modules
         public FlightComputer.FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel => vessel;
         public bool IsMaster => Satellite != null && ReferenceEquals(Satellite.SignalProcessor, this);
+        public bool AllowsLocalControl => AlwaysAllowLocalControl;
 
         /* KSP fields */
         [KSPField(isPersistant = true)] public bool IsRTPowered;
         [KSPField(isPersistant = true)] public bool IsRTSignalProcessor = true;
         [KSPField(isPersistant = true)] public bool IsRTCommandStation = false;
         [KSPField(isPersistant = true)] public int RTCommandMinCrew = 6;
+        [KSPField(isPersistant = true)] public bool AlwaysAllowLocalControl = false;
 
         [KSPField] public bool ShowGUI_Status = true;
         [KSPField] public bool ShowEditor_Type = true;

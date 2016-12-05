@@ -27,6 +27,7 @@ namespace RemoteTech.Modules
         public FlightComputer.FlightComputer FlightComputer => null;
         public Vessel Vessel => vessel;
         public bool IsMaster => false;
+        public bool AllowsLocalControl => false;
 
         [KSPField(isPersistant = true)] public bool IsRTPowered;
         [KSPField(isPersistant = true)] public bool IsRTSignalProcessor = true;
