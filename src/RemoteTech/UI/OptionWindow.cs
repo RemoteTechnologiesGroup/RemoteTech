@@ -428,7 +428,7 @@ namespace RemoteTech.UI
         /// </summary>
         private void drawPresetsContent()
         {
-            GUILayout.Label("You can revert your current settings to the starting settings, constructed from installed mods's MM patches. Also, you can reload your current settings with a third-party mod's own RemoteTech settings (the fallback in the event of no MM patch).\n\nHere you can see what presets are available:", this.mGuiRunningText);
+            GUILayout.Label("You can revert your current settings to the starting settings, constructed from installed mods' MM patches. Also, you can reload your current settings with a third-party mod's own RemoteTech settings (the fallback in the event of no MM patch).\n\nHere you can see what presets are available:", this.mGuiRunningText);
             GUILayout.Space(15);
 
             List<String> presetList = this.mSettings.PreSets;
