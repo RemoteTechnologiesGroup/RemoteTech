@@ -1,3 +1,17 @@
+Version 1.7.2
+========================================
+Released December 11, 2016
+
+KSP 1.1.3 ; Maintenance release
+
+General
+--------------------
+
+- Fix a transmission problem due to a rounding error (#667).
+- MultipleAntennaMultiplier setting is no longer snapped to 0 or 1.
+- Option sliders (in option window) are rounded to 2 decimal places.
+
+
 Version 1.7.1
 ========================================
 Released July 2, 2016
