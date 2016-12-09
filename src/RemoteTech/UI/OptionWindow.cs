@@ -274,11 +274,11 @@ namespace RemoteTech.UI
         {
             GUILayout.Label("Consumption Multiplier: (" + this.mSettings.ConsumptionMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("If set to a value other than 1, the power consumption of all antennas will be increased or decreased by this factor.\nDoes not affect energy consumption for science transmissions.", this.mGuiHintText);
-            this.mSettings.ConsumptionMultiplier = GUILayout.HorizontalSlider(this.mSettings.ConsumptionMultiplier, 0, 2);
+            this.mSettings.ConsumptionMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(this.mSettings.ConsumptionMultiplier, 0, 2), 2);
 
             GUILayout.Label("Range Multiplier: (" + this.mSettings.RangeMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("If set to a value other than 1, the range of all antennas will be increased or decreased by this factor.\nDoes not affect Mission Control range.", this.mGuiHintText);
-            this.mSettings.RangeMultiplier = GUILayout.HorizontalSlider(this.mSettings.RangeMultiplier, 0, 2);
+            mSettings.RangeMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(mSettings.RangeMultiplier, 0, 5), 2);
         }
 
         /// <summary>
@@ -301,15 +301,7 @@ namespace RemoteTech.UI
 
             GUILayout.Label("Multiple Antenna Multiplier : (" + this.mSettings.MultipleAntennaMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("Multiple omnidirectional antennas on the same craft work together.\nThe default value of 0 means this is disabled.\nThe largest value of 1.0 sums the range of all omnidirectional antennas to provide a greater effective range.\nThe effective range scales linearly and this option works with both the Standard and Root range models.", this.mGuiHintText);
-            this.mSettings.MultipleAntennaMultiplier = GUILayout.HorizontalSlider((float)this.mSettings.MultipleAntennaMultiplier, 0, 1);
-            if(this.mSettings.MultipleAntennaMultiplier <= 0.49)
-            {
-                this.mSettings.MultipleAntennaMultiplier = 0;
-            }
-            else
-            {
-                this.mSettings.MultipleAntennaMultiplier = 1;
-            }
+            this.mSettings.MultipleAntennaMultiplier = Math.Round(GUILayout.HorizontalSlider((float)mSettings.MultipleAntennaMultiplier, 0, 1), 2);
         }
 
         /// <summary>
