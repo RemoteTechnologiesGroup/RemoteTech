@@ -23,6 +23,12 @@ namespace RemoteTech.Modules
         private bool isBusy;
         private readonly List<ScienceData> scienceDataQueue = new List<ScienceData>();
 
+        /// <summary> When a transmission almost succeed but not totally (issue #667), 
+        /// e.g. the probe transmitted 9.999999 instead of 10 due to a floating point error in KSP.
+        /// We use this constant value as a size to be added to the last sent packet.
+        /// </summary>
+        private const float LastPacketAddtionalSize = 0.1f;
+
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
         {
@@ -119,7 +125,37 @@ namespace RemoteTech.Modules
                         // if we've a defined callback parameter so skip to stream each packet
                         if (commStream != null && callback == null)
                         {
+
                             commStream.StreamData(frame, vessel.protoVessel);
+
+                            RTLog.Notify(
+                                "[Transmitter]: PacketSize: {0}; Transmitted size (frame): {1}; Data left to transmit (dataAmount): {2}; Packets left (packets): {3}",
+                                PacketSize, frame, dataAmount, packets);
+
+                            // use try / catch to prevent NRE spamming in KSP code when RT is used with other mods.
+                            try
+                            {
+                                // check if it's the last packet to send
+                                if (packets == 0)
+                                {
+                                    // issue #667 ; floating point error in RnDCommsStream.StreamData method when adding to dataIn private field
+                                    // e.g scienceData.dataAmount is 10 but in the end RnDCommsStream.dataIn will be 9.999999, so the science never
+                                    //     gets registered to the ResearchAndDevelopment center.
+                                    // we just need to add a little amount to the last packet so it goes over the packet size:
+                                    // KSP will clamp the final size to PacketSize anyway.
+                                    frame += LastPacketAddtionalSize;
+                                }
+
+                                commStream.StreamData(frame, vessel.protoVessel);
+                            }
+                            catch (NullReferenceException nre)
+                            {
+                                RTLog.Notify("[Transmitter] A problem occurred during science transmission: {0}", RTLogLevel.LVL2, nre);
+                            }
+                        }
+                        else
+                        {
+                            RTLog.Notify("[Transmitter]: [DEBUG] commstream is null and no callback");
                         }
                     }
                     else
