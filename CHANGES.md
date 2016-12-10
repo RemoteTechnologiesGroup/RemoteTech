@@ -2,13 +2,17 @@ Version 1.7.2
 ========================================
 Released December 11, 2016
 
-KSP 1.1.3 ; Maintenance release
+KSP 1.1.3
+
+Note: This is a maintenance release with backported patches from the 1.8.x branch
 
 General
 --------------------
 
-- Fix a transmission problem due to a rounding error (#667).
-- MultipleAntennaMultiplier setting is no longer snapped to 0 or 1.
+- Antenna range multiplier option slider is no longer snapped to 0 or 1. [#594]
+- Fixed a NRE spamming issue while transmitting science. [#613]
+- Fixed an old bug when science didn't transmit correctly despite UI displaying 
+    that 100% was transmitted. [#667; #675]
 - Option sliders (in option window) are rounded to 2 decimal places.
 
 
