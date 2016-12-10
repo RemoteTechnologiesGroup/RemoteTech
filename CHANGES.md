@@ -11,7 +11,7 @@ General
 
 - Antenna range multiplier option slider is no longer snapped to 0 or 1. [#594]
 - Fixed a NRE spamming issue while transmitting science. [#613]
-- Fixed an old bug when science didn't transmit correctly despite UI displaying 
+- Fixed an old bug when science didn't transmit correctly despite UI displaying
     that 100% was transmitted. [#667; #675]
 - Option sliders (in option window) are rounded to 2 decimal places.
 
@@ -257,21 +257,21 @@ Features:
 * Added a new button to every queued command to set the manual delay right after the queued one.
 * Added a new button to the manual delay field to set the manual delay.
 * The altitude buttons are no longer toggle buttons. To deactivate the current mode please use the small 'X' on the queue-window by the activated command.
-    
+
 ##General:
 * Added a mouse over tooltip to the antenna target window to show distance, status to the target
 * Added configs for AIES, Lack Luster Labs, Near-Future Spacecraft, and NovaPunch
 * Possibility to hide ground stations with the new property `HideGroundStationsBehindBody`
 * Hide RemoteTech windows,overlays and buttons when the GUI is hidden
 * Window positions for Flightcomputer and AntennaWindow will now be saved for the current ksp instance
-    
+
 ##Contributors:
 * We removed the dependency to the task extensions
 
 ##Modders:
 **Info** We refactored the namespace definitions of RemoteTech. The API class is no longer on the `RemoteTech` namespace. Please use `RemoteTech.API` for now.
-* RTSettings now reads settings from the GameDatabase to tweak settings for specific mods   
-* Possibility to tint groundstations with the property `MarkColor` `Syntax is R,G,B,A`         
+* RTSettings now reads settings from the GameDatabase to tweak settings for specific mods
+* Possibility to tint groundstations with the property `MarkColor` `Syntax is R,G,B,A`
 
 Bug Fixes:
 --------------------
