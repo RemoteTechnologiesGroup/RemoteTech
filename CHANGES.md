@@ -1,3 +1,41 @@
+# Version 1.8.3
+**Released December 10, 2016**
+
+What's New?
+===========
+
+* Add a crew-control variable to SPU module [#558]
+* Simplified fix for science data transmission [#667]
+* Clarification of whole default settings [#700]
+    * Please see: http://remotetechnologiesgroup.github.io/RemoteTech/modders/settings/
+* Fix to the engineer report's electricity consumption [#707]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #558: ModuleSPUPassive removes control from probe cores [requested by: Y3mo]
+* Issue #667: Antennas don't transmit science in 1.1.2 [requested by: Kyoyashi]
+* Issue #700: Rework Settings storage mechanism [requested by: YamoriYuki]
+* Issue #707: 1.8.2 Antenna Ec usage not displayed in VAB [requested by: muppet9876]
+
+
+Pull Requests
+-------------
+
+* PR #709: Rework fix for #667 [PR by: neitsa]
+
+Future
+======
+
+We are already moving to make the next RT major release.
+
+Issues and feedbacks are still welcome!
+
+***
+
 #Version 1.8.2
 **Released November 27, 2016**
 
