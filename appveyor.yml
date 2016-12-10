@@ -13,7 +13,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.8.0
+  version: 1.8.3
 
   # branches
   branches:
@@ -65,7 +65,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.2.1_RELEASE_DLLs.7z
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.2.2_RELEASE_DLLs.7z
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
@@ -218,7 +218,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.8.0-{build}-{branch}
+  version: 1.8.3-{build}-{branch}
 
   # branches
   branches:
@@ -270,7 +270,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.2.1_RELEASE_DLLs.7z
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.2.2_RELEASE_DLLs.7z
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
