@@ -66,12 +66,12 @@ namespace RemoteTech.FlightComputer
                     break;
 
                 case ReferenceFrame.TargetParallel:
-                    if (f.DelayedTarget != null && !(f.DelayedTarget is CelestialBody))
+                    if (f.DelayedTarget != null) // either target vessel or celestial body
                     {
                         forward = f.DelayedTarget.GetTransform().position - v.CoM;
                         up = (v.mainBody.position - v.CoM);
                     }
-                    else
+                    else // no target to aim; default to orbital prograde
                     {
                         up = (v.mainBody.position - v.CoM);
                         forward = v.GetObtVelocity();
