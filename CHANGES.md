@@ -1,3 +1,29 @@
+# Version 1.8.4
+**Released January 09, 2017**
+
+What's New?
+===========
+
+* Fix conflict for the extend / retract state of an antenna in editor. [#698]
+* Fix for flight computer keeps pointing to the orbital prograde when targeting a celestial body. [#710]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #698: Conflict of the extend/retract state of an antenna in editor. [requested by: sviat9440] [dev: YamoriYuki]
+* Issue #710: Flight Computer on a target-designated celestial body. [requested by: TaxiService ] [dev: TaxiService ]
+
+Pull Requests
+-------------
+
+* PR #679: Config for Ven's Stock Part Revamp Antennas [issuer: icedown] 
+    * Status: closed due to duplicate #662.
+
+***
+
 # Version 1.8.3
 **Released December 10, 2016**
 
