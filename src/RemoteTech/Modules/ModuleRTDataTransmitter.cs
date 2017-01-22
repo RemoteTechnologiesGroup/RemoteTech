@@ -147,7 +147,7 @@ namespace RemoteTech.Modules
                                     // issue #667, issue #714 ; floating point error in RnDCommsStream.StreamData method when adding to dataIn private field
                                     // e.g scienceData.dataAmount is 10 but in the end RnDCommsStream.dataIn will be 9.999999, so the science never
                                     //     gets registered to the ResearchAndDevelopment center.
-									// Let's just go ahead and send the full amount so there's no question if we sent it all
+                                    // Let's just go ahead and send the full amount so there's no question if we sent it all
                                     // KSP will clamp the final size to PacketSize anyway.
                                     frame = scienceData.dataAmount;
                                 }
