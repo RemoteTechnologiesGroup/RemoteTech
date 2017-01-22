@@ -149,7 +149,7 @@ namespace RemoteTech.Modules
                                     //     gets registered to the ResearchAndDevelopment center.
 									// Let's just go ahead and send the full amount so there's no question if we sent it all
                                     // KSP will clamp the final size to PacketSize anyway.
-                                    frame += scienceData.dataAmount;
+                                    frame = scienceData.dataAmount;
                                 }
 
                                 commStream.StreamData(frame, vessel.protoVessel);
