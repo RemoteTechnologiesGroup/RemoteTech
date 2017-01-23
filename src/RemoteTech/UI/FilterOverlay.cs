@@ -17,6 +17,7 @@ namespace RemoteTech.UI
             public Texture2D BackgroundLeft;
             public Texture2D NoPath;
             public Texture2D Path;
+            public Texture2D MultiPath;
             public Texture2D NoOmniDish;
             public Texture2D Dish;
             public Texture2D Omni;
@@ -31,6 +32,7 @@ namespace RemoteTech.UI
                 RTUtil.LoadImage(out BackgroundLeft, "texBackground_left");
                 RTUtil.LoadImage(out NoPath, "texNoPath");
                 RTUtil.LoadImage(out Path, "texPath");
+                RTUtil.LoadImage(out MultiPath, "texMultiPath");
                 RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish");
                 RTUtil.LoadImage(out Dish, "texDish");
                 RTUtil.LoadImage(out Omni, "texOmni");
@@ -128,6 +130,8 @@ namespace RemoteTech.UI
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & MapFilter.Path) == MapFilter.Path)
                     return mTextures.Path;
+                else if ((mask & MapFilter.MultiPath) == MapFilter.MultiPath)
+                    return mTextures.MultiPath;
                 else
                     return mTextures.NoPath;
             }
@@ -374,6 +378,12 @@ namespace RemoteTech.UI
             if ((mask & MapFilter.Path) == MapFilter.Path)
             {
                 RTCore.Instance.Renderer.Filter &= ~MapFilter.Path;
+                RTCore.Instance.Renderer.Filter |= MapFilter.MultiPath;
+                return;
+            }
+            if ((mask & MapFilter.MultiPath) == MapFilter.MultiPath)
+            {
+                RTCore.Instance.Renderer.Filter &= ~MapFilter.MultiPath;
                 return;
             }
             RTCore.Instance.Renderer.Filter |= MapFilter.Path;

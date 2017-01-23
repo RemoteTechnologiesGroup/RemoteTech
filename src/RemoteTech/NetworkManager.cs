@@ -161,7 +161,7 @@ namespace RemoteTech
             {
                 UpdateGraph(s);
                 //("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
-                if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+                if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION || RTCore.Instance.Renderer.ShowMultiPath)
                 {
                     FindPath(s, commandStations);
                 }
