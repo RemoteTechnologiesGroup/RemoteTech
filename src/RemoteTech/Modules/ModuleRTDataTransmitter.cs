@@ -24,12 +24,6 @@ namespace RemoteTech.Modules
         private bool isBusy;
         private readonly List<ScienceData> scienceDataQueue = new List<ScienceData>();
 
-        /// <summary> When a transmission almost succeed but not totally (issue #667), 
-        /// e.g. the probe transmitted 9.999999 instead of 10 due to a floating point error in KSP.
-        /// We use this constant value as a size to be added to the last sent packet.
-        /// </summary>
-        private const float LastPacketAddtionalSize = 0.1f;
-
         // Compatible with ModuleDataTransmitter
         public override void OnLoad(ConfigNode node)
         {
@@ -150,12 +144,12 @@ namespace RemoteTech.Modules
                                 // check if it's the last packet to send
                                 if (packets == 0)
                                 {
-                                    // issue #667 ; floating point error in RnDCommsStream.StreamData method when adding to dataIn private field
+                                    // issue #667, issue #714 ; floating point error in RnDCommsStream.StreamData method when adding to dataIn private field
                                     // e.g scienceData.dataAmount is 10 but in the end RnDCommsStream.dataIn will be 9.999999, so the science never
                                     //     gets registered to the ResearchAndDevelopment center.
-                                    // we just need to add a little amount to the last packet so it goes over the packet size:
+                                    // Let's just go ahead and send the full amount so there's no question if we sent it all
                                     // KSP will clamp the final size to PacketSize anyway.
-                                    frame += LastPacketAddtionalSize;
+                                    frame = scienceData.dataAmount;
                                 }
 
                                 commStream.StreamData(frame, vessel.protoVessel);
