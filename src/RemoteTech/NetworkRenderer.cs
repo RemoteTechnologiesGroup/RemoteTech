@@ -285,12 +285,12 @@ namespace RemoteTech
                 if (connections.Any() && connections[0].Contains(edge))
                     return true;
             }
-            if (ShowMultiPath)
+            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
             {
                 var satellites = RTCore.Instance.Network.ToArray();
                 for (int i = 0; i < satellites.Length; i++)
                 {
-                    var connections = RTCore.Instance.Network[satellites[i]];
+                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
                     if (connections.Any() && connections[0].Contains(edge))
                         return true;
                 }
@@ -314,12 +314,12 @@ namespace RemoteTech
                 if (connections.Any() && connections[0].Contains(edge))
                     return RTSettings.Instance.ActiveConnectionColor;
             }
-            if (ShowMultiPath)
+            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
             {
                 var satellites = RTCore.Instance.Network.ToArray();
                 for (int i = 0; i < satellites.Length; i++)
                 {
-                    var connections = RTCore.Instance.Network[satellites[i]];
+                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
                     if (connections.Any() && connections[0].Contains(edge))
                         return RTSettings.Instance.ActiveConnectionColor;
                 }
