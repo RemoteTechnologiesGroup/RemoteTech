@@ -19,7 +19,8 @@ namespace RemoteTech
         Cone   = 8,
         Planet = 8,     // For backward compatibility with RemoteTech 1.4 and earlier
                         // Cone should be first, so that it's the one that appears in settings file
-        Path   = 16
+        Path   = 16,
+        MultiPath = 32
     }
 
     /// <summary>
@@ -47,6 +48,7 @@ namespace RemoteTech
         public bool ShowOmni  { get { return (Filter & MapFilter.Omni)   == MapFilter.Omni; } }
         public bool ShowDish  { get { return (Filter & MapFilter.Dish)   == MapFilter.Dish; } }
         public bool ShowPath  { get { return (Filter & MapFilter.Path)   == MapFilter.Path; } }
+        public bool ShowMultiPath { get { return (Filter & MapFilter.MultiPath) == MapFilter.MultiPath; } }
         public bool ShowRange { get { return (Filter & MapFilter.Sphere) == MapFilter.Sphere; } }
         public bool ShowCone  { get { return (Filter & MapFilter.Cone)   == MapFilter.Cone; } }
 
@@ -283,6 +285,16 @@ namespace RemoteTech
                 if (connections.Any() && connections[0].Contains(edge))
                     return true;
             }
+            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
+            {
+                var satellites = RTCore.Instance.Network.ToArray();
+                for (int i = 0; i < satellites.Length; i++)
+                {
+                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
+                    if (connections.Any() && connections[0].Contains(edge))
+                        return true;
+                }
+            }
             if (edge.Type == LinkType.Omni && !ShowOmni)
                 return false;
             if (edge.Type == LinkType.Dish && !ShowDish)
@@ -301,6 +313,16 @@ namespace RemoteTech
                 var connections = RTCore.Instance.Network[satellite];
                 if (connections.Any() && connections[0].Contains(edge))
                     return RTSettings.Instance.ActiveConnectionColor;
+            }
+            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
+            {
+                var satellites = RTCore.Instance.Network.ToArray();
+                for (int i = 0; i < satellites.Length; i++)
+                {
+                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
+                    if (connections.Any() && connections[0].Contains(edge))
+                        return RTSettings.Instance.ActiveConnectionColor;
+                }
             }
             if (edge.Type == LinkType.Omni)
                 return RTSettings.Instance.OmniConnectionColor;
