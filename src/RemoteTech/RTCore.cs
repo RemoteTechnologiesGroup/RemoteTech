@@ -246,6 +246,9 @@ namespace RemoteTech
             if (Satellites != null) Satellites.Dispose();
             if (Antennas != null) Antennas.Dispose();
 
+            // Release all RT locks currently engaged
+            ReleaseLocks();
+
             // Remove GUI stuff
             GameEvents.onShowUI.Remove(UiOn);
             GameEvents.onHideUI.Remove(UiOff);
@@ -261,7 +264,7 @@ namespace RemoteTech
         /// </summary>
         private static void ReleaseLocks()
         {
-            InputLockManager.RemoveControlLock("RTLockStaging");
+            //InputLockManager.RemoveControlLock("RTLockStaging");
             InputLockManager.RemoveControlLock("RTLockSAS");
             InputLockManager.RemoveControlLock("RTLockRCS");
             InputLockManager.RemoveControlLock("RTLockActions");
@@ -272,7 +275,7 @@ namespace RemoteTech
         /// </summary>
         private static void GetLocks()
         {
-            InputLockManager.SetControlLock(ControlTypes.STAGING, "RTLockStaging");
+            //InputLockManager.SetControlLock(ControlTypes.STAGING, "RTLockStaging");
             InputLockManager.SetControlLock(ControlTypes.SAS, "RTLockSAS");
             InputLockManager.SetControlLock(ControlTypes.RCS, "RTLockRCS");
             InputLockManager.SetControlLock(ControlTypes.GROUPS_ALL, "RTLockActions");
