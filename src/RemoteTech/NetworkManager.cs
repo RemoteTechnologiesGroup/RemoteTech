@@ -289,6 +289,16 @@ namespace RemoteTech
             return this.Name;
         }
 
+        public CelestialBody GetBody()
+        {
+            return FlightGlobals.Bodies[this.Body];
+        }
+
+        public void SetBodyIndex(int index)
+        {
+            this.Body = index;
+        }
+
         void IPersistenceLoad.PersistenceLoad()
         {
             foreach (var antenna in Antennas)
