@@ -161,6 +161,15 @@ namespace RemoteTech.FlightComputer
 
             RoverComputer = new RoverComputer();
             RoverComputer.SetVessel(Vessel);
+
+            // Add RT listeners from KSP Autopilot
+            StockAutopilotCommand.UIreference = GameObject.FindObjectOfType<VesselAutopilotUI>();
+            for (var index = 0; index < StockAutopilotCommand.UIreference.modeButtons.Length; index++)
+            {
+                var buttonIndex = index; // prevent compiler optimisation from assigning static final index value
+                StockAutopilotCommand.UIreference.modeButtons[index].onClick.AddListener(delegate { StockAutopilotCommand.AutopilotButtonClick(buttonIndex, this); });
+                // bad idea to use RemoveAllListeners() since no easy way to re-add the original stock listener to onClick
+            }
         }
 
         /// <summary>Called when a game switch is requested: close the current computer.</summary>
@@ -214,6 +223,17 @@ namespace RemoteTech.FlightComputer
             }
 
             _flightComputerWindow?.Hide();
+
+            // Remove RT listeners from KSP Autopilot
+            if (StockAutopilotCommand.UIreference != null)
+            {
+                for (var index = 0; index < StockAutopilotCommand.UIreference.modeButtons.Length; index++)
+                {
+                    var buttonIndex = index; // prevent compiler optimisation from assigning static final index value
+                    StockAutopilotCommand.UIreference.modeButtons[index].onClick.RemoveListener(delegate { StockAutopilotCommand.AutopilotButtonClick(buttonIndex, this); });
+                }
+                StockAutopilotCommand.UIreference = null;
+            }
         }
 
         /// <summary>Abort all active commands.</summary>
@@ -335,6 +355,10 @@ namespace RemoteTech.FlightComputer
         {
             var dfs = new DelayedFlightCtrlState(fs);
             dfs.TimeStamp += Delay;
+
+            if(StockAutopilotCommand.IsAutoPilotEngaged(this)) // remove the delay if the autopilot is engaged
+                dfs.TimeStamp -= Delay;
+
             _flightCtrlQueue.Enqueue(dfs);
 
         }
