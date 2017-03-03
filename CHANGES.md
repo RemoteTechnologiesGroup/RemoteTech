@@ -1,3 +1,37 @@
+# Version 1.8.5
+**Released March 03, 2017**
+
+Kudos to TaxiService and YamoriYuki for their help on maintaining RemoteTech! :heart:
+
+What's New?
+===========
+
+* Fixed a bug where science data wasn't completely transmitted in some circumstances [Issue #714 and PR #715]
+* Added a new visual filter of displaying all satellites' working connections
+* Reduced the verbose logging of RT's APIs [Issue #716]
+* Updated ModuleManager to 2.7.5 version
+* Fixed a problem where the Mission Control is not on Kerbin when using some Kopernicus maps [Issue #718]
+* Fixed a problem where commands from stock SAS were not delayed properly [Issue #663]
+* KSP's autopilot operates properly in presence of big signal delay
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #663: Commands from SAS are not delayed [requested by: dtondo]
+* Issue #714: Sending whole science amount at the end instead of just a small delta amount. [requested by: rsparkyc]
+* Issue #716: Logging connection state [requested by: diomeda]
+* Issue #718: Mission Control Origin Point not Located On Kerbin when using some Kopernicus maps [requested by: mikeloeven]
+
+Pull Requests
+-------------
+
+* PR #715: Sending whole science amount at the end instead of just a small delta amount [PR by: rsparkyc]
+
+***
+
 # Version 1.8.4
 **Released January 09, 2017**
 
