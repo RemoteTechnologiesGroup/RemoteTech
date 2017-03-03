@@ -68,7 +68,8 @@
     <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
     <Compile Include="FlightComputer\Commands\DriveCommand.cs" />
     <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
-    <Compile Include="FlightComputer\Commands\PartActionCommand.cs" />    
+    <Compile Include="FlightComputer\Commands\PartActionCommand.cs" />
+    <Compile Include="FlightComputer\Commands\StockAutopilotCommand.cs" />
     <Compile Include="FlightComputer\RoverComputer.cs" />
     <Compile Include="FlightComputer\RoverPIDController.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
