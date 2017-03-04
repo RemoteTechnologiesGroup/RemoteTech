@@ -194,7 +194,7 @@ namespace RemoteTech
 
             // Detect if the celestial body, that Mission Control is on (default body index 1), is Kerbin
             var KSCMC = settings.GroundStations.Find(x => x.GetName().Equals("Mission Control")); // leave extra ground stations to modders, who need to provide MM patches
-            if (!KSCMC.GetBody().name.Equals("Kerbin") && KSCMC.GetBody().flightGlobalsIndex == 1) // Kopernicus or similar map changes the planet
+            if (KSCMC != null && !KSCMC.GetBody().name.Equals("Kerbin") && KSCMC.GetBody().flightGlobalsIndex == 1) // Kopernicus or similar map changes the planet
             {
                 KSCMC.SetBodyIndex(FlightGlobals.GetHomeBodyIndex());
                 RTLog.Notify("KSC's Mission Control is on the wrong planet (not Kerbin/Earth) (Any Kopernicus/similar map would change). Relocated to the homeworld's body index {0}.", FlightGlobals.GetHomeBodyIndex());
