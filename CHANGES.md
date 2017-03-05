@@ -1,3 +1,23 @@
+# Version 1.8.6
+**Released March 05, 2017**
+
+This is a hotfix release :bug:
+
+What's New?
+===========
+
+* Fixed a problem when a not found Mission Control station would lead to a massive log spam  [Issue #719]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #719: Spam of "found and load save settings" that reduce performance. [requested b:y GonDragon]
+
+***
+
 # Version 1.8.5
 **Released March 03, 2017**
 
