@@ -71,7 +71,7 @@ namespace RemoteTech
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 
         public const string SaveFileName = "RemoteTech_Settings.cfg";
-        public const string DefaultSettingCfgURL = "RemoteTech/Default_Settings/RemoteTechSettings";
+        public static readonly string DefaultSettingCfgURL = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name.Equals("RemoteTech")).url.Replace("/Plugins", "") + "/Default_Settings/RemoteTechSettings";
 
         /// <summary>Trigger to force a reloading of the settings if a selected save is running.</summary>
         public bool SettingsLoaded;

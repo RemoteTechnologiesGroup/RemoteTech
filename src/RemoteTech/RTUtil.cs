@@ -17,9 +17,20 @@ namespace RemoteTech
         private static double TimeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? RTUtil.GameTime : 0;
 
         /// <summary>
-        /// Automatically finds the proper texture directory from the dll location. Assumes the dll is in the proper location of GameData/RemoteTech/Plugins/
+        /// Automatically finds the proper texture directory from the plugin dll location
         /// </summary>
-        private static string TextureDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Name + "/Textures/";
+        private static string _TextureDirectory = ""; // one-time calculation for performance reason
+        private static string TextureDirectory
+        {
+            get
+            {
+                if (_TextureDirectory.Length <= 0)
+                {
+                    _TextureDirectory = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name.Equals("RemoteTech")).url.Replace("Plugins", "Textures") + "/";
+                }
+                return _TextureDirectory;
+            }
+        }
 
         /// <summary>
         /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
