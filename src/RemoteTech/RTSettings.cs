@@ -45,6 +45,8 @@ namespace RemoteTech
         [Persistent] public float ConsumptionMultiplier;
         [Persistent] public float RangeMultiplier;
         [Persistent] public float MissionControlRangeMultiplier;
+        [Persistent] public double OmniRangeClampFactor;
+        [Persistent] public double DishRangeClampFactor;
         [Persistent] public string ActiveVesselGuid;
         [Persistent] public string NoTargetGuid;
         [Persistent] public float SpeedOfLight;
