@@ -60,12 +60,7 @@ namespace RemoteTech
         {
             Graph = new Dictionary<Guid, List<NetworkLink<ISatellite>>>();
 
-            // Load all planets into a dictionary;
-            Planets = new Dictionary<Guid, CelestialBody>();
-            foreach (CelestialBody cb in FlightGlobals.Bodies)
-            {
-                Planets[cb.Guid()] = cb;
-            }
+            Planets=RTUtil.CreateBodyDict();
 
             // Load all ground stations into a dictionary;
             GroundStations = new Dictionary<Guid, ISatellite>();
@@ -78,7 +73,7 @@ namespace RemoteTech
                 }
                 catch (Exception e) // Already exists.
                 {
-					RTLog.Notify("A ground station cannot be loaded: " + e.Message, RTLogLevel.LVL1);
+                    RTLog.Notify("A ground station cannot be loaded: " + e.Message, RTLogLevel.LVL1);
                 }
             }
 
@@ -86,6 +81,8 @@ namespace RemoteTech
             RTCore.Instance.Satellites.OnUnregister += OnSatelliteUnregister;
             RTCore.Instance.OnPhysicsUpdate += OnPhysicsUpdate;
         }
+
+        
 
         public void Dispose()
         {

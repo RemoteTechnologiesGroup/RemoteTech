@@ -74,7 +74,6 @@ namespace RemoteTech.UI
                     Position = RTSettings.Instance.SavedWindowPositions[this.GetType().ToString()];
                 }
             }
-
             if (Windows.ContainsKey(mGuid))
             {
                 Windows[mGuid].Hide();

@@ -203,7 +203,29 @@ namespace RemoteTech
                     return sat.Name;
                 }
             }
+            // check if vessel is cached
+            if (PersistentVesselStorage.Instance != null)
+            {
+                foreach(var sat in PersistentVesselStorage.Instance.VesselInfoCache)
+                {
+                    if (sat.Guid == guid)
+                    {
+                        return sat.Name;
+                    }
+                }
+            }
             return "Unknown Target";
+        }
+
+        public static Dictionary<Guid, CelestialBody> CreateBodyDict()
+        {
+            // Load all planets into a dictionary;
+            var bodies = new Dictionary<Guid, CelestialBody>();
+            foreach (CelestialBody cb in FlightGlobals.Bodies)
+            {
+                bodies[cb.Guid()] = cb;
+            }
+            return bodies;
         }
 
         public static Guid Guid(this CelestialBody cb)

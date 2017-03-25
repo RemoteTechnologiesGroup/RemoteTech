@@ -119,16 +119,18 @@ namespace RemoteTech
             Renderer = NetworkRenderer.CreateAndAttach();
 
             // overlays
-            FilterOverlay = new FilterOverlay();
-            FocusOverlay = new FocusOverlay();
-            TimeWarpDecorator = new TimeWarpDecorator();
+            if(HighLogic.LoadedScene!=GameScenes.EDITOR && HighLogic.LoadedScene != GameScenes.SPACECENTER)
+            {
+                FilterOverlay = new FilterOverlay();
+                FocusOverlay = new FocusOverlay();
+                TimeWarpDecorator = new TimeWarpDecorator();
+            }
 
             // Handling new F2 GUI Hiding
             GameEvents.onShowUI.Add(UiOn);
             GameEvents.onHideUI.Add(UiOff);
 
             RTLog.Notify("RTCore {0} loaded successfully.", RTUtil.Version);
-
             // register vessels and antennas
             foreach (var vessel in FlightGlobals.Vessels)
             {
@@ -344,6 +346,29 @@ namespace RemoteTech
         }
     }
 
+
+    /// <summary>
+    /// Main class, instantiated during  Editor scene.
+    /// This is only needed to draw target window. 
+    /// </summary>
+    [KSPAddon(KSPAddon.Startup.EditorAny, false)]
+    public class RTCoreEditor : RTCore
+    {
+        public new void Start()
+        {
+            base.Start();
+            if (Instance == null)
+                return;
+        }
+
+        private new void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+    }
+
+
+
     /// <summary>
     /// Main class, instantiated during Flight scene.
     /// </summary>
@@ -411,6 +436,26 @@ namespace RemoteTech
             // for switching between saves without shutting down the KSP
             // instance.
             RTSettings.Instance.SettingsLoaded = false;
+        }
+    }
+
+    /// <summary>
+    /// Main class, instanciated during Space centre scene.
+    /// Ensures ISatellites are available after GameLoad.
+    /// </summary>
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+    public class RTCSpaceCentre : RTCore
+    {
+        public new void Start()
+        {
+            base.Start();
+            if (Instance == null)
+                return;
+        }
+
+        private new void OnDestroy()
+        {
+            base.OnDestroy();
         }
     }
 }

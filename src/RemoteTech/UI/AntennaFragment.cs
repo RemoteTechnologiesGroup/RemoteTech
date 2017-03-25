@@ -51,9 +51,12 @@ namespace RemoteTech.UI
         public AntennaFragment(IAntenna antenna)
         {
             Antenna = antenna;
-            RTCore.Instance.Satellites.OnRegister += Refresh;
-            RTCore.Instance.Satellites.OnUnregister += Refresh;
-            RTCore.Instance.Antennas.OnUnregister += Refresh;
+            if (RTCore.Instance != null)
+            {
+                RTCore.Instance.Satellites.OnRegister += Refresh;
+                RTCore.Instance.Satellites.OnUnregister += Refresh;
+                RTCore.Instance.Antennas.OnUnregister += Refresh;
+            }
             RefreshPlanets();
             Refresh();
         }
@@ -172,25 +175,47 @@ namespace RemoteTech.UI
             if (Antenna == null) return;
 
             // Add the satellites
-            foreach (ISatellite s in RTCore.Instance.Network)
-            {
-                if (s.Guid == Antenna.Guid) continue;
+            if (FlightGlobals.Vessels.Count != 0) { 
+                foreach (ISatellite s in RTCore.Instance.Network)
+                {
+                    if (s.Guid == Antenna.Guid) continue;
 
-                if (s.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(s.parentVessel)) {
-                    continue;
+                    if (s.parentVessel != null && !MapViewFiltering.CheckAgainstFilter(s.parentVessel)) {
+                        continue;
+                    }
+
+                    Entry current = new Entry()
+                    {
+                        Text = s.Name,
+                        Guid = s.Guid,
+                        Color = Color.white,
+                    };
+                    mEntries[s.Body].SubEntries.Add(current);
+
+                    if (s.Guid == Antenna.Target)
+                    {
+                        mSelection = current;
+                    }
                 }
-
-                Entry current = new Entry()
+            }
+            else
+            {
+                foreach(var s in PersistentVesselStorage.Instance.VesselInfoCache)
                 {
-                    Text = s.Name,
-                    Guid = s.Guid,
-                    Color = Color.white,
-                };
-                mEntries[s.Body].SubEntries.Add(current);
+                    if (s.Guid == Antenna.Guid) continue;
 
-                if (s.Guid == Antenna.Target)
-                {
-                    mSelection = current;
+                    Entry current = new Entry()
+                    {
+                        Text = s.Name,
+                        Guid = s.Guid,
+                        Color = Color.white,
+                    };
+                    mEntries[s.Body].SubEntries.Add(current);
+
+                    if (s.Guid == Antenna.Target)
+                    {
+                        mSelection = current;
+                    }
                 }
             }
 
@@ -243,9 +268,9 @@ namespace RemoteTech.UI
             {
                 mSelection = activeVesselEntry;
             }
-
+            Dictionary<Guid, CelestialBody> bodies= RTUtil.CreateBodyDict();
             // Add the planets
-            foreach (var cb in RTCore.Instance.Network.Planets)
+            foreach (var cb in bodies)
             {
                 if (!mEntries.ContainsKey(cb.Value))
                 {
@@ -256,6 +281,7 @@ namespace RemoteTech.UI
                 current.Text = cb.Value.bodyName;
                 current.Guid = cb.Key;
                 current.Color = cb.Value.GetOrbitDriver() != null ? cb.Value.GetOrbitDriver().orbitColor : Color.yellow;
+                
                 current.Color.a = 1.0f;
 
                 if (cb.Value.referenceBody != cb.Value)
@@ -271,20 +297,18 @@ namespace RemoteTech.UI
                 {
                     mRootEntry.SubEntries.Add(current);
                 }
-
                 if (cb.Key == Antenna.Target)
                 {
                     mSelection = current;
                 }
             }
-
             // Sort the lists based on semi-major axis. In reverse because of how we render it.
             foreach (var entryPair in mEntries)
             {
                 entryPair.Value.SubEntries.Sort((b, a) =>
                     {
-                        return RTCore.Instance.Network.Planets[a.Guid].orbit.semiMajorAxis.CompareTo(
-                            RTCore.Instance.Network.Planets[b.Guid].orbit.semiMajorAxis);
+                        return bodies[a.Guid].orbit.semiMajorAxis.CompareTo(
+                                bodies[b.Guid].orbit.semiMajorAxis);
                     });
             }
             mRootEntry.SubEntries.Reverse();

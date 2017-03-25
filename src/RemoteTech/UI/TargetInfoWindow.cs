@@ -135,7 +135,6 @@ namespace RemoteTech.UI
 
             // auto rearrange the position of this window
             var aligmentSwitcher = PopupAlignment;
-
             if (aligmentSwitcher == WindowAlign.Floating)
             {
                 // check if we are outside the screen than flip to the other side

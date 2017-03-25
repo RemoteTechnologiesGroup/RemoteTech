@@ -51,15 +51,17 @@ namespace RemoteTech.UI
         public override void Show()
         {
             mAntennaFragment = mAntennaFragment ?? new AntennaFragment(mSetAntenna);
-
             /// Add callbacks for the onPositionChanged on the AbstractWindow
             onPositionChanged += mTargetInfos.CalculatePosition;
-
-            /// Add the showTargetInfo callback to the on mouse over/out event
-            mAntennaFragment.onMouseOverListEntry += showTargetInfo;
+           
+            if (HighLogic.LoadedScene != GameScenes.EDITOR)
+            { 
+                /// Add the showTargetInfo callback to the on mouse over/out event
+                mAntennaFragment.onMouseOverListEntry += showTargetInfo;
+            }
             mAntennaFragment.onMouseOutListEntry += hideTargetInfo;
-            
             GameEvents.onVesselChange.Add(OnVesselChange);
+            GameEvents.onGameSceneLoadRequested.Add(OnGameSceneLoadRequested);
             base.Show();
         }
 
@@ -81,6 +83,7 @@ namespace RemoteTech.UI
             }
 
             GameEvents.onVesselChange.Remove(OnVesselChange);
+            GameEvents.onGameSceneLoadRequested.Remove(OnGameSceneLoadRequested);
             base.Hide();
         }
 
@@ -111,6 +114,11 @@ namespace RemoteTech.UI
         }
 
         public void OnVesselChange(Vessel v)
+        {
+            Hide();
+        }
+
+        public void OnGameSceneLoadRequested(GameScenes gs)
         {
             Hide();
         }

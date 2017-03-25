@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -24,21 +24,22 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\GameData\RemoteTech\Plugins\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\..\..\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -48,11 +49,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\..\Kerbal Space Program\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -60,7 +61,7 @@
     <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
-    <Compile Include="FlightComputer\Commands\EventCommand.cs" />    
+    <Compile Include="FlightComputer\Commands\EventCommand.cs" />
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
     <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
     <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="RTSettings.cs" />
     <Compile Include="RTSpaceCentre.cs" />
     <Compile Include="RTUtil.cs" />
+    <Compile Include="PersistentVesselStorage.cs" />
     <Compile Include="SatelliteManager.cs" />
     <Compile Include="AntennaManager.cs" />
     <Compile Include="SimpleTypes\AddOn.cs" />

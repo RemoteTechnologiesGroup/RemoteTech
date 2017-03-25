@@ -106,6 +106,7 @@ namespace RemoteTech.Modules
 
         [KSPField] // Persistence handled by Save()
         public Guid RTAntennaTarget = Guid.Empty;
+        private AntennaWindow _AntennaWindow;
 
         // workarround for ksp 1.0
         [KSPField]
@@ -247,8 +248,21 @@ namespace RemoteTech.Modules
         [KSPEvent(name = "EventToggle", guiActive = false)]
         public void EventToggle() { if (Animating) return; if (IsRTActive) { EventClose(); } else { EventOpen(); } }
 
-        [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target", category = "skip_delay")]
-        public void EventTarget() { (new AntennaWindow(this)).Show(); }
+        [KSPEvent(name = "EventTarget", guiActive = false, guiActiveEditor = false, guiName = "Target", category = "skip_delay")]
+        public void EventTarget() {
+            if (_AntennaWindow == null)
+            {
+                _AntennaWindow = new AntennaWindow(this);
+            }
+            if (_AntennaWindow.Enabled)
+            {
+                _AntennaWindow.Hide();
+            }
+            else
+            {
+                _AntennaWindow.Show();
+            }
+        }
 
         [KSPEvent(name = "EventEditorOpen", guiActive = false, guiName = "Start deployed")]
         public void EventEditorOpen() { SetState(true); }
@@ -387,6 +401,7 @@ namespace RemoteTech.Modules
             Events["EventClose"].guiName = ActionMode0Name;
             Events["EventToggle"].guiName = ActionToggleName;
             Events["EventTarget"].guiActive = (Mode1DishRange > 0);
+            Events["EventTarget"].guiActiveEditor = Events["EventTarget"].guiActive;
             Events["EventTarget"].active = Events["EventTarget"].guiActive;
 
             // deactivate action close and toggle if this antenna is non retractable
@@ -411,7 +426,7 @@ namespace RemoteTech.Modules
                 mTransmitterConfig.AddValue("name", "ModuleRTDataTransmitter");
             }
 
-            if (RTCore.Instance != null)
+            if (RTCore.Instance != null && !HighLogic.LoadedSceneIsEditor)
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);

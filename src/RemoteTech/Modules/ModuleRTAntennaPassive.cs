@@ -144,7 +144,7 @@ namespace RemoteTech.Modules
                 mTransmitterConfig.AddValue("name", "ModuleRTDataTransmitter");
             }
 
-            if (RTCore.Instance != null)
+            if (RTCore.Instance != null && !HighLogic.LoadedSceneIsEditor)
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);

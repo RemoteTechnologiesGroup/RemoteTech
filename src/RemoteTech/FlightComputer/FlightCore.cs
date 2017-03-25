@@ -214,7 +214,7 @@ namespace RemoteTech.FlightComputer
 
             // Find out the real shorter way to turn were we want to.
             // Thanks to HoneyFox
-            Vector3d tgtLocalUp = vesselReference.rotation.Inverse() * target * Vector3d.forward;
+            Vector3d tgtLocalUp = Quaternion.Inverse(vesselReference.rotation) * target * Vector3d.forward;
             Vector3d curLocalUp = Vector3d.up;
 
             double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
