@@ -75,7 +75,11 @@ namespace RemoteTech.FlightComputer.Commands
         public static bool IsAutoPilotEngaged(FlightComputer flightCom)
         {
             if (!flightCom.Vessel.Autopilot.Enabled) // autopilot is off
+            {
+                if(savedAutopilotMode != AutopilotMode.StabilityAssist)
+                    savedAutopilotMode = AutopilotMode.StabilityAssist; // matched to KSP's default to SAS mode when turned on 
                 return false;
+            }
 
             if (flightCom.Vessel.Autopilot.Mode != savedAutopilotMode && flightCom.Vessel.Autopilot.CanSetMode(savedAutopilotMode))
                 flightCom.Vessel.Autopilot.SetMode(savedAutopilotMode); // purpose: return to the pre-click mode
@@ -83,7 +87,7 @@ namespace RemoteTech.FlightComputer.Commands
             if (GameSettings.PITCH_DOWN.GetKey() || GameSettings.PITCH_UP.GetKey() ||
                 GameSettings.ROLL_LEFT.GetKey() || GameSettings.ROLL_RIGHT.GetKey() ||
                 GameSettings.YAW_LEFT.GetKey() || GameSettings.YAW_RIGHT.GetKey()) // player trying to manually rotate
-                return false;      
+                return false;
 
             return true;
         }

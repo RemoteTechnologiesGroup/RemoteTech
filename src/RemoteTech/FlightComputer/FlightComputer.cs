@@ -90,6 +90,10 @@ namespace RemoteTech.FlightComputer
 
         /// <summary>Returns true to keep the throttle on the current position without a connection, otherwise false.</summary>
         public bool KeepThrottleNoConnect => !RTSettings.Instance.ThrottleZeroOnNoConnection;
+        /// <summary>Returns true to lock the throttle on the current position without a connection, otherwise false.</summary>
+        public bool LockedThrottleNoConnect = false;
+        /// <summary>Returns the last known position of throttle prior to connection loss.</summary>
+        public float LockedThrottlePositionNoConnect = 0f;
 
         /// <summary>Gets or sets the total delay which is the usual light speed delay + any manual delay.</summary>
         public double TotalDelay { get; set; }
@@ -368,13 +372,16 @@ namespace RemoteTech.FlightComputer
         /// <param name="sat">The satellite from which the <see cref="FlightCtrlState"/> should be removed.</param>
         private void PopFlightCtrl(FlightCtrlState fcs, ISatellite sat)
         {
-            //TODO: `sat` parameter is never used. Check if is needed somewhere: if it's not, remove it.
             var delayed = new FlightCtrlState();
+            delayed.mainThrottle = fcs.mainThrottle;
 
-            // Keep the throttle on no connection
-            if(KeepThrottleNoConnect)
+            if (!KeepThrottleNoConnect && !InputAllowed) // enforce the rule of shutting throttle down on connection loss
             {
-                delayed.mainThrottle = fcs.mainThrottle;
+                delayed.mainThrottle = 0f;
+            }
+            else if (KeepThrottleNoConnect && LockedThrottleNoConnect) // when connection is lost with the disabled rule of shutting throttle down, throttle is locked
+            {
+                delayed.mainThrottle = LockedThrottlePositionNoConnect; 
             }
 
             while (_flightCtrlQueue.Count > 0 && _flightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
@@ -458,6 +465,19 @@ namespace RemoteTech.FlightComputer
 
             if (!satellite.HasLocalControl)
             {
+                if (InputAllowed)
+                {
+                    LockedThrottleNoConnect = false;
+                }
+                else // connection loss
+                {
+                    if (!LockedThrottleNoConnect)
+                    {
+                        LockedThrottleNoConnect = true;
+                        LockedThrottlePositionNoConnect = fcs.mainThrottle;
+                    }
+                }
+
                 PopFlightCtrl(fcs, satellite);
             }
         }
