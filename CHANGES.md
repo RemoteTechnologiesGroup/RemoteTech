@@ -5,10 +5,10 @@ What's New?
 ===========
 
 * RT mod can now be dynamically found [Issue #722]
-* Open up the clamp limits on omni and dish ranges to be configurable in the setting cfg
-* Fix Throttle lose when SAS on, on a probe controlled craft [Issue #723]
-* A few RTFC-Autopilot-interaction improvements 
-* Updated ModuleManager DLL to work with KSP 1.3
+* Expose the clamp limits on omni and dish ranges in the setting cfg
+* Fix throttle loss when toggling SAS on a probe controlled craft [Issue #723]
+* Add few improvements in the interaction between Flight Computer and KSP's Autopilot
+* Update ModuleManager DLL for KSP 1.3
 
 Detailed Changelog
 ==================
