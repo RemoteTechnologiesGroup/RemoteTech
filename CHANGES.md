@@ -1,3 +1,26 @@
+# Version 1.8.7
+**Released June 06, 2017**
+
+What's New?
+===========
+
+* RT mod can now be dynamically found [Issue #722]
+* Open up the clamp limits on omni and dish ranges to be configurable in the setting cfg
+* Fix Throttle lose when SAS on, on a probe controlled craft [Issue #723]
+* A few RTFC-Autopilot-interaction improvements 
+* Updated ModuleManager DLL to work with KSP 1.3
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #722: Fix issue on RT mod being on different directory in GameData. [requested by: Potato-God1]
+* Issue #723: Throttle lose when SAS on, on a probe controlled craft [requested by: Eckee]
+
+***
+
 # Version 1.8.6
 **Released March 05, 2017**
 
