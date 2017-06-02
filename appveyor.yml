@@ -48,7 +48,7 @@
   # environment variables
   environment:
     DLL_ARCH_PASS: # KSP DLLs archive password (secured)
-      secure: fcsROOd6CtTb4Ydc5RKLE3V8cJ2zlYj0iXv0EylyPeE=
+      secure: ba1r8SHmxZsE9PZU9+DuqDubiyAmkt9/MSU4vR4js7c=
 
   matrix:
     # set this flag to immediately finish build once one of the jobs fails.
@@ -65,7 +65,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.2.2_RELEASE_DLLs.7z
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.3_RELEASE_DLLs.7z
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
@@ -253,7 +253,7 @@
   # environment variables
   environment:
     DLL_ARCH_PASS: # KSP DLLs archive password (secured)
-      secure: fcsROOd6CtTb4Ydc5RKLE3V8cJ2zlYj0iXv0EylyPeE=
+      secure: ba1r8SHmxZsE9PZU9+DuqDubiyAmkt9/MSU4vR4js7c=
 
   matrix:
     # set this flag to immediately finish build once one of the jobs fails.
@@ -270,7 +270,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.2.2_RELEASE_DLLs.7z
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.3_RELEASE_DLLs.7z
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
