@@ -20,6 +20,7 @@ namespace RemoteTech.FlightComputer.Commands
 
         private double throttle = 1.0f;
         private double lowestDeltaV = 0.0;
+        private double smallestRemainingTime = 0.0;
         private bool abortOnNextExecute = false;
 
         public override string Description
@@ -159,11 +160,24 @@ namespace RemoteTech.FlightComputer.Commands
             // we only compare up to the fiftieth part due to some burn-up delay when just firing up the engines
             if (this.lowestDeltaV > 0 // Do ignore the first tick
                 && (this.RemainingDelta - 0.02) > this.lowestDeltaV
-                && this.RemainingDelta < 1.0)   // be safe that we do not abort the command to early
+                //&& this.RemainingDelta < 1.0 // be safe that we do not abort the command to early // comment: not always < 1 because lowest dV was over 10 when acceleration was huge
+                && this.RemainingTime > this.smallestRemainingTime)
             {
-                // Aborting because deltaV was rising again!
+                // Aborting because deltaV & remaining time were rising again!
                 this.AbortManeuver(computer);
                 return true;
+
+                /* Sample from one test on a craft of huge acceleration
+                 RemoteTech: lowest dV, remaining dV, remaining time
+                 RemoteTech: 1.81, 1.73, 0.16
+	             RemoteTech: 1.73, 1.68, 0.16
+	             RemoteTech: 1.68, 1.65, 0.15 // lowest dV
+	             RemoteTech: 1.65, 1.65, 0.15
+	             RemoteTech: 1.65, 1.68, 0.14
+	             RemoteTech: 1.65, 1.74, 0.14
+                 RemoteTech: 1.65, 1.83, 0.13 // smallest time
+	             RemoteTech: 1.65, 1.97, 0.13
+                */
             }
 
             // Lowest delta always has to be stored to be able to compare it in the next tick
@@ -171,6 +185,13 @@ namespace RemoteTech.FlightComputer.Commands
                 || this.RemainingDelta < this.lowestDeltaV)
             {
                 this.lowestDeltaV = this.RemainingDelta;
+            }
+
+            // smallest remaining duration
+            if (this.smallestRemainingTime == 0
+                || this.RemainingTime < this.smallestRemainingTime)
+            {
+                this.smallestRemainingTime = this.RemainingTime;
             }
 
             return false;
