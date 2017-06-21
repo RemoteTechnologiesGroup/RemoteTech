@@ -82,7 +82,7 @@ namespace RemoteTech
 
         public static void ScreenMessage(String msg)
         {
-            ScreenMessages.PostScreenMessage(new ScreenMessage(msg, 4.0f, ScreenMessageStyle.UPPER_LEFT));
+            ScreenMessages.PostScreenMessage(new ScreenMessage(msg, 6.0f, ScreenMessageStyle.UPPER_LEFT));
         }
 
         public static String Truncate(this String targ, int len)

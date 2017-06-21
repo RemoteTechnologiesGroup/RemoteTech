@@ -37,13 +37,22 @@ namespace RemoteTech.FlightComputer.Commands
                     return flightInfo + Environment.NewLine + base.Description;
                 }
                 else
-                    return "Execute planned maneuver" + Environment.NewLine + base.Description;
+                {
+                    return "Execute planned maneuver"+ Environment.NewLine + base.Description;
+                }
             }
         }
         public override string ShortName { get { return "Execute maneuver node"; } }
 
         public override bool Pop(FlightComputer f)
         {
+            // check if the stored node is still valid
+            if (f.Vessel.patchedConicSolver.maneuverNodes.IndexOf(this.Node) < 0)
+            {
+                RTUtil.ScreenMessage("[Flight Computer]: No maneuver node found.");
+                return false;
+            }
+
             var burn = f.ActiveCommands.FirstOrDefault(c => c is BurnCommand);
             if (burn != null) {
                 f.Remove (burn);
@@ -75,12 +84,12 @@ namespace RemoteTech.FlightComputer.Commands
         }
 
         /// <summary>
-        /// 
+        /// Remove the current maneuver node from MapView
         /// </summary>
         /// <param name="computer">FlightComputer instance of the computer of the vessel.</param>
         private void AbortManeuver(FlightComputer computer)
         {
-            RTUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
+            RTUtil.ScreenMessage("[Flight Computer]: Maneuver node removed");
             if (computer.Vessel.patchedConicSolver != null)
             {
                 Node.RemoveSelf();

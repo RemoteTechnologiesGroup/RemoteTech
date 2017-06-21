@@ -209,7 +209,7 @@ namespace RemoteTech.UI
                 {
                     RTUtil.Button(new GUIContent("BURN", "Example: 125, 125s, 5m20s, 1d6h20m10s, 123m/s."),
                         OnBurnClick, GUILayout.Width(width3));
-                    RTUtil.Button(new GUIContent("EXEC", "Executes next maneuver node."),
+                    RTUtil.Button(new GUIContent("EXEC", "Executes next and subsequent maneuver nodes."),
                         OnExecClick, GUILayout.Width(width3));
                     RTUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
                         mOnClickQueue, GUILayout.Width(width3));
@@ -314,6 +314,16 @@ namespace RemoteTech.UI
             else
             {
                 mFlightComputer.Enqueue(cmd, false, false, true);
+
+                //check for subsequent nodes
+                int numSubsequentNodes = mFlightComputer.Vessel.patchedConicSolver.maneuverNodes.Count - 1;
+                if (numSubsequentNodes >= 1)
+                {
+                    for (int nodeIndex = 1; nodeIndex <= numSubsequentNodes; nodeIndex++)
+                    {
+                        mFlightComputer.Enqueue(ManeuverCommand.WithNode(nodeIndex, mFlightComputer), false, false, true);
+                    }
+                }
             }
         }
 
