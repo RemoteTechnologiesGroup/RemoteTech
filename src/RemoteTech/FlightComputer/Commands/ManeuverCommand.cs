@@ -46,12 +46,21 @@ namespace RemoteTech.FlightComputer.Commands
 
         public override bool Pop(FlightComputer f)
         {
+            if(f.Vessel.patchedConicSolver == null)
+            {
+                f.Vessel.AttachPatchedConicsSolver();
+                f.Vessel.patchedConicSolver.Update();
+            }
+
             // check if the stored node is still valid
-            if (f.Vessel.patchedConicSolver.maneuverNodes.IndexOf(this.Node) < 0)
+            if (f.Vessel.patchedConicSolver.maneuverNodes.FindIndex(x => x.UT == this.Node.UT && x.DeltaV == this.Node.DeltaV) < 0)//IndexOf() is bad comparer
             {
                 RTUtil.ScreenMessage("[Flight Computer]: No maneuver node found.");
                 return false;
             }
+
+            if (this.Node.solver == null) // need to repair (due to the scenario of 2 vessels within phyical range)
+                this.Node = f.Vessel.patchedConicSolver.maneuverNodes.Find(x => x.UT == this.Node.UT && x.DeltaV == this.Node.DeltaV);
 
             var burn = f.ActiveCommands.FirstOrDefault(c => c is BurnCommand);
             if (burn != null) {
@@ -92,7 +101,7 @@ namespace RemoteTech.FlightComputer.Commands
             RTUtil.ScreenMessage("[Flight Computer]: Maneuver node removed");
             if (computer.Vessel.patchedConicSolver != null)
             {
-                Node.RemoveSelf();
+                this.Node.RemoveSelf();
             }
 
             // Flight Computer mode after execution based on settings
@@ -246,13 +255,22 @@ namespace RemoteTech.FlightComputer.Commands
         /// <returns>true - loaded successfull</returns>
         public override bool Load(ConfigNode n, FlightComputer fc)
         {
+            //Additional notes: Load() is never called when cold-launching KSP and resuming flight.
             if(base.Load(n,fc))
             {
                 if(n.HasValue("NodeIndex"))
                 {
                     this.NodeIndex = int.Parse(n.GetValue("NodeIndex"));
-                    RTLog.Notify("Trying to get Maneuver {0}", this.NodeIndex);
-                    if (this.NodeIndex >= 0)
+
+                    if (fc.Vessel.patchedConicSolver == null)
+                    {
+                        fc.Vessel.AttachPatchedConicsSolver();
+                        fc.Vessel.patchedConicSolver.Update();
+                    }
+
+                    RTLog.Notify("Trying to get Maneuver {0} in the list of {1} maneuver nodes", this.NodeIndex, fc.Vessel.patchedConicSolver.maneuverNodes.Count);
+
+                    if (this.NodeIndex >= 0 && fc.Vessel.patchedConicSolver.maneuverNodes.Count > 0)
                     {
                         // Set the ManeuverNode into this command
                         this.Node = fc.Vessel.patchedConicSolver.maneuverNodes[this.NodeIndex];
@@ -271,8 +289,14 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         public override void Save(ConfigNode n, FlightComputer fc)
         {
+            if (fc.Vessel.patchedConicSolver == null)
+            {
+                fc.Vessel.AttachPatchedConicsSolver();
+                fc.Vessel.patchedConicSolver.Update();
+            }
+
             // search the node on the List
-            this.NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.IndexOf(this.Node);
+            this.NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.FindIndex(x => x.UT == this.Node.UT && x.DeltaV == this.Node.DeltaV);
 
             // only save this command if we are on the maneuverNode list
             if (this.NodeIndex >= 0)

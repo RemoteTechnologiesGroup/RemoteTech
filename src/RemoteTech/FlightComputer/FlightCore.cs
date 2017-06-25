@@ -37,6 +37,13 @@ namespace RemoteTech.FlightComputer
 
                 case ReferenceFrame.Maneuver:
                     ignoreRoll = true;
+
+                    if (f.Vessel.patchedConicSolver == null)//scenario: two vessels within physical range with FC attitude hold cmds. Unloaded one doesn't have solver instance
+                    {
+                        f.Vessel.AttachPatchedConicsSolver();
+                        f.Vessel.patchedConicSolver.Update();
+                    }
+
                     if (f.Vessel.patchedConicSolver.maneuverNodes.Count != 0)
                     {
                         forward = f.Vessel.patchedConicSolver.maneuverNodes[0].GetBurnVector(v.orbit);
