@@ -65,9 +65,8 @@ namespace RemoteTech.Modules
         double IScienceDataTransmitter.DataResourceCost { get { return PacketResourceCost / PacketSize; } }
         bool IScienceDataTransmitter.IsBusy() { return isBusy; }
 
-        public override void OnFixedUpdate()
+        public void FixedUpdate()
         {
-            base.OnFixedUpdate();
             if (isBusy)
             {
                 timeElapsed += TimeWarp.fixedDeltaTime;
