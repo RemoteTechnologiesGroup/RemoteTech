@@ -87,7 +87,7 @@ namespace RemoteTech.Modules
                 var scienceData = scienceDataQueue[0];
                 var dataAmount = scienceData.dataAmount;
                 scienceDataQueue.RemoveAt(0);
-                scienceData.triggered = true;
+                bool aborted = false;
 
                 var subject = ResearchAndDevelopment.GetSubjectByID(scienceData.subjectID);
                 if (subject == null)
@@ -96,7 +96,7 @@ namespace RemoteTech.Modules
                 int packets = Mathf.CeilToInt(scienceData.dataAmount / PacketSize);
 
                 RnDCommsStream commStream = null;
-                if (ResearchAndDevelopment.Instance != null)
+                if (ResearchAndDevelopment.Instance != null && !scienceData.triggered)
                 {
                     // pre-calculate the time interval - fix for x64 systems
                     // workaround for issue #136
@@ -146,7 +146,7 @@ namespace RemoteTech.Modules
                                 scienceData.title, (PacketSize / PacketInterval).ToString("0.00"), packets, scienceDataQueue.Count);
 
                             // if we've a defined callback parameter so skip to stream each packet
-                            if (commStream != null && callback == null)
+                            if (commStream != null)
                             {
                                 RTLog.Notify(
                                     "[Transmitter]: PacketSize: {0}; Transmitted size (frame): {1}; Data left to transmit (dataAmount): {2}; Packets left (packets): {3}",
@@ -183,6 +183,7 @@ namespace RemoteTech.Modules
                             // not enough power
                             msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
                             ScreenMessages.PostScreenMessage(msg);
+                            aborted = true;
 
                             GUIStatus = String.Format("{0}/{1} {2}", power, PacketResourceCost, RequiredResource);
                         }
@@ -191,7 +192,11 @@ namespace RemoteTech.Modules
                 }
 
                 // effectively inform the game that science has been transmitted
-                GameEvents.OnTriggeredDataTransmission.Fire(scienceData, vessel, false);
+                if (scienceData.triggered)
+                {
+                    GameEvents.OnTriggeredDataTransmission.Fire(scienceData, vessel, aborted);
+                }
+                
                 yield return new WaitForSeconds(PacketInterval * 2);
             }
 
