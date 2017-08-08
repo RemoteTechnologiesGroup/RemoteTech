@@ -342,6 +342,9 @@ namespace RemoteTech.Modules
                 moduleResource.rate = EnergyCost * ConsumptionMultiplier;
                 this.resHandler.inputResources.Add(moduleResource);
             }
+
+            //apply the consumption multiplier
+            this.resHandler.inputResources.Find(x => x.name == this.resourceName).rate = EnergyCost * ConsumptionMultiplier;
         }
 
         public override void OnSave(ConfigNode node)
