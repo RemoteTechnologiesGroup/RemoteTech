@@ -360,11 +360,25 @@ namespace RemoteTech.FlightComputer
             var dfs = new DelayedFlightCtrlState(fs);
             dfs.TimeStamp += Delay;
 
-            if(StockAutopilotCommand.IsAutoPilotEngaged(this)) // remove the delay if the autopilot is engaged
-                dfs.TimeStamp -= Delay;
+            if (StockAutopilotCommand.IsAutoPilotEngaged(this)) // remove the delay if the autopilot is engaged
+            {
+                var autopilotfs = new DelayedFlightCtrlState(fs); // make copy of FS and apply no delay
+
+                //nullify autopilot inputs in the delayed fs
+                dfs.State.roll = 0f;
+                dfs.State.rollTrim = 0f;
+                dfs.State.pitch = 0f;
+                dfs.State.pitchTrim = 0f;
+                dfs.State.yaw = 0f;
+                dfs.State.yawTrim = 0f;
+
+                //nullify throttle
+                autopilotfs.State.mainThrottle = 0f;
+                
+                _flightCtrlQueue.Enqueue(autopilotfs);
+            }
 
             _flightCtrlQueue.Enqueue(dfs);
-
         }
 
         /// <summary>Remove a <see cref="FlightCtrlState"/> from the flight control queue.</summary>
@@ -373,7 +387,14 @@ namespace RemoteTech.FlightComputer
         private void PopFlightCtrl(FlightCtrlState fcs, ISatellite sat)
         {
             var delayed = new FlightCtrlState();
-            delayed.mainThrottle = fcs.mainThrottle;
+            float maxThrottle = 0f;
+
+            while (_flightCtrlQueue.Count > 0 && _flightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
+            {
+                delayed = _flightCtrlQueue.Dequeue().State;
+                maxThrottle = Math.Max(maxThrottle, delayed.mainThrottle);
+            }
+            delayed.mainThrottle = maxThrottle;
 
             if (!KeepThrottleNoConnect && !InputAllowed) // enforce the rule of shutting throttle down on connection loss
             {
@@ -381,12 +402,7 @@ namespace RemoteTech.FlightComputer
             }
             else if (KeepThrottleNoConnect && LockedThrottleNoConnect) // when connection is lost with the disabled rule of shutting throttle down, throttle is locked
             {
-                delayed.mainThrottle = LockedThrottlePositionNoConnect; 
-            }
-
-            while (_flightCtrlQueue.Count > 0 && _flightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
-            {
-                delayed = _flightCtrlQueue.Dequeue().State;
+                delayed.mainThrottle = LockedThrottlePositionNoConnect;
             }
 
             fcs.CopyFrom(delayed);
@@ -465,7 +481,7 @@ namespace RemoteTech.FlightComputer
 
             if (!satellite.HasLocalControl)
             {
-                if (InputAllowed)
+                if (InputAllowed) // working connection
                 {
                     LockedThrottleNoConnect = false;
                 }
