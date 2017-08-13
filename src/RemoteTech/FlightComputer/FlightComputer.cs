@@ -360,7 +360,7 @@ namespace RemoteTech.FlightComputer
             var dfs = new DelayedFlightCtrlState(fs);
             dfs.TimeStamp += Delay;
 
-            if (StockAutopilotCommand.IsAutoPilotEngaged(this)) // remove the delay if the autopilot is engaged
+            if (StockAutopilotCommand.IsAutoPilotEngaged(this) && RTSettings.Instance.EnableSignalDelay) // remove the delay if the autopilot is engaged
             {
                 var autopilotfs = new DelayedFlightCtrlState(fs); // make copy of FS and apply no delay
 
