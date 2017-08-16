@@ -1,3 +1,40 @@
+# Version 1.8.8
+**Released August 16, 2017**
+
+What's New?
+===========
+
+* Improve the ManeuverNode detection on rising remaining dV
+* Enable Flight Computer to queue and execute a sequence of maneuver nodes at one go
+* Fix the issue of Flight Computer deleting wrong maneuver executions [Issue #729]
+* Add the missing right brace for the FASAMercruyCap2 part in RemoteTech_FAFA_Antennas.cfg [Issue #730]
+* Fix the issue of a science data transmission ignoring KSP's time wrap [PR #731]
+* Add the RT support for the Communotron 88-88-V of Vens Stock Revamp [PR #732]
+* Correct the triggered-flag usage at the end of a data transmission [PR #733]
+* Fix the issue of engine throttling ignoring the signal delay [Issue #734]
+* Fix the issue of the power consumption multiplier having no effect [Issue #735]
+* Update ModuleManager DLL to 2.8.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #729: Flight Computer deletes wrong maneuver executions [requested by: Alshain01]
+* Issue #730: Missing Right Brace in RemoteTech_FASA_Antennas.cfg [requested by: CaesarVincens]
+* Issue #734: Engine Throttle Control has no Delay [requested by: Domi1993]
+* Issue #735: Power consumption multiplier setting doesn't change usage [requested by: DrTango]
+
+Pull Requests
+-------------
+
+* PR #731: Better timing for transmitter [PR by: YamoriYuki]
+* PR #732: Add RemoteTech config for the Communotron 88-88-V from Vens Stock Revamp [PR by: zmpeg]
+* PR #733: Update to use triggered flag on science data [PR by: DMagic1]
+
+***
+
 # Version 1.8.7
 **Released June 06, 2017**
 
