@@ -361,7 +361,7 @@
       prerelease: true
       # which branch?
       on:
-        branch: develop
+        branch: taxiservice-appveyor
         # deploy on tag push only
         appveyor_repo_tag: false
 
