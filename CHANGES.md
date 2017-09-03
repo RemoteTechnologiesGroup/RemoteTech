@@ -1,5 +1,5 @@
 # Version 1.8.8
-**Released August 16, 2017**
+**Released September 03, 2017**
 
 What's New?
 ===========
@@ -13,6 +13,7 @@ What's New?
 * Correct the triggered-flag usage at the end of a data transmission [PR #733]
 * Fix the issue of engine throttling ignoring the signal delay [Issue #734]
 * Fix the issue of the power consumption multiplier having no effect [Issue #735]
+* Fix the issue of Vens Stock Revamp antennas not working [PR #737]
 * Update ModuleManager DLL to 2.8.1
 
 Detailed Changelog
@@ -32,6 +33,7 @@ Pull Requests
 * PR #731: Better timing for transmitter [PR by: YamoriYuki]
 * PR #732: Add RemoteTech config for the Communotron 88-88-V from Vens Stock Revamp [PR by: zmpeg]
 * PR #733: Update to use triggered flag on science data [PR by: DMagic1]
+* PR #737: Fix Ven's Stock Revamp Antennas [PR by: Fumblesneeze]
 
 ***
 
