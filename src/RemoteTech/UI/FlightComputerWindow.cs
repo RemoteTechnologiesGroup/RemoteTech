@@ -17,6 +17,7 @@ namespace RemoteTech.UI
         private readonly QueueFragment mQueue;
         private bool mQueueEnabled;
         private FlightComputer.FlightComputer mFlightComputer;
+        private readonly String tabModeDescString = "Switch between rover and orbital modes";
 
         private FragmentTab Tab
         {
@@ -83,10 +84,10 @@ namespace RemoteTech.UI
                 GUILayout.EndHorizontal();
 
                 // RoverComputer
-                if (GUI.Button(new Rect(2, 2, 16, 16), "<")) {
+                if (GUI.Button(new Rect(2, 2, 16, 16), new GUIContent("<", tabModeDescString))) {
                     Tab--;
                 }
-                if (GUI.Button(new Rect(16, 2, 16, 16), ">")) {
+                if (GUI.Button(new Rect(16, 2, 16, 16), new GUIContent(">", tabModeDescString))) {
                     Tab++;
                 }
 
