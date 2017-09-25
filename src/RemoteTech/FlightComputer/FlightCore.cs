@@ -173,6 +173,9 @@ namespace RemoteTech.FlightComputer
 
     public static class SteeringHelper
     {
+        private const double outputDeadband = 0.001;
+        private const float driveLimit = 1.0f;
+
         /// <summary>
         /// Automatically guides the ship to face a desired orientation
         /// </summary>
@@ -182,184 +185,19 @@ namespace RemoteTech.FlightComputer
         /// <param name="ignoreRoll">[optional] to ignore the roll</param>
         public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll)
         {
-            // Add support for roll-less targets later -- Starstrider42
-            bool fixedRoll = !ignoreRoll;
             Vessel vessel = fc.Vessel;
-            Vector3d momentOfInertia = vessel.MOI;
-            Transform vesselReference = vessel.GetTransform();
-            Vector3d torque = GetVesselTorque(vessel);
-            // -----------------------------------------------
-            // Copied from MechJeb master on 18.04.2016 with some modifications to adapt to RemoteTech
 
-            Vector3d _axisControl = new Vector3d();
-            _axisControl.x = true ? 1 : 0;
-            _axisControl.y = true ? 1 : 0;
-            _axisControl.z = fixedRoll ? 1 : 0;
-
-            Vector3d inertia = Vector3d.Scale(
-                new Vector3d(vessel.angularMomentum.x, vessel.angularMomentum.y, vessel.angularMomentum.z).Sign(),
-                Vector3d.Scale(
-                    Vector3d.Scale(vessel.angularMomentum, vessel.angularMomentum),
-                    Vector3d.Scale(torque, momentOfInertia).Invert()
-                    )
-                );
-
-            Vector3d TfV = new Vector3d(0.3, 0.3, 0.3);
-
-            double kpFactor = 3;
-            double kiFactor = 6;
-            double kdFactor = 0.5;
-            double kWlimit = 0.15;
-            double deadband = 0.0001;
-
-            Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vesselReference.rotation) * target);
-
-            Vector3d deltaEuler = delta.DeltaEuler();
-
-            // ( MoI / available torque ) factor:
-            Vector3d NormFactor = Vector3d.Scale(momentOfInertia, torque.Invert()).Reorder(132);
-
-            // Find out the real shorter way to turn were we want to.
-            // Thanks to HoneyFox
-            Vector3d tgtLocalUp = vesselReference.rotation.Inverse() * target * Vector3d.forward;
-            Vector3d curLocalUp = Vector3d.up;
-
-            double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
-            Vector2d rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
-            rotDirection = rotDirection.normalized * turnAngle / 180.0;
-
-            // And the lowest roll
-            // Thanks to Crzyrndm
-            Vector3 normVec = Vector3.Cross(target * Vector3.forward, vesselReference.up);
-            Quaternion targetDeRotated = Quaternion.AngleAxis((float)turnAngle, normVec) * target;
-            float rollError = Vector3.Angle(vesselReference.right, targetDeRotated * Vector3.right) * Math.Sign(Vector3.Dot(targetDeRotated * Vector3.right, vesselReference.forward));
-
-            var error = new Vector3d(
-                -rotDirection.y * Math.PI,
-                rotDirection.x * Math.PI,
-                rollError * Mathf.Deg2Rad
-                );
-
-            error.Scale(_axisControl);
-
-            Vector3d err = error + inertia.Reorder(132) / 2d;
-            err = new Vector3d(
-                Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
-                Math.Max(-Math.PI, Math.Min(Math.PI, err.y)),
-                Math.Max(-Math.PI, Math.Min(Math.PI, err.z)));
-
-            err.Scale(NormFactor);
-
-            // angular velocity:
-            Vector3d omega;
-            omega.x = vessel.angularVelocity.x;
-            omega.y = vessel.angularVelocity.z; // y <=> z
-            omega.z = vessel.angularVelocity.y; // z <=> y
-            omega.Scale(NormFactor);
-
-            //if (Tf_autoTune)
-            //    tuneTf(torque);
-
-            Vector3d invTf = TfV.Invert();
-            fc.pid.Kd = kdFactor * invTf;
-
-            fc.pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * fc.pid.Kd;
-            fc.pid.Kp.Scale(invTf);
-
-            fc.pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * fc.pid.Kp;
-            fc.pid.Ki.Scale(invTf);
-
-            fc.pid.intAccum = fc.pid.intAccum.Clamp(-5, 5);
-
-            // angular velocity limit:
-            var Wlimit = new Vector3d(Math.Sqrt(NormFactor.x * Math.PI * kWlimit),
-                                       Math.Sqrt(NormFactor.y * Math.PI * kWlimit),
-                                       Math.Sqrt(NormFactor.z * Math.PI * kWlimit));
-
-            Vector3d pidAction = fc.pid.Compute(err, omega, Wlimit);
+            var actuation = fc.PIDController.GetActuation(target);
 
             // deadband
-            pidAction.x = Math.Abs(pidAction.x) >= deadband ? pidAction.x : 0.0;
-            pidAction.y = Math.Abs(pidAction.y) >= deadband ? pidAction.y : 0.0;
-            pidAction.z = Math.Abs(pidAction.z) >= deadband ? pidAction.z : 0.0;
+            actuation.x = Math.Abs(actuation.x) >= outputDeadband ? actuation.x : 0.0;
+            actuation.y = Math.Abs(actuation.y) >= outputDeadband ? actuation.y : 0.0;
+            actuation.z = Math.Abs(actuation.z) >= outputDeadband ? actuation.z : 0.0;
 
-            // low pass filter,  wf = 1/Tf:
-            Vector3d act = fc.lastAct;
-            act.x += (pidAction.x - fc.lastAct.x) * (1.0 / ((TfV.x / TimeWarp.fixedDeltaTime) + 1.0));
-            act.y += (pidAction.y - fc.lastAct.y) * (1.0 / ((TfV.y / TimeWarp.fixedDeltaTime) + 1.0));
-            act.z += (pidAction.z - fc.lastAct.z) * (1.0 / ((TfV.z / TimeWarp.fixedDeltaTime) + 1.0));
-            fc.lastAct = act;
-
-            // end MechJeb import
-            //---------------------------------------
-
-            float precision = Mathf.Clamp((float)(torque.x * 20f / momentOfInertia.magnitude), 0.5f, 10f);
-            float driveLimit = Mathf.Clamp01((float)(err.magnitude * 380.0f / precision));
-
-            act.x = Mathf.Clamp((float)act.x, -driveLimit, driveLimit);
-            act.y = Mathf.Clamp((float)act.y, -driveLimit, driveLimit);
-            act.z = Mathf.Clamp((float)act.z, -driveLimit, driveLimit);
-
-            c.roll = Mathf.Clamp((float)(c.roll + act.z), -driveLimit, driveLimit);
-            c.pitch = Mathf.Clamp((float)(c.pitch + act.x), -driveLimit, driveLimit);
-            c.yaw = Mathf.Clamp((float)(c.yaw + act.y), -driveLimit, driveLimit);
-        }
-
-        private static void SetPIDParameters(FlightComputer fc, Vector3d TfV, double kdFactor, double kpFactor, double kiFactor)
-        {
-            var pid = fc.pid;
-
-            Vector3d invTf = TfV.InvertNoNaN();
-            pid.Kd = kdFactor * invTf;
-
-            pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * pid.Kd;
-            pid.Kp.Scale(invTf);
-
-            pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * pid.Kp;
-            pid.Ki.Scale(invTf);
-
-            pid.intAccum = pid.intAccum.Clamp(-5, 5);
-        }
-
-        public static Vector3d SwapYZ(Vector3d input)
-        {
-            return new Vector3d(input.x, input.z, input.y);
-        }
-
-        public static Vector3d Pow(Vector3d vector, float exponent)
-        {
-            return new Vector3d(Math.Pow(vector.x, exponent), Math.Pow(vector.y, exponent), Math.Pow(vector.z, exponent));
-        }
-
-        public static Vector3d InvertNoNaN(this Vector3d vector)
-        {
-            return new Vector3d(vector.x != 0 ? 1 / vector.x : 0, vector.y != 0 ? 1 / vector.y : 0, vector.z != 0 ? 1 / vector.z : 0);
-        }
-
-        // Copied from MechJeb master on June 27, 2014
-        private class Matrix3x3
-        {
-            //row index, then column index
-            private readonly double[,] e = new double[3, 3];
-
-            public double this[int i, int j]
-            {
-                get { return e[i, j]; }
-                set { e[i, j] = value; }
-            }
-
-            public static Vector3d operator *(Matrix3x3 m, Vector3d v)
-            {
-                Vector3d ret = Vector3d.zero;
-                for (int i = 0; i < 3; i++)
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        ret[i] += m.e[i, j] * v[j];
-                    }
-                }
-                return ret;
-            }
+            // update the flight controls
+            c.pitch = Mathf.Clamp((float) actuation.x, -driveLimit, driveLimit);
+            c.roll = !ignoreRoll ? Mathf.Clamp((float) actuation.y, -driveLimit, driveLimit) : 0.0f;
+            c.yaw = Mathf.Clamp((float) actuation.z, -driveLimit, driveLimit);
         }
 
         /// <summary>

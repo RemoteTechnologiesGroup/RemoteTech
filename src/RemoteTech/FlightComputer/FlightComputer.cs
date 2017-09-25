@@ -121,15 +121,7 @@ namespace RemoteTech.FlightComputer
 
 
         /// <summary>Proportional Integral Derivative vessel controller.</summary>
-        public PIDControllerV3 pid { get; }
-        // Flight controller parameters from MechJeb, copied from master on June 27, 2014
-        public Vector3d lastAct { get; set; }
-        public double Tf = 0.3;
-        public double TfMin = 0.1;
-        public double TfMax = 0.5;
-        public double kpFactor = 3;
-        public double kiFactor = 6;
-        public double kdFactor = 0.5;
+        public PIDController PIDController;
 
         /// <summary>The window of the flight computer.</summary>
         public FlightComputerWindow Window
@@ -151,13 +143,13 @@ namespace RemoteTech.FlightComputer
             SignalProcessor = s;
             Vessel = s.Vessel;
             SanctionedPilots = new List<Action<FlightCtrlState>>();
-            pid = new PIDControllerV3(Vector3d.zero, Vector3d.zero, Vector3d.zero, 1, -1);
-            setPIDParameters();
-            lastAct = Vector3d.zero;
             LastTarget = TargetCommand.WithTarget(null);
 
             var attitude = AttitudeCommand.Off();
             _activeCommands[attitude.Priority] = attitude;
+
+            PIDController = new PIDController();
+            PIDController.SetVessel(Vessel);
 
             GameEvents.onVesselChange.Add(OnVesselChange);
             GameEvents.onVesselSwitching.Add(OnVesselSwitching);
@@ -323,8 +315,8 @@ namespace RemoteTech.FlightComputer
             // set flight control.
             Vessel.OnFlyByWire = OnFlyByWirePre + Vessel.OnFlyByWire + OnFlyByWirePost;
 
-            // Update proportional controller for changes in ship state
-            updatePIDParameters();
+            //Update PID loop
+            PIDController.OnFixedUpdate();
 
             // Send updates for Target
             if (Vessel == FlightGlobals.ActiveVessel && FlightGlobals.fetch.VesselTarget != LastTarget.Target)
@@ -521,44 +513,6 @@ namespace RemoteTech.FlightComputer
             {
                 pilot.Invoke(fcs);
             }
-        }
-
-        // used to set PID parameters.
-        public void setPIDParameters() 
-        {
-            Vector3d TfV = new Vector3d(0.3, 0.3, 0.3);
-            Vector3d invTf = TfV.Invert();
-            pid.Kd = kdFactor * invTf;
-
-            pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * pid.Kd;
-            pid.Kp.Scale(invTf);
-
-            pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * pid.Kp;
-            pid.Ki.Scale(invTf);
-
-            pid.intAccum = pid.intAccum.Clamp(-5, 5);
-        }
-
-        // Calculations of Tf are not safe during FlightComputer constructor
-        // Probably because the ship is only half-initialized...
-        public void updatePIDParameters()
-        {
-            if (Vessel != null)
-            {
-                Vector3 torque = SteeringHelper.GetVesselTorque(Vessel);
-                var CoM = Vessel.CoM;
-                var MoI = Vessel.MOI;
-
-                Vector3d ratio = new Vector3d(
-                                 torque.x != 0 ? MoI.x / torque.x : 0,
-                                 torque.y != 0 ? MoI.y / torque.y : 0,
-                                 torque.z != 0 ? MoI.z / torque.z : 0
-                             );
-
-                Tf = Mathf.Clamp((float)ratio.magnitude / 20f, 2 * TimeWarp.fixedDeltaTime, 1f);
-                Tf = Mathf.Clamp((float)Tf, (float)TfMin, (float)TfMax);
-            }
-            setPIDParameters();
         }
 
         /// <summary>Orders the command queue to be chronological.</summary>
