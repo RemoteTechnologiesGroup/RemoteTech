@@ -61,9 +61,10 @@ namespace RemoteTech.FlightComputer
             Target = new Quaternion();
             RollControlRange = 5.0 * Mathf.Deg2Rad;
 
-            pitchRatePI = new PIDLoop(1, 0.1, 0, extraUnwind: true);
-            yawRatePI = new PIDLoop(1, 0.1, 0, extraUnwind: true);
-            rollRatePI = new PIDLoop(1, 0.1, 0, extraUnwind: true);
+            //Use http://www.ni.com/white-paper/3782/en/ to fine-tune 
+            pitchRatePI = new PIDLoop(2, 0.4, 0, extraUnwind: true);
+            yawRatePI = new PIDLoop(2, 0.4, 0, extraUnwind: true);
+            rollRatePI = new PIDLoop(2, 0.4, 0, extraUnwind: true);
 
             pitchPI = new TorquePI();
             yawPI = new TorquePI();
