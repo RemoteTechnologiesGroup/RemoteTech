@@ -289,6 +289,7 @@ namespace RemoteTech.FlightComputer
             {
                 Vessel = SignalProcessor.Vessel;
                 RoverComputer.SetVessel(Vessel);
+                PIDController.SetVessel(Vessel);
             }
 
             // only handle onFixedUpdate if the ship is unpacked
@@ -311,6 +312,7 @@ namespace RemoteTech.FlightComputer
                 SanctionedPilots.Clear();
                 Vessel = SignalProcessor.Vessel;
                 RoverComputer.SetVessel(Vessel);
+                PIDController.SetVessel(Vessel);
             }
             // set flight control.
             Vessel.OnFlyByWire = OnFlyByWirePre + Vessel.OnFlyByWire + OnFlyByWirePost;
@@ -555,6 +557,7 @@ namespace RemoteTech.FlightComputer
             {
                 Vessel = SignalProcessor.Vessel;
                 RoverComputer.SetVessel(Vessel);
+                PIDController.SetVessel(Vessel);
             }
 
             // Read Flight computer informations
