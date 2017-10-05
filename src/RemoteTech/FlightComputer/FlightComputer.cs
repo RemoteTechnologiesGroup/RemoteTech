@@ -599,8 +599,7 @@ namespace RemoteTech.FlightComputer
                     {
                         if (cmd is ManeuverCommand)
                         {
-                            // TODO: Need better text
-                            RTUtil.ScreenMessage("You missed the maneuver burn!");
+                            RTUtil.ScreenMessage("A maneuver burn is required");
                             continue;
                         }
 
@@ -615,8 +614,7 @@ namespace RemoteTech.FlightComputer
                             {
                                 if (cmd is BurnCommand)
                                 {
-                                    // TODO: Need better text
-                                    RTUtil.ScreenMessage("You missed the burn command!");
+                                    RTUtil.ScreenMessage("A burn command is required");
                                     continue;
                                 }
 

@@ -363,7 +363,7 @@ namespace RemoteTech.FlightComputer
         public TorquePI()
         {
             Loop = new PIDLoop();
-            Ts = 2;  /* TODO: use high pass filter to measure output noise and decrease this value when no noise, and increase when it oscillates */
+            Ts = 2;
             TorqueAdjust = new MovingAverage();
         }
 
