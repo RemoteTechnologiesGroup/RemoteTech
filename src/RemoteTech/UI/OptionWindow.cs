@@ -182,7 +182,7 @@ namespace RemoteTech.UI
         }
 
         /// <summary>
-        /// todo
+        /// Draw current GUI content based on the user selection
         /// </summary>
         private void drawOptionContent()
         {
@@ -477,7 +477,7 @@ namespace RemoteTech.UI
         }
 
         /// <summary>
-        /// todo
+        /// Paint the texture with given color
         /// </summary>
         /// <param name="tex"></param>
         /// <param name="colorTex"></param>
@@ -489,7 +489,7 @@ namespace RemoteTech.UI
         }
 
         /// <summary>
-        /// todo
+        /// Draw RBG color sliders
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>

@@ -107,7 +107,7 @@ namespace RemoteTech.Modules
                     //float x64PacketInterval = (Time.time - time1);
                     //RTLog.Notify("Changing RnDCommsStream timeout from {0} to {1}", PacketInterval, x64PacketInterval);
 
-                    //TODO (porting to 1.2): check if scienceData.baseTransmitValue alone or with scienceData.transmitBonus
+                    //(porting to 1.2): check if scienceData.baseTransmitValue alone or with scienceData.transmitBonus
                     //commStream = new RnDCommsStream(subject, scienceData.dataAmount, x64PacketInterval,
                     commStream = new RnDCommsStream(subject, scienceData.dataAmount, PacketInterval,
                                             scienceData.baseTransmitValue, false, ResearchAndDevelopment.Instance);
