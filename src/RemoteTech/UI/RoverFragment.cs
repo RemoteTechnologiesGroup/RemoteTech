@@ -122,8 +122,8 @@ namespace RemoteTech.UI
 
         private int selectedModeIndex = 0;
         private bool MouseClick = false;
-        private readonly GUIContent[] Tabs = { new GUIContent("TGT", "Drive to the latitude and longitude of a body."), //TODO: Add ability to drive towards a vessel target
-                                               new GUIContent("HDT", "Drive with specific heading and distance."),
+        private readonly GUIContent[] Tabs = { new GUIContent("TGT", "Drive to the latitude and longitude of a body or towards vessel target."),
+                                               new GUIContent("HDG", "Drive with specific heading and distance."),
                                                new GUIContent("FINE", "Drive with specific turning or distance.") };
         private enum RoverModes { TargetMode = 0,
                                   HeadingMode = 1,
@@ -199,7 +199,7 @@ namespace RemoteTech.UI
         {
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Wheel: ", "How much to steer"));
+                GUILayout.Label(new GUIContent("Steer: ", "How much to turn"));
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(new GUIContent(Math.Abs(mSteering).ToString("P"), ""));
                 if (mSteering != 0) {
@@ -225,7 +225,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Dist.", "Distance to drive"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("Dist", "Distance to drive"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC2");
                 RTUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(m)", "Distance to drive"), GUI.skin.textField, GUILayout.Width(40));
@@ -234,10 +234,10 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Speed", "Speed to keep, negative for reverse"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("Speed", "Speed to maintain, negative for reverse"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC3");
                 RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(m/s)", "Speed to keep, negative for reverse"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(m/s)", "Speed to maintain, negative for reverse"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
 
@@ -260,7 +260,7 @@ namespace RemoteTech.UI
         {
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Wheel: ", "How sharp to turn at max"));
+                GUILayout.Label(new GUIContent("Steer: ", "How sharp to turn at max"));
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(new GUIContent(mSteerClamp.ToString("P"), "How sharp to turn at max"));
                 GUILayout.Label(new GUIContent("max", "How sharp to turn at max"), GUILayout.Width(40));
@@ -271,7 +271,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Hdg.", "Heading to keep"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("Hdg", "Heading to maintain"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC1");
                 RTUtil.TextField(ref mHeading, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label("(°)", GUI.skin.textField, GUILayout.Width(40));
@@ -280,7 +280,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Dist.", "Distance to drive"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("Dist", "Distance to drive"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC2");
                 RTUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label("(m)", GUI.skin.textField, GUILayout.Width(40));
@@ -289,10 +289,10 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Speed", "Speed to keep"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("Speed", "Speed to maintain"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC3");
                 RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(m/s)", "Speed to keep"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(m/s)", "Speed to maintain"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
 
@@ -303,6 +303,9 @@ namespace RemoteTech.UI
 
         private void DrawTargetContent()
         {
+            string targetTypeString = "Body coordinations";
+            ITargetable Target = mFlightComputer.Vessel.targetObject;
+
             if (GameSettings.MODIFIER_KEY.GetKey() && ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) != MouseClick)) // on lookout for mouse click on body
             {
                 MouseClick = Input.GetMouseButton(0) || Input.GetMouseButton(1);
@@ -311,15 +314,22 @@ namespace RemoteTech.UI
                 {
                     Latitude = latlon.x;
                     Longitude = latlon.y;
-
-                    if (Input.GetMouseButton(1))
-                        mFlightComputer.Enqueue(DriveCommand.Coord(mSteerClamp, Latitude, Longitude, Speed));
+                }
+            }
+            else if (Target != null) // only if target is vessel not world coord
+            {
+                if (Target.GetType().ToString().Equals("Vessel"))
+                {
+                    Vessel TargetVessel = Target as Vessel;
+                    Latitude = (float) TargetVessel.latitude;
+                    Longitude = (float) TargetVessel.longitude;
+                    targetTypeString = "Designated Vessel";
                 }
             }
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Wheel: ", "How sharp to turn at max"));
+                GUILayout.Label(new GUIContent("Steer: ", "How sharp to turn at max"));
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(new GUIContent(mSteerClamp.ToString("P"), "How sharp to turn at max"));
                 GUILayout.Label(new GUIContent("max", "How sharp to turn at max"), GUILayout.Width(40));
@@ -328,9 +338,11 @@ namespace RemoteTech.UI
 
             RTUtil.HorizontalSlider(ref mSteerClamp, 0, 1);
 
+            GUILayout.Label(new GUIContent("Mode: "+targetTypeString));
+
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("LAT.", "Latitude to drive to"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("LAT", "Latitude to drive to"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC1");
                 RTUtil.TextField(ref mLatitude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(°)", "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates"), GUI.skin.textField, GUILayout.Width(40));
@@ -339,7 +351,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("LON.", "Longitude to drive to"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("LON", "Longitude to drive to"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC2");
                 RTUtil.TextField(ref mLongditude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label(new GUIContent("(°)", "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates"), GUI.skin.textField, GUILayout.Width(40));
@@ -348,10 +360,10 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Speed", "Speed to keep"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent("Speed", "Speed to maintain"), GUILayout.Width(50));
                 GUI.SetNextControlName("RC3");
                 RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(m/s)", "Speed to keep"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(m/s)", "Speed to maintain"), GUI.skin.textField, GUILayout.Width(40));
             }
             GUILayout.EndHorizontal();
 

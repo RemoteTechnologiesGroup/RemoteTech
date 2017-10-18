@@ -16,6 +16,8 @@ namespace RemoteTech.FlightComputer
             var up = Vector3.zero;
             bool ignoreRoll = false;
 
+            f.PIDController.setPIDParameters(FlightComputer.PIDKp, FlightComputer.PIDKi, FlightComputer.PIDKd);
+
             switch (frame)
             {
                 case ReferenceFrame.Orbit:
@@ -185,8 +187,6 @@ namespace RemoteTech.FlightComputer
         /// <param name="ignoreRoll">[optional] to ignore the roll</param>
         public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll)
         {
-            Vessel vessel = fc.Vessel;
-
             var actuation = fc.PIDController.GetActuation(target);
 
             // deadband

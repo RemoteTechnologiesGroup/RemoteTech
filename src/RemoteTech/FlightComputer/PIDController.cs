@@ -55,16 +55,16 @@ namespace RemoteTech.FlightComputer
             set { this.rollControlRange = Math.Max(EPSILON, Math.Min(Math.PI, value)); }
         }
 
-        public PIDController()
+        public PIDController(double kp, double ki, double kd, double maxoutput = double.MaxValue, double minoutput = double.MinValue, bool extraUnwind = false)
         {
             Vessel = null;
             Target = new Quaternion();
             RollControlRange = 5.0 * Mathf.Deg2Rad;
 
-            //Use http://www.ni.com/white-paper/3782/en/ to fine-tune 
-            pitchRatePI = new PIDLoop(2, 0.4, 0, extraUnwind: true);
-            yawRatePI = new PIDLoop(2, 0.4, 0, extraUnwind: true);
-            rollRatePI = new PIDLoop(2, 0.4, 0, extraUnwind: true);
+            //Use http://www.ni.com/white-paper/3782/en/ to fine-tune
+            pitchRatePI = new PIDLoop(kp, ki, kd, maxoutput, minoutput, extraUnwind);
+            yawRatePI = new PIDLoop(kp, ki, kd, maxoutput, minoutput, extraUnwind);
+            rollRatePI = new PIDLoop(kp, ki, kd, maxoutput, minoutput, extraUnwind);
 
             pitchPI = new TorquePI();
             yawPI = new TorquePI();
@@ -76,6 +76,23 @@ namespace RemoteTech.FlightComputer
         public void SetVessel(Vessel vessel)
         {
             this.Vessel = vessel;
+        }
+
+        public void setPIDParameters(double kp, double ki, double kd)
+        {
+            pitchRatePI.Kd = kp;
+            pitchRatePI.Ki = ki;
+            pitchRatePI.Kd = kd;
+
+            yawRatePI.Kd = kp;
+            yawRatePI.Ki = ki;
+            yawRatePI.Kd = kd;
+
+            rollRatePI.Kd = kp;
+            rollRatePI.Ki = ki;
+            rollRatePI.Kd = kd;
+
+            Reset();
         }
 
         public void OnFixedUpdate()
@@ -121,7 +138,7 @@ namespace RemoteTech.FlightComputer
 
             for (int i = 0; i < 3; i++)
             {
-                Actuation[i] = TargetTorque[i] / Torque[i];
+                Actuation[i] = (Torque[i] == 0.0) ? 0.0 :TargetTorque[i] / Torque[i];
                 //removed the value modifications/clamps as the raw output is desired and can be post-processed.
             }
 

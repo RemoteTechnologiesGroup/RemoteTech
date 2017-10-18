@@ -122,6 +122,8 @@ namespace RemoteTech.FlightComputer
 
         /// <summary>Proportional Integral Derivative vessel controller.</summary>
         public PIDController PIDController;
+        public static readonly double PIDKp = 2.0, PIDKi = 0.4, PIDKd = 0.0;
+        public static readonly double RoverPIDKp = 1.0, RoverPIDKi = 0.0, RoverPIDKd = 0.0;
 
         /// <summary>The window of the flight computer.</summary>
         public FlightComputerWindow Window
@@ -148,14 +150,15 @@ namespace RemoteTech.FlightComputer
             var attitude = AttitudeCommand.Off();
             _activeCommands[attitude.Priority] = attitude;
 
-            PIDController = new PIDController();
+            //Use http://www.ni.com/white-paper/3782/en/ to fine-tune
+            PIDController = new PIDController(PIDKp, PIDKi, PIDKd, 1.0, -1.0, true);
             PIDController.SetVessel(Vessel);
 
             GameEvents.onVesselChange.Add(OnVesselChange);
             GameEvents.onVesselSwitching.Add(OnVesselSwitching);
             GameEvents.onGameSceneSwitchRequested.Add(OnSceneSwitchRequested);
 
-            RoverComputer = new RoverComputer();
+            RoverComputer = new RoverComputer(this, RoverPIDKp, RoverPIDKi, RoverPIDKd);
             RoverComputer.SetVessel(Vessel);
 
             // Add RT listeners from KSP Autopilot
