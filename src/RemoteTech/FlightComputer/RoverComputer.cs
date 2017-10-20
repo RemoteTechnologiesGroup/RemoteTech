@@ -115,14 +115,15 @@ namespace RemoteTech.FlightComputer
              *                           x degrees around the x axis, and y degrees around the y axis
              *                           in that order.
              * 
-             * Unity Q.Euler(0,0,0) isn't matched to KSP's rotation "(0,0,0)" (-90, 40, 90) so need to 
+             * Unity Q.Euler(0,0,0) isn't matched to KSP's rotation "(0,0,0)" (-90, varying UP-axis, 90) so need to 
              * match the target rotation to the KSP's rotation.
              * 
              * Rover-specific rotation is Forward (y) to HDG 0, Up (x) to North and
              * Right (z) to East.
              */
-            //const float KSPRotX = -90f, KSPRotY = 40f, KSPRotZ = 90f; // Kerbin
-            const float KSPRotX = -90f, KSPRotY = -10f, KSPRotZ = 90f; // Mun
+            const float KSPRotXAxis = -90f, KSPRotZAxis = 90f;
+            double AngleFromUpAxis = Mathf.Rad2Deg * Math.Atan(-mVessel.upAxis.z / -mVessel.upAxis.x);
+            float KSPRotYAxis = (float) -AngleFromUpAxis;
 
             switch (dc.mode)
             {
@@ -130,15 +131,15 @@ namespace RemoteTech.FlightComputer
                     mRoverRot = mVessel.ReferenceTransform.rotation;
                     break;
                 case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Distance:
-                    targetRotation = Quaternion.Euler(KSPRotX, KSPRotY, KSPRotZ);
+                    targetRotation = Quaternion.Euler(KSPRotXAxis, KSPRotYAxis, KSPRotZAxis);
                     break;
                 case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.DistanceHeading:
-                    targetRotation = Quaternion.Euler(KSPRotX - dc.target2, KSPRotY, KSPRotZ);
+                    targetRotation = Quaternion.Euler(KSPRotXAxis - dc.target2, KSPRotYAxis, KSPRotZAxis);
                     break;
                 case RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Coord:
                     mTargetLat = dc.target;
                     mTargetLon = dc.target2;
-                    targetRotation = Quaternion.Euler(KSPRotX - TargetHDG, KSPRotY, KSPRotZ);
+                    targetRotation = Quaternion.Euler(KSPRotXAxis - TargetHDG, KSPRotYAxis, KSPRotZAxis);
                     break;
             }
 

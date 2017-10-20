@@ -18,6 +18,7 @@ namespace RemoteTech.UI
         private bool mQueueEnabled;
         private FlightComputer.FlightComputer mFlightComputer;
         private readonly String tabModeDescString = "Switch between rover and orbital modes";
+        private static readonly String appTitle = "Flight Computer";
 
         private FragmentTab Tab
         {
@@ -39,7 +40,7 @@ namespace RemoteTech.UI
         }
 
         public FlightComputerWindow(FlightComputer.FlightComputer fc)
-            : base(Guid.NewGuid(), "FlightComputer", new Rect(100, 100, 0, 0), WindowAlign.Floating)
+            : base(Guid.NewGuid(), appTitle, new Rect(100, 100, 0, 0), WindowAlign.Floating)
         {
             mSavePosition = true;
             mFlightComputer = fc;
@@ -111,11 +112,11 @@ namespace RemoteTech.UI
             mQueueEnabled = !mQueueEnabled;
             if(mQueueEnabled)
             {
-                this.Title = "Flight Computer: " + mFlightComputer.Vessel.vesselName.Substring(0, Math.Min(25, mFlightComputer.Vessel.vesselName.Length));
+                this.Title = appTitle + ": " + mFlightComputer.Vessel.vesselName.Substring(0, Math.Min(25, mFlightComputer.Vessel.vesselName.Length));
             }
             else
             {
-                this.Title = "Flight Computer";
+                this.Title = appTitle;
             }
 
         }
