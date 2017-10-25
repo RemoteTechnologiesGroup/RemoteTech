@@ -9,15 +9,17 @@ namespace RemoteTech.UI
         {
             Attitude = 0,
             Rover = 1,
+            Power = 2,
         }
 
         private FragmentTab mTab = FragmentTab.Attitude;
         private readonly AttitudeFragment mAttitude;
         private readonly RoverFragment mRover;
         private readonly QueueFragment mQueue;
+        private readonly PowerFragment mPower;
         private bool mQueueEnabled;
         private FlightComputer.FlightComputer mFlightComputer;
-        private readonly String tabModeDescString = "Switch between rover and orbital modes";
+        private readonly String tabModeDescString = "Switch to Attitude, Rover or Power mode.";
         private static readonly String appTitle = "Flight Computer";
 
         private FragmentTab Tab
@@ -28,7 +30,7 @@ namespace RemoteTech.UI
             }
             set
             {
-                int NumberOfTabs = 2;
+                int NumberOfTabs = 3;
                 if ((int)value >= NumberOfTabs) {
                     mTab = (FragmentTab)0;
                 } else if ((int)value < 0) {
@@ -46,6 +48,7 @@ namespace RemoteTech.UI
             mFlightComputer = fc;
             mAttitude = new AttitudeFragment(fc, () => OnQueue());
             mRover = new RoverFragment(fc, () => OnQueue());
+            mPower = new PowerFragment(fc, () => OnQueue());
             mQueue = new QueueFragment(fc);
             mQueueEnabled = false;
         }
@@ -57,6 +60,7 @@ namespace RemoteTech.UI
             mFlightComputer.OnNewCommandPop += mAttitude.getActiveFlightMode;
 
             mAttitude.getActiveFlightMode();
+            mPower.getActivePowerMode();
         }
 
         public override void Hide()
@@ -79,6 +83,9 @@ namespace RemoteTech.UI
                             break;
                         case FragmentTab.Rover:
                             mRover.Draw();
+                            break;
+                        case FragmentTab.Power:
+                            mPower.Draw();
                             break;
                     }
                 }

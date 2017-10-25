@@ -120,6 +120,7 @@ namespace RemoteTech.FlightComputer.Commands
                 case "ExternalAPICommand":    { command = new ExternalAPICommand(); break; }
                 case "PartActionCommand":     { command = new PartActionCommand(); break; }
                 case "StockAutopilotCommand": { command = new StockAutopilotCommand(); break; }
+                case "HibernationCommand":    { command = new HibernationCommand(); break; }
             }
 
             if (command != null)
