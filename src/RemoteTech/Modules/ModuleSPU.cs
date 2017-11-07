@@ -34,6 +34,7 @@ namespace RemoteTech.Modules
         public FlightComputer.FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel => vessel;
         public bool IsMaster => Satellite != null && ReferenceEquals(Satellite.SignalProcessor, this);
+        public bool CanRelaySignal => AllowSignalRelay;
 
         /* KSP fields */
         [KSPField(isPersistant = true)] public bool IsRTPowered;
@@ -41,6 +42,7 @@ namespace RemoteTech.Modules
         [KSPField(isPersistant = true)] public bool IsRTCommandStation = false;
         [KSPField(isPersistant = true)] public int RTCommandMinCrew = 6;
         [KSPField(isPersistant = true)] public bool AlwaysAllowLocalControl = false;
+        [KSPField(isPersistant = true)] public bool AllowSignalRelay = true;
 
         [KSPField] public bool ShowGUI_Status = true;
         [KSPField] public bool ShowEditor_Type = true;

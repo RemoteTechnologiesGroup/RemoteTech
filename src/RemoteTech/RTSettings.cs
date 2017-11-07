@@ -69,6 +69,7 @@ namespace RemoteTech
         [Persistent] public Color OmniConnectionColor;
         [Persistent] public Color ActiveConnectionColor;
         [Persistent] public Color RemoteStationColorDot;
+        [Persistent] public Color DirectConnectionColor = new Color(0, 0.749f, 0.952f, 1); //TODO: remove this after some significant time - 7 Nov 2017
         [Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 

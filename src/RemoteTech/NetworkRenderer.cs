@@ -324,6 +324,12 @@ namespace RemoteTech
                         return RTSettings.Instance.ActiveConnectionColor;
                 }
             }
+
+            var satA = RTCore.Instance.Satellites[edge.A.Guid];
+            var satB = RTCore.Instance.Satellites[edge.B.Guid];
+            if ((satA != null && !satA.CanRelaySignal) || (satB != null && !satB.CanRelaySignal))
+                return RTSettings.Instance.DirectConnectionColor;
+
             if (edge.Type == LinkType.Omni)
                 return RTSettings.Instance.OmniConnectionColor;
             if (edge.Type == LinkType.Dish)
