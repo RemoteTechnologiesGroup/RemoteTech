@@ -27,7 +27,7 @@ namespace RemoteTech.Modules
         {
             Vessel = v;
             Powered = ppms.GetBool("IsRTPowered");
-            CanRelaySignal = ppms.HasValue("AllowSignalRelay")? ppms.GetBool("AllowSignalRelay") : true;
+            CanRelaySignal = RTSettings.Instance.SignalRelayEnabled? (ppms.HasValue("AllowSignalRelay")? ppms.GetBool("AllowSignalRelay") : true) : true;
 
             // get the crew count from the vessel
             var crewcount = v.GetVesselCrew().Count;
