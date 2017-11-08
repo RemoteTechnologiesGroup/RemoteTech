@@ -46,7 +46,7 @@ namespace RemoteTech
         /// <summary>Gets if the satellite is capable to forward other signals.</summary>
         public bool CanRelaySignal
         {
-            get { return SignalProcessors.Any(s => s.CanRelaySignal && !(s is ModuleSPUPassive)); }
+            get { return RTSettings.Instance.SignalRelayEnabled ? SignalProcessors.Any(s => s.CanRelaySignal && !(s is ModuleSPUPassive)) : true; }
         }
 
         /// <summary>Gets if the satellite is a RemoteTech command station.</summary>
