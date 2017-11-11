@@ -1,4 +1,5 @@
-﻿using RemoteTech.SimpleTypes;
+﻿using RemoteTech.Modules;
+using RemoteTech.SimpleTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,12 @@ namespace RemoteTech
         public bool Powered
         {
             get { return SignalProcessors.Any(s => s.Powered); }
+        }
+
+        /// <summary>Gets if the satellite is capable to forward other signals.</summary>
+        public bool CanRelaySignal
+        {
+            get { return RTSettings.Instance.SignalRelayEnabled ? SignalProcessors.Any(s => s.CanRelaySignal && !(s is ModuleSPUPassive)) : true; }
         }
 
         /// <summary>Gets if the satellite is a RemoteTech command station.</summary>

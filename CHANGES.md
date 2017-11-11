@@ -1,3 +1,33 @@
+# Version 1.8.9
+**Released November 11, 2017**
+
+What's New?
+===========
+
+* Functionality of relaying connection signals through a designated probe core (For third-party mods) [Issue #532]
+* Modernised the PID controller in both orbital and rover modes [Issue #674]
+* Added two new power commands to hibernate (probe hibernation and antenna shutdown) and wake up [Issue #739]
+* Added support for VDS Hullcam's probe core [PR #531]
+* Added support for the drone core of Mark IV Spaceplane System [PR #672]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #532: Request: Non-Relay ModuleSPU [requested by: NathanKell]
+* Issue #674: The rover steering and throttle PID's need work [requested by: mferrie]
+* Issue #739: Feature Request: Resource locking control [requested by: AkiraR]
+
+Pull Requests
+-------------
+
+* PR #531: VDS Hullcam Support [PR by: schnip]
+* PR #672: RemoteTech Compatibility Patch For Mark IV Spaceplane System [PR by: Sandriell]
+
+***
+
 # Version 1.8.8
 **Released September 03, 2017**
 

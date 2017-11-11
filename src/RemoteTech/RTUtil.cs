@@ -217,12 +217,11 @@ namespace RemoteTech
             return new Guid(s.ToString());
         }
 
-        public static bool HasValue(this ProtoPartModuleSnapshot ppms, String value)
+        public static bool HasValue(this ProtoPartModuleSnapshot ppms, String name)
         {
             var n = new ConfigNode();
             ppms.Save(n);
-            bool result;
-            return Boolean.TryParse(value, out result) && result;
+            return n.HasValue(name);
         }
 
         public static bool GetBool(this ProtoPartModuleSnapshot ppms, String value)

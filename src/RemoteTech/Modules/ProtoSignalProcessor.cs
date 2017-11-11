@@ -21,11 +21,13 @@ namespace RemoteTech.Modules
         public Vessel Vessel { get; }
         public FlightComputer.FlightComputer FlightComputer => null;
         public bool IsMaster => true;
+        public bool CanRelaySignal { get; }
 
         public ProtoSignalProcessor(ProtoPartModuleSnapshot ppms, Vessel v)
         {
             Vessel = v;
             Powered = ppms.GetBool("IsRTPowered");
+            CanRelaySignal = RTSettings.Instance.SignalRelayEnabled? (ppms.HasValue("AllowSignalRelay")? ppms.GetBool("AllowSignalRelay") : true) : true;
 
             // get the crew count from the vessel
             var crewcount = v.GetVesselCrew().Count;

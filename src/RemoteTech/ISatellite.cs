@@ -36,5 +36,7 @@ namespace RemoteTech
         /// <summary>Called on connection refresh to update the connections.</summary>
         /// <param name="routes">List of network routes.</param>
         void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes);
+        /// <summary>Gets if the satellite is capable to forward other signals.</summary>
+        bool CanRelaySignal { get; }
     }
 }

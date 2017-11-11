@@ -113,6 +113,23 @@ namespace RemoteTech.FlightComputer.Commands
                 mStartHibernation = false;
                 return false;
             }
+            else
+            {
+                //drop any queued non-power command up to next hiberation command (wake)
+                var cmdsToDrop = new List<ICommand>();
+                for(int i=0; i<fc.QueuedCommands.Count(); i++)
+                {
+                    if (!(fc.QueuedCommands.ElementAt(i) is HibernationCommand))
+                        cmdsToDrop.Add(fc.QueuedCommands.ElementAt(i));
+                    else
+                        break;//found next hiberation command
+                }
+
+                for (int i = 0; i < cmdsToDrop.Count; i++)
+                {
+                    fc.Remove(cmdsToDrop[i]);
+                }
+            }
 
             return false;
         }

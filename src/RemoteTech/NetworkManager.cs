@@ -112,7 +112,14 @@ namespace RemoteTech
         public IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
         {
             if (!s.Powered) return Enumerable.Empty<NetworkLink<ISatellite>>();
-            return Graph[s.Guid].Where(l => l.Target.Powered);
+            if (RTSettings.Instance.SignalRelayEnabled)
+            {
+                return Graph[s.Guid].Where(l => l.Target.Powered && l.Target.CanRelaySignal);
+            }
+            else
+            {
+                return Graph[s.Guid].Where(l => l.Target.Powered);
+            }
         }
 
         private void UpdateGraph(ISatellite a)
@@ -245,6 +252,7 @@ namespace RemoteTech
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         Color ISatellite.MarkColor { get { return MarkColor; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
+        bool ISatellite.CanRelaySignal { get { return true; } } //not sure if should relay signal. Mission Control can "do" everything isnt it?
 
         public Guid mGuid { get; private set; }
         public IEnumerable<IAntenna> MissionControlAntennas { get { return Antennas; } }

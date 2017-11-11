@@ -16,6 +16,7 @@ namespace RemoteTech
         bool Powered { get; }
         bool IsCommandStation { get; }
         bool IsMaster { get; }
+        bool CanRelaySignal { get; }
 
         // Reserved for Flight Computer
         FlightComputer.FlightComputer FlightComputer { get; }
