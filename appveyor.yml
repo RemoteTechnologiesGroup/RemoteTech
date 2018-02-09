@@ -13,7 +13,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.8.8
+  version: 1.8.9
 
   # branches
   branches:
@@ -48,7 +48,7 @@
   # environment variables
   environment:
     DLL_ARCH_PASS: # KSP DLLs archive password (secured)
-      secure: ba1r8SHmxZsE9PZU9+DuqDubiyAmkt9/MSU4vR4js7c=
+      secure: vfhIenu/wQqC0Yuy4u4tOQ==
 
   matrix:
     # set this flag to immediately finish build once one of the jobs fails.
@@ -65,7 +65,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.3_RELEASE_DLLs.7z
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_3_1.zip
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
@@ -148,7 +148,7 @@
       release: RemoteTech-$(appveyor_build_version)
       # auth token to push on github
       auth_token:
-        secure: "inL59Ha8LLxMmwFmkqagZvk7G8L0I4RxbUAJgBDgX0m8rpshnSdXar2vHWdNvdAl"
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y
       # is it a draft release?
       draft: false
       # is a a pre-release?
@@ -199,7 +199,7 @@
     # Github
     - provider: GitHubPullRequest
       auth_token:
-        secure: "inL59Ha8LLxMmwFmkqagZvk7G8L0I4RxbUAJgBDgX0m8rpshnSdXar2vHWdNvdAl"
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y
 
     # Slack using webhook
     - provider: Slack
@@ -218,7 +218,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.8.8-{build}-{branch}
+  version: 1.8.9-{build}-{branch}
 
   # branches
   branches:
@@ -253,7 +253,7 @@
   # environment variables
   environment:
     DLL_ARCH_PASS: # KSP DLLs archive password (secured)
-      secure: ba1r8SHmxZsE9PZU9+DuqDubiyAmkt9/MSU4vR4js7c=
+      secure: vfhIenu/wQqC0Yuy4u4tOQ==
 
   matrix:
     # set this flag to immediately finish build once one of the jobs fails.
@@ -270,7 +270,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z http://tzcorporation.com/ksp/build/KSP_1.3_RELEASE_DLLs.7z
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_3_1.zip
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
@@ -354,7 +354,7 @@
       release: RemoteTech-$(appveyor_build_version)
       # auth token to push on github
       auth_token:
-        secure: "inL59Ha8LLxMmwFmkqagZvk7G8L0I4RxbUAJgBDgX0m8rpshnSdXar2vHWdNvdAl"
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y
       # is it a draft release?
       draft: false
       # is a a pre-release?
@@ -405,7 +405,7 @@
     # Github
     - provider: GitHubPullRequest
       auth_token:
-        secure: "inL59Ha8LLxMmwFmkqagZvk7G8L0I4RxbUAJgBDgX0m8rpshnSdXar2vHWdNvdAl"    
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y    
 
     # Slack using webhook
     - provider: Slack
