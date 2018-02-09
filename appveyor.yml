@@ -204,7 +204,7 @@
     # Slack using webhook
     - provider: Slack
       incoming_webhook:
-        secure: UBPJBjuWfFVQT7PxAq284HVDMs07WG/wo6KLTjlNNROEZ5X+iFgRmGANQBu06nNsKdR4H9fXczIW7WOaKPRjSiE+H/bg3PcpCoMhOJsG7r8=
+        secure: UYWbRjEf2f/AfPVych87UTtvwwEfdk/ukZQb+PnlGzL9h7fjoQhH0IDfYoLLSguO6uGIEilbfBohUg4znkjikaVcI8OoZVxcPwXnsJliKRI=
 
 #==============================================================================#
 #                           Develop configuration                              #
@@ -410,4 +410,4 @@
     # Slack using webhook
     - provider: Slack
       incoming_webhook:
-        secure: UBPJBjuWfFVQT7PxAq284HVDMs07WG/wo6KLTjlNNROEZ5X+iFgRmGANQBu06nNsKdR4H9fXczIW7WOaKPRjSiE+H/bg3PcpCoMhOJsG7r8=
+        secure: UYWbRjEf2f/AfPVych87UTtvwwEfdk/ukZQb+PnlGzL9h7fjoQhH0IDfYoLLSguO6uGIEilbfBohUg4znkjikaVcI8OoZVxcPwXnsJliKRI=
