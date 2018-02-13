@@ -145,7 +145,7 @@ namespace RemoteTech
         public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
         {
             if (sat_a == null || sat_b == null || sat_a == sat_b) return null;
-            bool los = sat_a.HasLineOfSightWith(sat_b) || CheatOptions.InfinitePropellant || RTSettings.Instance.IgnoreLineOfSight;
+            bool los = sat_a.HasLineOfSightWith(sat_b) || RTSettings.Instance.IgnoreLineOfSight;
             if (!los) return null;
 
             switch (RTSettings.Instance.RangeModelType)
