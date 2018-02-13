@@ -198,9 +198,9 @@ namespace RemoteTech.UI
             GUILayout.BeginHorizontal();
             {
                 GUILayout.Label("Signal Through Bodies: ", GUILayout.Width(firstColWidth));
-                int cheatEVAFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatEVAFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatEVAFuel, 0);
+                int cheatLineOfSight = (RTSettings.Instance.IgnoreLineOfSight) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent("On"), () => { RTSettings.Instance.IgnoreLineOfSight = true; }, cheatLineOfSight, 1);
+                RTUtil.FakeStateButton(new GUIContent("Off"), () => { RTSettings.Instance.IgnoreLineOfSight = false; }, cheatLineOfSight, 0);
             }
             GUILayout.EndHorizontal();
 

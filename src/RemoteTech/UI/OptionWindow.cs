@@ -474,6 +474,10 @@ namespace RemoteTech.UI
             GUILayout.Space(10);
             this.mSettings.ControlAntennaWithoutConnection = GUILayout.Toggle(this.mSettings.ControlAntennaWithoutConnection, (this.mSettings.ControlAntennaWithoutConnection) ? "No Connection needed to control antennas" : "Connection is needed to control antennas");
             GUILayout.Label("ON: antennas can be activated, deactivated and targeted without a connection.\nOFF: No control without a working connection.", this.mGuiHintText);
+
+            GUILayout.Space(10);
+            this.mSettings.IgnoreLineOfSight = GUILayout.Toggle(this.mSettings.IgnoreLineOfSight, (this.mSettings.IgnoreLineOfSight) ? "Planets and moons will not block a signal" : "Planets and moons will block a signal");
+            GUILayout.Label("ON: Antennas and dishes will not need line-of-sight to maintain a connection, as long as they have adequate range and power.\nOFF: Antennas and dishes need line-of-sight to maintain a connection.", this.mGuiHintText);
         }
 
         /// <summary>
