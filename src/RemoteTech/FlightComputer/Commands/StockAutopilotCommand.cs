@@ -89,6 +89,16 @@ namespace RemoteTech.FlightComputer.Commands
                 GameSettings.YAW_LEFT.GetKey() || GameSettings.YAW_RIGHT.GetKey()) // player trying to manually rotate
                 return false;
 
+            if (GameSettings.TRANSLATE_FWD.GetKey() || GameSettings.TRANSLATE_BACK.GetKey() ||
+                GameSettings.TRANSLATE_LEFT.GetKey() || GameSettings.TRANSLATE_RIGHT.GetKey() ||
+                GameSettings.TRANSLATE_UP.GetKey() || GameSettings.TRANSLATE_DOWN.GetKey()) // player trying to manually translate
+                return false;
+
+            if (Math.Abs(GameSettings.AXIS_PITCH.GetAxis()) >= 0.0f || 
+                Math.Abs(GameSettings.AXIS_ROLL.GetAxis()) >= 0.0f ||
+                Math.Abs(GameSettings.AXIS_YAW.GetAxis()) >= 0.0f) // player trying to joystick
+                return false;
+
             return true;
         }
     }
