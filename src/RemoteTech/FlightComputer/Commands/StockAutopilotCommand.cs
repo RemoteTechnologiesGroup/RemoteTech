@@ -94,9 +94,9 @@ namespace RemoteTech.FlightComputer.Commands
                 GameSettings.TRANSLATE_UP.GetKey() || GameSettings.TRANSLATE_DOWN.GetKey()) // player trying to manually translate
                 return false;
 
-            if (Math.Abs(GameSettings.AXIS_PITCH.GetAxis()) >= 0.0f || 
-                Math.Abs(GameSettings.AXIS_ROLL.GetAxis()) >= 0.0f ||
-                Math.Abs(GameSettings.AXIS_YAW.GetAxis()) >= 0.0f) // player trying to joystick
+            if (!GameSettings.AXIS_PITCH.IsNeutral() || 
+                !GameSettings.AXIS_ROLL.IsNeutral() ||
+                !GameSettings.AXIS_YAW.IsNeutral()) // player trying to joystick
                 return false;
 
             return true;
