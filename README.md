@@ -2,8 +2,8 @@
 **master** [![Build Status](https://travis-ci.org/RemoteTechnologiesGroup/RemoteTech.svg?branch=master)](https://travis-ci.org/RemoteTechnologiesGroup/RemoteTech)
 **develop** [![Build Status](https://travis-ci.org/RemoteTechnologiesGroup/RemoteTech.svg?branch=develop)](https://travis-ci.org/RemoteTechnologiesGroup/RemoteTech)
 -->
-**master** [![Build status](https://ci.appveyor.com/api/projects/status/de41ev9lifno1k35/branch/master?svg=true)](https://ci.appveyor.com/project/neitsa/remotetech/branch/master)
-**develop** [![Build status](https://ci.appveyor.com/api/projects/status/de41ev9lifno1k35/branch/develop?svg=true)](https://ci.appveyor.com/project/neitsa/remotetech/branch/develop)
+**master** [![Build status](https://ci.appveyor.com/api/projects/status/18ksahrxar3ghaoh/branch/master?svg=true)](https://ci.appveyor.com/project/KSP-TaxiService/remotetech-hx082/branch/master)
+**develop** [![Build status](https://ci.appveyor.com/api/projects/status/4kvchix4253kmc58/branch/develop?svg=true)](https://ci.appveyor.com/project/KSP-TaxiService/remotetech/branch/develop)
 
 
 RemoteTech
