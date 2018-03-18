@@ -384,7 +384,7 @@ namespace RemoteTech.FlightComputer
         private void PopFlightCtrl(FlightCtrlState fcs, ISatellite sat)
         {
             var delayed = new FlightCtrlState();
-            delayed.mainThrottle = (Delay >= 0.01) ? 0.0f : fcs.mainThrottle;
+            float maxThrottle = (Delay >= 0.01) ? 0.0f : fcs.mainThrottle;
             //Comment: if rocket at launchpad is Local Control and switchs to Remote Control upon launching, throttle is initially zero in this transition
             //however, it is lethal RO issue as zero throttle even once will count against engine's limited number of ignitions
             //Workaround: just pipe FCS throttle to delayed state until delay is large enough to revert back to normal RT operation
@@ -392,7 +392,9 @@ namespace RemoteTech.FlightComputer
             while (_flightCtrlQueue.Count > 0 && _flightCtrlQueue.Peek().TimeStamp <= RTUtil.GameTime)
             {
                 delayed = _flightCtrlQueue.Dequeue().State;
-            } //take the most recent flight control state
+                maxThrottle = Math.Max(maxThrottle, delayed.mainThrottle);
+            }
+            delayed.mainThrottle = maxThrottle;
 
             if (!KeepThrottleNoConnect && !InputAllowed) // enforce the rule of shutting throttle down on connection loss
             {
