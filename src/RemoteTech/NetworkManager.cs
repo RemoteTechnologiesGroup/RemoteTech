@@ -145,6 +145,7 @@ namespace RemoteTech
         public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
         {
             if (sat_a == null || sat_b == null || sat_a == sat_b) return null;
+            if (sat_a.IsInRadioBlackout || sat_b.IsInRadioBlackout) return null;
             bool los = sat_a.HasLineOfSightWith(sat_b) || RTSettings.Instance.IgnoreLineOfSight;
             if (!los) return null;
 
@@ -253,10 +254,10 @@ namespace RemoteTech
         Color ISatellite.MarkColor { get { return MarkColor; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
         bool ISatellite.CanRelaySignal { get { return true; } } //not sure if should relay signal. Mission Control can "do" everything isnt it?
-
+        
         public Guid mGuid { get; private set; }
         public IEnumerable<IAntenna> MissionControlAntennas { get { return Antennas; } }
-
+        public bool IsInRadioBlackout { get; set; } // could be EMP
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 

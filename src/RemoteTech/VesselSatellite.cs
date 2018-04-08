@@ -49,6 +49,9 @@ namespace RemoteTech
             get { return RTSettings.Instance.SignalRelayEnabled ? SignalProcessors.Any(s => s.CanRelaySignal && !(s is ModuleSPUPassive)) : true; }
         }
 
+        /// <summary>Indicates whether the satellite is in radio blackout.</summary>
+        public bool IsInRadioBlackout { get; set; }
+
         /// <summary>Gets if the satellite is a RemoteTech command station.</summary>
         public bool IsCommandStation
         {

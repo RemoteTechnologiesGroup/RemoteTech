@@ -304,5 +304,35 @@ namespace RemoteTech.API
 
             return false;
         }
+
+        /// <summary>
+        /// Enforce or remove the radio blackout on target vessel (e.g. coronal mass ejection)
+        /// </summary>
+        /// <returns>Indicator on whether this request is executed successfully</returns>
+        public static bool SetRadioBlackoutGuid(Guid id, bool flag, string reason = "")
+        {
+            if (RTCore.Instance == null) return false;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return false;
+
+            satellite.IsInRadioBlackout = flag;
+            RTLog.Verbose("Flight: {0} has radio blackout flag updated due to reason '{2}': {1}", RTLogLevel.API, id, satellite.IsInRadioBlackout, reason);
+            return true;
+        }
+
+        /// <summary>
+        /// Check if target vessel is currently in radio blackout
+        /// </summary>
+        /// <returns>Indicator on whether target vessel is in radio blackout</returns>
+        public static bool GetRadioBlackoutGuid(Guid id)
+        {
+            if (RTCore.Instance == null) return false;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return false;
+
+            var blackoutFlag = satellite.IsInRadioBlackout;
+            RTLog.Verbose("Flight: {0} is in radio blackout: {1}", RTLogLevel.API, id, blackoutFlag);
+            return blackoutFlag;
+        }
     }
 }

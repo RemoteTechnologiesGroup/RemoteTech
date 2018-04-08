@@ -38,5 +38,7 @@ namespace RemoteTech
         void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes);
         /// <summary>Gets if the satellite is capable to forward other signals.</summary>
         bool CanRelaySignal { get; }
+        /// <summary>Indicates whether the satellite is in radio blackout.</summary>
+        bool IsInRadioBlackout { get; set; }
     }
 }
