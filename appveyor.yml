@@ -13,7 +13,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.8.10.2
+  version: 1.8.10.3
 
   # branches
   branches:
