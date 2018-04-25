@@ -339,7 +339,7 @@ namespace RemoteTech.FlightComputer
                                         {
                                             // invoke later
                                             _delayInvoke = DelayInvoke;
-                                            _delayInvoke(0.5f);
+                                            _delayInvoke(0.0f); // comment: not sure why this delay is needed when FC can queue it
                                         }
                                     }
                                 }
