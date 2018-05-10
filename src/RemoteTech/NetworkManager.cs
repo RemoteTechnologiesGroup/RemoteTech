@@ -169,7 +169,10 @@ namespace RemoteTech
             {
                 UpdateGraph(s);
                 //("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
-                if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION || RTCore.Instance.Renderer.ShowMultiPath)
+
+                // amend this optimisation due to inconsistent connectivity on non-active vessels (eg showing no connection when 3rd-party mods query)
+                //if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION || RTCore.Instance.Renderer.ShowMultiPath)
+                if (HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.FLIGHT)
                 {
                     FindPath(s, commandStations);
                 }
