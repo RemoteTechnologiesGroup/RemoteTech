@@ -270,6 +270,10 @@ namespace RemoteTech.Modules
             if (partForUi.vessel != vessel)
                 return;
 
+            // check if the current scene is not in flight
+            if (HighLogic.fetch && !HighLogic.LoadedSceneIsFlight)
+                return;
+
             // hook part menu
             UIPartActionMenuPatcher.WrapPartActionEventItem(partForUi, InvokeEvent);
             UIPartActionMenuPatcher.WrapPartActionFieldItem(partForUi, InvokePartAction);
