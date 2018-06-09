@@ -58,7 +58,8 @@ namespace RemoteTech.Modules
             ShowEditor_OmniRange = true,
             ShowEditor_DishRange = true,
             ShowEditor_EnergyReq = true,
-            ShowEditor_DishAngle = true;
+            ShowEditor_DishAngle = true,
+            ShowGUI_DeReactivation_Status = true;
 
         [KSPField(guiName = "Dish range")]
         public String GUI_DishRange;
@@ -107,6 +108,15 @@ namespace RemoteTech.Modules
         [KSPField] // Persistence handled by Save()
         public Guid RTAntennaTarget = Guid.Empty;
 
+        [KSPField(guiName = "Auto threshold")]
+        public String GUI_DeReactivation_Status = "Off";
+        [KSPField(isPersistant = true, guiName = "Deactivate at EC %", guiActive = true, guiActiveEditor = true, guiUnits = "%"),
+            UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
+        public float RTDeactivatePowerThreshold = 20;
+        [KSPField(isPersistant = true, guiName = "Activate at EC %", guiActive = true, guiActiveEditor = true, guiUnits = "%"),
+            UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
+        public float RTActivatePowerThreshold = 80;
+
         // workarround for ksp 1.0
         [KSPField]
         public float
@@ -121,6 +131,9 @@ namespace RemoteTech.Modules
         private IScienceDataTransmitter mTransmitter;
         private int killCounter;
         private List<PartResourceDefinition> consumedResources;
+        private bool isPartActionUIOpened;
+        private UI_FloatRange deactivatePowerThresholdFloatRange;
+        private UI_FloatRange activatePowerThresholdFloatRange;
 
         private enum State
         {
@@ -403,6 +416,7 @@ namespace RemoteTech.Modules
             Fields["GUI_DishRange"].guiActive = (Mode1DishRange > 0) && ShowGUI_DishRange;
             Fields["GUI_EnergyReq"].guiActive = (EnergyCost > 0) && ShowGUI_EnergyReq;
             Fields["GUI_Status"].guiActive = ShowGUI_Status;
+            Fields["GUI_DeReactivation_Status"].guiActive = ShowGUI_DeReactivation_Status;
 
             // workarround for ksp 1.0
             if (mTransmitterConfig == null)
@@ -418,6 +432,8 @@ namespace RemoteTech.Modules
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
+                GameEvents.onPartActionUICreate.Add(OnPartActionUiCreate);
+                GameEvents.onPartActionUIDismiss.Add(OnPartActionUiDismiss);
                 mRegisteredId = vessel.id;
                 RTCore.Instance.Antennas.Register(vessel.id, this);
             }
@@ -515,6 +531,7 @@ namespace RemoteTech.Modules
             RTOmniRange = Omni;
             HandleDynamicPressure();
             UpdateContext();
+            ValidateAntennaThresholds();
         }
 
         private void UpdateContext()
@@ -723,6 +740,67 @@ namespace RemoteTech.Modules
         {
             var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
             return antennas != null && antennas.Any();
+        }
+
+        //Credit: rsparkyc
+        //https://github.com/rsparkyc/AntennaPowerSaver/blob/master/AntennaPowerSaver/ModuleAntennaPowerSaver.cs
+        private void ValidateAntennaThresholds()
+        {
+            if(!isPartActionUIOpened)
+            {
+                return;
+            }
+
+            // Make sure that the threshold to deactivate an antenna is less than the threshold to re-activate it
+            if (RTActivatePowerThreshold < RTDeactivatePowerThreshold)
+            {
+                RTDeactivatePowerThreshold = RTActivatePowerThreshold;
+            }
+
+            if (deactivatePowerThresholdFloatRange != null && activatePowerThresholdFloatRange != null)
+            {
+                activatePowerThresholdFloatRange.minValue = RTDeactivatePowerThreshold;
+                deactivatePowerThresholdFloatRange.maxValue = RTActivatePowerThreshold;
+            }
+        }
+
+        public void OnPartActionUiCreate(Part partForUi)
+        {
+            // check if the part is actually one from this vessel
+            if (partForUi.vessel != vessel)
+                return;
+
+            // check if the current scene is not in flight
+            if (HighLogic.fetch && !HighLogic.LoadedSceneIsFlight)
+                return;
+
+            // obtain required items for later uses.
+            if (deactivatePowerThresholdFloatRange == null)
+            {
+                deactivatePowerThresholdFloatRange = (UI_FloatRange)Fields["RTDeactivatePowerThreshold"].uiControlEditor;
+            }
+
+            if (activatePowerThresholdFloatRange == null)
+            {
+                activatePowerThresholdFloatRange = (UI_FloatRange)Fields["RTActivatePowerThreshold"].uiControlEditor;
+            }
+
+            isPartActionUIOpened = true;
+        }
+
+        public void OnPartActionUiDismiss(Part partForUi)
+        {
+            //final check
+            if (RTActivatePowerThreshold < RTDeactivatePowerThreshold)
+            {
+                RTDeactivatePowerThreshold = RTActivatePowerThreshold;
+            }
+
+            //release UI references
+            deactivatePowerThresholdFloatRange = null;
+            activatePowerThresholdFloatRange = null;
+
+            isPartActionUIOpened = false;
         }
     }
 }

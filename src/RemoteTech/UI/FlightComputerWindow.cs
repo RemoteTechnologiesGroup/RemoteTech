@@ -91,7 +91,7 @@ namespace RemoteTech.UI
                 }
                 GUILayout.EndHorizontal();
 
-                // RoverComputer
+                // Switch FC mode
                 if (GUI.Button(new Rect(2, 2, 16, 16), new GUIContent("<", tabModeDescString))) {
                     Tab--;
                 }

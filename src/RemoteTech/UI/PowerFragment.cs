@@ -30,12 +30,12 @@ namespace RemoteTech.UI
                     GUIStyle guiTableRow = new GUIStyle(HighLogic.Skin.label);
                     guiTableRow.normal.textColor = Color.white;
 
-                    RTUtil.FakeStateButton(new GUIContent("HBNT", "Ultra-low power state with activated antennas shut down."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Hibernate)), (int)mPowerMode, (int)PowerModes.Hibernate, GUILayout.Width(width3));
-                    GUILayout.Label("", new GUILayoutOption[] { GUILayout.Width(width3) });
-                    RTUtil.Button(new GUIContent("WAKE", "Exit from a power-saving state."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Wake)), GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("HBNT", "Ultra-low power hibernation with all active antennas shut down."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Hibernate)), (int)mPowerMode, (int)PowerModes.Hibernate, GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent("THLD", "Optimally adaptive power-saving threshold control on all antennas"), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.AntennaSaver)), (int)mPowerMode, (int)PowerModes.AntennaSaver, GUILayout.Width(width3));
+                    RTUtil.Button(new GUIContent("WAKE", "Terminate any power-saving state."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Wake)), GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
-                GUILayout.Space(200);
+                GUILayout.Space(300);
 
                 GUILayout.BeginHorizontal();
                 {
@@ -59,6 +59,10 @@ namespace RemoteTech.UI
                         mPowerMode = PowerModes.Hibernate;
                         mFlightComputer.Enqueue(HibernationCommand.Hibernate());
                         break;
+                    case PowerModes.AntennaSaver:
+                        mPowerMode = PowerModes.AntennaSaver;
+                        mFlightComputer.Enqueue(HibernationCommand.AntennaSaver());
+                        break;
                     case PowerModes.Wake:
                         mPowerMode = PowerModes.Wake;
                         mFlightComputer.Enqueue(HibernationCommand.WakeUp());
@@ -73,13 +77,9 @@ namespace RemoteTech.UI
         public void getActivePowerMode()
         {
             var activeHibCommand = HibernationCommand.findActiveHibernationCmd(mFlightComputer);
-            if(activeHibCommand == null)
+            if(activeHibCommand != null)
             {
-                mPowerMode = PowerModes.Normal;
-            }
-            else
-            {
-                mPowerMode = PowerModes.Hibernate;
+                mPowerMode = activeHibCommand.PowerMode;
             }
         }
     }
