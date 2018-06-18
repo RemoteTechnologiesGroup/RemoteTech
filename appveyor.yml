@@ -19,7 +19,7 @@
   branches:
     # whitelist
     only:
-      - master
+      - release/rt1.8.11.131
     # blacklist
     except:
       - gh-pages
@@ -155,7 +155,7 @@
       prerelease: false
       # which branch?
       on:
-        branch: master
+        branch: release/rt1.8.11.131
         # deploy on tag push only
         #appveyor_repo_tag: true
 
