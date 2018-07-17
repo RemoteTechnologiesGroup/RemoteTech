@@ -93,9 +93,17 @@ namespace RemoteTech.FlightComputer.Commands
                 {
                     activeHibCommand.Abort();
                 }
+                else if (this.PowerMode == PowerModes.Hibernate && activeHibCommand.PowerMode == PowerModes.Hibernate)
+                {
+                    return false;
+                }
                 else if (this.PowerMode == PowerModes.AntennaSaver&& activeHibCommand.PowerMode == PowerModes.Hibernate)
                 {
                     activeHibCommand.Abort();
+                }
+                else if (this.PowerMode == PowerModes.AntennaSaver && activeHibCommand.PowerMode == PowerModes.AntennaSaver)
+                {
+                    return false;
                 }
             }
 
@@ -141,7 +149,7 @@ namespace RemoteTech.FlightComputer.Commands
                 var cmdsToDrop = new List<ICommand>();
                 for(int i=0; i<fc.QueuedCommands.Count(); i++)
                 {
-                    if (!(fc.QueuedCommands.ElementAt(i) is HibernationCommand))
+                    if (!(fc.QueuedCommands.ElementAt(i) is HibernationCommand || fc.QueuedCommands.ElementAt(i) is ManeuverCommand))//don't mess with player's maneuver nodes
                         cmdsToDrop.Add(fc.QueuedCommands.ElementAt(i));
                     else
                         break;//found next hiberation command
