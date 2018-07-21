@@ -5,6 +5,7 @@ namespace RemoteTech.FlightComputer.Commands
     public interface ICommand : IComparable<ICommand>
     {
         double TimeStamp { get; set; }
+        double ExtraDelayScheduledTimeStamp { get; set; } //required for precise time operations
         double ExtraDelay { get; set; }
         Guid CmdGuid { get; }
         double Delay { get; }

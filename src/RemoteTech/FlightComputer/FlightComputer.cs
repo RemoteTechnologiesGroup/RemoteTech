@@ -256,7 +256,11 @@ namespace RemoteTech.FlightComputer
             if (!InputAllowed && !ignoreControl) return;
 
             if (!ignoreDelay) cmd.TimeStamp += Delay;
-            if (!ignoreExtra) cmd.ExtraDelay += Math.Max(0, TotalDelay - Delay);
+            if (!ignoreExtra)
+            {
+                cmd.ExtraDelay += Math.Max(0, TotalDelay - Delay);
+                cmd.ExtraDelayScheduledTimeStamp = RTUtil.GameTime + cmd.ExtraDelay;
+            }
 
             var pos = _commandQueue.BinarySearch(cmd);
             if (pos < 0)
@@ -438,7 +442,15 @@ namespace RemoteTech.FlightComputer
                 //      reinstate event clocks stopping under certain conditions
                 if (dc.ExtraDelay > 0)
                 {
-                    dc.ExtraDelay -= TimeWarp.deltaTime;
+                    //issue: deltaTime is floating point -/+0.001, not great for long-term time-senitive operation
+                    if (dc.ExtraDelayScheduledTimeStamp > RTUtil.GameTime)
+                    {
+                        dc.ExtraDelay = dc.ExtraDelayScheduledTimeStamp - RTUtil.GameTime;
+                    }
+                    else //fallback
+                    {
+                        dc.ExtraDelay -= TimeWarp.deltaTime;
+                    }
                 }
                 else
                 {

@@ -5,6 +5,7 @@ namespace RemoteTech.FlightComputer.Commands
     public abstract class AbstractCommand : ICommand
     {
         public double TimeStamp { get; set; }
+        public double ExtraDelayScheduledTimeStamp { get; set; }
         public Guid CmdGuid { get; private set; }
         public virtual double ExtraDelay { get; set; }
         public virtual double Delay { get { return Math.Max(TimeStamp - RTUtil.GameTime, 0); } }
@@ -67,6 +68,7 @@ namespace RemoteTech.FlightComputer.Commands
             }
 
             node.AddValue("TimeStamp", this.TimeStamp);
+            node.AddValue("ExtraDelayScheduledTimeStamp", this.ExtraDelayScheduledTimeStamp);
             node.AddValue("ExtraDelay", this.ExtraDelay);
             node.AddValue("CmdGuid", this.CmdGuid);
         }
@@ -83,6 +85,10 @@ namespace RemoteTech.FlightComputer.Commands
             if (n.HasValue("TimeStamp"))
             {
                 TimeStamp = double.Parse(n.GetValue("TimeStamp"));
+            }
+            if (n.HasValue("ExtraDelayScheduledTimeStamp"))
+            {
+                ExtraDelayScheduledTimeStamp = double.Parse(n.GetValue("ExtraDelayScheduledTimeStamp"));
             }
             if (n.HasValue("ExtraDelay"))
             {
