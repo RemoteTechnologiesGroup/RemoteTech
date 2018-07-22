@@ -52,15 +52,8 @@ namespace RemoteTech.FlightComputer.Commands
                 f.Vessel.patchedConicSolver.Update();
             }
 
-            // check if the stored node is still valid
-            if (f.Vessel.patchedConicSolver.maneuverNodes.FindIndex(x => x.UT == this.Node.UT && x.DeltaV == this.Node.DeltaV) < 0)//IndexOf() is bad comparer
-            {
-                RTUtil.ScreenMessage("[Flight Computer]: No maneuver node found.");
-                return false;
-            }
-
             if (this.Node.solver == null) // need to repair (due to the scenario of 2 vessels within phyical range)
-                this.Node = f.Vessel.patchedConicSolver.maneuverNodes.Find(x => x.UT == this.Node.UT && x.DeltaV == this.Node.DeltaV);
+                this.Node = f.Vessel.patchedConicSolver.maneuverNodes.Find(x => x.UT == this.Node.UT);
 
             var burn = f.ActiveCommands.FirstOrDefault(c => c is BurnCommand);
             if (burn != null) {
@@ -296,7 +289,7 @@ namespace RemoteTech.FlightComputer.Commands
             }
 
             // search the node on the List
-            this.NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.FindIndex(x => x.UT == this.Node.UT && x.DeltaV == this.Node.DeltaV);
+            this.NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.FindIndex(x => x.UT == this.Node.UT);
 
             // only save this command if we are on the maneuverNode list
             if (this.NodeIndex >= 0)
