@@ -263,10 +263,10 @@ namespace RemoteTech.Modules
         [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target", category = "skip_delay")]
         public void EventTarget() { (new AntennaWindow(this)).Show(); }
 
-        [KSPEvent(name = "EventEditorOpen", guiActive = false, guiName = "Start deployed")]
+        [KSPEvent(name = "EventEditorOpen", guiActive = false, guiName = "Deploy Antenna")]
         public void EventEditorOpen() { SetState(true); }
 
-        [KSPEvent(name = "EventEditorClose", guiActive = false, guiName = "Start retracted")]
+        [KSPEvent(name = "EventEditorClose", guiActive = false, guiName = "Retract Antenna")]
         public void EventEditorClose() { SetState(false); }
 
         [KSPEvent(name = "EventOpen", guiActive = false)]
