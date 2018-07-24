@@ -334,5 +334,39 @@ namespace RemoteTech.API
             RTLog.Verbose("Flight: {0} is in radio blackout: {1}", RTLogLevel.API, id, blackoutFlag);
             return blackoutFlag;
         }
+
+        /// <summary>
+        /// Enforce or remove the power down on target vessel
+        /// </summary>
+        /// <returns>Indicator on whether this request is executed successfully</returns>
+        public static bool SetPowerDownGuid(Guid id, bool flag, string reason = "")
+        {
+            if (RTCore.Instance == null)
+                return false;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null)
+                return false;
+
+            satellite.IsInPowerDown = flag;
+            RTLog.Verbose("Flight: {0} has power down flag updated due to reason '{2}': {1}", RTLogLevel.API, id, satellite.IsInPowerDown, reason);
+            return true;
+        }
+
+        /// <summary>
+        /// Check if target vessel is currently in power down state
+        /// </summary>
+        /// <returns>Indicator on whether target vessel is in power down state</returns>
+        public static bool GetPowerDownGuid(Guid id)
+        {
+            if (RTCore.Instance == null)
+                return false;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null)
+                return false;
+
+            var powerdownFlag = satellite.IsInPowerDown;
+            RTLog.Verbose("Flight: {0} is in power down: {1}", RTLogLevel.API, id, powerdownFlag);
+            return powerdownFlag;
+        }
     }
 }
