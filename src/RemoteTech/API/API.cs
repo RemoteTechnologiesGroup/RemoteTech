@@ -19,7 +19,7 @@ namespace RemoteTech.API
 
         public static bool HasLocalControl(Guid id)
         {
-            var vessel = RTUtil.GetVesselById(id);            
+            var vessel = RTUtil.GetVesselById(id);
             if (vessel == null) return false;
 
             RTLog.Verbose("Flight: {0} HasLocalControl: {1}", RTLogLevel.API, id, vessel.HasLocalControl());
@@ -213,10 +213,10 @@ namespace RemoteTech.API
                     return false;
                 }
 
-                // maybe we should look if this vessel hasLocal controll or not. If so, we can execute the command
+                // maybe we should look if this vessel hasLocal control or not. If so, we can execute the command
                 // immediately
 
-                // get the flightcomputer
+                // get the flight computer
                 FlightComputer.FlightComputer computer = RTCore.Instance.Satellites[externalVesselId].FlightComputer;
 
                 var extCmd = FlightComputer.Commands.ExternalAPICommand.FromExternal(externalData);
@@ -248,7 +248,7 @@ namespace RemoteTech.API
 
 		public static Guid AddGroundStation(string name, double latitude, double longitude, double height, int body)
 		{
-			RTLog.Notify ("Trying to add groundstation {0}", RTLogLevel.API, name);
+			RTLog.Notify ("Trying to add ground station {0}", RTLogLevel.API, name);
             Guid newStationId = RTSettings.Instance.AddGroundStation(name, latitude, longitude, height, body);
 
             return newStationId;
@@ -256,10 +256,10 @@ namespace RemoteTech.API
 
 		public static bool RemoveGroundStation(Guid stationid)
 		{
-			RTLog.Notify ("Trying to remove groundstation {0}", RTLogLevel.API, stationid);
+			RTLog.Notify ("Trying to remove ground station {0}", RTLogLevel.API, stationid);
 
             // do not allow to remove the default mission control
-			if (stationid.ToString ("N").Equals ("5105f5a9d62841c6ad4b21154e8fc488")) 
+			if (stationid.ToString ("N").Equals ("5105f5a9d62841c6ad4b21154e8fc488"))
 			{
 				RTLog.Notify ("Cannot remove KSC Mission Control!", RTLogLevel.API);
 				return false;
@@ -277,7 +277,7 @@ namespace RemoteTech.API
         /// <returns>true if the ground station antenna range was changed, false otherwise.</returns>
         public static bool ChangeGroundStationRange(Guid stationId, float newRange)
         {
-            RTLog.Notify("Trying to change groundstation {0} Omni range to {1}", RTLogLevel.API, stationId.ToString(), newRange);
+            RTLog.Notify("Trying to change ground station {0} Omni range to {1}", RTLogLevel.API, stationId.ToString(), newRange);
 
             if (RTSettings.Instance == null)
                 return false;
@@ -296,9 +296,9 @@ namespace RemoteTech.API
                     if (antenna is MissionControlAntenna)
                     {
                         ((MissionControlAntenna)antenna).SetOmniAntennaRange(newRange);
-                        RTLog.Notify("Ground station Omni range successfuly chaned.", RTLogLevel.API);
+                        RTLog.Notify("Ground station Omni range successfully changed.", RTLogLevel.API);
                         return true;
-                    }                    
+                    }
                 }
             }
 
