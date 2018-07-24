@@ -146,6 +146,7 @@ namespace RemoteTech
         {
             if (sat_a == null || sat_b == null || sat_a == sat_b) return null;
             if (sat_a.IsInRadioBlackout || sat_b.IsInRadioBlackout) return null;
+            if (sat_a.IsInPowerDown || sat_b.IsInPowerDown) return null;
             bool los = sat_a.HasLineOfSightWith(sat_b) || RTSettings.Instance.IgnoreLineOfSight;
             if (!los) return null;
 
@@ -261,6 +262,7 @@ namespace RemoteTech
         public Guid mGuid { get; private set; }
         public IEnumerable<IAntenna> MissionControlAntennas { get { return Antennas; } }
         public bool IsInRadioBlackout { get; set; } // could be EMP
+        public bool IsInPowerDown { get; set; } // could be dead battery
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 

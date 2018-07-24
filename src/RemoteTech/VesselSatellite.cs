@@ -52,6 +52,9 @@ namespace RemoteTech
         /// <summary>Indicates whether the satellite is in radio blackout.</summary>
         public bool IsInRadioBlackout { get; set; }
 
+        /// <summary>Indicates whether the satellite is in a powered down state.</summary>
+        public bool IsInPowerDown { get; set; }
+
         /// <summary>Gets if the satellite is a RemoteTech command station.</summary>
         public bool IsCommandStation
         {
