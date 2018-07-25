@@ -399,6 +399,25 @@ namespace RemoteTech
     }
 
     /// <summary>
+    /// Main class, instantiated during Space Center scene. Allows mods to access connection data via API from the Space Center scene
+    /// </summary>
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+    public class RTCoreSpaceCenter: RTCore
+    {
+        public new void Start()
+        {
+            base.Start();
+            if (Instance == null)
+                return;
+        }
+
+        private new void OnDestroy()
+        {
+            base.OnDestroy();
+        }
+    }
+
+    /// <summary>
     /// Main class, instantiated during Main menu scene.
     /// </summary>
     [KSPAddon(KSPAddon.Startup.MainMenu, false)]
