@@ -28,7 +28,8 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath Condition="Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">$(KSPDEVDIR)\GameData\RemoteTech\Plugins\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
