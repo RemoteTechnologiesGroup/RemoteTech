@@ -11,10 +11,20 @@ namespace RemoteTech.API
 {
     public static class API
     {
+        /// <summary>If true then RTCore will be available in the Space Center</summary>
+        internal static bool enabledInSPC = false;
+
         public static bool IsRemoteTechEnabled()
         {
             if (RTCore.Instance != null) return true;
             return false;
+        }
+
+        public static void EnableInSPC(bool state)  // its advised that modders who need RTCore active in the SPC should set this from the MainMenu Scene
+        {
+            enabledInSPC = state;  // setting to true will only take effect after a scene change
+            if (!enabledInSPC && RTCore.Instance != null && HighLogic.LoadedScene == GameScenes.SPACECENTER)
+                RTCore.Instance.OnDestroy();
         }
 
         public static bool HasLocalControl(Guid id)

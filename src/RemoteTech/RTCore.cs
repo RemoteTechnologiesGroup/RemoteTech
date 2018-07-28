@@ -406,9 +406,8 @@ namespace RemoteTech
     {
         public new void Start()
         {
-            base.Start();
-            if (Instance == null)
-                return;
+            if (API.API.enabledInSPC) base.Start();
+            else base.OnDestroy();
         }
 
         private new void OnDestroy()
