@@ -100,6 +100,22 @@ namespace RemoteTech.API
             return connectedToKerbin;
         }
 
+        /// <summary>
+        /// Determines if a vessel directly targets a ground station.
+        /// </summary>
+        /// <param name="id">The vessels id.</param>
+        /// <returns>true if the vessel has an antenna with a ground station as its first link, false otherwise.</returns>
+        public static bool HasGroundStationTarget(Guid id)
+        {
+            if (RTCore.Instance == null) return false;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return false;
+
+            var targetsGroundStation = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid));
+            RTLog.Verbose("APIcall: {0} Directly targets a ground station {1}", RTLogLevel.API, id, targetsGroundStation);
+            return targetsGroundStation;
+        }
+
         public static bool AntennaHasConnection(Part part)
         {
             if (RTCore.Instance == null) return false;
