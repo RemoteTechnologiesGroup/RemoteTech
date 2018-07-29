@@ -101,7 +101,7 @@ namespace RemoteTech.API
         }
 
         /// <summary> Determines if a satellite directly targets a ground station.</summary>
-        /// <param name="id">The vessels id.</param>
+        /// <param name="id">The satellite id.</param>
         /// <returns>true if the satellite has an antenna with a ground station as its first link, false otherwise.</returns>
         public static bool HasGroundStationTarget(Guid id)
         {
@@ -115,7 +115,7 @@ namespace RemoteTech.API
         }
 
         /// <summary> Gets the name of the ground station directly targeted with the shortest link to the satellite.</summary>
-        /// <param name="id">The vessels id.</param>
+        /// <param name="id">The satellite id.</param>
         /// <returns>name of the ground station if one is found, null otherwise.</returns>
         public static string GetNameGroundStationTarget(Guid id)
         {
@@ -127,6 +127,21 @@ namespace RemoteTech.API
                 (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid)).Min().Goal.Name;
             RTLog.Verbose("APIcall: {0} Directly targets with the shortest link the ground station {1}", RTLogLevel.API, id, namedGroundStation);
             return namedGroundStation;
+        }
+
+        /// <summary> Gets the name of the first hop satellite with the shortest link to KSC by the specified satellite.</summary>
+        /// <param name="id">The satellite id.</param>
+        /// <returns>name of the satellite if one is found, null otherwise.</returns>
+        public static string GetFirstHopNameToKSC(Guid id)
+        {
+            if (RTCore.Instance == null) return null;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return null;
+
+            var namedSatellite = RTCore.Instance.Network[satellite].Where
+                (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links.FirstOrDefault().Target.Name;
+            RTLog.Verbose("APIcall: {0} Shortest route to KSC has as its first hop the satellite named {1}", RTLogLevel.API, id, namedSatellite);
+            return namedSatellite;
         }
 
         public static bool AntennaHasConnection(Part part)
