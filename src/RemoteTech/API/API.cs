@@ -100,11 +100,9 @@ namespace RemoteTech.API
             return connectedToKerbin;
         }
 
-        /// <summary>
-        /// Determines if a vessel directly targets a ground station.
-        /// </summary>
+        /// <summary> Determines if a satellite directly targets a ground station.</summary>
         /// <param name="id">The vessels id.</param>
-        /// <returns>true if the vessel has an antenna with a ground station as its first link, false otherwise.</returns>
+        /// <returns>true if the satellite has an antenna with a ground station as its first link, false otherwise.</returns>
         public static bool HasGroundStationTarget(Guid id)
         {
             if (RTCore.Instance == null) return false;
@@ -114,6 +112,21 @@ namespace RemoteTech.API
             var targetsGroundStation = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid));
             RTLog.Verbose("APIcall: {0} Directly targets a ground station {1}", RTLogLevel.API, id, targetsGroundStation);
             return targetsGroundStation;
+        }
+
+        /// <summary> Gets the name of the ground station directly targeted with the shortest link to the satellite.</summary>
+        /// <param name="id">The vessels id.</param>
+        /// <returns>name of the ground station if one is found, null otherwise.</returns>
+        public static string GetNameGroundStationTarget(Guid id)
+        {
+            if (RTCore.Instance == null) return null;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return null;
+
+            var namedGroundStation = RTCore.Instance.Network[satellite].Where
+                (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid)).Min().Goal.Name;
+            RTLog.Verbose("APIcall: {0} Directly targets with the shortest link the ground station {1}", RTLogLevel.API, id, namedGroundStation);
+            return namedGroundStation;
         }
 
         public static bool AntennaHasConnection(Part part)
@@ -161,6 +174,20 @@ namespace RemoteTech.API
             }
 
             return groundStation.mGuid;
+        }
+
+        /// <summary> Gets the name of a satellite.</summary>
+        /// <param name="id">The satellite id.</param>
+        /// <returns>name of the satellite with matching id if found, otherwise null</returns>
+        public static string GetName(Guid id)
+        {
+            if (RTCore.Instance == null) return null;
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return null;
+
+            string satellitename = satellite.Name;
+            RTLog.Verbose("APIcall: {0} is named {1}", RTLogLevel.API, id, satellitename);
+            return satellitename;
         }
 
         public static Guid GetCelestialBodyGuid(CelestialBody celestialBody)
