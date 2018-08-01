@@ -351,7 +351,7 @@
       # artfact we want to push on github
       artifact: rt_gd
       # release name pushed on github
-      release: RemoteTech-$(appveyor_build_version)
+      release: RemoteTech-PRTest-$(appveyor_build_version)
       # auth token to push on github
       auth_token:
         secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y
@@ -408,6 +408,6 @@
         secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y    
 
     # Slack using webhook
-    - provider: Slack
-      incoming_webhook:
-        secure: UYWbRjEf2f/AfPVych87UTtvwwEfdk/ukZQb+PnlGzL9h7fjoQhH0IDfYoLLSguO6uGIEilbfBohUg4znkjikaVcI8OoZVxcPwXnsJliKRI=
+    #- provider: Slack
+    #  incoming_webhook:
+    #    secure: UYWbRjEf2f/AfPVych87UTtvwwEfdk/ukZQb+PnlGzL9h7fjoQhH0IDfYoLLSguO6uGIEilbfBohUg4znkjikaVcI8OoZVxcPwXnsJliKRI=
