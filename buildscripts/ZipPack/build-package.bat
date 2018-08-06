@@ -1,4 +1,5 @@
 rem Generate the zip Release package.
+rem Highly recommend to use a Continuous Integration service to pull source codes from repository, build, test, package and deploy
 
 @echo off
 
@@ -13,28 +14,19 @@ SET rootPath=%scriptPath%..\..\
 SET initialWD=%CD%
 
 echo Generating %TargetName% for %KSPversion% Release Package...
-cd "%rootPath%"
-xcopy /y "%initialWD%\%TargetName%.dll" GameData\%TargetName%\Plugins\%TargetName%.dll*
+xcopy /y "%initialWD%\%TargetName%.dll" %rootPath%GameData\%TargetName%\Plugins\%TargetName%.dll*
 
-IF EXIST package\ rd /s /q package
-mkdir package
-cd package
+IF EXIST %rootPath%package\ rd /s /q %rootPath%package
+mkdir %rootPath%package\GameData
+cd %rootPath%package\GameData
 
-mkdir GameData
-cd GameData
-
-mkdir "%TargetName%"
-cd "%TargetName%"
-xcopy /y /e "..\..\..\GameData\%TargetName%\*" .
-xcopy /y ..\..\..\CHANGES.md .
-xcopy /y ..\..\..\LICENSE.txt .
+echo Copying %rootPath%GameData files to package stage
+xcopy /y /E /Q %rootPath%GameData %rootPath%package\GameData
 
 echo.
 echo Compressing %TargetName% for %KSPversion% Release Package...
 IF EXIST "%rootPath%%TargetName%*_For_%KSPversion%.zip" del "%rootPath%%TargetName%*_For_%KSPversion%.zip"
-"%scriptPath%7za.exe" a "..\..\..\%TargetName%%Dllversion%_For_%KSPversion%.zip" ..\..\GameData
+"%scriptPath%7za.exe" a "%rootPath%%TargetName%%Dllversion%_For_%KSPversion%.zip" %rootPath%package\GameData
 
-cd "%rootPath%"
-rd /s /q package
-
-cd "%initialWD%"
+echo Deleting package stage
+rd /s /q %rootPath%package

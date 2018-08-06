@@ -74,12 +74,12 @@ When writing new code for RemoteTech, please follow the following steps:
     - If your code adds a new feature in RemoteTech, create a pull request to the branch of the next release (e.g., `1.7.0`; if no such branch exists, please contact us).
 * One of the Remote Technologies Group members will merge the pull request; if you yourself are a member, please wait one week to give others a chance to give feedback.
 
-To make your life a little easier, the Visual Studio Project respects an environment variable called `KSPDEVDIR`.
-If you set its value to the path of your KSP install, the reference and build paths inside the project should be set automatically.
-If it is not set, your reference paths and the build paths have to be set manually.
+## Visual Studio build
 
-To set the variable, follow the instructions in this link, before starting a Visual Studio instance:
+Visual Studio Project (.csproj) respects and utilises an environment variable called `KSPDEVDIR`. 
 
-https://superuser.com/a/949577
+If its value is set to the path of your KSP install, the reference and build paths in the project should be set automatically. Otherwise, the reference paths and the build paths have to be set manually.
+
+To create the variable, follow the [instructions](https://superuser.com/a/949577) before starting a Visual Studio instance. If you are on a standard Windows account, it should be in the system variables to be referred.
 
 
