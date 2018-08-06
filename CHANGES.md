@@ -1,3 +1,156 @@
+# Version 1.8.12
+**Released July 17, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.4
+* Automatic antenna shutdown and re-activation based on power thresholds (thanks to rsparkyc's AntennaPowerSaver)
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #451: Automatic hibernation when power low [requested by: ec429]
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.11.131
+**Released June 18, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.8.11 for KSP 1.3.1 due to the significant number of players
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.11
+**Released May 18, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.3
+* Eliminated the response delay in Part Action Menu buttons & sliders
+* Fixed the rare bug on symmetry parts' Part Action Menu in Editor
+* Resolved the inconsistent connectivity on non-loaded vessels
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #748: Tweakable sliders of parts are sluggish in vessels with connected probe cores even with signal delay disabled [requested by: ChippedChap]
+* Issue #749: PartAction Menu issues [requested by: inkognito1100]
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10.3
+**Released April 10, 2018**
+
+What's New?
+===========
+
+* Add modder API for radio blackout on a target RemoteTech vessel
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10.2
+**Released April 06, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.2
+* Changes to PID controller on the edge case of very low ratio of Torque to Moment of Inertia 
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10.1
+**Released March 18, 2018**
+
+What's New?
+===========
+
+* Hotfix to the botched fix to the zero-throttle bug (#744), affecting stock KSP
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10
+**Released March 18, 2018**
+
+What's New?
+===========
+
+* Compiled for KSP 1.4.1
+* Update ModuleManager to 3.0.5
+* Upsize RT App icon dimensions
+* Add a new cheat for line of sight [PR #743]
+* Delay joystick inputs with signal delay enabled [Issue #742]
+* Fix zero-throttle bug in presence of Realism Overhaul mod [Issue #744]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #742: Joystick can bypass Signal delay [requested by: Domi1993]
+* Issue #744: Zero throttle bug when launching a probe rocket (RO mod) [requested by: multiple posters]
+
+Pull Requests
+-------------
+
+* PR #743: Add cheat option to ignore line-of-sight requirements [PR by: pianojosh]
+
+***
+
 # Version 1.8.9
 **Released November 11, 2017**
 
