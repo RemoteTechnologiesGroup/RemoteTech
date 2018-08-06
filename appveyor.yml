@@ -361,7 +361,7 @@
       prerelease: true
       # which branch?
       on:
-        branch: develop
+        branch: PiezPiedPy-VS2017
         # deploy on tag push only
         appveyor_repo_tag: false
 
