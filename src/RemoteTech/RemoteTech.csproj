@@ -39,11 +39,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Assembly-CSharp.dll</HintPath>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll')">Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll')">Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -51,11 +53,13 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll')">UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>UnityEngine.UI.dll</HintPath>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll')">UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

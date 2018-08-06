@@ -224,7 +224,7 @@
   branches:
     # whitelist
     only:
-      - develop
+      - PiezPiedPy-VS2017
     # blacklist
     except:
       - gh-pages
