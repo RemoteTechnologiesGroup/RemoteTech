@@ -23,8 +23,12 @@ namespace RemoteTech.API
         public static void EnableInSPC(bool state)  // its advised that modders who need RTCore active in the SPC should set this from the MainMenu Scene
         {
             enabledInSPC = state;  // setting to true will only take effect after a scene change
+            RTLog.Verbose("Flag for RemoteTech running in Space Center scene is set: {0}", RTLogLevel.API, enabledInSPC);
             if (!enabledInSPC && RTCore.Instance != null && HighLogic.LoadedScene == GameScenes.SPACECENTER)
+            {
+                RTLog.Verbose("RemoteTech is terminated in Space Center scene", RTLogLevel.API);
                 RTCore.Instance.OnDestroy();
+            }
         }
 
         public static bool HasLocalControl(Guid id)
@@ -103,21 +107,21 @@ namespace RemoteTech.API
         /// <summary> Determines if a satellite directly targets a ground station.</summary>
         /// <param name="id">The satellite id.</param>
         /// <returns>true if the satellite has an antenna with a ground station as its first link, false otherwise.</returns>
-        public static bool HasGroundStationTarget(Guid id)
+        public static bool HasDirectGroundStation(Guid id)
         {
             if (RTCore.Instance == null) return false;
             var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             var targetsGroundStation = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid));
-            RTLog.Verbose("APIcall: {0} Directly targets a ground station {1}", RTLogLevel.API, id, targetsGroundStation);
+            RTLog.Verbose("Flight: {0} Directly targets a ground station: {1}", RTLogLevel.API, id, targetsGroundStation);
             return targetsGroundStation;
         }
 
         /// <summary> Gets the name of the ground station directly targeted with the shortest link to the satellite.</summary>
         /// <param name="id">The satellite id.</param>
         /// <returns>name of the ground station if one is found, null otherwise.</returns>
-        public static string GetNameGroundStationTarget(Guid id)
+        public static string GetClosestDirectGroundStation(Guid id)
         {
             if (RTCore.Instance == null) return null;
             var satellite = RTCore.Instance.Satellites[id];
@@ -125,14 +129,14 @@ namespace RemoteTech.API
 
             var namedGroundStation = RTCore.Instance.Network[satellite].Where
                 (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid)).Min().Goal.Name;
-            RTLog.Verbose("APIcall: {0} Directly targets with the shortest link the ground station {1}", RTLogLevel.API, id, namedGroundStation);
+            RTLog.Verbose("Flight: {0} Directly targets the closest ground station: {1}", RTLogLevel.API, id, namedGroundStation);
             return namedGroundStation;
         }
 
         /// <summary> Gets the name of the first hop satellite with the shortest link to KSC by the specified satellite.</summary>
         /// <param name="id">The satellite id.</param>
         /// <returns>name of the satellite if one is found, null otherwise.</returns>
-        public static string GetFirstHopNameToKSC(Guid id)
+        public static string GetFirstHopToKSC(Guid id)
         {
             if (RTCore.Instance == null) return null;
             var satellite = RTCore.Instance.Satellites[id];
@@ -140,7 +144,7 @@ namespace RemoteTech.API
 
             var namedSatellite = RTCore.Instance.Network[satellite].Where
                 (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links.FirstOrDefault().Target.Name;
-            RTLog.Verbose("APIcall: {0} Shortest route to KSC has as its first hop the satellite named {1}", RTLogLevel.API, id, namedSatellite);
+            RTLog.Verbose("Flight: {0} Has first hop satellite with shortest link to KSC: {1}", RTLogLevel.API, id, namedSatellite);
             return namedSatellite;
         }
 
@@ -201,7 +205,7 @@ namespace RemoteTech.API
             if (satellite == null) return null;
 
             string satellitename = satellite.Name;
-            RTLog.Verbose("APIcall: {0} is named {1}", RTLogLevel.API, id, satellitename);
+            RTLog.Verbose("Flight: {0} is: {1}", RTLogLevel.API, id, satellitename);
             return satellitename;
         }
 
@@ -409,11 +413,9 @@ namespace RemoteTech.API
         /// <returns>Indicator on whether this request is executed successfully</returns>
         public static bool SetPowerDownGuid(Guid id, bool flag, string reason = "")
         {
-            if (RTCore.Instance == null)
-                return false;
+            if (RTCore.Instance == null) return false;
             var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null)
-                return false;
+            if (satellite == null) return false;
 
             satellite.IsInPowerDown = flag;
             RTLog.Verbose("Flight: {0} has power down flag updated due to reason '{2}': {1}", RTLogLevel.API, id, satellite.IsInPowerDown, reason);
@@ -426,11 +428,9 @@ namespace RemoteTech.API
         /// <returns>Indicator on whether target vessel is in power down state</returns>
         public static bool GetPowerDownGuid(Guid id)
         {
-            if (RTCore.Instance == null)
-                return false;
+            if (RTCore.Instance == null) return false;
             var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null)
-                return false;
+            if (satellite == null) return false;
 
             var powerdownFlag = satellite.IsInPowerDown;
             RTLog.Verbose("Flight: {0} is in power down: {1}", RTLogLevel.API, id, powerdownFlag);
