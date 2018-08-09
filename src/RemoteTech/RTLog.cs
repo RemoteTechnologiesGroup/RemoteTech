@@ -54,7 +54,7 @@ namespace RemoteTech
 #if !DEBUG
             if (logLevel != RTLogLevel.API && logLevel != RTLogLevel.Assembly)
 #endif
-                UnityEngine.Debug.Log("RemoteTech: " + message);
+                UnityEngine.Debug.Log("[RemoteTech] " + message);
 
             #region ON-DEBUGMODE
 #if DEBUG
