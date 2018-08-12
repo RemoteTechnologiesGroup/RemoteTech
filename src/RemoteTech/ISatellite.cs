@@ -40,7 +40,7 @@ namespace RemoteTech
         bool CanRelaySignal { get; }
         /// <summary>Indicates whether the satellite is in radio blackout.</summary>
         bool IsInRadioBlackout { get; set; }
-        /// <summary>Indicates whether the satellite is in a powered down state.</summary>
-        bool IsInPowerDown { get; set; }
+        /// <summary>Indicates whether the manual power override is engaged.</summary>
+        bool PowerShutdownFlag { get; set; }
     }
 }

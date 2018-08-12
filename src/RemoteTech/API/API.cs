@@ -417,8 +417,8 @@ namespace RemoteTech.API
             var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
-            satellite.IsInPowerDown = flag;
-            RTLog.Verbose("Flight: {0} has power down flag updated due to reason '{2}': {1}", RTLogLevel.API, id, satellite.IsInPowerDown, reason);
+            satellite.PowerShutdownFlag = flag;
+            RTLog.Verbose("Flight: {0} has power down flag updated due to reason '{2}': {1}", RTLogLevel.API, id, satellite.PowerShutdownFlag, reason);
             return true;
         }
 
@@ -432,9 +432,9 @@ namespace RemoteTech.API
             var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
-            var powerdownFlag = satellite.IsInPowerDown;
-            RTLog.Verbose("Flight: {0} is in power down: {1}", RTLogLevel.API, id, powerdownFlag);
-            return powerdownFlag;
+            var flag = satellite.PowerShutdownFlag;
+            RTLog.Verbose("Flight: {0} is in power down: {1}", RTLogLevel.API, id, flag);
+            return flag;
         }
     }
 }

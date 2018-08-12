@@ -40,7 +40,7 @@ namespace RemoteTech
         /// <summary>Gets if the satellite is actually powered or not.</summary>
         public bool Powered
         {
-            get { return SignalProcessors.Any(s => s.Powered); }
+            get { return (PowerShutdownFlag)? false : SignalProcessors.Any(s => s.Powered); }
         }
 
         /// <summary>Gets if the satellite is capable to forward other signals.</summary>
@@ -52,8 +52,8 @@ namespace RemoteTech
         /// <summary>Indicates whether the satellite is in radio blackout.</summary>
         public bool IsInRadioBlackout { get; set; }
 
-        /// <summary>Indicates whether the satellite is in a powered down state.</summary>
-        public bool IsInPowerDown { get; set; }
+        /// <summary>Indicates whether the manual power override is engaged.</summary>
+        public bool PowerShutdownFlag { get; set; }
 
         /// <summary>Gets if the satellite is a RemoteTech command station.</summary>
         public bool IsCommandStation

@@ -146,7 +146,6 @@ namespace RemoteTech
         {
             if (sat_a == null || sat_b == null || sat_a == sat_b) return null;
             if (sat_a.IsInRadioBlackout || sat_b.IsInRadioBlackout) return null;
-            if (sat_a.IsInPowerDown || sat_b.IsInPowerDown) return null;
             bool los = sat_a.HasLineOfSightWith(sat_b) || RTSettings.Instance.IgnoreLineOfSight;
             if (!los) return null;
 
@@ -246,7 +245,7 @@ namespace RemoteTech
 
         private bool AntennaActivated = true;
 
-        bool ISatellite.Powered { get { return this.AntennaActivated; } }
+        bool ISatellite.Powered { get { return PowerShutdownFlag ? false : this.AntennaActivated; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
         Guid ISatellite.Guid { get { return mGuid; } }
@@ -263,7 +262,7 @@ namespace RemoteTech
         public Guid mGuid { get; private set; }
         public IEnumerable<IAntenna> MissionControlAntennas { get { return Antennas; } }
         public bool IsInRadioBlackout { get; set; } // could be EMP
-        public bool IsInPowerDown { get; set; } // could be dead battery
+        public bool PowerShutdownFlag { get; set; } // flag for third-party realism mods
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 
