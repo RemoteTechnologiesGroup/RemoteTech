@@ -172,7 +172,8 @@ namespace RemoteTech
 
                 // amend this optimisation due to inconsistent connectivity on non-active vessels (eg showing no connection when 3rd-party mods query)
                 //if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION || RTCore.Instance.Renderer.ShowMultiPath)
-                if (HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.FLIGHT)
+                if (HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.FLIGHT ||
+                    (HighLogic.LoadedScene == GameScenes.SPACECENTER && API.API.enabledInSPC))
                 {
                     FindPath(s, commandStations);
                 }
@@ -244,7 +245,7 @@ namespace RemoteTech
 
         private bool AntennaActivated = true;
 
-        bool ISatellite.Powered { get { return this.AntennaActivated; } }
+        bool ISatellite.Powered { get { return PowerShutdownFlag ? false : this.AntennaActivated; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
         Guid ISatellite.Guid { get { return mGuid; } }
@@ -261,6 +262,7 @@ namespace RemoteTech
         public Guid mGuid { get; private set; }
         public IEnumerable<IAntenna> MissionControlAntennas { get { return Antennas; } }
         public bool IsInRadioBlackout { get; set; } // could be EMP
+        public bool PowerShutdownFlag { get; set; } // flag for third-party realism mods
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 
