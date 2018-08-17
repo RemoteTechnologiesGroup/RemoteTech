@@ -44,6 +44,7 @@ namespace RemoteTech
         private readonly HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();
         private readonly List<NetworkLine> mLines = new List<NetworkLine>();
         private readonly List<NetworkCone> mCones = new List<NetworkCone>();
+        private static float mLineWidth = 1f;
 
         public bool ShowOmni  { get { return (Filter & MapFilter.Omni)   == MapFilter.Omni; } }
         public bool ShowDish  { get { return (Filter & MapFilter.Dish)   == MapFilter.Dish; } }
@@ -58,6 +59,22 @@ namespace RemoteTech
         static NetworkRenderer()
         {
             RTUtil.LoadImage(out mTexMark, "mark");
+
+            if(Versioning.version_major == 1)
+            {
+                switch(Versioning.version_minor)
+                {
+                    case 3:
+                        mLineWidth = 3f; //1f is too thin in 1.3
+                        break;
+                    case 4:
+                        mLineWidth = 1f; //1f is matching to CommNet's line width
+                        break;
+                    default:
+                        mLineWidth = 1f;
+                        break;
+                }
+            }
         }
 
         public static NetworkRenderer CreateAndAttach()
@@ -237,8 +254,7 @@ namespace RemoteTech
                 if (!center.HasValue) continue;
 
                 mCones[i] = mCones[i] ?? NetworkCone.Instantiate();
-                mCones[i].Material = MapView.fetch.orbitLinesMaterial;
-                mCones[i].LineWidth = 2.0f;
+                mCones[i].LineWidth = mLineWidth;
                 mCones[i].Antenna = antennas[i];
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
@@ -267,8 +283,7 @@ namespace RemoteTech
             {
                 it.MoveNext();
                 mLines[i] = mLines[i] ?? NetworkLine.Instantiate();
-                mLines[i].Material = MapView.fetch.orbitLinesMaterial;
-                mLines[i].LineWidth = 3.0f;
+                mLines[i].LineWidth = mLineWidth;
                 mLines[i].Edge = it.Current;
                 mLines[i].Color = CheckColor(it.Current);
                 mLines[i].Active = true;

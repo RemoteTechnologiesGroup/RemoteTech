@@ -6,6 +6,8 @@ namespace RemoteTech.UI
 {
     public class NetworkCone : MonoBehaviour
     {
+        private static Material CommNetMaterial = null;
+
         public Vector3d Center
         {
             set
@@ -55,11 +57,13 @@ namespace RemoteTech.UI
 
         public void Awake()
         {
+            if (CommNetMaterial == null) { CommNetMaterial = Resources.Load<Material>("Telemetry/TelemetryMaterial"); }
+
             SetupMesh();
             gameObject.layer = 31;
             LineWidth = 1.0f;
             Color = Color.white;
-            Material = new Material("Shader \"Vertex Colors/Alpha\" {Category{Tags {\"Queue\"=\"Transparent\" \"IgnoreProjector\"=\"True\" \"RenderType\"=\"Transparent\"}SubShader {Cull Off ZWrite On Blend SrcAlpha OneMinusSrcAlpha Pass {BindChannels {Bind \"Color\", color Bind \"Vertex\", vertex}}}}}");
+            Material = CommNetMaterial;
         }
 
         private void UpdateMesh(Vector3d center, IAntenna dish)
