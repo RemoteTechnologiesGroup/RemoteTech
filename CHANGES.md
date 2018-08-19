@@ -1,3 +1,35 @@
+# Version 1.8.13
+**Released August 19, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.5
+* Tightened the precision of Flight Computer commands' extra delay 
+* Resolved ambiguous wording of antenna deployment/retraction in Editor
+* Modernised and streamlined csproj
+* Switched to KSP's coloruful console message style
+* New API methods for connections and vessels
+* Resolved the material error on signal lines
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #661: RT-C tries to execute node too early? [requested by: WildLynxDev]
+* Issue #693: Error when signal lines are shown in a map or in the tracking station [requested by: jarosm]
+* Issue #752: Status near PAW buttons is not actually, is what happens when clicked [requested by: Gordon-Dry]
+
+Pull Requests
+-------------
+
+* PR #753: Building with Visual Studio [PR by: PiezPiedPy]
+* PR #754: API methods primarily to support Kerbalism but can be used by others [PR by: PiezPiedPy]
+
+***
+
 # Version 1.8.12
 **Released July 17, 2018**
 
