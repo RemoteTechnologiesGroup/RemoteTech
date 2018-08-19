@@ -1,3 +1,22 @@
+# Version 1.8.13.131
+**Released August 19, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.8.13 for KSP 1.3.1 due to the significant number of players
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
 # Version 1.8.13
 **Released August 19, 2018**
 
