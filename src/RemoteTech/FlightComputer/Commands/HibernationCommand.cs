@@ -143,8 +143,30 @@ namespace RemoteTech.FlightComputer.Commands
                 RunThresholdControl(fc.Vessel, RTCore.Instance.Satellites[fc.Vessel.id].Antennas);
                 return false;
             }
-            else
+            else//active hiberation 
             {
+                //check if stock input lock is engaged on maneuver node when probe is in hibernation mode
+                if(fc.Vessel.HasLocalControl() && 
+                  ((InputLockManager.lockMask & (ulong)ControlTypes.MANNODE_ADDEDIT) != 0uL ||
+                   (InputLockManager.lockMask & (ulong)ControlTypes.MANNODE_DELETE) != 0uL))
+                {
+                    InputLockManager.lockStack["vessel_noControl_" + fc.Vessel.id] &= ~((ulong)ControlTypes.MANNODE_ADDEDIT);
+                    InputLockManager.lockStack["vessel_noControl_" + fc.Vessel.id] &= ~((ulong)ControlTypes.MANNODE_DELETE);
+                    InputLockManager.lockMask &= ~((ulong)ControlTypes.MANNODE_ADDEDIT);
+                    InputLockManager.lockMask &= ~((ulong)ControlTypes.MANNODE_DELETE);
+                }
+                /*//unnecessary as it is locked back by stock ksp
+                else if(!fc.Vessel.HasLocalControl() && 
+                       ((InputLockManager.lockMask & (ulong)ControlTypes.MANNODE_ADDEDIT) == 0uL ||
+                        (InputLockManager.lockMask & (ulong)ControlTypes.MANNODE_DELETE) == 0uL))
+                {
+                    InputLockManager.lockStack["vessel_noControl_" + fc.Vessel.id] |= (ulong)ControlTypes.MANNODE_ADDEDIT;
+                    InputLockManager.lockStack["vessel_noControl_" + fc.Vessel.id] |= (ulong)ControlTypes.MANNODE_DELETE;
+                    InputLockManager.lockMask |= (ulong)ControlTypes.MANNODE_ADDEDIT;
+                    InputLockManager.lockMask |= (ulong)ControlTypes.MANNODE_DELETE;
+                }
+                */
+
                 //drop any queued non-power command up to next hiberation command (wake)
                 var cmdsToDrop = new List<ICommand>();
                 for(int i=0; i<fc.QueuedCommands.Count(); i++)
