@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
+    <Compile Include="AddOns\Kerbalism.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
     <Compile Include="FlightComputer\Commands\EventCommand.cs" />
