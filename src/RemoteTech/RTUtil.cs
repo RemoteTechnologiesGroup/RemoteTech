@@ -154,6 +154,7 @@ namespace RemoteTech
 
         public static String FormatConsumption(double consumption)
         {
+            String format = "{0:F2}/{1}";
             String timeindicator = "sec";
 
             // Disabled to follow the stock consumption format unless Kerbalism is detected which requires higher precision due to EC costs being much lower
@@ -162,9 +163,10 @@ namespace RemoteTech
                 // minutes
                 consumption *= 60;
                 timeindicator = "min";
+                format = "{0:F3}/{1}";
             }
 
-            return AddOns.Kerbalism.Exists ? String.Format("{0:F3}/{1}.", consumption, timeindicator) : String.Format("{0:F2}/{1}.", consumption, timeindicator);
+            return String.Format(format, consumption, timeindicator);
         }
 
         public static String FormatSI(double value, String unit)
