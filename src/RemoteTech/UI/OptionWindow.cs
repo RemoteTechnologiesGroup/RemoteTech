@@ -286,13 +286,14 @@ namespace RemoteTech.UI
             GUILayout.Label("If set to a value other than 1, the power consumption of all antennas will be increased or decreased by this factor.\nDoes not affect energy consumption for science transmissions.", this.mGuiHintText);
             this.mSettings.ConsumptionMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(this.mSettings.ConsumptionMultiplier, 0, 2), 2);
 
+            // Re-scaling Kerbin by 10.625x to create Earth-like planet size requires Multipliers of 10 for orbital sattelite network with full coverage to be practical
             GUILayout.Label("Antennas Range Multiplier: (" + this.mSettings.RangeMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("If set to a value other than 1, the range of all <b><color=#bada55>antennas</color></b> will be increased or decreased by this factor.\nDoes not affect Mission Control range.", this.mGuiHintText);
-            mSettings.RangeMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(mSettings.RangeMultiplier, 0, 5), 2);
+            mSettings.RangeMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(mSettings.RangeMultiplier, 0, 10), 2);
 
             GUILayout.Label("Mission Control Range Multiplier: (" + mSettings.MissionControlRangeMultiplier + ")", GUILayout.Width(OptionWindow.WINDOW_WIDTH * 0.75f));
             GUILayout.Label("If set to a value other than 1, the range of all <b><color=#bada55>Mission Controls</color></b> will be increased or decreased by this factor.\nDoes not affect antennas range.", this.mGuiHintText);
-            mSettings.MissionControlRangeMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(mSettings.MissionControlRangeMultiplier, 0, 5), 2);
+            mSettings.MissionControlRangeMultiplier = (float)Math.Round(GUILayout.HorizontalSlider(mSettings.MissionControlRangeMultiplier, 0, 10), 2);
         }
 
         /// <summary>
