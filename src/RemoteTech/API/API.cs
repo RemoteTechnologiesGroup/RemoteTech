@@ -9,165 +9,188 @@ using WrappedEvent = RemoteTech.FlightComputer.UIPartActionMenuPatcher.WrappedEv
 
 namespace RemoteTech.API
 {
-    public static class API
-    {
-        /// <summary>If true then RTCore will be available in the Space Center</summary>
-        internal static bool enabledInSPC = false;
+	public static class API
+	{
+		/// <summary>If true then RTCore will be available in the Space Center</summary>
+		internal static bool enabledInSPC = false;
 
-        public static bool IsRemoteTechEnabled()
-        {
-            if (RTCore.Instance != null) return true;
-            return false;
-        }
+		public static bool IsRemoteTechEnabled()
+		{
+			if (RTCore.Instance != null) return true;
+			return false;
+		}
 
-        public static void EnableInSPC(bool state)  // its advised that modders who need RTCore active in the SPC should set this from the MainMenu Scene
-        {
-            enabledInSPC = state;  // setting to true will only take effect after a scene change
-            RTLog.Verbose("Flag for RemoteTech running in Space Center scene is set: {0}", RTLogLevel.API, enabledInSPC);
-            if (!enabledInSPC && RTCore.Instance != null && HighLogic.LoadedScene == GameScenes.SPACECENTER)
-            {
-                RTLog.Verbose("RemoteTech is terminated in Space Center scene", RTLogLevel.API);
-                RTCore.Instance.OnDestroy();
-            }
-        }
+		public static void EnableInSPC(bool state)  // its advised that modders who need RTCore active in the SPC should set this from the MainMenu Scene
+		{
+			enabledInSPC = state;  // setting to true will only take effect after a scene change
+			RTLog.Verbose("Flag for RemoteTech running in Space Center scene is set: {0}", RTLogLevel.API, enabledInSPC);
+			if (!enabledInSPC && RTCore.Instance != null && HighLogic.LoadedScene == GameScenes.SPACECENTER)
+			{
+				RTLog.Verbose("RemoteTech is terminated in Space Center scene", RTLogLevel.API);
+				RTCore.Instance.OnDestroy();
+			}
+		}
 
-        public static bool HasLocalControl(Guid id)
-        {
-            var vessel = RTUtil.GetVesselById(id);
-            if (vessel == null) return false;
+		public static bool HasLocalControl(Guid id)
+		{
+			var vessel = RTUtil.GetVesselById(id);
+			if (vessel == null) return false;
 
-            RTLog.Verbose("Flight: {0} HasLocalControl: {1}", RTLogLevel.API, id, vessel.HasLocalControl());
+			RTLog.Verbose("Flight: {0} HasLocalControl: {1}", RTLogLevel.API, id, vessel.HasLocalControl());
 
-            return vessel.HasLocalControl();
-        }
+			return vessel.HasLocalControl();
+		}
 
-        public static bool HasFlightComputer(Guid id)
-        {
-            if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null) return false;
+		public static bool HasFlightComputer(Guid id)
+		{
+			if (RTCore.Instance == null) return false;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null) return false;
 
-            var hasFlightComputer = satellite.FlightComputer != null;
-            RTLog.Verbose("Flight: {0} HasFlightComputer: {1}", RTLogLevel.API, id, hasFlightComputer);
+			var hasFlightComputer = satellite.FlightComputer != null;
+			RTLog.Verbose("Flight: {0} HasFlightComputer: {1}", RTLogLevel.API, id, hasFlightComputer);
 
-            return hasFlightComputer;
-        }
+			return hasFlightComputer;
+		}
 
-        public static void AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
-        {
-            if (RTCore.Instance == null) return;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null || satellite.SignalProcessor == null) return;
+		public static void AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
+		{
+			if (RTCore.Instance == null) return;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null || satellite.SignalProcessor == null) return;
 
-            foreach (var spu in satellite.SignalProcessors)
-            {
-                if (spu.FlightComputer == null || spu.FlightComputer.SanctionedPilots == null) continue;
-                if (spu.FlightComputer.SanctionedPilots.Contains(autopilot)) continue;
-                RTLog.Verbose("Flight: {0} Adding Sanctioned Pilot", RTLogLevel.API, id);
-                spu.FlightComputer.SanctionedPilots.Add(autopilot);
-            }
-        }
+			foreach (var spu in satellite.SignalProcessors)
+			{
+				if (spu.FlightComputer == null || spu.FlightComputer.SanctionedPilots == null) continue;
+				if (spu.FlightComputer.SanctionedPilots.Contains(autopilot)) continue;
+				RTLog.Verbose("Flight: {0} Adding Sanctioned Pilot", RTLogLevel.API, id);
+				spu.FlightComputer.SanctionedPilots.Add(autopilot);
+			}
+		}
 
-        public static void RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
-        {
-            if (RTCore.Instance == null) return;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null || satellite.SignalProcessor == null) return;
+		public static void RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
+		{
+			if (RTCore.Instance == null) return;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null || satellite.SignalProcessor == null) return;
 
-            foreach (var spu in satellite.SignalProcessors)
-            {
-                if (spu.FlightComputer == null || spu.FlightComputer.SanctionedPilots == null) continue;
-                RTLog.Verbose("Flight: {0} Removing Sanctioned Pilot", RTLogLevel.API, id);
-                spu.FlightComputer.SanctionedPilots.Remove(autopilot);
-            }
-        }
+			foreach (var spu in satellite.SignalProcessors)
+			{
+				if (spu.FlightComputer == null || spu.FlightComputer.SanctionedPilots == null) continue;
+				RTLog.Verbose("Flight: {0} Removing Sanctioned Pilot", RTLogLevel.API, id);
+				spu.FlightComputer.SanctionedPilots.Remove(autopilot);
+			}
+		}
 
-        public static bool HasAnyConnection(Guid id)
-        {
-            if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null) return false;
+		public static bool HasAnyConnection(Guid id)
+		{
+			if (RTCore.Instance == null) return false;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null) return false;
 
-            var hasConnection = RTCore.Instance.Network[satellite].Any();
-            RTLog.Verbose("Flight: {0} Has Connection: {1}", RTLogLevel.API, id, hasConnection);
-            return hasConnection;
-        }
+			var hasConnection = RTCore.Instance.Network[satellite].Any();
+			RTLog.Verbose("Flight: {0} Has Connection: {1}", RTLogLevel.API, id, hasConnection);
+			return hasConnection;
+		}
 
-        public static bool HasConnectionToKSC(Guid id)
-        {
-            if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null) return false;
+		public static bool HasConnectionToKSC(Guid id)
+		{
+			if (RTCore.Instance == null) return false;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null) return false;
 
-            var connectedToKerbin = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
-            RTLog.Verbose("Flight: {0} Has Connection to Kerbin: {1}", RTLogLevel.API, id, connectedToKerbin);
-            return connectedToKerbin;
-        }
+			var connectedToKerbin = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+			RTLog.Verbose("Flight: {0} Has Connection to Kerbin: {1}", RTLogLevel.API, id, connectedToKerbin);
+			return connectedToKerbin;
+		}
 
-        /// <summary> Determines if a satellite directly targets a ground station.</summary>
-        /// <param name="id">The satellite id.</param>
-        /// <returns>true if the satellite has an antenna with a ground station as its first link, false otherwise.</returns>
-        public static bool HasDirectGroundStation(Guid id)
-        {
-            if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null) return false;
+		/// <summary> Determines if a satellite directly targets a ground station.</summary>
+		/// <param name="id">The satellite id.</param>
+		/// <returns>true if the satellite has an antenna with a ground station as its first link, false otherwise.</returns>
+		public static bool HasDirectGroundStation(Guid id)
+		{
+			if (RTCore.Instance == null) return false;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null) return false;
 
-            var targetsGroundStation = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid));
-            RTLog.Verbose("Flight: {0} Directly targets a ground station: {1}", RTLogLevel.API, id, targetsGroundStation);
-            return targetsGroundStation;
-        }
+			var targetsGroundStation = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid));
+			RTLog.Verbose("Flight: {0} Directly targets a ground station: {1}", RTLogLevel.API, id, targetsGroundStation);
+			return targetsGroundStation;
+		}
 
-        /// <summary> Gets the name of the ground station directly targeted with the shortest link to the satellite.</summary>
-        /// <param name="id">The satellite id.</param>
-        /// <returns>name of the ground station if one is found, null otherwise.</returns>
-        public static string GetClosestDirectGroundStation(Guid id)
-        {
-            if (RTCore.Instance == null) return null;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null) return null;
+		/// <summary> Gets the name of the ground station directly targeted with the shortest link to the satellite.</summary>
+		/// <param name="id">The satellite id.</param>
+		/// <returns>name of the ground station if one is found, null otherwise.</returns>
+		public static string GetClosestDirectGroundStation(Guid id)
+		{
+			if (RTCore.Instance == null) return null;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null) return null;
 
-            var namedGroundStation = RTCore.Instance.Network[satellite].Where
-                (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid)).Min().Goal.Name;
-            RTLog.Verbose("Flight: {0} Directly targets the closest ground station: {1}", RTLogLevel.API, id, namedGroundStation);
-            return namedGroundStation;
-        }
+			var namedGroundStation = RTCore.Instance.Network[satellite].Where
+				(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid)).Min().Goal.Name;
+			RTLog.Verbose("Flight: {0} Directly targets the closest ground station: {1}", RTLogLevel.API, id, namedGroundStation);
+			return namedGroundStation;
+		}
 
-        /// <summary> Gets the name of the first hop satellite with the shortest link to KSC by the specified satellite.</summary>
-        /// <param name="id">The satellite id.</param>
-        /// <returns>name of the satellite if one is found, null otherwise.</returns>
-        public static string GetFirstHopToKSC(Guid id)
-        {
-            if (RTCore.Instance == null) return null;
-            var satellite = RTCore.Instance.Satellites[id];
-            if (satellite == null) return null;
+		/// <summary> Gets the name of the first hop satellite with the shortest link to KSC by the specified satellite.</summary>
+		/// <param name="id">The satellite id.</param>
+		/// <returns>name of the satellite if one is found, null otherwise.</returns>
+		public static string GetFirstHopToKSC(Guid id)
+		{
+			if (RTCore.Instance == null) return null;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null) return null;
 
-            var namedSatellite = RTCore.Instance.Network[satellite].Where
-                (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links.FirstOrDefault().Target.Name;
-            RTLog.Verbose("Flight: {0} Has first hop satellite with shortest link to KSC: {1}", RTLogLevel.API, id, namedSatellite);
-            return namedSatellite;
-        }
+			var namedSatellite = RTCore.Instance.Network[satellite].Where
+				(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links.FirstOrDefault().Target.Name;
+			RTLog.Verbose("Flight: {0} Has first hop satellite with shortest link to KSC: {1}", RTLogLevel.API, id, namedSatellite);
+			return namedSatellite;
+		}
 
-        public static bool AntennaHasConnection(Part part)
-        {
-            if (RTCore.Instance == null) return false;
-            var antennaModules = part.Modules.OfType<IAntenna>();
+		public static bool AntennaHasConnection(Part part)
+		{
+			if (RTCore.Instance == null) return false;
+			var antennaModules = part.Modules.OfType<IAntenna>();
 
-            return antennaModules.Any(m => m.Connected);
-        }
+			return antennaModules.Any(m => m.Connected);
+		}
 
-        public static Guid GetAntennaTarget(Part part) {
-            ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
+		public static Guid GetAntennaTarget(Part part) {
+			ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
 
-            if (module == null)
-            {
-                throw new ArgumentException();
-            }
+			if (module == null)
+			{
+				throw new ArgumentException();
+			}
 
-            return module.Target;
-        }
+			return module.Target;
+		}
 
-        public static void SetAntennaTarget(Part part, Guid id) {
+		/// <summary> Gets the guid of all satellite in the ground station route</summary>
+		/// <param name="id">The satellite id </param>
+		/// <returns> guid list of all satellite in ground station router</returns>
+		public static List<Guid> GetControlPath(Guid id)
+		{
+			List<Guid> links = new List<Guid>();
+			if (RTCore.Instance == null) return links;
+			var satellite = RTCore.Instance.Satellites[id];
+			if (satellite == null) return links;
+
+			if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return links;
+
+			List<NetworkLink<ISatellite>> bestRouter = RTCore.Instance.Network[satellite].Where
+					(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links;
+
+			// Get all Satellite, not the last jump that is a ground station
+			for (int i = 0; i < bestRouter.Count -1; i++)
+			{
+				links.Add(bestRouter[i].Target.Guid);
+			}
+			return links;
+		}
+
+		public static void SetAntennaTarget(Part part, Guid id) {
             ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
 
             if (module == null)
