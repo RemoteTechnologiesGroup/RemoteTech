@@ -167,6 +167,28 @@ namespace RemoteTech.API
             return module.Target;
         }
 
+        /// <summary> Gets Guids of all satellites in the control route</summary>
+        /// <param name="id">The satellite id </param>
+        /// <returns> Guid array of all satellite in ground station router</returns>
+        public static Guid[] GetControlPath(Guid id)
+        {
+            if (RTCore.Instance == null) return new Guid[]{ };
+            var satellite = RTCore.Instance.Satellites[id];
+            if (satellite == null) return new Guid[] { };
+            if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return new Guid[] { };
+
+            List<NetworkLink<ISatellite>> bestRouter = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links;
+            Guid[] guids = new Guid[bestRouter.Count - 1];
+
+            // Get all satellites, not the last jump that is a station ground
+            for (int i = 0; i < bestRouter.Count - 1; i++)
+            {
+                guids[i] = bestRouter[i].Target.Guid;
+            }
+
+            return guids;
+        }
+        
         public static void SetAntennaTarget(Part part, Guid id) {
             ModuleRTAntenna module = part.Modules.OfType<ModuleRTAntenna>().First();
 
