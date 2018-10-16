@@ -65,7 +65,8 @@ namespace RemoteTech
                 switch(Versioning.version_minor)
                 {
                     case 3:
-                        mLineWidth = 3f; //1f is too thin in 1.3
+                    case 5:
+                        mLineWidth = 3f; //1f is too thin in 1.3 and 1.5
                         break;
                     case 4:
                         mLineWidth = 1f; //1f is matching to CommNet's line width
