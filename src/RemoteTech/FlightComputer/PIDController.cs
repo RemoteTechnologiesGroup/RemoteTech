@@ -13,9 +13,9 @@ namespace RemoteTech.FlightComputer
     //and https://github.com/KSP-KOS/KOS/blob/master/src/kOS/Control/SteeringManager.cs
     public class PIDController
     {
-        private const double MaxStoppingTime = 5.0; // upper limit to artifically raise the torque amount by factor
+        private const double MaxStoppingTime = 10.0; // upper limit to artifically raise the torque amount by factor
         private const double Phi1FStoppingTime = 0.1; // phi threshold to target orientation, where stopping time will be 1 factor
-        private const double OmegaThreshold = 0.5; // threshold ratio of torque to MoI to apply MaxStoppingTime or not (useful for huge rocket with tiny torque)
+        private const double OmegaThreshold = 0.7; // threshold ratio of torque to MoI to apply MaxStoppingTime or not (useful for huge rocket with tiny torque)
         public const double EPSILON = 1e-16;
 
         /* error */
