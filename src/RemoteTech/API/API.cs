@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using WrappedEvent = RemoteTech.FlightComputer.UIPartActionMenuPatcher.WrappedEvent;
 
-
 namespace RemoteTech.API
 {
     public static class API
@@ -457,6 +456,55 @@ namespace RemoteTech.API
             var flag = satellite.PowerShutdownFlag;
             RTLog.Verbose("Flight: {0} is in power down: {1}", RTLogLevel.API, id, flag);
             return flag;
+        }
+
+        /// <summary>
+        /// Get the maximum range distance between the satellites A and B based on current Range Model
+        /// and no restrictions (such as LoS) applied
+        /// </summary>
+        /// <param name="sat_a">The satellite id.</param>
+        /// <param name="sat_b">The satellite id.</param>
+        /// <returns>Positive number</returns>
+        public static double GetMaxRangeDistance(Guid sat_a, Guid sat_b)
+        {
+            if (RTCore.Instance == null) return 0.0;
+
+            //sanity check
+            var satelliteA = RTCore.Instance.Satellites[sat_a];
+            var satelliteB = RTCore.Instance.Satellites[sat_b];
+            if (satelliteA == null || satelliteB == null) return 0.0;
+
+            //get link object
+            NetworkLink<ISatellite> link = null;
+            switch (RTSettings.Instance.RangeModelType)
+            {
+                case RangeModel.RangeModel.Additive:
+                    link = RangeModelRoot.GetLink(satelliteA, satelliteB);
+                    break;
+                default:
+                    link = RangeModelStandard.GetLink(satelliteA, satelliteB);
+                    break;
+            }
+            if (link == null) return 0.0; //no connection possible
+
+            //get max distance out of multiple antenna connections
+            var distance = 0.0;
+            var maxDistance = 0.0;
+            for(int i=0; i < link.Interfaces.Count; i++)
+            {
+                switch (RTSettings.Instance.RangeModelType)
+                {
+                    case RangeModel.RangeModel.Additive:
+                        distance = RangeModelRoot.GetRangeInContext(link.Interfaces[i], satelliteB, satelliteA);
+                        break;
+                    default:
+                        distance = RangeModelStandard.GetRangeInContext(link.Interfaces[i], satelliteB, satelliteA);
+                        break;
+                }
+                maxDistance = Math.Max(maxDistance, Double.IsNaN(distance) ? 0.0 : distance);
+            }
+
+            return maxDistance;
         }
     }
 }

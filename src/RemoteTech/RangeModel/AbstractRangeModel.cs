@@ -42,6 +42,9 @@ namespace RemoteTech.RangeModel
             double maxDish = Math.Max(CheckRange(rangeFunc, antenna.Dish         , dishClamp, maxOmniB + bonusB, omniClamp), 
                                       CheckRange(rangeFunc, antenna.Dish         , dishClamp, maxDishB         , dishClamp));
 
+            if (Double.IsNaN(maxOmni)) { maxOmni = 0.0; }
+            if (Double.IsNaN(maxDish)) { maxDish = 0.0; }
+
             return Math.Max(maxOmni, maxDish);
         }
 
