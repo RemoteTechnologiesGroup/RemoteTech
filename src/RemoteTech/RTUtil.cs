@@ -157,8 +157,8 @@ namespace RemoteTech
             String format = "{0:F2}/{1}";
             String timeindicator = "sec";
 
-            // Disabled to follow the stock consumption format unless Kerbalism is detected which requires higher precision due to EC costs being much lower
-            if(AddOns.Kerbalism.Exists && consumption < 0.01)
+            // Refactor EC consumption format when EC cost is too low
+            if(consumption < 0.01)
             {
                 // minutes
                 consumption *= 60;
