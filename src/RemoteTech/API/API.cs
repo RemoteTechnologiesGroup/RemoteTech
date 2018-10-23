@@ -179,8 +179,8 @@ namespace RemoteTech.API
             List<NetworkLink<ISatellite>> bestRouter = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links;
             Guid[] guids = new Guid[bestRouter.Count - 1];
 
-            // Get all satellites, not the last jump that is a station ground
-            for (int i = 0; i < bestRouter.Count - 1; i++)
+            // Get all satellites till the ground station
+            for (int i = 0; i < bestRouter.Count; i++)
             {
                 guids[i] = bestRouter[i].Target.Guid;
             }
@@ -460,7 +460,7 @@ namespace RemoteTech.API
 
         /// <summary>
         /// Get the maximum range distance between the satellites A and B based on current Range Model
-        /// and no restrictions (such as LoS) applied
+        /// and valid direct connection.
         /// </summary>
         /// <param name="sat_a">The satellite id.</param>
         /// <param name="sat_b">The satellite id.</param>
@@ -470,8 +470,8 @@ namespace RemoteTech.API
             if (RTCore.Instance == null) return 0.0;
 
             //sanity check
-            var satelliteA = RTCore.Instance.Satellites[sat_a];
-            var satelliteB = RTCore.Instance.Satellites[sat_b];
+            var satelliteA = RTCore.Instance.Network[sat_a];
+            var satelliteB = RTCore.Instance.Network[sat_b];
             if (satelliteA == null || satelliteB == null) return 0.0;
 
             //get link object
@@ -505,6 +505,22 @@ namespace RemoteTech.API
             }
 
             return maxDistance;
+        }
+
+        /// <summary>
+        /// Get the range distance between the satellites A and B.
+        /// </summary>
+        /// <param name="sat_a">The satellite id.</param>
+        /// <param name="sat_b">The satellite id.</param>
+        /// <returns>Positive number</returns>
+        public static double GetRangeDistance(Guid sat_a, Guid sat_b)
+        {
+            if (RTCore.Instance == null) return 0.0;
+            var satelliteA = RTCore.Instance.Network[sat_a];
+            var satelliteB = RTCore.Instance.Network[sat_b];
+            if (satelliteA == null || satelliteB == null) return 0.0;
+
+            return RangeModelExtensions.DistanceTo(satelliteA, satelliteB);
         }
     }
 }
