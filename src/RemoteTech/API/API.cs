@@ -177,7 +177,7 @@ namespace RemoteTech.API
             if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return new Guid[] { };
 
             List<NetworkLink<ISatellite>> bestRouter = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links;
-            Guid[] guids = new Guid[bestRouter.Count - 1];
+            Guid[] guids = new Guid[bestRouter.Count];
 
             // Get all satellites till the ground station
             for (int i = 0; i < bestRouter.Count; i++)
