@@ -35,7 +35,7 @@ namespace RemoteTech.UI
                     RTUtil.Button(new GUIContent("WAKE", "Terminate any power-saving state."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Wake)), GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
-                GUILayout.Space(300);
+                GUILayout.Space(200);
 
                 GUILayout.BeginHorizontal();
                 {

@@ -304,6 +304,7 @@ namespace RemoteTech.UI
         private void DrawTargetContent()
         {
             string targetTypeString = "Body coordinations";
+            string tooltip = "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates";
             ITargetable Target = mFlightComputer.Vessel.targetObject;
 
             if (GameSettings.MODIFIER_KEY.GetKey() && ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) != MouseClick)) // on lookout for mouse click on body
@@ -324,6 +325,7 @@ namespace RemoteTech.UI
                     Latitude = (float) TargetVessel.latitude;
                     Longitude = (float) TargetVessel.longitude;
                     targetTypeString = "Designated Vessel";
+                    tooltip = "Drive to this vessel";
                 }
             }
 
@@ -338,7 +340,7 @@ namespace RemoteTech.UI
 
             RTUtil.HorizontalSlider(ref mSteerClamp, 0, 1);
 
-            GUILayout.Label(new GUIContent("Mode: "+targetTypeString));
+            GUILayout.Label(new GUIContent("Mode: "+targetTypeString, tooltip));
 
             GUILayout.BeginHorizontal();
             {
