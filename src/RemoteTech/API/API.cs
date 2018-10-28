@@ -225,7 +225,7 @@ namespace RemoteTech.API
         {
             if (RTCore.Instance == null) return null;
             var satellite = RTCore.Instance.Network.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
-			if (satellite == null) return null;
+            if (satellite == null) return null;
 
             string satellitename = satellite.Name;
             RTLog.Verbose("Flight: {0} is: {1}", RTLogLevel.API, id, satellitename);
