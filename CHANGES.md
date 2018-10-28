@@ -1,3 +1,82 @@
+# Version 1.9.0.145
+**Released October 27, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.0 for KSP 1.4.5
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.0.131
+**Released October 27, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.0 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.0
+**Released October 27, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.5.1
+* Updated ModuleManager to 3.1.0
+* Corrected network line direction flipping
+* Creation or editing of maneuveer nodes allowed for manned vessels in hiberation mode
+* More precision displaying of antennas' EC costs
+* Increased maximum range multiplier cap to 10
+* Added new 3 API methods - GetMaxRangeDistance, GetRangeDistance and GetControlPath
+* Safeguarded APIs against invalid GUIDs
+* Fine-tuned Flight Computer's PID parameters
+* Added support for the new probe cores (*_v2)
+* Minor interface changes to Flight Computer's Rover and Power pages
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #540: Network line incorrect rendering [requested by: d4rksh4de]
+* Issue #711: Signal line points to the wrong direction when vessel is behind the camera (screen) [requested by: zhihengq]
+* Issue #756: Cannot add/edit maneuver nodes via local control of hibernate is set in flight computer [requested by: MechBFP]
+
+Pull Requests
+-------------
+
+* PR #757: Better precision display of EC when Kerbalism is installed [PR by: PiezPiedPy]
+* PR #764: Increase maximum multiplier [PR by: madman2003]
+* PR #766: API - Return float for Distance/MaxDistancer [PR by: HaullyGames]
+* PR #767: API - GetControlPath return List<Guid> [PR by: HaullyGames]
+* PR #768: KSP 1.5 Introduced new probes with "_v2" in the name [PR by: SlipstreamZA]
+* PR #772: API - Prevent IndexOutOfRangeException when invalid Guid be sent. [PR by: HaullyGames]
+* PR #774: API - API - Satellites wasn't return the GroundStation names, with NetWork I can get it. [PR by: HaullyGames]
+
+***
+
 # Version 1.8.13.131
 **Released August 19, 2018**
 
