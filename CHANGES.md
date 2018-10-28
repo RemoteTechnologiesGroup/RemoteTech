@@ -73,6 +73,7 @@ Pull Requests
 * PR #767: API - GetControlPath return List<Guid> [PR by: HaullyGames]
 * PR #768: KSP 1.5 Introduced new probes with "_v2" in the name [PR by: SlipstreamZA]
 * PR #772: API - Prevent IndexOutOfRangeException when invalid Guid be sent. [PR by: HaullyGames]
+* PR #774: API - API - Satellites wasn't return the GroundStation names, with NetWork I can get it. [PR by: HaullyGames]
 
 ***
 

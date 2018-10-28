@@ -224,7 +224,7 @@ namespace RemoteTech.API
         public static string GetName(Guid id)
         {
             if (RTCore.Instance == null) return null;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Network.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
             if (satellite == null) return null;
 
             string satellitename = satellite.Name;
