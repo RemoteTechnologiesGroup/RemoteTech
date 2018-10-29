@@ -1,5 +1,5 @@
 # Version 1.9.0.145
-**Released October 27, 2018**
+**Released October 29, 2018**
 
 What's New?
 ===========
@@ -18,7 +18,7 @@ Pull Requests
 ***
 
 # Version 1.9.0.131
-**Released October 27, 2018**
+**Released October 29, 2018**
 
 What's New?
 ===========
@@ -37,7 +37,7 @@ Pull Requests
 ***
 
 # Version 1.9.0
-**Released October 27, 2018**
+**Released October 29, 2018**
 
 What's New?
 ===========
@@ -49,7 +49,7 @@ What's New?
 * More precision displaying of antennas' EC costs
 * Increased maximum range multiplier cap to 10
 * Added new 3 API methods - GetMaxRangeDistance, GetRangeDistance and GetControlPath
-* Safeguarded APIs against invalid GUIDs
+* Updated few APIs against invalid GUIDs and ground stations
 * Fine-tuned Flight Computer's PID parameters
 * Added support for the new probe cores (*_v2)
 * Minor interface changes to Flight Computer's Rover and Power pages
