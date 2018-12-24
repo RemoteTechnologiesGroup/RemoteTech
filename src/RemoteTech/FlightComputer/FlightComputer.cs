@@ -259,7 +259,7 @@ namespace RemoteTech.FlightComputer
             if (!ignoreExtra)
             {
                 cmd.ExtraDelay += Math.Max(0, TotalDelay - Delay);
-                cmd.ExtraDelayScheduledTimeStamp = RTUtil.GameTime + cmd.ExtraDelay;
+                cmd.ExtraDelayScheduledTimeStamp = cmd.TimeStamp + cmd.ExtraDelay;
             }
 
             var pos = _commandQueue.BinarySearch(cmd);

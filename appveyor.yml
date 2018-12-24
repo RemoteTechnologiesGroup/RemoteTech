@@ -13,7 +13,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.0.131
+  version: 1.9.1.131
 
   # branches
   branches:
@@ -218,7 +218,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.0-{build}-{branch}
+  version: 1.9.1-{build}-{branch}
 
   # branches
   branches:
@@ -270,7 +270,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_5_1.zip
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_3_1.zip
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z

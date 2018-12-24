@@ -1,3 +1,48 @@
+# Version 1.9.1.131
+**Released December 24, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.1 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.1
+**Released December 24, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.6
+* Update ModuleManager to 3.1.1
+* Fixed critical bug of Flight Computer executing timed commands wrongly
+* Fixed syntax error in RemoteTech's MM patch for RLA Probes
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #781: Signal delay timer error when executing timed commands. [requested by: DrToonhattan]
+
+Pull Requests
+-------------
+
+* PR #779: RLA syntax error [PR by: Gordon-Dry]
+
+***
+
 # Version 1.9.0.145
 **Released October 29, 2018**
 
