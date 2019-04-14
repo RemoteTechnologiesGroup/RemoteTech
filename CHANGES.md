@@ -1,3 +1,27 @@
+# Version 1.9.2
+**Released April 14, 2019**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.7
+* Updated ModuleManager to 4.0.2
+* Support for Restock and RestockPlus Antennas
+* Fixed Editor error of cross-section profiles on RemoteTech antennas
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+* PR #788: RestockPlus Antenna Support [PR by: xdreaper15]
+
+***
+
 # Version 1.9.1.131
 **Released December 24, 2018**
 
