@@ -71,7 +71,7 @@ namespace RemoteTech.Modules
             if (this.UpgradeableDish != String.Empty)
             {
                 int missionControlTechLevelForDish = missionControlTechLevel;
-                string[] dishRanges = this.UpgradeableOmni.Split(';');
+                string[] dishRanges = this.UpgradeableDish.Split(';');
                 if (missionControlTechLevelForDish > dishRanges.Count())
                 {
                     missionControlTechLevelForDish = dishRanges.Count();
@@ -83,7 +83,7 @@ namespace RemoteTech.Modules
             if (this.UpgradeableCosAngle != String.Empty)
             {
                 int missionControlTechLevelForCAngle = missionControlTechLevel;
-                string[] cAngleRanges = this.UpgradeableOmni.Split(';');
+                string[] cAngleRanges = this.UpgradeableCosAngle.Split(';');
                 if (missionControlTechLevelForCAngle > cAngleRanges.Count())
                 {
                     missionControlTechLevelForCAngle = cAngleRanges.Count();
