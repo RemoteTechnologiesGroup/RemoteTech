@@ -33,7 +33,7 @@ namespace RemoteTech.Modules
         float IAntenna.Consumption { get { return 0.0f; } }
         bool IAntenna.CanTarget { get { return false; } }
         Guid IAntenna.Target { get { return new Guid(RTSettings.Instance.ActiveVesselGuid); } set { return; } }
-        float IAntenna.Dish { get { return Dish; } }
+        float IAntenna.Dish { get { return Dish * MissionControlRangeMultiplier; } }
         double IAntenna.CosAngle { get { return CosAngle; } }
         private float MissionControlRangeMultiplier { get { return RTSettings.Instance.MissionControlRangeMultiplier; } }
 
