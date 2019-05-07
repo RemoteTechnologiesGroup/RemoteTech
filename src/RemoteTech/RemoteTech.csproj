@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath Condition="Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">$(KSPDEVDIR)\GameData\RemoteTech\Plugins\</OutputPath>
-    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">obj\RemoteTech\</OutputPath>
+    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">obj\RemoteTech\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
