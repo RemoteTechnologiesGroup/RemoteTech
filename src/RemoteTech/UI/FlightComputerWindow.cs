@@ -55,6 +55,9 @@ namespace RemoteTech.UI
 
         public override void Show()
         {
+            Position.x= RTSettings.Instance.FCWinPosX;
+            Position.y = RTSettings.Instance.FCWinPosY;
+
             base.Show();
             mFlightComputer.OnActiveCommandAbort += mAttitude.Reset;
             mFlightComputer.OnNewCommandPop += mAttitude.getActiveFlightMode;
@@ -65,6 +68,10 @@ namespace RemoteTech.UI
 
         public override void Hide()
         {
+            RTSettings.Instance.FCWinPosX = Position.x;
+            RTSettings.Instance.FCWinPosY = Position.y;
+            //RTSettings.Instance.Save(); //overkill
+
             mFlightComputer.OnActiveCommandAbort -= mAttitude.Reset;
             mFlightComputer.OnNewCommandPop -= mAttitude.getActiveFlightMode;
             base.Hide();

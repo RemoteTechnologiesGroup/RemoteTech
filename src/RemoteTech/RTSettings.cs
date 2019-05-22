@@ -72,6 +72,8 @@ namespace RemoteTech
         [Persistent] public Color DirectConnectionColor = new Color(0, 0.749f, 0.952f, 1); //TODO: remove two new values after some significant time - 7 Nov 2017
         [Persistent] public bool SignalRelayEnabled = false;
         [Persistent] public bool IgnoreLineOfSight;
+        [Persistent] public float FCWinPosX;
+        [Persistent] public float FCWinPosY;
         [Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 
