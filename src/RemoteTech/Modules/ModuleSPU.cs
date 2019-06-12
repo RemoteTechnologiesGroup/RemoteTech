@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.FlightComputer;
 using UnityEngine;
+#if !KSP131
+using Expansions.Serenity.DeployedScience.Runtime;
+#endif
 
 namespace RemoteTech.Modules
 {
@@ -87,9 +90,26 @@ namespace RemoteTech.Modules
 
             if (!IsRTPowered)
             {
+#if !KSP131
+                // check if the part is itself a Module
+                var moduleExpControlStation = part.Modules.GetModule<ModuleGroundExpControl>();
+#endif
                 // check if the part is itself a ModuleCommand
                 var moduleCommand = part.Modules.GetModule<ModuleCommand>();
+
+#if !KSP131
+                if (moduleExpControlStation != null)
+                {
+                    IsRTPowered = moduleExpControlStation.ScienceClusterData.IsPowered;
+                    // issue: ground science transmission and much of science cluster are not moddable
+                    // unwilling to spend large effort for low return
+                }
+#endif
+#if !KSP131
+                else if (moduleCommand != null)
+#else
                 if (moduleCommand != null)
+#endif
                 {
                     // it's a module command *and* a ModuleSPU, so in this case it's still RTPowered (controllable)!
                     // e.g. even if there's no crew in the pod, we should be able to control it because it's a SPU.
