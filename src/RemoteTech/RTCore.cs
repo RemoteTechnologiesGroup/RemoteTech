@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using RemoteTech.FlightComputer.Commands;
 using RemoteTech.UI;
 using UnityEngine;
+using Smooth.Algebraics;
 
 namespace RemoteTech
 {
@@ -177,9 +178,21 @@ namespace RemoteTech
                 }
                 else if (vs.FlightComputer != null && vs.FlightComputer.InputAllowed)
                 {
-                    foreach (KSPActionGroup ag in GetActivatedGroup())
+#if !KSP131
+                    var axisGroups = GetPressedAxisGroup();
+                    for (int i = 0; i < axisGroups.Count(); i++)
                     {
-                        vs.FlightComputer.Enqueue(ActionGroupCommand.WithGroup(ag));
+                        if (axisGroups.ElementAt(i).Item2 != 0) //skip both - and + keys pressed at same time
+                        {
+                            vs.FlightComputer.Enqueue(AxisGroupCommand.WithGroup(axisGroups.ElementAt(i).Item1, axisGroups.ElementAt(i).Item2));
+                        }
+                    }
+#endif
+
+                    var actionGroups = GetActivatedActionGroup();
+                    for (int i = 0; i < actionGroups.Count(); i++)
+                    {
+                        vs.FlightComputer.Enqueue(ActionGroupCommand.WithGroup(actionGroups.ElementAt(i)));
                     }
                 }
             }
@@ -253,7 +266,7 @@ namespace RemoteTech
             GameEvents.onShowUI.Remove(UiOn);
             GameEvents.onHideUI.Remove(UiOff);
 
-			// add-ons
+            // add-ons
             if (KacAddon != null) KacAddon = null;
 
             Instance = null;
@@ -282,7 +295,7 @@ namespace RemoteTech
         }
         
         // Monstrosity that should fix the kOS control locks without modifications on their end.
-        private static IEnumerable<KSPActionGroup> GetActivatedGroup()
+        private static IEnumerable<KSPActionGroup> GetActivatedActionGroup()
         {
             if (GameSettings.LAUNCH_STAGES.GetKeyDown())
                 if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.STAGING) == ControlTypes.STAGING && !l.Key.Equals("RTLockStaging"))) 
@@ -342,6 +355,24 @@ namespace RemoteTech
                 if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
                     yield return KSPActionGroup.Custom10;
         }
+
+#if !KSP131
+        /// <summary>
+        /// Pick up player actions of axis groups
+        /// </summary>
+        private static IEnumerable<Tuple<KSPAxisGroup, int>> GetPressedAxisGroup()
+        {
+            for (int i = 0; i < GameSettings.AXIS_CUSTOM.Length; i++)
+            {
+                var axisGroup = GameSettings.AXIS_CUSTOM[i];
+                if (axisGroup.plusKeyBinding.GetKey() || axisGroup.minusKeyBinding.GetKey())
+                {
+                    if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
+                        yield return new Tuple<KSPAxisGroup, int>((KSPAxisGroup) (512 << i), (axisGroup.plusKeyBinding.GetKey() ? 1 : 0) + (axisGroup.minusKeyBinding.GetKey() ? -1 : 0));
+                }
+            }
+        }
+#endif
     }
 
     /// <summary>
