@@ -17,8 +17,8 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath Condition="Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">$(KSPDEVDIR)\GameData\RemoteTech\Plugins\</OutputPath>
-    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">obj\RemoteTech\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">obj\RemoteTech\Plugins\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
@@ -36,6 +36,18 @@
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release131|AnyCPU'">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath Condition="Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">$(KSPDEVDIR)\GameData\RemoteTech\Plugins\</OutputPath>
+    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">..\..\GameData\RemoteTech\Plugins\</OutputPath>
+    <DefineConstants>KSP131</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <LangVersion>default</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -68,6 +80,7 @@
     <Compile Include="AddOns\Kerbalism.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
+    <Compile Include="FlightComputer\Commands\AxisGroupCommand.cs" />
     <Compile Include="FlightComputer\Commands\EventCommand.cs" />
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
     <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
@@ -167,7 +180,8 @@
     $(PostBuildEventDependsOn);
     PostBuildMacros;
   </PostBuildEventDependsOn>
-    <PostBuildEvent><!--if "$(ConfigurationName)"=="Release" (call "$(ProjectDir)..\..\buildscripts\ZipPack\build-package.bat" $(TargetName) -v@(VersionNumber) KSP1.4.5)-->
+    <PostBuildEvent>
+      <!--if "$(ConfigurationName)"=="Release" (call "$(ProjectDir)..\..\buildscripts\ZipPack\build-package.bat" $(TargetName) -v@(VersionNumber) KSP1.4.5)-->
 if "$(ConfigurationName)"=="Debug" (call "$(ProjectDir)..\..\buildscripts\UnityDebug\prepare-debug.bat" $(TargetName))
 </PostBuildEvent>
   </PropertyGroup>

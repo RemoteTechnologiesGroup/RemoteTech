@@ -10,7 +10,7 @@ namespace RemoteTech.FlightComputer.Commands
         {
             get { return ShortName + Environment.NewLine + base.Description; }
         }
-        public override string ShortName { get { return "Toggle " + ActionGroup; } }
+        public override string ShortName { get { return "Toggle Action Group " + ActionGroup; } }
 
         public override bool Pop(FlightComputer f)
         {

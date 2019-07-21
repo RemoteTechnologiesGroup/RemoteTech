@@ -13,7 +13,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.1.131
+  version: 1.9.3.131
 
   # branches
   branches:
@@ -83,7 +83,7 @@
 
   # build Configuration, i.e. Debug, Release, etc.
   configuration:
-    - Release
+    - Release131
 
   build:
     # enable MSBuild parallel builds
@@ -218,7 +218,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.1-{build}-{branch}
+  version: 1.9.3.131-{build}-{branch}
 
   # branches
   branches:
@@ -289,7 +289,7 @@
   # build Configuration, i.e. Debug, Release, etc.
   # to add several configurations to build matrix:
   configuration:
-    - Release
+    - Release131
 
   build:
     # enable MSBuild parallel builds

@@ -1,3 +1,79 @@
+# Version 1.9.3.131
+**Released July 21, 2019**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.3 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.3
+**Released July 21, 2019**
+
+What's New?
+===========
+
+* Compiled for KSP 1.7.3
+* Applied MissionControlRangeMultiplier to unused Mission Control Dish Antennas
+* Fixed UpgradeableDish and UpgradeableCosAngle mistake
+* Minor update for Restock and RestockPlus support
+* Persistent position of Flight Computer window across play sessions
+* Improved PID Controller on torque forces
+* Added support for robotic parts and KSP Custom Axis Groups introduced by Breaking Ground expansion
+* Added limited support for deployable ground parts (Omni 400km range to control station only)
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #792: Request: Save Flight Computer window position across sessions [requested by: Galenmacil]
+* Issue #793: add whitelist for ReStock [requested by: Gordon-Dry]
+* Issue #794: The new KSPAxisGroup controls are not suppported [requested by: ncanceill]
+
+Pull Requests
+-------------
+
+* PR #789: Fix reading values for UpgradeableDish and UpgradeableCosAngle [PR by: ilmat192]
+* PR #790: Apply MissionControlRangeMultiplier to dish mission control antennas [PR by: ilmat192]
+
+***
+
+# Version 1.9.2
+**Released April 14, 2019**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.7
+* Updated ModuleManager to 4.0.2
+* Support for Restock and RestockPlus Antennas
+* Fixed Editor error of cross-section profiles on RemoteTech antennas
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+* PR #788: RestockPlus Antenna Support [PR by: xdreaper15]
+
+***
+
 # Version 1.9.1.131
 **Released December 24, 2018**
 

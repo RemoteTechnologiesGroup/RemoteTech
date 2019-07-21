@@ -33,7 +33,7 @@ namespace RemoteTech.Modules
         float IAntenna.Consumption { get { return 0.0f; } }
         bool IAntenna.CanTarget { get { return false; } }
         Guid IAntenna.Target { get { return new Guid(RTSettings.Instance.ActiveVesselGuid); } set { return; } }
-        float IAntenna.Dish { get { return Dish; } }
+        float IAntenna.Dish { get { return Dish * MissionControlRangeMultiplier; } }
         double IAntenna.CosAngle { get { return CosAngle; } }
         private float MissionControlRangeMultiplier { get { return RTSettings.Instance.MissionControlRangeMultiplier; } }
 
@@ -71,7 +71,7 @@ namespace RemoteTech.Modules
             if (this.UpgradeableDish != String.Empty)
             {
                 int missionControlTechLevelForDish = missionControlTechLevel;
-                string[] dishRanges = this.UpgradeableOmni.Split(';');
+                string[] dishRanges = this.UpgradeableDish.Split(';');
                 if (missionControlTechLevelForDish > dishRanges.Count())
                 {
                     missionControlTechLevelForDish = dishRanges.Count();
@@ -83,7 +83,7 @@ namespace RemoteTech.Modules
             if (this.UpgradeableCosAngle != String.Empty)
             {
                 int missionControlTechLevelForCAngle = missionControlTechLevel;
-                string[] cAngleRanges = this.UpgradeableOmni.Split(';');
+                string[] cAngleRanges = this.UpgradeableCosAngle.Split(';');
                 if (missionControlTechLevelForCAngle > cAngleRanges.Count())
                 {
                     missionControlTechLevelForCAngle = cAngleRanges.Count();
