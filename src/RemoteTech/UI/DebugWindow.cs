@@ -46,6 +46,10 @@ namespace RemoteTech.UI
         private string GetSignalDelayToSatelliteGuidBInput = "";
         private string ReceivDataVesselGuidInput = "";
         private string HasLocalControlGuidInput = "";
+        private string GetMaxRangeDistanceSatelliteGuidAInput = "";
+        private string GetMaxRangeDistanceSatelliteGuidBInput = "";
+        private string GetRangeDistanceSatelliteGuidAInput = "";
+        private string GetRangeDistanceSatelliteGuidBInput = "";
         #endregion
 
         #region Base-drawing
@@ -416,6 +420,54 @@ namespace RemoteTech.UI
                     {
                         var result = RemoteTech.API.API.HasLocalControl(new Guid(this.HasLocalControlGuidInput));
                         RTLog.Verbose("API.HasLocalControl({0}) = {1}", this.currentLogLevel, this.HasLocalControlGuidInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.GetMaxRangeDistance
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.GetMaxRangeDistance; Guid: ", GUILayout.ExpandWidth(true));
+                this.GetMaxRangeDistanceSatelliteGuidAInput = GUILayout.TextField(this.GetMaxRangeDistanceSatelliteGuidAInput, GUILayout.Width(70));
+                GUILayout.Label("to: ", GUILayout.ExpandWidth(true));
+                this.GetMaxRangeDistanceSatelliteGuidBInput = GUILayout.TextField(this.GetMaxRangeDistanceSatelliteGuidBInput, GUILayout.Width(70));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.GetMaxRangeDistance(new Guid(this.GetMaxRangeDistanceSatelliteGuidAInput), new Guid(this.GetMaxRangeDistanceSatelliteGuidBInput));
+                        RTLog.Verbose("API.GetMaxRangeDistance({0},{1}) = {2}", this.currentLogLevel, this.GetMaxRangeDistanceSatelliteGuidAInput, this.GetMaxRangeDistanceSatelliteGuidBInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.GetRangeDistance
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.GetRangeDistance; Guid: ", GUILayout.ExpandWidth(true));
+                this.GetRangeDistanceSatelliteGuidAInput = GUILayout.TextField(this.GetRangeDistanceSatelliteGuidAInput, GUILayout.Width(70));
+                GUILayout.Label("to: ", GUILayout.ExpandWidth(true));
+                this.GetRangeDistanceSatelliteGuidBInput = GUILayout.TextField(this.GetRangeDistanceSatelliteGuidBInput, GUILayout.Width(70));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.GetRangeDistance(new Guid(this.GetRangeDistanceSatelliteGuidAInput), new Guid(this.GetRangeDistanceSatelliteGuidBInput));
+                        RTLog.Verbose("API.GetRangeDistance({0},{1}) = {2}", this.currentLogLevel, this.GetRangeDistanceSatelliteGuidAInput, this.GetRangeDistanceSatelliteGuidBInput, result);
                     }
                     catch (Exception ex)
                     {
