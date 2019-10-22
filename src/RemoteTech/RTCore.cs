@@ -360,7 +360,7 @@ namespace RemoteTech
         /// <summary>
         /// Pick up player actions of axis groups
         /// </summary>
-        private static IEnumerable<Tuple<KSPAxisGroup, int>> GetPressedAxisGroup()
+        private static IEnumerable<Smooth.Algebraics.Tuple<KSPAxisGroup, int>> GetPressedAxisGroup()
         {
             for (int i = 0; i < GameSettings.AXIS_CUSTOM.Length; i++)
             {
@@ -368,7 +368,7 @@ namespace RemoteTech
                 if (axisGroup.plusKeyBinding.GetKey() || axisGroup.minusKeyBinding.GetKey())
                 {
                     if (!InputLockManager.lockStack.Any(l => ((ControlTypes)l.Value & ControlTypes.CUSTOM_ACTION_GROUPS) == ControlTypes.CUSTOM_ACTION_GROUPS && !l.Key.Equals("RTLockActions")))
-                        yield return new Tuple<KSPAxisGroup, int>((KSPAxisGroup) (512 << i), (axisGroup.plusKeyBinding.GetKey() ? 1 : 0) + (axisGroup.minusKeyBinding.GetKey() ? -1 : 0));
+                        yield return new Smooth.Algebraics.Tuple<KSPAxisGroup, int>((KSPAxisGroup) (512 << i), (axisGroup.plusKeyBinding.GetKey() ? 1 : 0) + (axisGroup.minusKeyBinding.GetKey() ? -1 : 0));
                 }
             }
         }
