@@ -1,0 +1,12 @@
+Quoted from JPLRepo 
+1) Install 2019.2.2f1 to utilise these two exe's to convert the pdb to mdb:
+<install directory>\Editor\Editor\Data\MonoBleedingEdge\bin\mono.exe
+<install directory>\Editor\Editor\Data\MonoBleedingEdge\lib\mono\4.5\pdb2mdb.exe
+
+2) Unity No longer uses PlayerConnectionConfigFile instead you edit boot.config file (in the data directory where this file used to go) and add the line:
+player-connection-debug=1
+
+3) For the game exe. You must copy the WindowsPlayer.exe (rename if you want) UnityPlayer.dll and WinPixEventRuntime.dll into the KSP install directory.
+
+4) Execute this sequence:
+"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\bin\mono.exe" "C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\4.5\pdb2mdb.exe" "$(TargetFileName)"
