@@ -1,3 +1,24 @@
+# Version 1.9.4
+**Released October 26, 2019**
+
+What's New?
+===========
+
+* Compiled for KSP 1.8
+* Updated ModuleManager to 4.1.0
+* Exposed two recent-introduced APIs, GetMaxRangeDistance and GetRangeDistance, in internal debug window
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
 # Version 1.9.3.131
 **Released July 21, 2019**
 
