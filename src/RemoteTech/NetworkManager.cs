@@ -296,7 +296,7 @@ namespace RemoteTech
 
 		public String GetDetails()
 		{
-			return Localizer.Format("#RT_groundstations_Details", this.Name,this.Latitude,this.Longitude,this.Height,this.Body);//String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}"
+			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}", this.Name,this.Latitude,this.Longitude,this.Height,this.Body);
 		}
         
         public String GetName()
