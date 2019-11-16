@@ -16,8 +16,6 @@ namespace RemoteTech.FlightComputer
             var up = Vector3.zero;
             bool ignoreRoll = false;
 
-            f.PIDController.setPIDParameters(FlightComputer.PIDKp, FlightComputer.PIDKi, FlightComputer.PIDKd);
-
             switch (frame)
             {
                 case ReferenceFrame.Orbit:
@@ -122,8 +120,12 @@ namespace RemoteTech.FlightComputer
             HoldOrientation(fs, f, rotationReference, ignoreRoll);
         }
 
+        /// <summary>
+        /// Single entry point of all Flight Computer orientation holding, including maneuver node.
+        /// </summary>
         public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target, bool ignoreRoll = false)
         {
+            f.PIDController.setPIDParameters(FlightComputer.PIDKp, FlightComputer.PIDKi, FlightComputer.PIDKd);
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
             SteeringHelper.SteerShipToward(target, fs, f, ignoreRoll);
         }
@@ -175,7 +177,7 @@ namespace RemoteTech.FlightComputer
 
     public static class SteeringHelper
     {
-        private const double outputDeadband = 0.005;
+        private const double outputDeadband = 0.001;
         private const float driveLimit = 1.0f;
 
         /* MechJeb2 torque variables */
