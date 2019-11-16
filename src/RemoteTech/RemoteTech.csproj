@@ -55,13 +55,11 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll')">Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll')">Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,53 +67,43 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll')">UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll')">UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll')">UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll')">UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll')">UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll')">UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll')">UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll')">UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll')">UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
-      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll')">..\..\..\..\..\SteamLibrary\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll')">UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -224,7 +212,8 @@
     PostBuildMacros;
   </PostBuildEventDependsOn>
     <PostBuildEvent>
-::if "$(ConfigurationName)"=="Debug" (call "$(ProjectDir)..\..\buildscripts\UnityDebug_2019\prepare-debug.bat" $(TargetName))
+      <!--if "$(ConfigurationName)"=="Release" (call "$(ProjectDir)..\..\buildscripts\ZipPack\build-package.bat" $(TargetName) -v@(VersionNumber) KSP1.4.5)-->
+if "$(ConfigurationName)"=="Debug" (call "$(ProjectDir)..\..\buildscripts\UnityDebug_2019\prepare-debug.bat" $(TargetName))
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
