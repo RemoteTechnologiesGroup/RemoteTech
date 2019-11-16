@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.FlightComputer;
 using UnityEngine;
+using KSP.Localization;
 #if !KSP131
 using Expansions.Serenity.DeployedScience.Runtime;
 #endif
@@ -50,7 +51,7 @@ namespace RemoteTech.Modules
         [KSPField] public bool ShowGUI_Status = true;
         [KSPField] public bool ShowEditor_Type = true;
 
-        [KSPField(guiName = "SPU", guiActive = true)] public string GUI_Status;
+        [KSPField(guiName = "#RT_ModuleUI_SPU", guiActive = true)] public string GUI_Status;//SPU
 
         private enum State
         {
@@ -173,11 +174,11 @@ namespace RemoteTech.Modules
             switch (UpdateControlState())
             {
                 case State.Operational:
-                    GUI_Status = "Operational.";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_SPU_Status");//"Operational."
                     break;
                 case State.ParentDefect:
                 case State.NoConnection:
-                    GUI_Status = "No connection.";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_SPU_Status2");//"No connection."
                     break;
             }
         }
@@ -353,7 +354,7 @@ namespace RemoteTech.Modules
             }
             else
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#RT_ModuleUI_SPU_Msg"), 4.0f, ScreenMessageStyle.UPPER_LEFT));//"No connection to send command on."
             }
         }
 
@@ -405,7 +406,7 @@ namespace RemoteTech.Modules
             }
             else
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#RT_ModuleUI_SPU_Msg"), 4.0f, ScreenMessageStyle.UPPER_LEFT));//"No connection to send command on."
             }
         }
     }

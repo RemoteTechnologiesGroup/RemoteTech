@@ -6,6 +6,7 @@ using RemoteTech.FlightComputer.Commands;
 using RemoteTech.Modules;
 using RemoteTech.SimpleTypes;
 using RemoteTech.UI;
+using KSP.Localization;
 
 namespace RemoteTech.FlightComputer
 {
@@ -426,7 +427,7 @@ namespace RemoteTech.FlightComputer
                 var time = TimeWarp.deltaTime;
                 foreach (var dc in _commandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime + (2 * time + 1.0)))
                 {
-                    var message = new ScreenMessage("[Flight Computer]: Throttling back time warp...", 4.0f, ScreenMessageStyle.UPPER_LEFT);
+                    var message = new ScreenMessage(Localizer.Format("#RT_FC_msg1"), 4.0f, ScreenMessageStyle.UPPER_LEFT);//"[Flight Computer]: Throttling back time warp..."
                     while ((2 * TimeWarp.deltaTime + 1.0) > (Math.Max(dc.TimeStamp - RTUtil.GameTime, 0) + dc.ExtraDelay) && TimeWarp.CurrentRate > 1.0f)
                     {
                         TimeWarp.SetRate(TimeWarp.CurrentRateIndex - 1, true);
@@ -468,7 +469,7 @@ namespace RemoteTech.FlightComputer
                     }
                     else
                     {
-                        string message = $"[Flight Computer]: Out of power, cannot run \"{dc.ShortName}\" on schedule.";
+                        string message = Localizer.Format("#RT_FC_msg2", dc.ShortName);//$"[Flight Computer]: Out of power, cannot run \"{}\" on schedule."
                         ScreenMessages.PostScreenMessage(new ScreenMessage(
                             message, 4.0f, ScreenMessageStyle.UPPER_LEFT));
                     }
@@ -620,7 +621,7 @@ namespace RemoteTech.FlightComputer
                     {
                         if (cmd is ManeuverCommand)
                         {
-                            RTUtil.ScreenMessage("A maneuver burn is required");
+                            RTUtil.ScreenMessage(Localizer.Format("#RT_FC_msg3"));//"A maneuver burn is required"
                             continue;
                         }
 
@@ -635,7 +636,7 @@ namespace RemoteTech.FlightComputer
                             {
                                 if (cmd is BurnCommand)
                                 {
-                                    RTUtil.ScreenMessage("A burn command is required");
+                                    RTUtil.ScreenMessage(Localizer.Format("#RT_FC_msg4"));//"A burn command is required"
                                     continue;
                                 }
 

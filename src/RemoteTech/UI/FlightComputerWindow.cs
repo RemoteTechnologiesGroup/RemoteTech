@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech.UI
 {
@@ -19,8 +20,8 @@ namespace RemoteTech.UI
         private readonly PowerFragment mPower;
         private bool mQueueEnabled;
         private FlightComputer.FlightComputer mFlightComputer;
-        private readonly String tabModeDescString = "Switch to Attitude, Rover or Power mode.";
-        private static readonly String appTitle = "Flight Computer";
+        private readonly String tabModeDescString = Localizer.Format("#RT_FC_desc");//"Switch to Attitude, Rover or Power mode."
+        private static readonly String appTitle = Localizer.Format("#RT_FC_Title");//"Flight Computer"
 
         private FragmentTab Tab
         {

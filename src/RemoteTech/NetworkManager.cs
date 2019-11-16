@@ -6,6 +6,7 @@ using RemoteTech.Modules;
 using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -235,7 +236,7 @@ namespace RemoteTech
     {
         /* Config Node parameters */
         [Persistent] private String Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488").ToString();
-        [Persistent] private String Name = "Mission Control";
+        [Persistent] private String Name = Localizer.Format("#RT_MissionControl");//"Mission Control"
         [Persistent] private double Latitude = -0.1313315f;
         [Persistent] private double Longitude = -74.59484f;
         [Persistent] private double Height = 75.0f;
@@ -295,7 +296,7 @@ namespace RemoteTech
 
 		public String GetDetails()
 		{
-			return String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}", this.Name, this.Latitude, this.Longitude, this.Height, this.Body);
+			return Localizer.Format("#RT_groundstations_Details", this.Name,this.Latitude,this.Longitude,this.Height,this.Body);//String.Format ("name:{0}, lat={1}, long={2}, height={3}, body={4}"
 		}
         
         public String GetName()

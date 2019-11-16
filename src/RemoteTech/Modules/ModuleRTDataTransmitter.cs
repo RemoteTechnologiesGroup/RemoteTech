@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech.Modules
 {
@@ -18,7 +19,7 @@ namespace RemoteTech.Modules
         [KSPField]
         public String
             RequiredResource = "ElectricCharge";
-        [KSPField(guiName = "Comms", guiActive = true)]
+        [KSPField(guiName = "#RT_ModuleUI_Comms", guiActive = true)]//Comms
         public String GUIStatus = "";
 
         private bool isBusy;
@@ -35,7 +36,7 @@ namespace RemoteTech.Modules
             }
 
             var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
-            GUIStatus = "Idle";
+            GUIStatus = Localizer.Format("#RT_ModuleUI_Comms_Status");//"Idle"
         }
 
         // Compatible with ModuleDataTransmitter
@@ -76,7 +77,7 @@ namespace RemoteTech.Modules
         private IEnumerator Transmit(Callback callback = null)
         {
             RTLog.Notify("ModuleRTDataTransmitter::Transmit");
-            var msg = new ScreenMessage(String.Format("[{0}]: Starting Transmission...", part.partInfo.title), 4f, ScreenMessageStyle.UPPER_LEFT);
+            var msg = new ScreenMessage(Localizer.Format("#RT_ModuleUI_TransmitMsg", part.partInfo.title), 4f, ScreenMessageStyle.UPPER_LEFT);//"[{0}]: Starting Transmission..."
             var msgStatus = new ScreenMessage(String.Empty, 4.0f, ScreenMessageStyle.UPPER_LEFT);
             ScreenMessages.PostScreenMessage(msg);
 
@@ -123,7 +124,7 @@ namespace RemoteTech.Modules
                         power += part.RequestResource("ElectricCharge", PacketResourceCost - power);
                         if (power >= PacketResourceCost * 0.95)
                         {
-                            GUIStatus = "Uploading Data...";
+                            GUIStatus = Localizer.Format("#RT_ModuleUI_Comms_Status2");//"Uploading Data..."
 
                             // remove some power due to transmission
                             power -= PacketResourceCost;
@@ -139,7 +140,7 @@ namespace RemoteTech.Modules
                             packets--;
 
                             float progress = (scienceData.dataAmount - dataAmount) / scienceData.dataAmount;
-                            msgStatus.message = String.Format("[{0}]: Uploading Data... {1:P0}", part.partInfo.title, progress);
+                            msgStatus.message = Localizer.Format("#RT_ModuleUI_TransmitMsg2", part.partInfo.title,progress);//"[{0}]: Uploading Data... {1:P0}"
                             ScreenMessages.PostScreenMessage(msgStatus);
 
                             RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Other experiments waiting to transfer: {3}",
@@ -181,7 +182,7 @@ namespace RemoteTech.Modules
                         else
                         {
                             // not enough power
-                            msg.message = String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", part.partInfo.title, RequiredResource);
+                            msg.message = Localizer.Format("#RT_ModuleUI_TransmitMsg3",part.partInfo.title,RequiredResource);//"<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", , )
                             ScreenMessages.PostScreenMessage(msg);
                             aborted = true;
 
@@ -202,13 +203,13 @@ namespace RemoteTech.Modules
 
             isBusy = false;
 
-            msg.message = String.Format("[{0}]: Done!", part.partInfo.title);
+            msg.message = Localizer.Format("#RT_ModuleUI_TransmitMsg4", part.partInfo.title);//String.Format("[{0}]: Done!", )
             ScreenMessages.PostScreenMessage(msg);
 
             if (callback != null)
                 callback.Invoke();
 
-            GUIStatus = "Idle";
+            GUIStatus = Localizer.Format("#RT_ModuleUI_Comms_Status");//"Idle"
         }
     }
 }

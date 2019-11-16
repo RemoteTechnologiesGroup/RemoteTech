@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -200,7 +201,7 @@ namespace RemoteTech
             SearchAndPreparePresets(settings);
 
             // Detect if the celestial body, that Mission Control is on (default body index 1), is Kerbin
-            var KSCMC = settings.GroundStations.Find(x => x.GetName().Equals("Mission Control")); // leave extra ground stations to modders, who need to provide MM patches
+            var KSCMC = settings.GroundStations.Find(x => x.GetName().Equals(Localizer.Format("#RT_MissionControl"))); // leave extra ground stations to modders, who need to provide MM patches"Mission Control"
             if (KSCMC != null && !KSCMC.GetBody().name.Equals("Kerbin") && KSCMC.GetBody().flightGlobalsIndex == 1) // Kopernicus or similar map changes the planet
             {
                 KSCMC.SetBodyIndex(FlightGlobals.GetHomeBodyIndex());

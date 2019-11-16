@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using UnityEngine;
 
@@ -146,7 +146,7 @@ namespace RemoteTech.FlightComputer.Commands
             // In case we would overpower with 100% thrust, calculate how much we actually need and set it.
             if (computer.Vessel.acceleration.magnitude > this.RemainingDelta)
             {
-                // Formula which leads to this: a = ( vE – vS ) / dT
+                // Formula which leads to this: a = ( vE ?vS ) / dT
                 this.throttle = this.RemainingDelta / computer.Vessel.acceleration.magnitude;
             }
                 
