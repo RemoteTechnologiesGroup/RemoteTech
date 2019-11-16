@@ -141,6 +141,10 @@ namespace RemoteTech.UI
             if (mTimewarpImage == null)
                 return;
 
+            // no drawing with in-flight action group panel is opened
+            if(ActionGroupsFlightController.Instance != null && ActionGroupsFlightController.Instance.IsOpen)
+                return;
+
             Vector2 timeWarpImageScreenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
 
             float scale = GameSettings.UI_SCALE_TIME * GameSettings.UI_SCALE;
