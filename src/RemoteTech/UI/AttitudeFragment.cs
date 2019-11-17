@@ -145,7 +145,7 @@ namespace RemoteTech.UI
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.FakeStateButton(new GUIContent(Localizer.Format(" #RT_AttitudeFragment_OFF"), Localizer.Format("#RT_AttitudeFragment_OFF_desc")), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Off)), (int)mMode, (int)ComputerMode.Off, GUILayout.Width(width3));//"OFF""Set Attitude to Off."
+                    RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_AttitudeFragment_OFF"), Localizer.Format("#RT_AttitudeFragment_OFF_desc")), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Off)), (int)mMode, (int)ComputerMode.Off, GUILayout.Width(width3));//"OFF""Set Attitude to Off."
                     RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_AttitudeFragment_CUSTOM"), Localizer.Format("#RT_AttitudeFragment_CUSTOM_desc")), () => RTCore.Instance.StartCoroutine(OnModeClick(ComputerMode.Custom)), (int)mMode, (int)ComputerMode.Custom, GUILayout.ExpandWidth(true));//"CUSTOM""Prograde fixed as pitch, heading, roll relative to north pole."
                 }
                 GUILayout.EndHorizontal();
