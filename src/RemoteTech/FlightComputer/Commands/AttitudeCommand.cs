@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -40,33 +41,33 @@ namespace RemoteTech.FlightComputer.Commands
     {
         public static readonly Dictionary<FlightMode, String> FormatMode = new Dictionary<FlightMode, String>() 
         {
-            { FlightMode.Off,          "Mode: Off" },
-            { FlightMode.KillRot,      "Mode: Kill rotation" },
-            { FlightMode.AttitudeHold, "Mode: Hold {0} {1}" },
-            { FlightMode.AltitudeHold, "Mode: Hold {0}" },
+            { FlightMode.Off,           Localizer.Format("#RT_AttitudeCommand_Off") },//"Mode: Off"
+            { FlightMode.KillRot,     Localizer.Format("#RT_AttitudeCommand_Killrotation") },// "Mode: Kill rotation"
+            { FlightMode.AttitudeHold, Localizer.Format("#RT_AttitudeCommand_Hold")+"{0} {1}" },//"Mode: Hold 
+            { FlightMode.AltitudeHold, Localizer.Format("#RT_AttitudeCommand_Hold")+"{0}" },//Mode: Hold 
             { FlightMode.Rover,        "" },
         };
 
         public static readonly Dictionary<FlightAttitude, String> FormatAttitude = new Dictionary<FlightAttitude, String>() 
         {
-            { FlightAttitude.Prograde,    "Prograde" },
-            { FlightAttitude.Retrograde,  "Retrograde" },
-            { FlightAttitude.RadialMinus, "Radial -" },
-            { FlightAttitude.RadialPlus,  "Radial +" },
-            { FlightAttitude.NormalMinus, "Normal -" },
-            { FlightAttitude.NormalPlus,  "Normal +" },
-            { FlightAttitude.Surface,     "Direction" },
+            { FlightAttitude.Prograde,    Localizer.Format("#RT_AttitudeCommand_Prograde") },//"Prograde"
+            { FlightAttitude.Retrograde,  Localizer.Format("#RT_AttitudeCommand_Retrograde") },//"Retrograde"
+            { FlightAttitude.RadialMinus, Localizer.Format("#RT_AttitudeCommand_RadialMinus") },//"Radial -"
+            { FlightAttitude.RadialPlus,  Localizer.Format("#RT_AttitudeCommand_RadialPlus") },//"Radial +"
+            { FlightAttitude.NormalMinus, Localizer.Format("#RT_AttitudeCommand_NormalMinus") },//"Normal -"
+            { FlightAttitude.NormalPlus,  Localizer.Format("#RT_AttitudeCommand_NormalPlus") },//"Normal +"
+            { FlightAttitude.Surface,    Localizer.Format("#RT_AttitudeCommand_Direction")  },//"Direction"
         };
 
         public static readonly Dictionary<ReferenceFrame, String> FormatReference = new Dictionary<ReferenceFrame, String>() 
         {
-            { ReferenceFrame.Orbit,          "OBT" },
-            { ReferenceFrame.Surface,        "SRF" },
-            { ReferenceFrame.TargetVelocity, "RVEL" },
-            { ReferenceFrame.TargetParallel, "TGT" },
-            { ReferenceFrame.North,          "North" },
-            { ReferenceFrame.Maneuver,       "Maneuver" },
-            { ReferenceFrame.World,          "World" },
+            { ReferenceFrame.Orbit,          Localizer.Format("#RT_AttitudeCommand_Orbit") },//"OBT"
+            { ReferenceFrame.Surface,        Localizer.Format("#RT_AttitudeCommand_Surface") },//"SRF"
+            { ReferenceFrame.TargetVelocity, Localizer.Format("#RT_AttitudeCommand_TargetVelocity") },//"RVEL"
+            { ReferenceFrame.TargetParallel, Localizer.Format("#RT_AttitudeCommand_TargetParallel") },//"TGT"
+            { ReferenceFrame.North,          Localizer.Format("#RT_AttitudeCommand_North") },//"North"
+            { ReferenceFrame.Maneuver,       Localizer.Format("#RT_AttitudeCommand_Maneuver") },//"Maneuver"
+            { ReferenceFrame.World,          Localizer.Format("#RT_AttitudeCommand_World") },//"World"
         };
 
         [Persistent] public FlightMode Mode;
