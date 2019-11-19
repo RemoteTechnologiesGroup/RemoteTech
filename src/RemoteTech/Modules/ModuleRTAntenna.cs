@@ -630,8 +630,7 @@ namespace RemoteTech.Modules
                 if (killCounter > 2) {
                     // TODO: Make sure this formatting is correct, the new method isn't tested too well right now.
                     // Express flight clock in stockalike formatting
-                    FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.",
-                        KSPUtil.dateTimeFormatter.PrintTimeStamp(FlightLogger.met, true, true), part.partInfo.title));
+                    FlightLogger.eventLog.Add(Localizer.Format("#RT_ModuleUI_rippedoff",KSPUtil.dateTimeFormatter.PrintTimeStamp(FlightLogger.met, true, true),part.partInfo.title));//String.Format("[{0}]: {1} was ripped off by strong airflow.",, )
                     MaxQ = -1.0f;
                     part.decouple(0.0f);
                 }
