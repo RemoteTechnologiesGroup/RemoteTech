@@ -6,7 +6,7 @@ namespace RemoteTech.FlightComputer
     public class RoverComputer
     {
         private const float driveLimit = 1.0f;
-        private const double minRadarAlt = 2.0; // in meters
+        private const double minRadarAlt = 3.0; // in meters
         private double Kp, Ki, Kd;
 
         private Vessel mVessel;
