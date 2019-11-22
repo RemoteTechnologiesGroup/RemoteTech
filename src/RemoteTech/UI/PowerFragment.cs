@@ -27,9 +27,6 @@ namespace RemoteTech.UI
             {
                 GUILayout.BeginHorizontal();
                 {
-                    GUIStyle guiTableRow = new GUIStyle(HighLogic.Skin.label);
-                    guiTableRow.normal.textColor = Color.white;
-
                     RTUtil.FakeStateButton(new GUIContent("HBNT", "Ultra-low power hibernation with all active antennas shut down."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Hibernate)), (int)mPowerMode, (int)PowerModes.Hibernate, GUILayout.Width(width3));
                     RTUtil.FakeStateButton(new GUIContent("THLD", "Optimally adaptive power-saving threshold control on all antennas"), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.AntennaSaver)), (int)mPowerMode, (int)PowerModes.AntennaSaver, GUILayout.Width(width3));
                     RTUtil.Button(new GUIContent("WAKE", "Terminate any power-saving state."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Wake)), GUILayout.Width(width3));
@@ -39,7 +36,6 @@ namespace RemoteTech.UI
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.FlexibleSpace();
                     RTUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
                         mOnClickQueue, GUILayout.Width(width3));
                 }

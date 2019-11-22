@@ -74,6 +74,9 @@ namespace RemoteTech
         [Persistent] public bool IgnoreLineOfSight;
         [Persistent] public float FCWinPosX;
         [Persistent] public float FCWinPosY;
+        [Persistent] public double FlightTermP;
+        [Persistent] public double FlightTermI;
+        [Persistent] public double FlightTermD;
         [Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 

@@ -122,6 +122,7 @@
     <Compile Include="FlightComputer\Commands\HibernationCommand.cs" />
     <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
     <Compile Include="FlightComputer\Commands\PartActionCommand.cs" />
+    <Compile Include="FlightComputer\Commands\PIDCommand.cs" />
     <Compile Include="FlightComputer\Commands\StockAutopilotCommand.cs" />
     <Compile Include="FlightComputer\RoverComputer.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="UI\AntennaWindow.cs" />
     <Compile Include="UI\AttitudeFragment.cs" />
     <Compile Include="UI\DebugWindow.cs" />
+    <Compile Include="UI\PIDControllerFragment.cs" />
     <Compile Include="UI\PowerFragment.cs" />
     <Compile Include="UI\FocusOverlay.cs" />
     <Compile Include="UI\FocusFragment.cs" />

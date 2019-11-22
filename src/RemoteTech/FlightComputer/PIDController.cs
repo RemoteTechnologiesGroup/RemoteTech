@@ -13,9 +13,6 @@ namespace RemoteTech.FlightComputer
     //and https://github.com/KSP-KOS/KOS/blob/master/src/kOS/Control/SteeringManager.cs
     public class PIDController
     {
-        private const double MaxStoppingTime = 3.0; // upper limit to artifically raise the torque amount by factor
-        private const double Phi1FStoppingTime = 0.2; // phi threshold to target orientation, where stopping time will be 1 factor
-        private const double OmegaThreshold = 0.7; // threshold ratio of torque to MoI to apply MaxStoppingTime or not (useful for huge rocket with tiny torque)
         public const double EPSILON = 1e-16;
 
         /* error */
@@ -51,6 +48,11 @@ namespace RemoteTech.FlightComputer
         private Vector3d targetForward;
         private Vector3d targetTop;
         //private Vector3d targetStarboard;
+
+        public Vector3d getDeviationErrors()
+        {
+            return phiVector;
+        }
 
         private double rollControlRange;
         public double RollControlRange
@@ -110,17 +112,12 @@ namespace RemoteTech.FlightComputer
                 var CoM = Vessel.CoM;
                 var MoI = Vessel.MOI;
 
-                phiTotal = PhiTotal();
-                phiVector = PhiVector();//deviation errors from orientation target
+                phiTotal = calculatePhiTotal();
+                phiVector = calculatePhiVector();//deviation errors from orientation target
 
                 for (int i = 0; i < 3; i++)
                 {
-                    //Edge case: Very low (torque/MoI) (like 0.0078!) rate so need to rise max acceleration artifically
-                    StoppingTime = (OmegaThreshold <= (Torque[i] / MoI[i])) ? 
-                                    1.0f :
-                                    (float) RTUtil.Clamp((1.0 / (Torque[i] / MoI[i])) * (Math.Abs(phiVector[i]) - Phi1FStoppingTime), 1.0, MaxStoppingTime);
-
-                    MaxOmega[i] = Mathf.Max((Torque[i] * StoppingTime) / MoI[i], 0.0001f);
+                    MaxOmega[i] = Mathf.Max(Torque[i] / MoI[i], 0.0001f);
                 }
 
                 TargetOmega[0] = pitchRatePI.Update(-phiVector[0], 0, MaxOmega[0]);
@@ -150,7 +147,7 @@ namespace RemoteTech.FlightComputer
             for (int i = 0; i < 3; i++)
             {
                 Actuation[i] = TargetTorque[i] / Torque[i];
-                if (Math.Abs(Actuation[i]) < EPSILON || double.IsNaN(Actuation[i]))
+                if (Math.Abs(Actuation[i]) < EPSILON || double.IsNaN(Actuation[i]) || double.IsInfinity(Actuation[i]))
                 {
                     Actuation[i] = 0;
                 }
@@ -159,7 +156,7 @@ namespace RemoteTech.FlightComputer
             return Actuation;
         }
 
-        public Vector3d PhiVector()
+        public Vector3d calculatePhiVector()
         {
             Vector3d Phi = Vector3d.zero;
 
@@ -178,7 +175,7 @@ namespace RemoteTech.FlightComputer
             return Phi;
         }
 
-        public double PhiTotal()
+        public double calculatePhiTotal()
         {
             double PhiTotal = Vector3d.Angle(vesselForward, targetForward) * Mathf.Deg2Rad;
             if (Vector3d.Angle(vesselTop, targetForward) > 90)
@@ -428,7 +425,7 @@ namespace RemoteTech.FlightComputer
         public MovingAverage()
         {
             Reset();
-            SampleLimit = 10;
+            SampleLimit = 20;
         }
 
         public void Reset()

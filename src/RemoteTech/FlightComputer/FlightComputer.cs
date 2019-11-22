@@ -122,7 +122,7 @@ namespace RemoteTech.FlightComputer
 
         /// <summary>Proportional Integral Derivative vessel controller.</summary>
         public PIDController PIDController;
-        public static readonly double PIDKp = 2.0, PIDKi = 0.8, PIDKd = 1.0;
+        public static double PIDKp = 2.0, PIDKi = 0.8, PIDKd = 1.0;
         public static readonly double RoverPIDKp = 1.0, RoverPIDKi = 0.0, RoverPIDKd = 0.0;
 
         /// <summary>The window of the flight computer.</summary>

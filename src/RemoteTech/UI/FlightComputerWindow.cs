@@ -10,6 +10,7 @@ namespace RemoteTech.UI
             Attitude = 0,
             Rover = 1,
             Power = 2,
+            PID = 3,
         }
 
         private FragmentTab mTab = FragmentTab.Attitude;
@@ -17,9 +18,10 @@ namespace RemoteTech.UI
         private readonly RoverFragment mRover;
         private readonly QueueFragment mQueue;
         private readonly PowerFragment mPower;
+        private readonly PIDControllerFragment mPID;
         private bool mQueueEnabled;
         private FlightComputer.FlightComputer mFlightComputer;
-        private readonly String tabModeDescString = "Switch to Attitude, Rover or Power mode.";
+        private readonly String tabModeDescString = "Switch to Attitude, Rover, Power or PID mode.";
         private static readonly String appTitle = "Flight Computer";
 
         private FragmentTab Tab
@@ -30,7 +32,7 @@ namespace RemoteTech.UI
             }
             set
             {
-                int NumberOfTabs = 3;
+                int NumberOfTabs = 4;
                 if ((int)value >= NumberOfTabs) {
                     mTab = (FragmentTab)0;
                 } else if ((int)value < 0) {
@@ -49,6 +51,7 @@ namespace RemoteTech.UI
             mAttitude = new AttitudeFragment(fc, () => OnQueue());
             mRover = new RoverFragment(fc, () => OnQueue());
             mPower = new PowerFragment(fc, () => OnQueue());
+            mPID = new PIDControllerFragment(fc, () => OnQueue());
             mQueue = new QueueFragment(fc);
             mQueueEnabled = false;
         }
@@ -93,6 +96,9 @@ namespace RemoteTech.UI
                             break;
                         case FragmentTab.Power:
                             mPower.Draw();
+                            break;
+                        case FragmentTab.PID:
+                            mPID.Draw();
                             break;
                     }
                 }
