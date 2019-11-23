@@ -35,7 +35,7 @@ namespace RemoteTech.Modules
             ShowEditor_OmniRange = true,
             ShowGUI_OmniRange = true;
 
-        [KSPField(guiName = "Omni range")]
+        [KSPField(guiName = "#RT_ModuleUI_Omnirange")]//Omni range
         public String GUI_OmniRange;
 
         [KSPField]

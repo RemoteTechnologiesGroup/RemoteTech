@@ -4,6 +4,7 @@ using RemoteTech.SimpleTypes;
 using UnityEngine;
 using KSP.UI;
 using KSP.UI.Screens.Flight;
+using KSP.Localization;
 
 namespace RemoteTech.UI
 {
@@ -49,24 +50,24 @@ namespace RemoteTech.UI
                 var vs = this.mVessel;
                 if (vs == null)
                 {
-                    return "N/A";
+                    return Localizer.Format("#RT_ConnectionStatus1");//"N/A"
                 }
                 else if (vs.HasLocalControl)
                 {
-                    return "Local Control";
+                    return Localizer.Format("#RT_ConnectionStatus2");//"Local Control"
                 }
                 else if (vs.Connections.Any())
                 {
                     if (RTSettings.Instance.EnableSignalDelay)
                     {
-                        return "D+ " + vs.Connections[0].Delay.ToString("F5") + "s";
+                        return Localizer.Format("#RT_ConnectionStatus3",vs.Connections[0].Delay.ToString("F5"));//"D+ " +  + "s"
                     }
                     else
                     {
-                        return "Connected";
+                        return Localizer.Format("#RT_ConnectionStatus4");//"Connected"
                     }                    
                 }
-                return "No Connection";
+                return Localizer.Format("#RT_ConnectionStatus5");//"No Connection"
             }
         }
 

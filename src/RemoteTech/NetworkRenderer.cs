@@ -6,6 +6,7 @@ using RemoteTech.UI;
 using UnityEngine;
 
 using Debug = System.Diagnostics.Debug;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -161,11 +162,11 @@ namespace RemoteTech
                             {
                                 if(antenna.Omni > 0)
                                 {
-                                    antennaRanges += "Omni: "+ RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;
+                                    antennaRanges += Localizer.Format("#RT_NetworkFB_Omni") + RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;//"Omni: "
                                 }
                                 if (antenna.Dish > 0)
                                 {
-                                    antennaRanges += "Dish: " + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;
+                                    antennaRanges +=  Localizer.Format("#RT_NetworkFB_Dish") + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;//"Dish: "
                                 }
                             }
 

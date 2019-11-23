@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using KSP.Localization;
 
 namespace RemoteTech.FlightComputer.Commands
 {
@@ -30,14 +31,14 @@ namespace RemoteTech.FlightComputer.Commands
                 switch(PowerMode)
                 {
                     case PowerModes.Hibernate:
-                        return "Power: Hibernation (" + (AntennaIDs.Count==0? "deactivating" : "inactive "+ AntennaIDs.Count)+" antennas)";
+                        return Localizer.Format("#RT_PowerModecmd_Hibernate", (AntennaIDs.Count==0? Localizer.Format("#RT_PowerModecmd_Hibernate_deact") : Localizer.Format("#RT_PowerModecmd_Hibernate_inact", AntennaIDs.Count)));//"Power: Hibernation (" + +" antennas)""deactivating""inactive "+ 
                     case PowerModes.AntennaSaver:
-                        return "Power: Automatically de/re-activating antennas on thresholds";
+                        return Localizer.Format("#RT_PowerModecmd_AntennaSaver");//"Power: Automatically de/re-activating antennas on thresholds"
                     case PowerModes.Normal:
                     case PowerModes.Wake:
-                        return "Power: Terminating active power state";
+                        return Localizer.Format("#RT_PowerModecmd_Wake");//"Power: Terminating active power state"
                     default:
-                        return "Power: Unknown";
+                        return Localizer.Format("#RT_PowerModecmd_Unknown");//"Power: Unknown"
                 }
             }
         }

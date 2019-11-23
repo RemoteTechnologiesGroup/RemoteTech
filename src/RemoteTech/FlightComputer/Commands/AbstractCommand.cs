@@ -1,5 +1,5 @@
 ﻿using System;
-
+using KSP.Localization;
 namespace RemoteTech.FlightComputer.Commands
 {
     public abstract class AbstractCommand : ICommand
@@ -17,7 +17,7 @@ namespace RemoteTech.FlightComputer.Commands
                 {
                     var extra = ExtraDelay > 0 ? String.Format("{0} + {1}", RTUtil.FormatDuration(delay), RTUtil.FormatDuration(ExtraDelay)) 
                                                : RTUtil.FormatDuration(delay);
-                    return "Signal delay: " + extra;
+                    return  Localizer.Format("#RT_Command_Signaldelay") + extra;//"Signal delay: "
                 }
                 return "";
             }
