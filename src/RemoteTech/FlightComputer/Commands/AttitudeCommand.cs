@@ -116,6 +116,7 @@ namespace RemoteTech.FlightComputer.Commands
             {
                 Orientation = f.Vessel.transform.rotation;
             }
+            f.PIDController.setPIDParameters(FlightComputer.PIDKp, FlightComputer.PIDKi, FlightComputer.PIDKd);
             return true;
         }
 

@@ -72,6 +72,8 @@ namespace RemoteTech.FlightComputer.Commands
                 RemainingTime = RemainingDelta / thrustToMass;
             }
 
+            f.PIDController.setPIDParameters(FlightComputer.PIDKp, FlightComputer.PIDKi, FlightComputer.PIDKd);
+
             return true;
         }
 

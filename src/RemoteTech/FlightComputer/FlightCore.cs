@@ -125,7 +125,6 @@ namespace RemoteTech.FlightComputer
         /// </summary>
         public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target, bool ignoreRoll = false)
         {
-            f.PIDController.setPIDParameters(FlightComputer.PIDKp, FlightComputer.PIDKi, FlightComputer.PIDKd);
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
             SteeringHelper.SteerShipToward(target, fs, f, ignoreRoll);
         }
