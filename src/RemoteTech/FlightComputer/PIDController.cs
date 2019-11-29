@@ -23,8 +23,6 @@ namespace RemoteTech.FlightComputer
         /* max angular rotation */
         private Vector3d MaxOmega = Vector3d.zero;
 
-        private float StoppingTime;
-
         private Vector3d Actuation = Vector3d.zero;
         private Vector3d TargetTorque = Vector3d.zero;
         private Vector3d Omega = Vector3d.zero;
@@ -425,7 +423,7 @@ namespace RemoteTech.FlightComputer
         public MovingAverage()
         {
             Reset();
-            SampleLimit = 20;
+            SampleLimit = 2;
         }
 
         public void Reset()
