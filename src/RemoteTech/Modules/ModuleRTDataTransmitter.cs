@@ -140,7 +140,7 @@ namespace RemoteTech.Modules
                             packets--;
 
                             float progress = (scienceData.dataAmount - dataAmount) / scienceData.dataAmount;
-                            msgStatus.message = Localizer.Format("#RT_ModuleUI_TransmitMsg2",part.partInfo.title,progress);//String.Format("[{0}]: Uploading Data... {1:P0}", , )
+                            msgStatus.message = Localizer.Format("#RT_ModuleUI_TransmitMsg2",part.partInfo.title, String.Format("{0:P0}", progress));//String.Format("[{0}]: Uploading Data... {1:P0}",,part.partInfo.title ,progress )
                             ScreenMessages.PostScreenMessage(msgStatus);
 
                             RTLog.Notify("[Transmitter]: Uploading Data... ({0}) - {1} Mits/sec. Packets to go: {2} - Other experiments waiting to transfer: {3}",
