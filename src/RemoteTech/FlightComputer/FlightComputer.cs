@@ -567,7 +567,8 @@ namespace RemoteTech.FlightComputer
             if (Vessel.packed)
             {
                 RTLog.Notify("Save Flightconfig after unpacking");
-                _fcLoadedConfigs = configNode;
+                _fcLoadedConfigs = configNode.CreateCopy();
+                //Apparently, _fcLoadedConfigs (resided at memory pointer of configNode) is changed at 1 point before loading into FC. CreateCopy() duplicates the content to a separate memory space.
                 return;
             }
 
