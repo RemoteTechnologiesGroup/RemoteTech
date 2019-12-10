@@ -167,23 +167,23 @@ namespace RemoteTech.Modules
 
             if (IsRTActive)
             {
-                info.AppendLine(Localizer.Format("#RT_Editor_Activatedbydefault"));//"<color=#89929B>Activated by default</color>"
+                info.AppendLine("<color=#89929B>" + Localizer.Format("#RT_Editor_Activatedbydefault") + "</color>");//"Activated by default"
             }
 
             if (MaxQ > 0)
             {
-                info.AppendLine(Localizer.Format("#RT_Editor_Snaps"));//"<b><color=#FDA401>Snaps under high dynamic pressure</color></b>"
+                info.AppendLine("<b><color=#FDA401>" + Localizer.Format("#RT_Editor_Snaps") + "</color></b>");//"Snaps under high dynamic pressure"
             }
 
             if (this.IsNonRetractable)
             {
-                info.AppendLine(Localizer.Format("#RT_Editor_Notretractable"));//"<b><color=#FDA401>Antenna is not retractable</color></b>"
+                info.AppendLine("<b><color=#FDA401>" + Localizer.Format("#RT_Editor_Notretractable") + "</color></b>");//"Antenna is not retractable"
             }
 
             if (ShowEditor_EnergyReq && EnergyCost > 0)
             {
-                info.AppendLine().Append(Localizer.Format("#RT_Editor_Requires")).AppendLine();//"<b><color=#99ff00ff>Requires:</color></b>"
-                info.AppendFormat(Localizer.Format("#RT_Editor_ElectricCharge") +"{0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();//"<b>ElectricCharge: </b>
+                info.AppendLine().Append("<b><color=#99ff00ff>" + Localizer.Format("#RT_Editor_Requires") + "</color></b>").AppendLine();//"Requires:"
+                info.AppendFormat("<b>" + Localizer.Format("#RT_Editor_ElectricCharge") + " </b>" + "{0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();//"ElectricCharge:
             }
 
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());

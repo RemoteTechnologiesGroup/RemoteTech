@@ -36,7 +36,7 @@ namespace RemoteTech.UI
                 ////////////////
                 //PITCH INFO
                 ////////////////
-                GUILayout.Label(new GUIContent(Localizer.Format("#RT_PIDControllerFragment_Pitch")));//"<b>Pitch</b>"
+                GUILayout.Label(new GUIContent("<b>" + Localizer.Format("#RT_PIDControllerFragment_Pitch") + "</b>"));//"Pitch"
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent(Localizer.Format("#RT_PIDControllerFragment_TorqueMoI"), Localizer.Format("#RT_PIDControllerFragment_TorqueMoI_desc")));//"Torque-MoI Rate: ", "Current rate of torque to mass of inertia"
@@ -62,7 +62,7 @@ namespace RemoteTech.UI
                 ////////////////
                 //ROLL INFO
                 ////////////////
-                GUILayout.Label(new GUIContent(Localizer.Format("#RT_PIDControllerFragment_Roll")));//"<b>Roll</b>"
+                GUILayout.Label(new GUIContent("<b>" + Localizer.Format("#RT_PIDControllerFragment_Roll") + "</b>"));//"Roll"
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent(Localizer.Format("#RT_PIDControllerFragment_TorqueMoI"), Localizer.Format("#RT_PIDControllerFragment_TorqueMoI_desc")));//"Torque-MoI Rate: ", "Current rate of torque to mass of inertia"
@@ -88,7 +88,7 @@ namespace RemoteTech.UI
                 ////////////////
                 //YAW INFO
                 ////////////////
-                GUILayout.Label(new GUIContent(Localizer.Format("#RT_PIDControllerFragment_Yaw")));//"<b>Yaw</b>"
+                GUILayout.Label(new GUIContent("<b>" + Localizer.Format("#RT_PIDControllerFragment_Yaw") + "</b>"));//"Yaw"
                 GUILayout.BeginHorizontal();
                 {
                     GUILayout.Label(new GUIContent(Localizer.Format("#RT_PIDControllerFragment_TorqueMoI"), Localizer.Format("#RT_PIDControllerFragment_TorqueMoI_desc")));//"Torque-MoI Rate: ", "Current rate of torque to mass of inertia"

@@ -182,7 +182,7 @@ namespace RemoteTech.Modules
                         else
                         {
                             // not enough power
-                            msg.message = Localizer.Format("#RT_ModuleUI_TransmitMsg3", part.partInfo.title,RequiredResource);//String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", , )
+                            msg.message = "<b><color=orange>" + Localizer.Format("#RT_ModuleUI_TransmitMsg3", part.partInfo.title,RequiredResource)+ "</color></b>";//String.Format("<b><color=orange>[{0}]: Warning! Not Enough {1}!</color></b>", , )
                             ScreenMessages.PostScreenMessage(msg);
                             aborted = true;
 
