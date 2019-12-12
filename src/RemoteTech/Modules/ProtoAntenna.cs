@@ -22,13 +22,11 @@ namespace RemoteTech.Modules
                 mDishTarget = value;
                 if (mProtoModule != null)
                 {
-                    ConfigNode n = new ConfigNode();
-                    mProtoModule.Save(n);
-                    n.SetValue("RTAntennaTarget", value.ToString());
+                    mProtoModule.moduleValues.SetValue("RTAntennaTarget", value.ToString());
                     int i = mProtoPart.modules.FindIndex(x => x == mProtoModule);
                     if (i != -1)
                     {
-                        mProtoPart.modules[i] = new ProtoPartModuleSnapshot(n);
+                        mProtoPart.modules[i] = new ProtoPartModuleSnapshot(mProtoModule.moduleValues);
                     }
                 }
 
@@ -46,8 +44,6 @@ namespace RemoteTech.Modules
 
         public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms)
         {
-            ConfigNode n = new ConfigNode();
-            ppms.Save(n);
             Name = p.partInfo.title;
             Consumption = 0;
             Guid = v.id;
@@ -55,7 +51,7 @@ namespace RemoteTech.Modules
             mProtoModule = ppms;
             try
             {
-                mDishTarget = new Guid(n.GetValue("RTAntennaTarget"));
+                mDishTarget = new Guid(ppms.moduleValues.GetValue("RTAntennaTarget"));
             }
             catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is OverflowException)
             {
@@ -64,11 +60,11 @@ namespace RemoteTech.Modules
             double temp_double;
             float temp_float;
             bool temp_bool;
-            Dish = Single.TryParse(n.GetValue("RTDishRange"), out temp_float) ? temp_float : 0.0f;
-            CosAngle = Double.TryParse(n.GetValue("RTDishCosAngle"), out temp_double) ? temp_double : 0.0;
-            Omni = Single.TryParse(n.GetValue("RTOmniRange"), out temp_float) ? temp_float : 0.0f;
-            Powered = Boolean.TryParse(n.GetValue("IsRTPowered"), out temp_bool) ? temp_bool : false;
-            Activated = Boolean.TryParse(n.GetValue("IsRTActive"), out temp_bool) ? temp_bool : false;
+            Dish = Single.TryParse(ppms.moduleValues.GetValue("RTDishRange"), out temp_float) ? temp_float : 0.0f;
+            CosAngle = Double.TryParse(ppms.moduleValues.GetValue("RTDishCosAngle"), out temp_double) ? temp_double : 0.0;
+            Omni = Single.TryParse(ppms.moduleValues.GetValue("RTOmniRange"), out temp_float) ? temp_float : 0.0f;
+            Powered = Boolean.TryParse(ppms.moduleValues.GetValue("IsRTPowered"), out temp_bool) ? temp_bool : false;
+            Activated = Boolean.TryParse(ppms.moduleValues.GetValue("IsRTActive"), out temp_bool) ? temp_bool : false;
 
             RTLog.Notify(ToString());
         }
