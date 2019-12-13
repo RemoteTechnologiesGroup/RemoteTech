@@ -221,17 +221,13 @@ namespace RemoteTech
 
         public static bool HasValue(this ProtoPartModuleSnapshot ppms, String name)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
-            return n.HasValue(name);
+            return ppms.moduleValues.HasValue(name);
         }
 
         public static bool GetBool(this ProtoPartModuleSnapshot ppms, String value)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
             bool result;
-            return Boolean.TryParse(n.GetValue(value) ?? "False", out result) && result;
+            return Boolean.TryParse(ppms.moduleValues.GetValue(value) ?? "False", out result) && result;
         }
 
         /// <summary>Searches a ProtoPartModuleSnapshot for an integer field.</summary>
