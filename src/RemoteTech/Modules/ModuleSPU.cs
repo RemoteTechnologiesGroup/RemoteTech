@@ -16,7 +16,7 @@ namespace RemoteTech.Modules
     /// <para>Signal Processors are any part that can receive commands over a working connection (this include all stock probe cores).</para>
     /// <para>Thus, controlling a vessel is made only through the ModuleSPU unit. Players are only able to control a signal processor 5SPU) as long as they have a working connection (which by default is subject to signal delay).</para>
     /// </summary>
-    [KSPModule("Signal Processor")]
+    [KSPModule("#RT_Editor_SignalProcessor")]//Signal Processor
     public class ModuleSPU : PartModule, ISignalProcessor
     {
         public string Name => $"ModuleSPU({VesselName})";
@@ -194,8 +194,8 @@ namespace RemoteTech.Modules
                 return string.Empty;
 
             return IsRTCommandStation
-                ? $"Remote Command capable <color=#00FFFF>({RTCommandMinCrew}+ crew)</color>"
-                : "Remote Control capable";
+                ? Localizer.Format("#RT_Editor_SignalProcessor_info1", "<color=#00FFFF>" + RTCommandMinCrew+ "</color>")//$"Remote Command capable ({}+ crew)"
+                : Localizer.Format("#RT_Editor_SignalProcessor_info2");//"Remote Control capable"
         }
 
         public override void OnSave(ConfigNode node)

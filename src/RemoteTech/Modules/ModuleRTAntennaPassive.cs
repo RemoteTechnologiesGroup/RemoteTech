@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using KSP.Localization;
 
 namespace RemoteTech.Modules
 {
     /// <summary>
     /// This module represents an omni-directional antenna that is always on, but consumes no power. Intended as a secondary function on non-antenna parts, such as probe cores.
     /// </summary>
-    [KSPModule("Technology Perk")]
+    [KSPModule("#RT_Editor_TechnologyPerk")]//Technology Perk
     public class ModuleRTAntennaPassive : PartModule, IAntenna
     {
         public String Name { get { return part.partInfo.title; } }
@@ -82,7 +83,7 @@ namespace RemoteTech.Modules
             var info = new StringBuilder();
             if (ShowEditor_OmniRange && Unlocked)
             {
-                info.AppendFormat("Integrated Omni: {1} always-on", RTUtil.FormatSI(OmniRange, "m"), RTUtil.FormatSI(OmniRange, "m"));
+                info.AppendFormat(Localizer.Format("#RT_Editor_TechnologyPerk_info1","{1}"), RTUtil.FormatSI(OmniRange, "m"), RTUtil.FormatSI(OmniRange, "m"));//"Integrated Omni: {1} always-on"
             }
 
             return info.ToString();
