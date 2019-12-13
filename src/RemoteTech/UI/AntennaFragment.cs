@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech.UI
 {
@@ -129,7 +130,7 @@ namespace RemoteTech.UI
                         {
                             // reset current entry
                             mouseOverEntry = null;
-                            if (current.Text.ToLower() != "active vessel" && current.Text.ToLower() != "no target")
+                            if (current.Text.ToLower() != Localizer.Format("#RT_ModuleUI_ActiveVessel_Tolower") && current.Text.ToLower() != Localizer.Format("#RT_ModuleUI_NoTarget_Tolower"))//"active vessel""no target"
                             {
                                 mouseOverEntry = current;
                             }
@@ -222,7 +223,7 @@ namespace RemoteTech.UI
             mRootEntry = new Entry();
             mSelection = new Entry()
             {
-                Text = "No Target",
+                Text = Localizer.Format("#RT_ModuleUI_NoTarget"),//"No Target"
                 Guid = new Guid(RTSettings.Instance.NoTargetGuid),
                 Color = Color.white,
                 Depth = 0,
@@ -233,7 +234,7 @@ namespace RemoteTech.UI
 
             var activeVesselEntry = new Entry()
             {
-                Text = "Active Vessel",
+                Text = Localizer.Format("#RT_ModuleUI_ActiveVessel"),//"Active Vessel"
                 Guid = NetworkManager.ActiveVesselGuid,
                 Color = Color.white,
                 Depth = 0,

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -188,7 +189,7 @@ namespace RemoteTech
             {
                 if (guid == System.Guid.Empty)
                 {
-                    return "No Target";
+                    return Localizer.Format("#RT_ModuleUI_NoTarget");//"No Target"
                 }
                 if (RTCore.Instance.Network.Planets.ContainsKey(guid))
                 {
@@ -196,7 +197,7 @@ namespace RemoteTech
                 }
                 if (guid == NetworkManager.ActiveVesselGuid)
                 {
-                    return "Active Vessel";
+                    return Localizer.Format("#RT_ModuleUI_ActiveVessel");//"Active Vessel"
                 }
                 ISatellite sat;
                 if ((sat = RTCore.Instance.Network[guid]) != null)
@@ -204,7 +205,7 @@ namespace RemoteTech
                     return sat.Name;
                 }
             }
-            return "Unknown Target";
+            return Localizer.Format("#RT_ModuleUI_UnknownTarget");//"Unknown Target"
         }
 
         public static Guid Guid(this CelestialBody cb)

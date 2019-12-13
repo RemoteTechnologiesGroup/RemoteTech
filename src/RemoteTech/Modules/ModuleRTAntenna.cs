@@ -6,12 +6,13 @@ using System.Reflection;
 using System.Text;
 using RemoteTech.UI;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech.Modules
 {
     /// <summary>This module represents a part that can receive control transmissions from another vessel or a ground station.</summary>
     /// <remarks>You must remove any <see cref="ModuleDataTransmitter"/> modules from the antenna if using <see cref="ModuleRTAntenna"/>.</remarks>
-    [KSPModule("Antenna")]
+    [KSPModule("#RT_Editor_Antenna")]//Antenna
     public class ModuleRTAntenna : PartModule, IAntenna, IContractObjectiveModule, IResourceConsumer
     {
         public String Name { get { return part.partInfo.title; } }
@@ -61,22 +62,22 @@ namespace RemoteTech.Modules
             ShowEditor_DishAngle = true,
             ShowGUI_DeReactivation_Status = true;
 
-        [KSPField(guiName = "Dish range")]
+        [KSPField(guiName = "#RT_ModuleUI_DishRange")]//Dish range
         public String GUI_DishRange;
-        [KSPField(guiName = "Energy")]
+        [KSPField(guiName = "#RT_ModuleUI_EnergyReq")]//Energy
         public String GUI_EnergyReq;
-        [KSPField(guiName = "Omni range")]
+        [KSPField(guiName = "#RT_ModuleUI_Omnirange")]//Omni range
         public String GUI_OmniRange;
-        [KSPField(guiName = "Status")]
+        [KSPField(guiName = "#RT_ModuleUI_Status")]//Status
         public String GUI_Status;
 
         [KSPField]
         public String
-            Mode0Name = "Off",
-            Mode1Name = "Operational",
-            ActionMode0Name = "Deactivate",
-            ActionMode1Name = "Activate",
-            ActionToggleName = "Toggle",
+            Mode0Name = Localizer.Format("#RT_ModuleUI_Off"),//"Off"
+            Mode1Name = Localizer.Format("#RT_ModuleUI_Operational"),//"Operational"
+            ActionMode0Name = Localizer.Format("#RT_ModuleUI_Deactivate"),//"Deactivate"
+            ActionMode1Name = Localizer.Format("#RT_ModuleUI_Activate"),//"Activate"
+            ActionToggleName = Localizer.Format("#RT_ModuleUI_Toggle"),//"Toggle"
             resourceName = "ElectricCharge";
 
         [KSPField]
@@ -108,12 +109,12 @@ namespace RemoteTech.Modules
         [KSPField] // Persistence handled by Save()
         public Guid RTAntennaTarget = Guid.Empty;
 
-        [KSPField(guiName = "Auto threshold")]
-        public String GUI_DeReactivation_Status = "Off";
-        [KSPField(isPersistant = true, guiName = "Deactivate at EC %", guiActive = true, guiActiveEditor = true, guiUnits = "%"),
+        [KSPField(guiName = "#RT_ModuleUI_Autothreshold")]//Auto threshold
+        public String GUI_DeReactivation_Status = Localizer.Format("#RT_ModuleUI_Autothreshold_Off");//"Off"
+        [KSPField(isPersistant = true, guiName = "#RT_ModuleUI_DeactivateatEC", guiActive = true, guiActiveEditor = true, guiUnits = "%"),//Deactivate at EC %
             UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
         public float RTDeactivatePowerThreshold = 20;
-        [KSPField(isPersistant = true, guiName = "Activate at EC %", guiActive = true, guiActiveEditor = true, guiUnits = "%"),
+        [KSPField(isPersistant = true, guiName = "#RT_ModuleUI_ActivateatEC", guiActive = true, guiActiveEditor = true, guiUnits = "%"),//Activate at EC %
             UI_FloatRange(minValue = 0f, maxValue = 100f, stepIncrement = 1f)]
         public float RTActivatePowerThreshold = 80;
 
@@ -152,37 +153,37 @@ namespace RemoteTech.Modules
 
             if (ShowEditor_OmniRange && Mode1OmniRange > 0)
             {
-                info.AppendFormat("Omni {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0OmniRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1OmniRange * RangeMultiplier, "m")).AppendLine();
+                info.AppendFormat(Localizer.Format("#RT_Editor_Omni") +" {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0OmniRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1OmniRange * RangeMultiplier, "m")).AppendLine();//"Omni"
             }
             if (ShowEditor_DishRange && Mode1DishRange > 0)
             {
-                info.AppendFormat("Dish {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();
+                info.AppendFormat(Localizer.Format("#RT_Editor_Dish") +" {0}: {1} / {2}", AntennaInfoDescriptionFromRangeModel(), RTUtil.FormatSI(Mode0DishRange * RangeMultiplier, "m"), RTUtil.FormatSI(Mode1DishRange * RangeMultiplier, "m")).AppendLine();//"Dish"
             }
 
             if (ShowEditor_DishAngle && CanTarget)
             {
-                info.AppendFormat("Cone angle: {0} degrees", DishAngle.ToString("F3")).AppendLine();
+                info.AppendFormat(Localizer.Format("#RT_Editor_Coneangle") +" {0} "+Localizer.Format("#RT_degrees"), DishAngle.ToString("F3")).AppendLine();//"Cone angle:degrees"
             }
 
             if (IsRTActive)
             {
-                info.AppendLine("<color=#89929B>Activated by default</color>");
+                info.AppendLine("<color=#89929B>" + Localizer.Format("#RT_Editor_Activatedbydefault") + "</color>");//"Activated by default"
             }
 
             if (MaxQ > 0)
             {
-                info.AppendLine("<b><color=#FDA401>Snaps under high dynamic pressure</color></b>");
+                info.AppendLine("<b><color=#FDA401>" + Localizer.Format("#RT_Editor_Snaps") + "</color></b>");//"Snaps under high dynamic pressure"
             }
 
             if (this.IsNonRetractable)
             {
-                info.AppendLine("<b><color=#FDA401>Antenna is not retractable</color></b>");
+                info.AppendLine("<b><color=#FDA401>" + Localizer.Format("#RT_Editor_Notretractable") + "</color></b>");//"Antenna is not retractable"
             }
 
             if (ShowEditor_EnergyReq && EnergyCost > 0)
             {
-                info.AppendLine().Append("<b><color=#99ff00ff>Requires:</color></b>").AppendLine();
-                info.AppendFormat("<b>ElectricCharge: </b>{0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();
+                info.AppendLine().Append("<b><color=#99ff00ff>" + Localizer.Format("#RT_Editor_Requires") + "</color></b>").AppendLine();//"Requires:"
+                info.AppendFormat("<b>" + Localizer.Format("#RT_Editor_ElectricCharge") + " </b>" + "{0}", RTUtil.FormatConsumption(EnergyCost * ConsumptionMultiplier)).AppendLine();//"ElectricCharge:
             }
 
             return info.ToString().TrimEnd(Environment.NewLine.ToCharArray());
@@ -202,16 +203,16 @@ namespace RemoteTech.Modules
             switch(RTSettings.Instance.RangeModelType)
             {
                 case RangeModel.RangeModel.Standard:
-                    description = "range";
+                    description = Localizer.Format("#RT_Editor_range");//"range"
                     break;
 
                 case RangeModel.RangeModel.Root:
                     //case RangeModel.RangeModel.Additive:
-                    description = "power";
+                    description = Localizer.Format("#RT_Editor_power");//"power"
                     break;
 
                 default:
-                    description = "range";
+                    description = Localizer.Format("#RT_Editor_range");//"range"
                     break;
             }
 
@@ -260,13 +261,13 @@ namespace RemoteTech.Modules
         [KSPEvent(name = "EventToggle", guiActive = false)]
         public void EventToggle() { if (Animating) return; if (IsRTActive) { EventClose(); } else { EventOpen(); } }
 
-        [KSPEvent(name = "EventTarget", guiActive = false, guiName = "Target", category = "skip_delay")]
+        [KSPEvent(name = "EventTarget", guiActive = false, guiName = "#RT_ModuleUI_Target", category = "skip_delay")]//Target
         public void EventTarget() { (new AntennaWindow(this)).Show(); }
 
-        [KSPEvent(name = "EventEditorOpen", guiActive = false, guiName = "Deploy Antenna")]
+        [KSPEvent(name = "EventEditorOpen", guiActive = false, guiName = "#RT_ModuleUI_DeployAntenna")]//Deploy Antenna
         public void EventEditorOpen() { SetState(true); }
 
-        [KSPEvent(name = "EventEditorClose", guiActive = false, guiName = "Retract Antenna")]
+        [KSPEvent(name = "EventEditorClose", guiActive = false, guiName = "#RT_ModuleUI_RetractAntenna")]//Retract Antenna
         public void EventEditorClose() { SetState(false); }
 
         [KSPEvent(name = "EventOpen", guiActive = false)]
@@ -284,13 +285,13 @@ namespace RemoteTech.Modules
         [KSPAction("ActionClose", KSPActionGroup.None)]
         public void ActionClose(KSPActionParam param) { EventClose(); }
 
-        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Set Target", category = "skip_delay;skip_control")]
+        [KSPEvent(name = "OverrideTarget", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "#RT_ModuleUI_SetTarget", category = "skip_delay;skip_control")]//[EVA] Set Target
         public void OverrideTarget() { (new AntennaWindow(this)).Show(); }
 
-        [KSPEvent(name = "OverrideOpen", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Open", category = "skip_delay;skip_control")]
+        [KSPEvent(name = "OverrideOpen", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "#RT_ModuleUI_ForceOpen", category = "skip_delay;skip_control")]//[EVA] Force Open
         public void OverrideOpen() { EventOpen(); }
 
-        [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "[EVA] Force Close", category = "skip_delay;skip_control")]
+        [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "#RT_ModuleUI_ForceClose", category = "skip_delay;skip_control")]//[EVA] Force Close
         public void OverrideClose() { EventClose(); }
 
         public void OnConnectionRefresh()
@@ -515,15 +516,15 @@ namespace RemoteTech.Modules
                     IsRTPowered = true;
                     break;
                 case State.Connected:
-                    GUI_Status = "Connected";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_Connected");//"Connected"
                     IsRTPowered = true;
                     break;
                 case State.NoResources:
-                    GUI_Status = "Out of power";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_NoResources");//"Out of power"
                     IsRTPowered = false;
                     break;
                 case State.Malfunction:
-                    GUI_Status = "Malfunction";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_Malfunction");//"Malfunction"
                     IsRTPowered = false;
                     break;
             }
@@ -629,8 +630,7 @@ namespace RemoteTech.Modules
                 if (killCounter > 2) {
                     // TODO: Make sure this formatting is correct, the new method isn't tested too well right now.
                     // Express flight clock in stockalike formatting
-                    FlightLogger.eventLog.Add(String.Format("[{0}]: {1} was ripped off by strong airflow.",
-                        KSPUtil.dateTimeFormatter.PrintTimeStamp(FlightLogger.met, true, true), part.partInfo.title));
+                    FlightLogger.eventLog.Add(Localizer.Format("#RT_ModuleUI_rippedoff",KSPUtil.dateTimeFormatter.PrintTimeStamp(FlightLogger.met, true, true),part.partInfo.title));//String.Format("[{0}]: {1} was ripped off by strong airflow.",, )
                     MaxQ = -1.0f;
                     part.decouple(0.0f);
                 }
@@ -729,7 +729,7 @@ namespace RemoteTech.Modules
         /// <returns>The type of contract that can be fulfilled.</returns>
         public string GetContractObjectiveType()
         {
-            return "Antenna";
+            return "Antenna";//
         }
 
         /// <summary>

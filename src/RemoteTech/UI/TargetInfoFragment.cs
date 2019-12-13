@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech.UI
 {
@@ -112,7 +113,7 @@ namespace RemoteTech.UI
                             GUILayout.Label(tableString[0] + ':', guiTableRow, GUILayout.Width(110));
                             // if the label is 'status' so change the textcolor to the color
                             // given by the NetworkFeedback class.
-                            if (tableString[0].ToLower() == "status")
+                            if (tableString[0].ToLower() == Localizer.Format("#RT_ModuleUI_Status_tolower"))//"status"
                             {
                                 guiTableRow.normal.textColor = infos.Value;
                             }

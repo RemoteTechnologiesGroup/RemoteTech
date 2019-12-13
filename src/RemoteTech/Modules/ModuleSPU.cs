@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.FlightComputer;
 using UnityEngine;
+using KSP.Localization;
 #if !KSP131
 using Expansions.Serenity.DeployedScience.Runtime;
 #endif
@@ -15,7 +16,7 @@ namespace RemoteTech.Modules
     /// <para>Signal Processors are any part that can receive commands over a working connection (this include all stock probe cores).</para>
     /// <para>Thus, controlling a vessel is made only through the ModuleSPU unit. Players are only able to control a signal processor 5SPU) as long as they have a working connection (which by default is subject to signal delay).</para>
     /// </summary>
-    [KSPModule("Signal Processor")]
+    [KSPModule("#RT_Editor_SignalProcessor")]//Signal Processor
     public class ModuleSPU : PartModule, ISignalProcessor
     {
         public string Name => $"ModuleSPU({VesselName})";
@@ -50,7 +51,7 @@ namespace RemoteTech.Modules
         [KSPField] public bool ShowGUI_Status = true;
         [KSPField] public bool ShowEditor_Type = true;
 
-        [KSPField(guiName = "SPU", guiActive = true)] public string GUI_Status;
+        [KSPField(guiName = "#RT_ModuleUI_SPU", guiActive = true)] public string GUI_Status;//SPU
 
         private enum State
         {
@@ -173,11 +174,11 @@ namespace RemoteTech.Modules
             switch (UpdateControlState())
             {
                 case State.Operational:
-                    GUI_Status = "Operational.";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_SPU_Status");//"Operational."
                     break;
                 case State.ParentDefect:
                 case State.NoConnection:
-                    GUI_Status = "No connection.";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_SPU_Status2");//"No connection."
                     break;
             }
         }
@@ -193,8 +194,8 @@ namespace RemoteTech.Modules
                 return string.Empty;
 
             return IsRTCommandStation
-                ? $"Remote Command capable <color=#00FFFF>({RTCommandMinCrew}+ crew)</color>"
-                : "Remote Control capable";
+                ? Localizer.Format("#RT_Editor_SignalProcessor_info1", "<color=#00FFFF>" + RTCommandMinCrew+ "</color>")//$"Remote Command capable ({}+ crew)"
+                : Localizer.Format("#RT_Editor_SignalProcessor_info2");//"Remote Control capable"
         }
 
         public override void OnSave(ConfigNode node)
@@ -353,7 +354,7 @@ namespace RemoteTech.Modules
             }
             else
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#RT_ModuleUI_SPU_Msg"), 4.0f, ScreenMessageStyle.UPPER_LEFT));//"No connection to send command on."
             }
         }
 
@@ -405,7 +406,7 @@ namespace RemoteTech.Modules
             }
             else
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#RT_ModuleUI_SPU_Msg"), 4.0f, ScreenMessageStyle.UPPER_LEFT));//"No connection to send command on."
             }
         }
     }
