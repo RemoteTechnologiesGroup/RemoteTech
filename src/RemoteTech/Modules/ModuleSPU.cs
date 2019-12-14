@@ -101,9 +101,16 @@ namespace RemoteTech.Modules
 #if !KSP131
                 if (moduleExpControlStation != null)
                 {
-                    IsRTPowered = moduleExpControlStation.ScienceClusterData.IsPowered;
-                    // issue: ground science transmission and much of science cluster are not moddable
-                    // unwilling to spend large effort for low return
+                    if (moduleExpControlStation.ScienceClusterData != null)
+                    {
+                        IsRTPowered = moduleExpControlStation.ScienceClusterData.IsPowered;
+                        // issue: ground science transmission and much of science cluster are not moddable
+                        // unwilling to spend large effort for low return
+                    }
+                    else
+                    {
+                        IsRTPowered = false;
+                    }
                 }
 #endif
 #if !KSP131
