@@ -174,7 +174,7 @@ namespace RemoteTech.Modules
 
             if (IsRTActive)
             {
-                info.AppendLine("<color=#89929B>" + Localizer.Format("#RT_Editor_Activatedbydefault") + "</color>");//"Activated by default"
+                info.AppendLine("<color=green>" + Localizer.Format("#RT_Editor_Activatedbydefault") + "</color>");//"Activated by default"
             }
 
             if (MaxQ > 0)
