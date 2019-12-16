@@ -10,6 +10,7 @@ namespace RemoteTech.Modules
     /// <summary>Used to transmit science from a vessel with an antenna.</summary>
     public sealed class ModuleRTDataTransmitter : PartModule, IScienceDataTransmitter
     {
+        //Default parameters unless loaded from antenna configuration
         [KSPField]
         public float
             PacketInterval = 0.5f,
