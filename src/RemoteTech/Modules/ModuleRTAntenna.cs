@@ -125,6 +125,13 @@ namespace RemoteTech.Modules
             RTPacketSize = 0.0f,
             RTPacketResourceCost = 0.0f;
 
+        [KSPField(guiName = "#RT_ModuleUI_SciencePacketSize", guiActive = false , guiActiveEditor = true)] //Science packet size
+        public String GUI_SciencePacketSize;
+        [KSPField(guiName = "#RT_ModuleUI_SciencePacketInterval", guiActive = false , guiActiveEditor = true)] //Science packet interval
+        public String GUI_SciencePacketInterval;
+        [KSPField(guiName = "#RT_ModuleUI_SciencePacketCost", guiActive = false , guiActiveEditor = true)] //Science packet cost
+        public String GUI_SciencePacketCost;
+
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
         private List<IScalarModule> mDeployFxModules = new List<IScalarModule>();
         private List<IScalarModule> mProgressFxModules = new List<IScalarModule>();
@@ -167,7 +174,7 @@ namespace RemoteTech.Modules
 
             if (IsRTActive)
             {
-                info.AppendLine("<color=#89929B>" + Localizer.Format("#RT_Editor_Activatedbydefault") + "</color>");//"Activated by default"
+                info.AppendLine("<color=green>" + Localizer.Format("#RT_Editor_Activatedbydefault") + "</color>");//"Activated by default"
             }
 
             if (MaxQ > 0)
@@ -256,6 +263,21 @@ namespace RemoteTech.Modules
             else {
                 AddTransmitter();
             }
+
+            if (mTransmitter != null)
+            {
+                Events["EventTransmit"].guiActive = true;
+                Fields["GUI_SciencePacketInterval"].guiActive = true;
+                Fields["GUI_SciencePacketSize"].guiActive = true;
+                Fields["GUI_SciencePacketCost"].guiActive = true;
+            }
+            else
+            {
+                Events["EventTransmit"].guiActive = false;
+                Fields["GUI_SciencePacketInterval"].guiActive = false;
+                Fields["GUI_SciencePacketSize"].guiActive = false;
+                Fields["GUI_SciencePacketCost"].guiActive = false;
+            }
         }
 
         [KSPEvent(name = "EventToggle", guiActive = false)]
@@ -293,6 +315,52 @@ namespace RemoteTech.Modules
 
         [KSPEvent(name = "OverrideClose", active = true, guiActiveUnfocused = true, unfocusedRange = 5, externalToEVAOnly = true, guiName = "#RT_ModuleUI_ForceClose", category = "skip_delay;skip_control")]//[EVA] Force Close
         public void OverrideClose() { EventClose(); }
+
+        [KSPEvent(name = "EventTransmit", guiActive = false, guiActiveEditor = false, guiName = "#RT_ModuleUI_Transmit")]//Transmit all science
+        public void EventTransmit()
+        {
+            if (mTransmitter != null && mTransmitter.CanTransmit())
+            {
+                List<ScienceData> scienceDataList = new List<ScienceData>();
+                for(int i = 0; i < vessel.parts.Count; i++)
+                {
+                    //get experiments
+                    var experiments = vessel.parts[i].FindModulesImplementing<ModuleScienceExperiment>();
+                    for (int j = 0; j < experiments.Count; j++)
+                    {
+                        if(experiments[j].HasExperimentData)
+                        {
+                            var scienceData = experiments[j].GetData();
+                            for (int k = 0; k < scienceData.Length; k++)
+                            {
+                                experiments[j].DumpData(scienceData[k]);
+                            }
+                            scienceDataList.AddRange(scienceData);
+                        }
+                    }
+
+                    //get containers of stored experiments
+                    var scienceContainers = vessel.parts[i].FindModulesImplementing<ModuleScienceContainer>();
+                    for (int j = 0; j < scienceContainers.Count; j++)
+                    {
+                        if(scienceContainers[j].GetStoredDataCount() > 0)
+                        {
+                            var scienceData = scienceContainers[j].GetData();
+                            for (int k = 0; k < scienceData.Length; k++)
+                            {
+                                scienceContainers[j].DumpData(scienceData[k]);
+                            }
+                            scienceDataList.AddRange(scienceData);
+                        }
+                    }
+                }
+
+                if (scienceDataList.Count > 0)
+                {
+                    mTransmitter.TransmitData(scienceDataList);
+                }
+            }
+        }
 
         public void OnConnectionRefresh()
         {
@@ -378,11 +446,11 @@ namespace RemoteTech.Modules
         {
             base.OnAwake();
             if (consumedResources == null)
-			{
+            {
                 consumedResources = new List<PartResourceDefinition>();
             }
-			else
-			{
+            else
+            {
                 consumedResources.Clear();
             }
             for (var i = 0; i < resHandler.inputResources.Count; i++)
@@ -475,6 +543,18 @@ namespace RemoteTech.Modules
                 // Trigger onVesselWasModified after adding a new transmitter
                 GameEvents.onVesselWasModified.Fire(this.part.vessel);
             }
+
+            if (mTransmitter != null)
+            {
+                //overwrite default parameters of ModuleRTDataTransmitter
+                (mTransmitter as ModuleRTDataTransmitter).PacketSize = RTPacketSize;
+                (mTransmitter as ModuleRTDataTransmitter).PacketInterval = RTPacketInterval;
+                (mTransmitter as ModuleRTDataTransmitter).PacketResourceCost = RTPacketResourceCost;
+            }
+
+            GUI_SciencePacketInterval = String.Format("{0} sec", RTPacketInterval);
+            GUI_SciencePacketSize = String.Format("{0} Mits", RTPacketSize);
+            GUI_SciencePacketCost = String.Format("{0} charge", RTPacketResourceCost);
         }
 
         private void RemoveTransmitter()
