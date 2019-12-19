@@ -164,4 +164,3 @@ src/RemoteTech/*.dll
 GameData/RemoteTech/Plugins/RemoteTech.dll
 GameData/build.txt
 src/RemoteTech/RemoteTech.sln.ide/
-src/RemoteTech/RemoteTech.csproj
