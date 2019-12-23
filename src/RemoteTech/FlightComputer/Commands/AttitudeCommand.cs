@@ -43,8 +43,8 @@ namespace RemoteTech.FlightComputer.Commands
         {
             { FlightMode.Off,        Localizer.Format("#RT_AttitudeCommand_Off") },//"Mode: Off"
             { FlightMode.KillRot,        Localizer.Format("#RT_AttitudeCommand_Killrotation") },//"Mode: Kill rotation"
-            { FlightMode.AttitudeHold,        Localizer.Format("#RT_AttitudeCommand_Hold") +"{0} {1}" },//"Mode: Hold"
-            { FlightMode.AltitudeHold,         Localizer.Format("#RT_AttitudeCommand_Hold") +"{0}" },//"Mode: Hold"
+            { FlightMode.AttitudeHold,        Localizer.Format("#RT_AttitudeCommand_Hold") + " {0} {1}" },//"Mode: Hold"
+            { FlightMode.AltitudeHold,         Localizer.Format("#RT_AttitudeCommand_Hold") + " {0}" },//"Mode: Hold"
             { FlightMode.Rover,        "" },
         };
 
