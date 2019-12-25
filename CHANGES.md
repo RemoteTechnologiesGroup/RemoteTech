@@ -1,3 +1,43 @@
+# Version 1.9.5
+**Released December 25, 2019**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.8.1
+* Updated ModuleManager to 4.1.3
+* Fixed issue of wobbling when holding Kill Rotation or Maneuver Node
+* Fixed issue of signal delay and control indicator not hidden in in-flight action group editor
+* Fixed issue of ReStocked-ed antennas auto-deploying in Editor
+* Minor improvements to Rover Computer
+* Introduced new flight computer interface of in-flight PID controller
+* Fixed issue of flight computer commands not saved persistently
+* Fixed issue of part configuration values being duplicated when saving and loading
+* Localized to en-us and zh-cn languages
+* Fixed issue of NullReferenceException when moving deployable science stations between 2 inventories
+* Fixed issue of missing science transmission button and information on antennas
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #797: Missing science transmission options and information on antennae [requested by: mindset-tk]
+* Issue #798: Antennas auto extend and can't retract [requested by: AndresHdzArv]
+* Issue #799: Control indicator obscures in-flight action group editor [requested by: BTAxis]
+* Issue #804: NullReferenceException when carrying deployable probodyne science in EVA [requested by: aidygus]
+* Issue #805: RTUtil.GetBool causes the values and sub-nodes in ProtoPartModuleSnapshot.moduleValues to duplicate [requested by: allista]
+* Issue #806: Flight computer command queue gets wiped unexpectedly [requested by: Ernesto-Alvarez]
+
+Pull Requests
+-------------
+
+* PR #802: Localization [PR by: tinygrox]
+* PR #807: Minor Chinese changes [PR by: tinygrox]
+
+***
+
 # Version 1.9.4
 **Released October 26, 2019**
 
