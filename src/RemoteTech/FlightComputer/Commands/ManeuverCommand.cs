@@ -20,6 +20,7 @@ namespace RemoteTech.FlightComputer.Commands
 
         private double throttle = 1.0f;
         private double lowestDeltaV = 0.0;
+        private double smallestRemainingTime = 0.0;
         private bool abortOnNextExecute = false;
 
         public override string Description
@@ -36,13 +37,24 @@ namespace RemoteTech.FlightComputer.Commands
                     return flightInfo + Environment.NewLine + base.Description;
                 }
                 else
-                    return "Execute planned maneuver" + Environment.NewLine + base.Description;
+                {
+                    return "Execute planned maneuver"+ Environment.NewLine + base.Description;
+                }
             }
         }
         public override string ShortName { get { return "Execute maneuver node"; } }
 
         public override bool Pop(FlightComputer f)
         {
+            if(f.Vessel.patchedConicSolver == null)
+            {
+                f.Vessel.AttachPatchedConicsSolver();
+                f.Vessel.patchedConicSolver.Update();
+            }
+
+            if (this.Node.solver == null) // need to repair (due to the scenario of 2 vessels within phyical range)
+                this.Node = f.Vessel.patchedConicSolver.maneuverNodes.Find(x => x.UT == this.Node.UT);
+
             var burn = f.ActiveCommands.FirstOrDefault(c => c is BurnCommand);
             if (burn != null) {
                 f.Remove (burn);
@@ -60,6 +72,8 @@ namespace RemoteTech.FlightComputer.Commands
                 RemainingTime = RemainingDelta / thrustToMass;
             }
 
+            f.PIDController.setPIDParameters(FlightComputer.PIDKp, FlightComputer.PIDKi, FlightComputer.PIDKd);
+
             return true;
         }
 
@@ -74,18 +88,26 @@ namespace RemoteTech.FlightComputer.Commands
         }
 
         /// <summary>
-        /// 
+        /// Remove the current maneuver node from MapView
         /// </summary>
         /// <param name="computer">FlightComputer instance of the computer of the vessel.</param>
         private void AbortManeuver(FlightComputer computer)
         {
-            RTUtil.ScreenMessage("[Flight Computer]: Maneuver removed");
+            RTUtil.ScreenMessage("[Flight Computer]: Maneuver node removed");
             if (computer.Vessel.patchedConicSolver != null)
             {
-                Node.RemoveSelf();
+                this.Node.RemoveSelf();
             }
-            // enqueue kill rot
-            computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+
+            // Flight Computer mode after execution based on settings
+            if (RTSettings.Instance.FCOffAfterExecute)
+            {
+                computer.Enqueue(AttitudeCommand.Off(), true, true, true);
+            }
+            if (!RTSettings.Instance.FCOffAfterExecute)
+            {
+                computer.Enqueue(AttitudeCommand.KillRot(), true, true, true);
+            }
         }
 
         /// <summary>
@@ -97,7 +119,7 @@ namespace RemoteTech.FlightComputer.Commands
         public override bool Execute(FlightComputer computer, FlightCtrlState ctrlState)
         {
             // Halt the command if we reached our target or were command to abort by the previous tick
-            if (this.RemainingDelta <= 0.01 || this.abortOnNextExecute)
+            if (this.RemainingDelta <= 0.1 || this.abortOnNextExecute)
             {
                 this.AbortManeuver(computer);
                 return true;
@@ -151,11 +173,24 @@ namespace RemoteTech.FlightComputer.Commands
             // we only compare up to the fiftieth part due to some burn-up delay when just firing up the engines
             if (this.lowestDeltaV > 0 // Do ignore the first tick
                 && (this.RemainingDelta - 0.02) > this.lowestDeltaV
-                && this.RemainingDelta < 1.0)   // be safe that we do not abort the command to early
+                //&& this.RemainingDelta < 1.0 // be safe that we do not abort the command to early // comment: not always < 1 because lowest dV was over 10 when acceleration was huge
+                && this.RemainingTime > this.smallestRemainingTime)
             {
-                // Aborting because deltaV was rising again!
+                // Aborting because deltaV & remaining time were rising again!
                 this.AbortManeuver(computer);
                 return true;
+
+                /* Sample from one test on a craft of huge acceleration
+                 RemoteTech: lowest dV, remaining dV, remaining time
+                 RemoteTech: 1.81, 1.73, 0.16
+	             RemoteTech: 1.73, 1.68, 0.16
+	             RemoteTech: 1.68, 1.65, 0.15 // lowest dV
+	             RemoteTech: 1.65, 1.65, 0.15
+	             RemoteTech: 1.65, 1.68, 0.14
+	             RemoteTech: 1.65, 1.74, 0.14
+                 RemoteTech: 1.65, 1.83, 0.13 // smallest time
+	             RemoteTech: 1.65, 1.97, 0.13
+                */
             }
 
             // Lowest delta always has to be stored to be able to compare it in the next tick
@@ -163,6 +198,13 @@ namespace RemoteTech.FlightComputer.Commands
                 || this.RemainingDelta < this.lowestDeltaV)
             {
                 this.lowestDeltaV = this.RemainingDelta;
+            }
+
+            // smallest remaining duration
+            if (this.smallestRemainingTime == 0
+                || this.RemainingTime < this.smallestRemainingTime)
+            {
+                this.smallestRemainingTime = this.RemainingTime;
             }
 
             return false;
@@ -208,13 +250,22 @@ namespace RemoteTech.FlightComputer.Commands
         /// <returns>true - loaded successfull</returns>
         public override bool Load(ConfigNode n, FlightComputer fc)
         {
+            //Additional notes: Load() is never called when cold-launching KSP and resuming flight.
             if(base.Load(n,fc))
             {
                 if(n.HasValue("NodeIndex"))
                 {
                     this.NodeIndex = int.Parse(n.GetValue("NodeIndex"));
-                    RTLog.Notify("Trying to get Maneuver {0}", this.NodeIndex);
-                    if (this.NodeIndex >= 0)
+
+                    if (fc.Vessel.patchedConicSolver == null)
+                    {
+                        fc.Vessel.AttachPatchedConicsSolver();
+                        fc.Vessel.patchedConicSolver.Update();
+                    }
+
+                    RTLog.Notify("Trying to get Maneuver {0} in the list of {1} maneuver nodes", this.NodeIndex, fc.Vessel.patchedConicSolver.maneuverNodes.Count);
+
+                    if (this.NodeIndex >= 0 && fc.Vessel.patchedConicSolver.maneuverNodes.Count > 0)
                     {
                         // Set the ManeuverNode into this command
                         this.Node = fc.Vessel.patchedConicSolver.maneuverNodes[this.NodeIndex];
@@ -233,8 +284,14 @@ namespace RemoteTech.FlightComputer.Commands
         /// </summary>
         public override void Save(ConfigNode n, FlightComputer fc)
         {
+            if (fc.Vessel.patchedConicSolver == null)
+            {
+                fc.Vessel.AttachPatchedConicsSolver();
+                fc.Vessel.patchedConicSolver.Update();
+            }
+
             // search the node on the List
-            this.NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.IndexOf(this.Node);
+            this.NodeIndex = fc.Vessel.patchedConicSolver.maneuverNodes.FindIndex(x => x.UT == this.Node.UT);
 
             // only save this command if we are on the maneuverNode list
             if (this.NodeIndex >= 0)
@@ -250,16 +307,15 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flightcomputer</param>
         public override void CommandEnqueued(FlightComputer computer)
         {
-            string KaCAddonLabel = String.Empty;
-            double timetoexec = (this.TimeStamp + this.ExtraDelay) - 180;
+            var timetoexec = (TimeStamp + ExtraDelay) - RTSettings.Instance.FCLeadTime;
 
-            if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
+            if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts)
             {
-                KaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
+                var kaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
 
-                if (RTCore.Instance != null && RTCore.Instance.kacAddon != null)
+                if (RTCore.Instance != null && RTCore.Instance.KacAddon != null)
                 {
-                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Maneuver, KaCAddonLabel, timetoexec);
+                    KaCItemId = RTCore.Instance.KacAddon.CreateAlarm(RemoteTech_KACWrapper.KACWrapper.KACAPI.AlarmTypeEnum.Maneuver, kaCAddonLabel, timetoexec, computer.Vessel.id);
                 }
             }
 
@@ -273,12 +329,12 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flight computer</param>
         public override void CommandCanceled(FlightComputer computer)
         {
+            if (KaCItemId == string.Empty || RTCore.Instance == null || RTCore.Instance.KacAddon == null)
+                return;
+
             // Cancel also the kac entry
-            if (this.KaCItemId != String.Empty && RTCore.Instance != null && RTCore.Instance.kacAddon != null)
-            {
-                RTCore.Instance.kacAddon.DeleteAlarm(this.KaCItemId);
-                this.KaCItemId = String.Empty;
-            }
+            RTCore.Instance.KacAddon.DeleteAlarm(KaCItemId);
+            this.KaCItemId = string.Empty;
         }
     }
 }

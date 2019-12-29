@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace RemoteTech.UI
 {
+    /// <summary>
+    /// Class used for the buttons overlay in Tracking Station or Flight map scenes.
+    /// Draws and handles buttons on the bottom right of the scene.
+    /// </summary>
     public class FilterOverlay : IFragment, IDisposable
     {
         private class Texture
@@ -13,6 +17,7 @@ namespace RemoteTech.UI
             public Texture2D BackgroundLeft;
             public Texture2D NoPath;
             public Texture2D Path;
+            public Texture2D MultiPath;
             public Texture2D NoOmniDish;
             public Texture2D Dish;
             public Texture2D Omni;
@@ -27,6 +32,7 @@ namespace RemoteTech.UI
                 RTUtil.LoadImage(out BackgroundLeft, "texBackground_left");
                 RTUtil.LoadImage(out NoPath, "texNoPath");
                 RTUtil.LoadImage(out Path, "texPath");
+                RTUtil.LoadImage(out MultiPath, "texMultiPath");
                 RTUtil.LoadImage(out NoOmniDish, "texNoOmniDish");
                 RTUtil.LoadImage(out Dish, "texDish");
                 RTUtil.LoadImage(out Omni, "texOmni");
@@ -79,8 +85,8 @@ namespace RemoteTech.UI
         {
             get
             {
-                float width = mTextures.Dish.width * GameSettings.UI_SCALE;
-                float height = mTextures.Dish.height * GameSettings.UI_SCALE;
+                float width = 350;
+                float height = 350;
                 float posX = Screen.width - width;
 
                 // mirror to the left side on the tracking station
@@ -95,23 +101,26 @@ namespace RemoteTech.UI
 
                 return new Rect(posX, Screen.height - height, width, height);
             }
+
         }
 
         private Rect PositionAntenna
         {
             get
             {
-                var positionSatellite = PositionSatellite;
-                var posX = positionSatellite.x - positionSatellite.width;
+                var width = 350;
+                var height = 350;
+                var posX = PositionSatellite.x - width;
 
                 // mirror to the left side on the tracking station
                 if (this.onTrackingStation)
                 {
-                    posX = positionSatellite.x + positionSatellite.width;
+                    posX = PositionSatellite.x + PositionSatellite.width;
                 }
 
-                return new Rect(posX, Screen.height - positionSatellite.height, positionSatellite.width, positionSatellite.height);
+                return new Rect(posX, Screen.height - height, width, height);
             }
+
         }
 
         private Texture2D TextureComButton
@@ -121,6 +130,8 @@ namespace RemoteTech.UI
                 MapFilter mask = RTCore.Instance.Renderer.Filter;
                 if ((mask & MapFilter.Path) == MapFilter.Path)
                     return mTextures.Path;
+                else if ((mask & MapFilter.MultiPath) == MapFilter.MultiPath)
+                    return mTextures.MultiPath;
                 else
                     return mTextures.NoPath;
             }
@@ -194,7 +205,7 @@ namespace RemoteTech.UI
             GameEvents.onShowUI.Add(OnShowUI);
             MapView.OnEnterMapView += OnEnterMapView;
             MapView.OnExitMapView += OnExitMapView;
-            /// Add the on mouse over event
+            // Add the on mouse over event
             mAntennaFragment.onMouseOverListEntry += showTargetInfo;
 
             WindowAlign targetInfoAlign = WindowAlign.TopLeft;
@@ -204,14 +215,14 @@ namespace RemoteTech.UI
                 targetInfoAlign = WindowAlign.TopRight;
             }
 
-            /// Create a new Targetinfo window with a fixed position to the antenna fragment
+            // Create a new Targetinfo window with a fixed position to the antenna fragment
             mTargetInfos = new TargetInfoWindow(PositionAntenna, targetInfoAlign);
 
         }
 
         public void Dispose()
         {
-            /// Remove the on mouse over event
+            // Remove the on mouse over event
             mAntennaFragment.onMouseOverListEntry -= showTargetInfo;
 
             GameEvents.onPlanetariumTargetChanged.Remove(OnChangeTarget);
@@ -367,6 +378,12 @@ namespace RemoteTech.UI
             if ((mask & MapFilter.Path) == MapFilter.Path)
             {
                 RTCore.Instance.Renderer.Filter &= ~MapFilter.Path;
+                RTCore.Instance.Renderer.Filter |= MapFilter.MultiPath;
+                return;
+            }
+            if ((mask & MapFilter.MultiPath) == MapFilter.MultiPath)
+            {
+                RTCore.Instance.Renderer.Filter &= ~MapFilter.MultiPath;
                 return;
             }
             RTCore.Instance.Renderer.Filter |= MapFilter.Path;

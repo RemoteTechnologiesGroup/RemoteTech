@@ -8,9 +8,9 @@ namespace RemoteTech.RangeModel
     public static class AbstractRangeModel
     {
         /// <summary>Can't boost the range of an omni antenna by more than this factor, no matter what.</summary>
-        private const double omniClamp = 100.0;
+        private static readonly double omniClamp = RTSettings.Instance.OmniRangeClampFactor;
         /// <summary>Can't boost the range of a dish antenna by more than this factor, no matter what.</summary>
-        private const double dishClamp = 1000.0;
+        private static readonly double dishClamp = RTSettings.Instance.DishRangeClampFactor;
 
         /// <summary>Finds the maximum range between an antenna and a specific target.</summary>
         /// <returns>The maximum distance at which the two spacecraft could communicate.</returns>
@@ -41,6 +41,9 @@ namespace RemoteTech.RangeModel
                                       CheckRange(rangeFunc, antenna.Omni + bonusA, omniClamp, maxDishB         , dishClamp));
             double maxDish = Math.Max(CheckRange(rangeFunc, antenna.Dish         , dishClamp, maxOmniB + bonusB, omniClamp), 
                                       CheckRange(rangeFunc, antenna.Dish         , dishClamp, maxDishB         , dishClamp));
+
+            if (Double.IsNaN(maxOmni)) { maxOmni = 0.0; }
+            if (Double.IsNaN(maxDish)) { maxDish = 0.0; }
 
             return Math.Max(maxOmni, maxDish);
         }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -17,9 +18,20 @@ namespace RemoteTech
         private static double TimeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? RTUtil.GameTime : 0;
 
         /// <summary>
-        /// Automatically finds the proper texture directory from the dll location. Assumes the dll is in the proper location of GameData/RemoteTech/Plugins/
+        /// Automatically finds the proper texture directory from the plugin dll location
         /// </summary>
-        private static string TextureDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).Parent.Name + "/Textures/";
+        private static string _TextureDirectory = ""; // one-time calculation for performance reason
+        private static string TextureDirectory
+        {
+            get
+            {
+                if (_TextureDirectory.Length <= 0)
+                {
+                    _TextureDirectory = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name.Equals("RemoteTech")).url.Replace("Plugins", "Textures") + "/";
+                }
+                return _TextureDirectory;
+            }
+        }
 
         /// <summary>
         /// Returns the current AssemplyFileVersion from AssemblyInfos.cs
@@ -71,7 +83,7 @@ namespace RemoteTech
 
         public static void ScreenMessage(String msg)
         {
-            ScreenMessages.PostScreenMessage(new ScreenMessage(msg, 4.0f, ScreenMessageStyle.UPPER_LEFT));
+            ScreenMessages.PostScreenMessage(new ScreenMessage(msg, 6.0f, ScreenMessageStyle.UPPER_LEFT));
         }
 
         public static String Truncate(this String targ, int len)
@@ -143,16 +155,19 @@ namespace RemoteTech
 
         public static String FormatConsumption(double consumption)
         {
+            String format = "{0:F2}/{1}";
             String timeindicator = "sec";
 
-            if(consumption < 1)
+            // Refactor EC consumption format when EC cost is too low
+            if(consumption < 0.01)
             {
                 // minutes
                 consumption *= 60;
                 timeindicator = "min";
+                format = "{0:F3}/{1}";
             }
-            
-            return String.Format("{0:F2}/{1}.", consumption, timeindicator);
+
+            return String.Format(format, consumption, timeindicator);
         }
 
         public static String FormatSI(double value, String unit)
@@ -174,7 +189,7 @@ namespace RemoteTech
             {
                 if (guid == System.Guid.Empty)
                 {
-                    return "No Target";
+                    return Localizer.Format("#RT_ModuleUI_NoTarget");//"No Target"
                 }
                 if (RTCore.Instance.Network.Planets.ContainsKey(guid))
                 {
@@ -182,7 +197,7 @@ namespace RemoteTech
                 }
                 if (guid == NetworkManager.ActiveVesselGuid)
                 {
-                    return "Active Vessel";
+                    return Localizer.Format("#RT_ModuleUI_ActiveVessel");//"Active Vessel"
                 }
                 ISatellite sat;
                 if ((sat = RTCore.Instance.Network[guid]) != null)
@@ -190,7 +205,7 @@ namespace RemoteTech
                     return sat.Name;
                 }
             }
-            return "Unknown Target";
+            return Localizer.Format("#RT_ModuleUI_UnknownTarget");//"Unknown Target"
         }
 
         public static Guid Guid(this CelestialBody cb)
@@ -204,43 +219,72 @@ namespace RemoteTech
             return new Guid(s.ToString());
         }
 
-        public static bool HasValue(this ProtoPartModuleSnapshot ppms, String value)
+        public static bool HasValue(this ProtoPartModuleSnapshot ppms, String name)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
-            bool result;
-            return Boolean.TryParse(value, out result) && result;
+            return ppms.moduleValues.HasValue(name);
         }
 
         public static bool GetBool(this ProtoPartModuleSnapshot ppms, String value)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
             bool result;
-            return Boolean.TryParse(n.GetValue(value) ?? "False", out result) && result;
+            return Boolean.TryParse(ppms.moduleValues.GetValue(value) ?? "False", out result) && result;
+        }
+
+        /// <summary>Searches a ProtoPartModuleSnapshot for an integer field.</summary>
+        /// <returns>True if the member <paramref name="valueName"/> exists, false otherwise.</returns>
+        /// <param name="ppms">The <see cref="ProtoPartModuleSnapshot"/> to query.</param>
+        /// <param name="valueName">The name of a member in the  ProtoPartModuleSnapshot.</param>
+        /// <param name="value">The value of the member <paramref name="valueName"/> on success. An undefined value on failure.</param>
+        public static bool GetInt(this ProtoPartModuleSnapshot ppms, string valueName, out int value)
+        {
+            value = 0;
+            var result = ppms.moduleValues.TryGetValue(valueName, ref value);
+            if (!result)
+            {
+                RTLog.Notify($"No integer '{value}' in ProtoPartModule '{ppms.moduleName}'");
+            }
+
+            return result;
+        }
+
+        //Note: Keep this method even if it has no reference, it is useful to track some bugs.
+        /// <summary>
+        /// Get a private field value from an object instance though reflection.
+        /// </summary>
+        /// <param name="type">The type of the object instance from which to obtain the private field.</param>
+        /// <param name="instance">The object instance</param>
+        /// <param name="fieldName">The field name in the object instance, from which to obtain the value.</param>
+        /// <returns>The value of the <paramref name="fieldName"/> instance or null if no such field exist in the instance.</returns>
+        internal static object GetInstanceField(Type type, object instance, string fieldName)
+        {
+            const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                                           | BindingFlags.Static;
+            var field = type.GetField(fieldName, bindFlags);
+            return field?.GetValue(instance);
         }
 
         /// <summary>
-        /// Searches a ProtoPartModuleSnapshot for an integer field
+        /// Get a private field value from an object instance though reflection.
         /// </summary>
-        /// 
-        /// <returns>The value of the field named by <paramref name="value"/> in the PartModule represented 
-        ///     by <paramref name="ppms"/></returns>
-        /// <param name="ppms">The ProtoPartModule to query</param>
-        /// <param name="value">The name of a member PartModule </param>
-        /// 
-        /// <exception cref="System.ArgumentException">Thrown if <paramref name="value"/> does not exist 
-        ///     or cannot be parsed as an integer.</exception>
-        /// <exceptionsafe>The program state is unchanged in the event of an exception.</exceptionsafe>
-        public static int GetInt(this ProtoPartModuleSnapshot ppms, String value)
+        /// <param name="type">The type of the object instance from which to obtain the private field.</param>
+        /// <param name="instance">The object instance</param>
+        /// <param name="fieldName">The field name in the object instance, from which to obtain the value.</param>
+        /// <returns>The value of the <paramref name="fieldName"/> instance or null if no such field exist in the instance.</returns>
+        internal static bool SetInstanceField(Type type, object instance, string fieldName, object newValue)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
-            int result;
-            if (Int32.TryParse(n.GetValue(value) ?? "", out result)) {
-                return result;
+            const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                                           | BindingFlags.Static;
+
+            try
+            {
+                var field = type.GetField(fieldName, bindFlags);
+                field.SetValue(instance, newValue);
+                return true;
             }
-            throw new ArgumentException (String.Format ("No integer '{0}' in ProtoPartModule", value), "value");
+            catch(Exception e)
+            {
+                return false;
+            }
         }
 
         public static void Button(Texture2D icon, Action onClick, params GUILayoutOption[] options)

@@ -10,14 +10,21 @@ namespace RemoteTech.FlightComputer.Commands
         {
             get { return ShortName + Environment.NewLine + base.Description; }
         }
-        public override string ShortName { get { return "Toggle " + ActionGroup; } }
+        public override string ShortName { get { return "Toggle Action Group " + ActionGroup; } }
 
         public override bool Pop(FlightComputer f)
         {
             f.Vessel.ActionGroups.ToggleGroup(ActionGroup);
             if (ActionGroup == KSPActionGroup.Stage && !(f.Vessel == FlightGlobals.ActiveVessel && FlightInputHandler.fetch.stageLock))
             {
-                KSP.UI.Screens.StageManager.ActivateNextStage();
+                try
+                {
+                    KSP.UI.Screens.StageManager.ActivateNextStage();
+                }
+                catch(Exception ex)
+                {
+                    RTLog.Notify("Exception during ActivateNextStage(): " + ex.Message, RTLogLevel.LVL4);
+                }
                 KSP.UI.Screens.ResourceDisplay.Instance.Refresh();
             }
             if (ActionGroup == KSPActionGroup.RCS && f.Vessel == FlightGlobals.ActiveVessel)

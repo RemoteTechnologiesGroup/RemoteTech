@@ -5,30 +5,33 @@ using UnityEngine;
 
 namespace RemoteTech.Modules
 {
+    /// <summary>
+    /// This module allows any vessel with an antenna to participate in a RemoteTech network, even if it does not have a <see cref="ModuleSPU"/>.
+    /// <para>It should be included in all RemoteTech antennas. Unlike ModuleSPU, it does not filter commands or provide a flight computer.</para>
+    /// </summary>
     public class ModuleSPUPassive : PartModule, ISignalProcessor
     {
-        public String Name { get { return String.Format("ModuleSPUPassive({0})", VesselName); } }
-        public String VesselName { get { return vessel.vesselName; } set { vessel.vesselName = value; } }
-        public bool VesselLoaded { get { return vessel.loaded; } }
-        public Guid Guid { get { return mRegisteredId; } }
-        public Vector3 Position { get { return vessel.GetWorldPos3D(); } }
-        public CelestialBody Body { get { return vessel.mainBody; } }
-        public bool Visible { get { return MapViewFiltering.CheckAgainstFilter(vessel); } }
-        public bool Powered { get { return Vessel.IsControllable; } }
-        public bool IsCommandStation { get { return false; } }
-        public FlightComputer.FlightComputer FlightComputer { get { return null; } }
-        public Vessel Vessel { get { return vessel; } }
-        public bool IsMaster { get { return false; } }
+        public string Name => $"ModuleSPUPassive({VesselName})";
+        public string VesselName
+        {
+            get { return vessel.vesselName; }
+            set { vessel.vesselName = value; }
+        }
+        public bool VesselLoaded => vessel.loaded;
+        public Guid VesselId { get; private set; }
+        public Vector3 Position => vessel.GetWorldPos3D();
+        public CelestialBody Body => vessel.mainBody;
+        public bool Visible => MapViewFiltering.CheckAgainstFilter(vessel);
+        public bool Powered => Vessel.IsControllable;
+        public bool IsCommandStation => false;
+        public FlightComputer.FlightComputer FlightComputer => null;
+        public Vessel Vessel => vessel;
+        public bool IsMaster => false;
+        public bool CanRelaySignal => true;
 
-        private ISatellite Satellite { get { return RTCore.Instance.Satellites[mRegisteredId]; } }
-
-        private Guid mRegisteredId;
-
-        [KSPField(isPersistant = true)]
-        public bool
-            IsRTPowered = false,
-            IsRTSignalProcessor = true,
-            IsRTCommandStation = false;
+        [KSPField(isPersistant = true)] public bool IsRTPowered;
+        [KSPField(isPersistant = true)] public bool IsRTSignalProcessor = true;
+        [KSPField(isPersistant = true)] public bool IsRTCommandStation = false;
 
         public override void OnStart(StartState state)
         {
@@ -36,7 +39,7 @@ namespace RemoteTech.Modules
             {
                 GameEvents.onVesselWasModified.Add(OnVesselModified);
                 GameEvents.onPartUndock.Add(OnPartUndock);
-                mRegisteredId = vessel.id;
+                VesselId = vessel.id;
                 if(RTCore.Instance != null)
                 {
                     RTCore.Instance.Satellites.Register(vessel, this);
@@ -59,8 +62,8 @@ namespace RemoteTech.Modules
             GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null)
             {
-                RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
-                mRegisteredId = Guid.Empty;
+                RTCore.Instance.Satellites.Unregister(VesselId, this);
+                VesselId = Guid.Empty;
             }
         }
 
@@ -71,17 +74,17 @@ namespace RemoteTech.Modules
 
         public void OnVesselModified(Vessel v)
         {
-            if (RTCore.Instance != null && mRegisteredId != vessel.id)
+            if (RTCore.Instance != null && VesselId != vessel.id)
             {
-                RTCore.Instance.Satellites.Unregister(mRegisteredId, this);
-                mRegisteredId = vessel.id; 
+                RTCore.Instance.Satellites.Unregister(VesselId, this);
+                VesselId = vessel.id; 
                 RTCore.Instance.Satellites.Register(vessel, this);
             }
         }
 
         public override string ToString()
         {
-            return String.Format("ModuleSPUPassive({0}, {1})", Vessel != null ? Vessel.vesselName : "null", mRegisteredId);
+            return $"ModuleSPUPassive({(Vessel != null ? Vessel.vesselName : "null")}, {VesselId})";
         }
     }
 }

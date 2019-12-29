@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace RemoteTech.UI
 {
+    /// <summary>
+    /// Class handling the "focus view" in the Tracking station scene.
+    /// </summary>
     public class FocusOverlay : IFragment, IDisposable
     {
         private FocusFragment mFocus = new FocusFragment();
@@ -156,6 +159,7 @@ namespace RemoteTech.UI
         // Button states for applauncher
         private void OnButtonUp()
         {
+            InputLockManager.RemoveControlLock("RTMapViewSatelliteList");
             mShowOverlay = false;
         }
 
@@ -171,6 +175,12 @@ namespace RemoteTech.UI
 
             GUILayout.BeginArea(PositionFrame);
             {
+                // Refer to the idential codes in AbstractWindow.cs
+                InputLockManager.RemoveControlLock("RTMapViewSatelliteList");
+                if (this.PositionFrame.ContainsMouse())
+                {
+                    InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS | ControlTypes.MAP, "RTMapViewSatelliteList");
+                }
                 mFocus.Draw();
             }
             GUILayout.EndArea();

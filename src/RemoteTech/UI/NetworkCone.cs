@@ -6,6 +6,8 @@ namespace RemoteTech.UI
 {
     public class NetworkCone : MonoBehaviour
     {
+        private static Material CommNetMaterial = null;
+
         public Vector3d Center
         {
             set
@@ -55,11 +57,13 @@ namespace RemoteTech.UI
 
         public void Awake()
         {
+            if (CommNetMaterial == null) { CommNetMaterial = Resources.Load<Material>("Telemetry/TelemetryMaterial"); }
+
             SetupMesh();
             gameObject.layer = 31;
             LineWidth = 1.0f;
             Color = Color.white;
-            Material = new Material("Shader \"Vertex Colors/Alpha\" {Category{Tags {\"Queue\"=\"Transparent\" \"IgnoreProjector\"=\"True\" \"RenderType\"=\"Transparent\"}SubShader {Cull Off ZWrite On Blend SrcAlpha OneMinusSrcAlpha Pass {BindChannels {Bind \"Color\", color Bind \"Vertex\", vertex}}}}}");
+            Material = CommNetMaterial;
         }
 
         private void UpdateMesh(Vector3d center, IAntenna dish)
@@ -82,7 +86,6 @@ namespace RemoteTech.UI
             Vector3d end2 = antennaPos + (planetPos - space - antennaPos).normalized 
                 * Math.Min(dish.Dish / ScaledSpace.ScaleFactor, Vector3.Distance(antennaPos, planetPos));
 
-
             Vector3 lineStart = camera.WorldToScreenPoint(antennaPos);
             Vector3 lineEnd1 = camera.WorldToScreenPoint(end1);
             Vector3 lineEnd2 = camera.WorldToScreenPoint(end2);
@@ -91,24 +94,42 @@ namespace RemoteTech.UI
 
             if (!MapView.Draw3DLines)
             {
+                //if position is behind camera 
+                if (lineStart.z < 0)
+                {
+                    Vector3 coneCenter = camera.WorldToScreenPoint(planetPos);
+                    lineStart = NetworkLine.FlipDirection(lineStart, coneCenter);
+                }
+                else if (lineEnd1.z < 0 || lineEnd2.z < 0)
+                {
+                    lineEnd1 = NetworkLine.FlipDirection(lineEnd1, lineStart);
+                    lineEnd2 = NetworkLine.FlipDirection(lineEnd2, lineStart);
+                }
+
                 int dist = Screen.height / 2;
                 lineStart.z = lineStart.z > 0 ? dist : -dist;
                 lineEnd1.z = lineEnd1.z > 0 ? dist : -dist;
                 lineEnd2.z = lineEnd2.z > 0 ? dist : -dist;
+                
+                mPoints2D[0] = (lineStart - segment1);
+                mPoints2D[1] = (lineStart + segment1);
+                mPoints2D[2] = (lineEnd1 - segment1);
+                mPoints2D[3] = (lineEnd1 + segment1);
+                mPoints2D[4] = (lineStart - segment2);
+                mPoints2D[5] = (lineStart + segment2);
+                mPoints2D[6] = (lineEnd2 - segment2);
+                mPoints2D[7] = (lineEnd2 + segment2);
             }
-
-            mPoints2D[0] = (lineStart - segment1);
-            mPoints2D[1] = (lineStart + segment1);
-            mPoints2D[2] = (lineEnd1 - segment1);
-            mPoints2D[3] = (lineEnd1 + segment1);
-            mPoints2D[4] = (lineStart - segment2);
-            mPoints2D[5] = (lineStart + segment2);
-            mPoints2D[6] = (lineEnd2 - segment2);
-            mPoints2D[7] = (lineEnd2 + segment2);
-
-            for (int i = 0; i < 8; i++)
+            else
             {
-                mPoints3D[i] = camera.ScreenToWorldPoint(mPoints2D[i]);
+                mPoints3D[0] = camera.ScreenToWorldPoint(lineStart - segment1);
+                mPoints3D[1] = camera.ScreenToWorldPoint(lineStart + segment1);
+                mPoints3D[2] = camera.ScreenToWorldPoint(lineEnd1 - segment1);
+                mPoints3D[3] = camera.ScreenToWorldPoint(lineEnd1 + segment1);
+                mPoints3D[4] = camera.ScreenToWorldPoint(lineStart - segment2);
+                mPoints3D[5] = camera.ScreenToWorldPoint(lineStart + segment2);
+                mPoints3D[6] = camera.ScreenToWorldPoint(lineEnd2 - segment2);
+                mPoints3D[7] = camera.ScreenToWorldPoint(lineEnd2 + segment2);
             }
 
             mMeshFilter.mesh.vertices = MapView.Draw3DLines ? mPoints3D : mPoints2D;

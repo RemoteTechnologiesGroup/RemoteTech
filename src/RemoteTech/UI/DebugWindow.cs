@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech.UI
 {
@@ -9,7 +10,7 @@ namespace RemoteTech.UI
         #region AbstractWindow-Definitions
 
         public DebugWindow()
-            : base(new Guid("B17930C0-EDE6-4299-BE78-D975EAD1986B"), "RemoteTech DebugWindow",
+            : base(new Guid("B17930C0-EDE6-4299-BE78-D975EAD1986B"), Localizer.Format("#RT_DEBUG_title"),//"RemoteTech DebugWindow"
                    new Rect(Screen.width / 2 - 250, Screen.height / 2 - 225, 500, 450), WindowAlign.Floating)
         {
             this.mSavePosition = true;
@@ -18,7 +19,6 @@ namespace RemoteTech.UI
 
         public override void Hide()
         {
-            InputLockManager.RemoveControlLock("RTLockDebug");
             base.Hide();
         }
         #endregion
@@ -47,6 +47,10 @@ namespace RemoteTech.UI
         private string GetSignalDelayToSatelliteGuidBInput = "";
         private string ReceivDataVesselGuidInput = "";
         private string HasLocalControlGuidInput = "";
+        private string GetMaxRangeDistanceSatelliteGuidAInput = "";
+        private string GetMaxRangeDistanceSatelliteGuidBInput = "";
+        private string GetRangeDistanceSatelliteGuidAInput = "";
+        private string GetRangeDistanceSatelliteGuidBInput = "";
         #endregion
 
         #region Base-drawing
@@ -108,20 +112,13 @@ namespace RemoteTech.UI
                 {
                     var pushFontsize = GUI.skin.button.fontSize;
                     GUI.skin.button.fontSize = 12;
-                    RTUtil.Button(new GUIContent("Clear Logs in " + this.currentLogLevel.ToString(), "tbd."), () => RTLog.RTLogList[this.currentLogLevel].Clear());
+                    RTUtil.Button(new GUIContent(Localizer.Format("#RT_DEBUG_Clearbutton",this.currentLogLevel.ToString()), Localizer.Format("#RT_DEBUG_Clearbutton_desc")), () => RTLog.RTLogList[this.currentLogLevel].Clear());//"Clear Logs in ""tbd."
                     GUI.skin.button.fontSize = pushFontsize;
                 }
                 GUILayout.EndHorizontal();
                 #endregion
             }
             GUILayout.EndVertical();
-
-            // Set a control lock that we can scroll through textareas
-            InputLockManager.RemoveControlLock("RTLockDebug");
-            if (this.backupPosition.ContainsMouse())
-            {
-                InputLockManager.SetControlLock(ControlTypes.CAMERACONTROLS, "RTLockDebug");
-            }
 
             base.Window(uid);
 
@@ -132,9 +129,9 @@ namespace RemoteTech.UI
 
         private void initializeDebugMenue()
         {
-            this.debugMenueItems.Add("RemoteTech Settings");
-            this.debugMenueItems.Add("API-Tester");
-            this.debugMenueItems.Add("GUID-Reader");
+            this.debugMenueItems.Add(Localizer.Format("#RT_DEBUG_RTSettings"));//"RemoteTech Settings"
+            this.debugMenueItems.Add(Localizer.Format("#RT_DEBUG_APITester"));//"API-Tester"
+            this.debugMenueItems.Add(Localizer.Format("#RT_DEBUG_GUIDReader"));//"GUID-Reader"
         }
 
         /// <summary>
@@ -193,40 +190,40 @@ namespace RemoteTech.UI
             // Deaktivate Mission Control 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("Deactivate KSC: ", GUILayout.Width(firstColWidth));
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(false); }; deactivatedMissionControls = 1; }, deactivatedMissionControls, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(true); }; deactivatedMissionControls = 0; }, deactivatedMissionControls, 0);
+                GUILayout.Label(Localizer.Format("#RT_DEBUG_DeactivateKSC"), GUILayout.Width(firstColWidth));//"Deactivate KSC: "
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Onbtton")), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(false); }; deactivatedMissionControls = 1; }, deactivatedMissionControls, 1);//"On"
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Offbtton")), () => { foreach (MissionControlSatellite mcs in settings.GroundStations) { mcs.togglePower(true); }; deactivatedMissionControls = 0; }, deactivatedMissionControls, 0);//"Off"
             }
             GUILayout.EndHorizontal();
 
 
             GUILayout.Space(10);
-            GUILayout.Label("Cheat options");
+            GUILayout.Label(Localizer.Format("#RT_DEBUG_CheatOptions"));//"Cheat Options"
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("Signal through bodys: ", GUILayout.Width(firstColWidth));
-                int cheatEVAFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatEVAFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatEVAFuel, 0);
+                GUILayout.Label(Localizer.Format("#RT_DEBUG_SignalThroughBodies"), GUILayout.Width(firstColWidth));//"Signal Through Bodies: "
+                int cheatLineOfSight = (RTSettings.Instance.IgnoreLineOfSight) ? 1 : 0;
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Onbtton")), () => { RTSettings.Instance.IgnoreLineOfSight = true; }, cheatLineOfSight, 1);//"On"
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Offbtton")), () => { RTSettings.Instance.IgnoreLineOfSight = false; }, cheatLineOfSight, 0);//"Off"
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("Infinite Fuel: ", GUILayout.Width(firstColWidth));
+                GUILayout.Label(Localizer.Format("#RT_DEBUG_InfiniteFuel"), GUILayout.Width(firstColWidth));//"Infinite Fuel: "
                 int cheatinfiniteFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteFuel, 0);
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Onbtton")), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteFuel, 1);//"On"
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Offbtton")), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteFuel, 0);//"Off"
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label("Infinite RCS Fuel: ", GUILayout.Width(firstColWidth));
+                GUILayout.Label(Localizer.Format("#RT_DEBUG_InfiniteRCSFuel"), GUILayout.Width(firstColWidth));//"Infinite RCS Fuel: "
                 int cheatinfiniteRCSFuel = (CheatOptions.InfinitePropellant) ? 1 : 0;
-                RTUtil.FakeStateButton(new GUIContent("On"), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteRCSFuel, 1);
-                RTUtil.FakeStateButton(new GUIContent("Off"), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteRCSFuel, 0);
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Onbtton")), () => { CheatOptions.InfinitePropellant = true; }, cheatinfiniteRCSFuel, 1);//"On"
+                RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_DEBUG_Offbtton")), () => { CheatOptions.InfinitePropellant = false; }, cheatinfiniteRCSFuel, 0);//"Off"
             }
             GUILayout.EndHorizontal();
 
@@ -435,6 +432,54 @@ namespace RemoteTech.UI
             }
             GUILayout.EndHorizontal();
             #endregion
+            #region API.GetMaxRangeDistance
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.GetMaxRangeDistance; Guid: ", GUILayout.ExpandWidth(true));
+                this.GetMaxRangeDistanceSatelliteGuidAInput = GUILayout.TextField(this.GetMaxRangeDistanceSatelliteGuidAInput, GUILayout.Width(70));
+                GUILayout.Label("to: ", GUILayout.ExpandWidth(true));
+                this.GetMaxRangeDistanceSatelliteGuidBInput = GUILayout.TextField(this.GetMaxRangeDistanceSatelliteGuidBInput, GUILayout.Width(70));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.GetMaxRangeDistance(new Guid(this.GetMaxRangeDistanceSatelliteGuidAInput), new Guid(this.GetMaxRangeDistanceSatelliteGuidBInput));
+                        RTLog.Verbose("API.GetMaxRangeDistance({0},{1}) = {2}", this.currentLogLevel, this.GetMaxRangeDistanceSatelliteGuidAInput, this.GetMaxRangeDistanceSatelliteGuidBInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
+            #region API.GetRangeDistance
+            GUILayout.BeginHorizontal();
+            {
+                GUILayout.Label("API.GetRangeDistance; Guid: ", GUILayout.ExpandWidth(true));
+                this.GetRangeDistanceSatelliteGuidAInput = GUILayout.TextField(this.GetRangeDistanceSatelliteGuidAInput, GUILayout.Width(70));
+                GUILayout.Label("to: ", GUILayout.ExpandWidth(true));
+                this.GetRangeDistanceSatelliteGuidBInput = GUILayout.TextField(this.GetRangeDistanceSatelliteGuidBInput, GUILayout.Width(70));
+                if (GUILayout.Button("Run", GUILayout.Width(50)))
+                {
+                    try
+                    {
+                        var result = RemoteTech.API.API.GetRangeDistance(new Guid(this.GetRangeDistanceSatelliteGuidAInput), new Guid(this.GetRangeDistanceSatelliteGuidBInput));
+                        RTLog.Verbose("API.GetRangeDistance({0},{1}) = {2}", this.currentLogLevel, this.GetRangeDistanceSatelliteGuidAInput, this.GetRangeDistanceSatelliteGuidBInput, result);
+                    }
+                    catch (Exception ex)
+                    {
+                        RTLog.Verbose("Exception {0}", this.currentLogLevel, ex);
+                    }
+                    // go to the end of the log
+                    this.debugLogScrollPosition.y = Mathf.Infinity;
+                }
+            }
+            GUILayout.EndHorizontal();
+            #endregion
         }
 
         /// <summary>
@@ -468,14 +513,24 @@ namespace RemoteTech.UI
 
             // draw the Ground stations
             #region Ground stations
-            foreach (var stations in RTCore.Instance.Network.GroundStations)
+            if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
                 GUILayout.BeginHorizontal();
-                {
-                    GUILayout.Label(stations.Value.Name, GUILayout.ExpandWidth(true));
-                    GUILayout.TextField(stations.Key.ToString(), GUILayout.Width(270));
-                }
+                GUILayout.Label(Localizer.Format("#RT_DEBUG_LoadedScene"), GUILayout.ExpandWidth(true));//"Ground stations are only available in the flight or tracking station."
                 GUILayout.EndHorizontal();
+            }
+            else
+            {
+                foreach (var stations in RTCore.Instance.Network.GroundStations)
+                {
+                    GUILayout.BeginHorizontal();
+                    {
+                        GUILayout.Label(stations.Value.Name, GUILayout.ExpandWidth(true));
+                        GUILayout.TextField(stations.Key.ToString(), GUILayout.Width(270));
+                    }
+                    GUILayout.EndHorizontal();
+                }
+                
             }
             #endregion
         }

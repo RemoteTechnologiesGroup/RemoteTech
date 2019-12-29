@@ -1,0 +1,413 @@
+# Master configuration is below
+# grep 'Develop configuration' to find the develop conf.
+
+#==============================================================================#
+#                            Master configuration                              #
+#==============================================================================#
+
+# configuration for "master" branch
+# build in Release mode and deploy to Github
+-
+  #---------------------------------#
+  #      general configuration      #
+  #---------------------------------#
+
+  # version format (you need to bump it when changing version)
+  version: 1.9.5
+
+  # branches
+  branches:
+    # whitelist
+    only:
+      - master
+    # blacklist
+    except:
+      - gh-pages
+
+  # Do not build on tags (note: otherwise appveyor keeps looping on a release)
+  # we simply want to build on a new push
+  skip_tags: true
+
+  #---------------------------------#
+  #    environment configuration    #
+  #---------------------------------#
+
+  # Build worker image (VM template)
+  image: Visual Studio 2015
+
+  # scripts that are called at very beginning, before repo cloning
+  init:
+    - git config --global core.autocrlf input
+
+  # clone directory
+  clone_folder: c:\projects\RemoteTech
+
+  # fetch repository as zip archive
+  shallow_clone: true
+
+  # environment variables
+  environment:
+    DLL_ARCH_PASS: # KSP DLLs archive password (secured)
+      secure: vfhIenu/wQqC0Yuy4u4tOQ==
+
+  matrix:
+    # set this flag to immediately finish build once one of the jobs fails.
+    fast_finish: true
+
+  # scripts that run after cloning repository
+  install:
+    # Note: by default, all script lines are interpreted as batch
+    - cmd: echo Install scripts
+    # setup env. variables
+    - cmd: echo %APPVEYOR_BUILD_FOLDER%
+    - cmd: set DOWNLOAD_FOLDER=%APPVEYOR_BUILD_FOLDER%\..
+    - cmd: set ARTIFACTS_FOLDER=%APPVEYOR_BUILD_FOLDER%\artifacts
+    - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
+    - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
+    # download required KSP DLLs
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_8_1.zip
+    # extract them
+    - cmd: cd %DOWNLOAD_FOLDER% & dir
+    - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
+    - cmd: cd %ASSEMBLY_FOLDER% & dir
+
+  #---------------------------------#
+  #       build configuration       #
+  #---------------------------------#
+
+  # build platform, i.e. x86, x64, Any CPU. This setting is optional.
+  # to add several platforms to build matrix:
+  platform:
+    #- x86
+    - Any CPU
+
+  # build Configuration, i.e. Debug, Release, etc.
+  configuration:
+    - Release
+
+  build:
+    # enable MSBuild parallel builds
+    parallel: true
+    # path to Visual Studio solution or project
+    project: .\src\RemoteTech\RemoteTech.sln
+    # MSBuild verbosity level
+    verbosity: normal
+
+  # scripts to run before build
+  before_build:
+
+  # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+  before_package:
+    # delete KSP downloaded assembly files
+    - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp.dll
+    - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp-firstpass.dll
+    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.dll
+    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.*.dll
+    - cmd: cd %ASSEMBLY_FOLDER% & dir
+    - cmd: echo done!
+
+  # scripts to run after build
+  after_build:
+    # go to the artifact folder and zip the build directory (KSP /GameData folder)
+    - cmd: mkdir %ARTIFACTS_FOLDER%
+    - cmd: 7z.exe a %ARTIFACTS_FOLDER%\RemoteTech.zip %GAMEDATA_FOLDER%
+
+  # to run your custom scripts instead of automatic MSBuild
+  build_script:
+
+  # to disable automatic builds
+  #build: off
+
+  #---------------------------------#
+  #      artifacts configuration    #
+  #---------------------------------#
+
+  artifacts:
+    # pushing entire folder as a zip archive
+    - path: artifacts\RemoteTech.zip
+      name: rt_gd
+
+  #---------------------------------#
+  #     deployment configuration    #
+  #---------------------------------#
+
+  # to disable deployment
+  #deploy: off
+
+  # scripts to run before deployment
+  before_deploy:
+
+  # providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+  # provider names are case-sensitive!
+  deploy:
+    # Deploy to GitHub 'releases'
+    - provider: GitHub
+      # artfact we want to push on github
+      artifact: rt_gd
+      # release name pushed on github
+      release: RemoteTech-$(appveyor_build_version)
+      # auth token to push on github
+      auth_token:
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y
+      # is it a draft release?
+      draft: false
+      # is a a pre-release?
+      prerelease: false
+      # which branch?
+      on:
+        branch: master
+        # deploy on tag push only
+        #appveyor_repo_tag: true
+
+  # scripts to run after deployment
+  after_deploy:
+
+  # to run your custom scripts instead of provider deployments
+  deploy_script:
+
+  #---------------------------------#
+  #        global handlers          #
+  #---------------------------------#
+
+  # on successful build
+  on_success:
+    #- do something
+
+  # on build failure
+  on_failure:
+    #- do something
+
+  # after build failure or success
+  on_finish:
+    #- do something
+
+  #---------------------------------#
+  #         notifications           #
+  #---------------------------------#
+
+  notifications:
+
+    # Email
+    #- provider: Email
+    #  to:
+    #    - user1@email.com
+    #    - user2@email.com
+    #  subject: 'Build {{status}}'                  # optional
+    #  message: "{{message}}, {{commitId}}, ..."    # optional
+    #  on_build_status_changed: true
+    
+    # Github
+    - provider: GitHubPullRequest
+      auth_token:
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y
+
+    # Slack using webhook
+    - provider: Slack
+      incoming_webhook:
+        secure: UYWbRjEf2f/AfPVych87UTtvwwEfdk/ukZQb+PnlGzL9h7fjoQhH0IDfYoLLSguO6uGIEilbfBohUg4znkjikaVcI8OoZVxcPwXnsJliKRI=
+
+#==============================================================================#
+#                           Develop configuration                              #
+#==============================================================================#
+
+# configuration for "develop" branch
+# build in Release mode and no
+-
+  #---------------------------------#
+  #      general configuration      #
+  #---------------------------------#
+
+  # version format (you need to bump it when changing version)
+  version: 1.9.5-{build}-{branch}
+
+  # branches
+  branches:
+    # whitelist
+    only:
+      - develop
+    # blacklist
+    except:
+      - gh-pages
+
+  # Do not build on tags (note: otherwise appveyor keeps looping on a release)
+  # we simply want to build on a new push
+  skip_tags: true
+
+  #---------------------------------#
+  #    environment configuration    #
+  #---------------------------------#
+
+  # Build worker image (VM template)
+  image: Visual Studio 2015
+
+  # scripts that are called at very beginning, before repo cloning
+  init:
+    - git config --global core.autocrlf input
+
+  # clone directory
+  clone_folder: c:\projects\RemoteTech
+
+  # fetch repository as zip archive
+  shallow_clone: true
+
+  # environment variables
+  environment:
+    DLL_ARCH_PASS: # KSP DLLs archive password (secured)
+      secure: vfhIenu/wQqC0Yuy4u4tOQ==
+
+  matrix:
+    # set this flag to immediately finish build once one of the jobs fails.
+    fast_finish: true
+
+  # scripts that run after cloning repository
+  install:
+    # Note: by default, all script lines are interpreted as batch
+    - cmd: echo Install scripts
+    # setup env. variables
+    - cmd: echo %APPVEYOR_BUILD_FOLDER%
+    - cmd: set DOWNLOAD_FOLDER=%APPVEYOR_BUILD_FOLDER%\..
+    - cmd: set ARTIFACTS_FOLDER=%APPVEYOR_BUILD_FOLDER%\artifacts
+    - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
+    - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
+    # download required KSP DLLs
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_8_1.zip
+    # extract them
+    - cmd: cd %DOWNLOAD_FOLDER% & dir
+    - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
+    - cmd: cd %ASSEMBLY_FOLDER% & dir
+
+  #---------------------------------#
+  #       build configuration       #
+  #---------------------------------#
+
+  # build platform, i.e. x86, x64, Any CPU. This setting is optional.
+  # to add several platforms to build matrix:
+  platform:
+    #- x86
+    - Any CPU
+
+  # build Configuration, i.e. Debug, Release, etc.
+  # to add several configurations to build matrix:
+  configuration:
+    - Release
+
+  build:
+    # enable MSBuild parallel builds
+    parallel: true
+    # path to Visual Studio solution or project
+    project: .\src\RemoteTech\RemoteTech.sln
+    # MSBuild verbosity level
+    verbosity: detailed
+
+  # scripts to run before build
+  before_build:
+
+  # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+  before_package:
+    # delete KSP downloaded assembly files
+    - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp.dll
+    - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp-firstpass.dll
+    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.dll
+    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.*.dll
+    - cmd: cd %ASSEMBLY_FOLDER% & dir
+    - cmd: echo done!
+
+  # scripts to run after build
+  after_build:
+    # go to the artifact folder and zip the build directory (KSP /GameData folder)
+    - cmd: mkdir %ARTIFACTS_FOLDER%
+    - cmd: 7z.exe a %ARTIFACTS_FOLDER%\RemoteTech.zip %GAMEDATA_FOLDER%
+
+  # to run your custom scripts instead of automatic MSBuild
+  build_script:
+
+  # to disable automatic builds
+  #build: off
+
+  #---------------------------------#
+  #      artifacts configuration    #
+  #---------------------------------#
+
+  artifacts:
+    # pushing entire folder as a zip archive
+    - path: artifacts\RemoteTech.zip
+      name: rt_gd
+
+  #---------------------------------#
+  #     deployment configuration    #
+  #---------------------------------#
+
+  # to disable deployment
+  #deploy: off
+
+  # scripts to run before deployment
+  before_deploy:
+
+  # providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+  # provider names are case-sensitive!
+  deploy:
+    # Deploy to GitHub 'releases'
+    - provider: GitHub
+      # artfact we want to push on github
+      artifact: rt_gd
+      # release name pushed on github
+      release: RemoteTech-$(appveyor_build_version)
+      # auth token to push on github
+      auth_token:
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y
+      # is it a draft release?
+      draft: false
+      # is a a pre-release?
+      prerelease: true
+      # which branch?
+      on:
+        branch: develop
+        # deploy on tag push only
+        appveyor_repo_tag: false
+
+  # scripts to run after deployment
+  after_deploy:
+
+  # to run your custom scripts instead of provider deployments
+  deploy_script:
+
+  #---------------------------------#
+  #        global handlers          #
+  #---------------------------------#
+
+  # on successful build
+  on_success:
+    #- do something
+
+  # on build failure
+  on_failure:
+    #- do something
+
+  # after build failure or success
+  on_finish:
+    #- do something
+
+  #---------------------------------#
+  #         notifications           #
+  #---------------------------------#
+
+  notifications:
+
+    # Email
+    #- provider: Email
+    #  to:
+    #    - user1@email.com
+    #    - user2@email.com
+    #  subject: 'Build {{status}}'                  # optional
+    #  message: "{{message}}, {{commitId}}, ..."    # optional
+    #  on_build_status_changed: true
+    
+    # Github
+    - provider: GitHubPullRequest
+      auth_token:
+        secure: n+llubPy/E9M9wRI1EkEM+dTxzDem7dVCquHhNwHCokxKP42l2svIO9deKnClD4y    
+
+    # Slack using webhook
+    - provider: Slack
+      incoming_webhook:
+        secure: UYWbRjEf2f/AfPVych87UTtvwwEfdk/ukZQb+PnlGzL9h7fjoQhH0IDfYoLLSguO6uGIEilbfBohUg4znkjikaVcI8OoZVxcPwXnsJliKRI=

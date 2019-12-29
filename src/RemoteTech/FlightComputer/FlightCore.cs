@@ -7,6 +7,8 @@ namespace RemoteTech.FlightComputer
 {
     public static class FlightCore
     {
+        public static bool UseSas = true;
+
         public static void HoldAttitude(FlightCtrlState fs, FlightComputer f, ReferenceFrame frame, FlightAttitude attitude, Quaternion extra)
         {
             var v = f.Vessel;
@@ -35,6 +37,13 @@ namespace RemoteTech.FlightComputer
 
                 case ReferenceFrame.Maneuver:
                     ignoreRoll = true;
+
+                    if (f.Vessel.patchedConicSolver == null)//scenario: two vessels within physical range with FC attitude hold cmds. Unloaded one doesn't have solver instance
+                    {
+                        f.Vessel.AttachPatchedConicsSolver();
+                        f.Vessel.patchedConicSolver.Update();
+                    }
+
                     if (f.Vessel.patchedConicSolver.maneuverNodes.Count != 0)
                     {
                         forward = f.Vessel.patchedConicSolver.maneuverNodes[0].GetBurnVector(v.orbit);
@@ -64,12 +73,12 @@ namespace RemoteTech.FlightComputer
                     break;
 
                 case ReferenceFrame.TargetParallel:
-                    if (f.DelayedTarget != null && !(f.DelayedTarget is CelestialBody))
+                    if (f.DelayedTarget != null) // either target vessel or celestial body
                     {
                         forward = f.DelayedTarget.GetTransform().position - v.CoM;
                         up = (v.mainBody.position - v.CoM);
                     }
-                    else
+                    else // no target to aim; default to orbital prograde
                     {
                         up = (v.mainBody.position - v.CoM);
                         forward = v.GetObtVelocity();
@@ -111,6 +120,9 @@ namespace RemoteTech.FlightComputer
             HoldOrientation(fs, f, rotationReference, ignoreRoll);
         }
 
+        /// <summary>
+        /// Single entry point of all Flight Computer orientation holding, including maneuver node.
+        /// </summary>
         public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target, bool ignoreRoll = false)
         {
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
@@ -164,6 +176,29 @@ namespace RemoteTech.FlightComputer
 
     public static class SteeringHelper
     {
+        private const double outputDeadband = 0.001;
+        private const float driveLimit = 1.0f;
+
+        /* MechJeb2 torque variables */
+        private static Vector6 torqueReactionWheel = new Vector6();
+        private static Vector6 torqueGimbal = new Vector6();
+        private static Vector6 torqueOthers = new Vector6();
+        private static Vector6 torqueControlSurface = new Vector6();
+        private static Vector6 rcsThrustAvailable = new Vector6();
+        private static Vector6 rcsTorqueAvailable = new Vector6();
+
+        private static Vector3d torqueAvailable = Vector3d.zero;
+        public static Vector3d TorqueAvailable
+        {
+            get { return torqueAvailable; }
+        }
+
+        private static Vector3d torqueReactionSpeed;
+        public static Vector3d TorqueReactionSpeed
+        {
+            get { return torqueReactionSpeed; }
+        }
+
         /// <summary>
         /// Automatically guides the ship to face a desired orientation
         /// </summary>
@@ -173,279 +208,201 @@ namespace RemoteTech.FlightComputer
         /// <param name="ignoreRoll">[optional] to ignore the roll</param>
         public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll)
         {
-            // Add support for roll-less targets later -- Starstrider42
-            bool fixedRoll = !ignoreRoll;
-            Vessel vessel = fc.Vessel;
-            Vector3d momentOfInertia = vessel.MOI;
-            Transform vesselReference = vessel.GetTransform();
-            Vector3d torque = GetTorque(vessel, c.mainThrottle);
-
-            // -----------------------------------------------
-            // Copied from MechJeb master on 18.04.2016 with some modifications to adapt to RemoteTech
-
-            Vector3d _axisControl = new Vector3d();
-            _axisControl.x = true ? 1 : 0;
-            _axisControl.y = true ? 1 : 0;
-            _axisControl.z = fixedRoll ? 1 : 0;
-
-            Vector3d inertia = Vector3d.Scale(
-                new Vector3d(vessel.angularMomentum.x, vessel.angularMomentum.y, vessel.angularMomentum.z).Sign(),
-                Vector3d.Scale(
-                    Vector3d.Scale(vessel.angularMomentum, vessel.angularMomentum),
-                    Vector3d.Scale(torque, momentOfInertia).Invert()
-                    )
-                );
-
-            Vector3d TfV = new Vector3d(0.3, 0.3, 0.3);
-
-            double kpFactor = 3;
-            double kiFactor = 6;
-            double kdFactor = 0.5;
-            double kWlimit = 0.15;
-            double deadband = 0.0001;
-
-            Quaternion delta = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(vesselReference.rotation) * target);
-
-            Vector3d deltaEuler = delta.DeltaEuler();
-
-            // ( MoI / available torque ) factor:
-            Vector3d NormFactor = Vector3d.Scale(momentOfInertia, torque.Invert()).Reorder(132);
-
-            // Find out the real shorter way to turn were we want to.
-            // Thanks to HoneyFox
-            Vector3d tgtLocalUp = vesselReference.rotation.Inverse() * target * Vector3d.forward;
-            Vector3d curLocalUp = Vector3d.up;
-
-            double turnAngle = Math.Abs(Vector3d.Angle(curLocalUp, tgtLocalUp));
-            Vector2d rotDirection = new Vector2d(tgtLocalUp.x, tgtLocalUp.z);
-            rotDirection = rotDirection.normalized * turnAngle / 180.0;
-
-            // And the lowest roll
-            // Thanks to Crzyrndm
-            Vector3 normVec = Vector3.Cross(target * Vector3.forward, vesselReference.up);
-            Quaternion targetDeRotated = Quaternion.AngleAxis((float)turnAngle, normVec) * target;
-            float rollError = Vector3.Angle(vesselReference.right, targetDeRotated * Vector3.right) * Math.Sign(Vector3.Dot(targetDeRotated * Vector3.right, vesselReference.forward));
-
-            var error = new Vector3d(
-                -rotDirection.y * Math.PI,
-                rotDirection.x * Math.PI,
-                rollError * Mathf.Deg2Rad
-                );
-
-            error.Scale(_axisControl);
-
-            Vector3d err = error + inertia.Reorder(132) / 2d;
-            err = new Vector3d(
-                Math.Max(-Math.PI, Math.Min(Math.PI, err.x)),
-                Math.Max(-Math.PI, Math.Min(Math.PI, err.y)),
-                Math.Max(-Math.PI, Math.Min(Math.PI, err.z)));
-
-            err.Scale(NormFactor);
-
-            // angular velocity:
-            Vector3d omega;
-            omega.x = vessel.angularVelocity.x;
-            omega.y = vessel.angularVelocity.z; // y <=> z
-            omega.z = vessel.angularVelocity.y; // z <=> y
-            omega.Scale(NormFactor);
-
-            //if (Tf_autoTune)
-            //    tuneTf(torque);
-
-            Vector3d invTf = TfV.Invert();
-            fc.pid.Kd = kdFactor * invTf;
-
-            fc.pid.Kp = (1 / (kpFactor * Math.Sqrt(2))) * fc.pid.Kd;
-            fc.pid.Kp.Scale(invTf);
-
-            fc.pid.Ki = (1 / (kiFactor * Math.Sqrt(2))) * fc.pid.Kp;
-            fc.pid.Ki.Scale(invTf);
-
-            fc.pid.intAccum = fc.pid.intAccum.Clamp(-5, 5);
-
-            // angular velocity limit:
-            var Wlimit = new Vector3d(Math.Sqrt(NormFactor.x * Math.PI * kWlimit),
-                                       Math.Sqrt(NormFactor.y * Math.PI * kWlimit),
-                                       Math.Sqrt(NormFactor.z * Math.PI * kWlimit));
-
-            Vector3d pidAction = fc.pid.Compute(err, omega, Wlimit);
+            var actuation = fc.PIDController.GetActuation(target);
 
             // deadband
-            pidAction.x = Math.Abs(pidAction.x) >= deadband ? pidAction.x : 0.0;
-            pidAction.y = Math.Abs(pidAction.y) >= deadband ? pidAction.y : 0.0;
-            pidAction.z = Math.Abs(pidAction.z) >= deadband ? pidAction.z : 0.0;
+            actuation.x = Math.Abs(actuation.x) >= outputDeadband ? actuation.x : 0.0;
+            actuation.y = Math.Abs(actuation.y) >= outputDeadband ? actuation.y : 0.0;
+            actuation.z = Math.Abs(actuation.z) >= outputDeadband ? actuation.z : 0.0;
 
-            // low pass filter,  wf = 1/Tf:
-            Vector3d act = fc.lastAct;
-            act.x += (pidAction.x - fc.lastAct.x) * (1.0 / ((TfV.x / TimeWarp.fixedDeltaTime) + 1.0));
-            act.y += (pidAction.y - fc.lastAct.y) * (1.0 / ((TfV.y / TimeWarp.fixedDeltaTime) + 1.0));
-            act.z += (pidAction.z - fc.lastAct.z) * (1.0 / ((TfV.z / TimeWarp.fixedDeltaTime) + 1.0));
-            fc.lastAct = act;
-
-            // end MechJeb import
-            //---------------------------------------
-
-            float precision = Mathf.Clamp((float)(torque.x * 20f / momentOfInertia.magnitude), 0.5f, 10f);
-            float driveLimit = Mathf.Clamp01((float)(err.magnitude * 380.0f / precision));
-
-            act.x = Mathf.Clamp((float)act.x, -driveLimit, driveLimit);
-            act.y = Mathf.Clamp((float)act.y, -driveLimit, driveLimit);
-            act.z = Mathf.Clamp((float)act.z, -driveLimit, driveLimit);
-
-            c.roll = Mathf.Clamp((float)(c.roll + act.z), -driveLimit, driveLimit);
-            c.pitch = Mathf.Clamp((float)(c.pitch + act.x), -driveLimit, driveLimit);
-            c.yaw = Mathf.Clamp((float)(c.yaw + act.y), -driveLimit, driveLimit);
+            // update the flight controls
+            c.pitch = Mathf.Clamp((float) actuation.x, -driveLimit, driveLimit);
+            c.roll = !ignoreRoll ? Mathf.Clamp((float) actuation.y, -driveLimit, driveLimit) : 0.0f;
+            c.yaw = Mathf.Clamp((float) actuation.z, -driveLimit, driveLimit);
         }
 
-        public static Vector3d SwapYZ(Vector3d input)
+        /// <summary>
+        /// Import from MechJeb2
+        /// https://github.com/MuMech/MechJeb2/blob/dev/MechJeb2/VesselState.cs
+        /// </summary>
+        public static void AnalyzeParts(Vessel vessel)
         {
-            return new Vector3d(input.x, input.z, input.y);
-        }
+            torqueAvailable = Vector3d.zero;
+            Vector6 torqueReactionSpeed6 = new Vector6();
 
-        public static Vector3d Pow(Vector3d vector, float exponent)
-        {
-            return new Vector3d(Math.Pow(vector.x, exponent), Math.Pow(vector.y, exponent), Math.Pow(vector.z, exponent));
-        }
+            torqueReactionWheel.Reset();
+            torqueControlSurface.Reset();
+            torqueGimbal.Reset();
+            torqueOthers.Reset();
 
-        // Copied from MechJeb master on June 27, 2014
-        private class Matrix3x3
-        {
-            //row index, then column index
-            private readonly double[,] e = new double[3, 3];
+            UpdateRCSThrustAndTorque(vessel);
 
-            public double this[int i, int j]
+            for (int i = 0; i < vessel.parts.Count; i++)
             {
-                get { return e[i, j]; }
-                set { e[i, j] = value; }
-            }
+                Part p = vessel.parts[i];
 
-            public static Vector3d operator *(Matrix3x3 m, Vector3d v)
-            {
-                Vector3d ret = Vector3d.zero;
-                for (int i = 0; i < 3; i++)
+                for (int m = 0; m < p.Modules.Count; m++)
                 {
-                    for (int j = 0; j < 3; j++)
+                    PartModule pm = p.Modules[m];
+                    if (!pm.isEnabled)
                     {
-                        ret[i] += m.e[i, j] * v[j];
+                        continue;
+                    }
+
+                    ModuleReactionWheel rw = pm as ModuleReactionWheel;
+                    if (rw != null)
+                    {
+                        Vector3 pos;
+                        Vector3 neg;
+                        rw.GetPotentialTorque(out pos, out neg);
+
+                        // GetPotentialTorque reports the same value for pos & neg on ModuleReactionWheel
+                        torqueReactionWheel.Add(pos);
+                        torqueReactionWheel.Add(-neg);
+                    }
+                    else if (pm is ModuleControlSurface) // also does ModuleAeroSurface
+                    {
+                        ModuleControlSurface cs = (pm as ModuleControlSurface);
+
+                        Vector3 ctrlTorquePos;
+                        Vector3 ctrlTorqueNeg;
+
+                        cs.GetPotentialTorque(out ctrlTorquePos, out ctrlTorqueNeg);
+
+                        torqueControlSurface.Add(ctrlTorquePos);
+                        torqueControlSurface.Add(ctrlTorqueNeg);
+
+                        torqueReactionSpeed6.Add(Mathf.Abs(cs.ctrlSurfaceRange) / cs.actuatorSpeed * Vector3d.Max(ctrlTorquePos.Abs(), ctrlTorqueNeg.Abs()));
+                    }
+                    else if (pm is ModuleGimbal)
+                    {
+                        ModuleGimbal g = (pm as ModuleGimbal);
+
+                        Vector3 pos;
+                        Vector3 neg;
+
+                        g.GetPotentialTorque(out pos, out neg);
+                        // GetPotentialTorque reports the same value for pos & neg on ModuleGimbal
+
+                        torqueGimbal.Add(pos);
+                        torqueGimbal.Add(-neg);
+
+                        if (g.useGimbalResponseSpeed)
+                            torqueReactionSpeed6.Add((Mathf.Abs(g.gimbalRange) / g.gimbalResponseSpeed) * Vector3d.Max(pos.Abs(), neg.Abs()));
+                    }
+                    else if (pm is ModuleRCS)
+                    {
+                        // Handled separately
+                    }
+                    else if (pm is ITorqueProvider)
+                    {
+                        ITorqueProvider tp = pm as ITorqueProvider;
+
+                        Vector3 pos;
+                        Vector3 neg;
+                        tp.GetPotentialTorque(out pos, out neg);
+
+                        torqueOthers.Add(pos);
+                        torqueOthers.Add(neg);
                     }
                 }
-                return ret;
+            }
+
+            torqueAvailable += Vector3d.Max(torqueReactionWheel.positive, torqueReactionWheel.negative);
+            torqueAvailable += Vector3d.Max(rcsTorqueAvailable.positive, rcsTorqueAvailable.negative);
+            torqueAvailable += Vector3d.Max(torqueControlSurface.positive, torqueControlSurface.negative);
+            torqueAvailable += Vector3d.Max(torqueGimbal.positive, torqueGimbal.negative);
+            torqueAvailable += Vector3d.Max(torqueOthers.positive, torqueOthers.negative);
+
+            if (torqueAvailable.sqrMagnitude > 0)
+            {
+                torqueReactionSpeed = Vector3d.Max(torqueReactionSpeed6.positive, torqueReactionSpeed6.negative);
+                torqueReactionSpeed.Scale(torqueAvailable.InvertNoNaN());
+            }
+            else
+            {
+                torqueReactionSpeed = Vector3d.zero;
             }
         }
 
         /// <summary>
-        /// Returns the torque the ship can exert around its center of mass
+        /// Minor helpers for MechJeb2 work
         /// </summary>
-        /// <returns>The torque in N m, around the (pitch, roll, yaw) axes.</returns>
-        /// <param name="vessel">The ship whose torque should be measured.</param>
-        /// <param name="thrust">The ship's throttle setting, on a scale of 0 to 1.</param>
-        public static Vector3d GetTorque(Vessel vessel, float thrust)
+        public static Vector3d InvertNoNaN(this Vector3d vector)
         {
-            // Do everything in vessel coordinates
-            var centerOfMass = vessel.findLocalCenterOfMass();
+            return new Vector3d(vector.x != 0 ? 1 / vector.x : 0, vector.y != 0 ? 1 / vector.y : 0, vector.z != 0 ? 1 / vector.z : 0);
+        }
+        public static Vector3 Abs(this Vector3 vector)
+        {
+            return new Vector3(Math.Abs(vector.x), Math.Abs(vector.y), Math.Abs(vector.z));
+        }
 
-            // Don't assume any particular symmetry for the vessel
-            double pitch = 0, roll = 0, yaw = 0;
+        /// <summary>
+        /// Import from MechJeb2
+        /// https://github.com/MuMech/MechJeb2/blob/dev/MechJeb2/VesselState.cs
+        /// </summary>
+        public static void UpdateRCSThrustAndTorque(Vessel vessel)
+        {
+            rcsThrustAvailable.Reset();
+            rcsTorqueAvailable.Reset();
 
-            foreach (Part part in vessel.parts)
+            if (!vessel.ActionGroups[KSPActionGroup.RCS])
             {
-                foreach (PartModule module in part.Modules)
+                return;
+            }
+
+            Vector3d movingCoM = vessel.CurrentCoM;
+
+            for (int i = 0; i < vessel.parts.Count; i++)
+            {
+                Part p = vessel.parts[i];
+                for (int m = 0; m < p.Modules.Count; m++)
                 {
-                    if (!module.isEnabled)
+                    ModuleRCS rcs = p.Modules[m] as ModuleRCS;
+
+                    if (rcs == null)
                         continue;
 
-                    var reactionWheelModule = module as ModuleReactionWheel;
-                    var rcsModule = module as ModuleRCS;
-                    if (reactionWheelModule != null && reactionWheelModule.wheelState == ModuleReactionWheel.WheelState.Active)
+                    if (!p.ShieldedFromAirstream && rcs.rcsEnabled && rcs.isEnabled && !rcs.isJustForShow)
                     {
-                        pitch += reactionWheelModule.PitchTorque;
-                        roll += reactionWheelModule.RollTorque;
-                        yaw += reactionWheelModule.YawTorque;
-                    }
-                        // Is there a more direct way to see if RCS is enabled? module.isEnabled doesn't work...
-                    else if (rcsModule != null && vessel.ActionGroups[KSPActionGroup.RCS])
-                    {
-                        var vesselTransform = vessel.GetTransform();
-                        foreach (Transform thruster in rcsModule.thrusterTransforms)
-                        {
-                            // Avoids problems with part.Rigidbody.centerOfMass; should also give better
-                            //  support for RCS units integrated into larger parts
-                            Vector3d thrusterOffset = vesselTransform.InverseTransformPoint(thruster.position) - centerOfMass;
-                            /* Code by sarbian, shamelessly copied from MechJeb */
-                            Vector3d thrusterThrust = vesselTransform.InverseTransformDirection(-thruster.up.normalized) * rcsModule.thrusterPower;
-                            Vector3d thrusterTorque = Vector3.Cross(thrusterOffset, thrusterThrust);
-                            /* end sarbian's code */
+                        Vector3 attitudeControl = new Vector3(rcs.enablePitch ? 1 : 0, rcs.enableRoll ? 1 : 0, rcs.enableYaw ? 1 : 0);
+                        Vector3 translationControl = new Vector3(rcs.enableX ? 1 : 0f, rcs.enableZ ? 1 : 0, rcs.enableY ? 1 : 0);
 
-                            // This overestimates the usable torque, but that doesn't change the final behavior much
-                            pitch += (float)Math.Abs(thrusterTorque.x);
-                            roll += (float)Math.Abs(thrusterTorque.y);
-                            yaw += (float)Math.Abs(thrusterTorque.z);
+                        for (int j = 0; j < rcs.thrusterTransforms.Count; j++)
+                        {
+                            Transform t = rcs.thrusterTransforms[j];
+                            Vector3d thrusterPosition = t.position - movingCoM;
+                            Vector3d thrustDirection = rcs.useZaxis ? -t.forward : -t.up;
+
+                            float power = rcs.thrusterPower;
+
+                            if (FlightInputHandler.fetch.precisionMode)
+                            {
+                                if (rcs.useLever)
+                                {
+                                    float lever = rcs.GetLeverDistance(t, thrustDirection, movingCoM);
+                                    if (lever > 1)
+                                    {
+                                        power = power / lever;
+                                    }
+                                }
+                                else
+                                {
+                                    power *= rcs.precisionFactor;
+                                }
+                            }
+
+                            Vector3d thrusterThrust = thrustDirection * power;
+
+                            rcsThrustAvailable.Add(Vector3.Scale(vessel.GetTransform().InverseTransformDirection(thrusterThrust), translationControl));
+                            Vector3d thrusterTorque = Vector3.Cross(thrusterPosition, thrusterThrust);
+
+                            // Convert in vessel local coordinate
+                            rcsTorqueAvailable.Add(Vector3.Scale(vessel.GetTransform().InverseTransformDirection(thrusterTorque), attitudeControl));
                         }
                     }
                 }
-
-                Vector3d gimbal = GetThrustTorque(part, vessel) * thrust;
-                pitch += gimbal.x;
-                roll += gimbal.y;
-                yaw += gimbal.z;
             }
-
-            return new Vector3d(pitch, roll, yaw);
-        }
-
-        /// <summary>
-        /// Returns the maximum torque the ship can exert by gimbaling its engines while at full throttle
-        /// </summary>
-        /// <returns>The torque in N m, around the (pitch, roll, yaw) axes.</returns>
-        /// <param name="p">The part providing the torque. Need not be an engine.</param>
-        /// <param name="vessel">The vessel to which the torque is applied.</param>
-        public static Vector3d GetThrustTorque(Part p, Vessel vessel)
-        {
-            double result = 0.0;
-            foreach (ModuleGimbal gimbal in p.Modules.OfType<ModuleGimbal>())
-            {
-                if (gimbal.gimbalLock)
-                    continue;
-
-                // Standardize treatment of ModuleEngines and ModuleEnginesFX; 
-                //      IEngineStatus doesn't have the needed fields
-                double maxThrust = 0.0;
-                // Assume exactly one module of EITHER type ModuleEngines or ModuleEnginesFX exists in `p`
-                bool engineFound = false;
-                {
-                    ModuleEngines engine = p.Modules.OfType<ModuleEngines>().FirstOrDefault();
-                    if (engine != null)
-                    {
-                        if (!engine.isOperational)
-                            continue;
-                        engineFound = true;
-                        maxThrust = engine.maxThrust;
-                    }
-                }
-                // Dummy ModuleGimbal, does nothing
-                if (!engineFound)
-                    continue;
-
-                double gimbalRadians = Math.Sin(Math.Abs(gimbal.gimbalRange) * Math.PI / 180);
-                result = gimbalRadians * maxThrust * (p.Rigidbody.worldCenterOfMass - vessel.CoM).magnitude;
-            }
-
-            // Better to overestimate roll torque than to underestimate it... calculate properly later
-            return new Vector3d(result, result, result);
-        }
-
-        private static Vector3d ReduceAngles(Vector3d input)
-        {
-            return new Vector3d(
-                  (input.x > 180f) ? (input.x - 360f) : input.x,
-                  (input.y > 180f) ? (input.y - 360f) : input.y,
-                  (input.z > 180f) ? (input.z - 360f) : input.z
-                  );
-        }
-
-        public static Vector3d Sign(Vector3d vector)
-        {
-            return new Vector3d(Math.Sign(vector.x), Math.Sign(vector.y), Math.Sign(vector.z));
         }
     }
 }

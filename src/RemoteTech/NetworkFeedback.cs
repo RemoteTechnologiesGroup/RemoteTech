@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RemoteTech.RangeModel;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -90,7 +91,7 @@ namespace RemoteTech
         /// <param name="antenna">The antenna attempting to make a connection.</param>
         /// <param name="target">The Guid to which it is trying to connect.</param>
         public static KeyValuePair<string, UnityEngine.Color> tryConnection(IAntenna antenna, Guid target) {
-            String status = "ok";
+            String status = Localizer.Format("#RT_NetworkFB_status");//"ok"
             // What kind of target?
             if (RTCore.Instance != null && RTCore.Instance.Network != null &&
                     target != Guid.Empty && target != NetworkManager.ActiveVesselGuid) {
@@ -106,17 +107,17 @@ namespace RemoteTech
                 ISatellite targetSat = RTCore.Instance.Network[target];
                 if (targetSat != null) {
                     if (!RangeModelExtensions.HasLineOfSightWith(mySat, targetSat)) {
-                        status = "No line of sight";
+                        status = Localizer.Format("#RT_NetworkFB_status2");//"No line of sight"
                         error = true;
                     }
 
                     double dist    = RangeModelExtensions.DistanceTo(mySat, targetSat);
                     // Only standard model supported for now, RangeModel isn't designed for this problem
                     double maxDist = Math.Max(antenna.Omni, antenna.Dish);
-                    conditions.Add("Current distance:" + RTUtil.FormatSI(dist, "m"));
-                    conditions.Add("Antenna range:" + RTUtil.FormatSI(maxDist, "m"));
+                    conditions.Add(Localizer.Format("#RT_NetworkFB_Currentdistance") + RTUtil.FormatSI(dist, "m"));//"Current distance:"
+                    conditions.Add(Localizer.Format("#RT_NetworkFB_Antennarange") + RTUtil.FormatSI(maxDist, "m"));//"Antenna range:"
                     if (dist > maxDist) {
-                        status = "Target not in range";
+                        status = Localizer.Format("#RT_NetworkFB_status3");//"Target not in range"
                         error = true;
                     }
                 }
@@ -134,16 +135,13 @@ namespace RemoteTech
                         warning = true;
                     }
 
-                    conditions.Add("Current distance:"+RTUtil.FormatSI(dist, "m"));
-                    conditions.Add("Antenna range:" + RTUtil.FormatSI(maxDist, "m"));
+                    conditions.Add(Localizer.Format("#RT_NetworkFB_Currentdistance") + RTUtil.FormatSI(dist, "m"));//"Current distance:"
+                    conditions.Add(Localizer.Format("#RT_NetworkFB_Antennarange") + RTUtil.FormatSI(maxDist, "m"));//"Antenna range:"
 
                     if (dist <= maxDist) {
-                        conditions.Add(String.Format("Info:{0} beam covers {1} targets)",
-                            RTUtil.FormatSI(spread, "m"),
-                            numTargets
-                        ));
+                        conditions.Add(Localizer.Format("#RT_NetworkFB_Targetinfo", RTUtil.FormatSI(spread, "m"),numTargets));//String.Format("Info:{0} beam covers {1} targets)", , )
                     } else {
-                        status = "Target not in range";
+                        status = Localizer.Format("#RT_NetworkFB_status3");//"Target not in range"
                         error = true;
                     }
                     if (numTargets <= 0) {
@@ -152,7 +150,7 @@ namespace RemoteTech
 
                 } catch (KeyNotFoundException) {}
 
-                conditions.Add("Status:" + status);
+                conditions.Add(Localizer.Format("#RT_NetworkFB_statusTitle") + status);//"Status:"
 
                 return new KeyValuePair<string, UnityEngine.Color>(
                     String.Join("; ", conditions.ToArray()), 

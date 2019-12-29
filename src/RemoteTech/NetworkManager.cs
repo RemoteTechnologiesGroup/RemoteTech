@@ -6,9 +6,14 @@ using RemoteTech.Modules;
 using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech
 {
+    /// <summary>
+    /// Class managing the satellites network.
+    /// Acts as a list of vessels in one or more networks.
+    /// </summary>
     public partial class NetworkManager : IEnumerable<ISatellite>
     {
         public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkAdd = delegate { };
@@ -108,7 +113,14 @@ namespace RemoteTech
         public IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
         {
             if (!s.Powered) return Enumerable.Empty<NetworkLink<ISatellite>>();
-            return Graph[s.Guid].Where(l => l.Target.Powered);
+            if (RTSettings.Instance.SignalRelayEnabled)
+            {
+                return Graph[s.Guid].Where(l => l.Target.Powered && l.Target.CanRelaySignal);
+            }
+            else
+            {
+                return Graph[s.Guid].Where(l => l.Target.Powered);
+            }
         }
 
         private void UpdateGraph(ISatellite a)
@@ -134,7 +146,8 @@ namespace RemoteTech
         public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
         {
             if (sat_a == null || sat_b == null || sat_a == sat_b) return null;
-            bool los = sat_a.HasLineOfSightWith(sat_b) || CheatOptions.InfinitePropellant;
+            if (sat_a.IsInRadioBlackout || sat_b.IsInRadioBlackout) return null;
+            bool los = sat_a.HasLineOfSightWith(sat_b) || RTSettings.Instance.IgnoreLineOfSight;
             if (!los) return null;
 
             switch (RTSettings.Instance.RangeModelType)
@@ -157,7 +170,11 @@ namespace RemoteTech
             {
                 UpdateGraph(s);
                 //("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
-                if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+
+                // amend this optimisation due to inconsistent connectivity on non-active vessels (eg showing no connection when 3rd-party mods query)
+                //if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION || RTCore.Instance.Renderer.ShowMultiPath)
+                if (HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.FLIGHT ||
+                    (HighLogic.LoadedScene == GameScenes.SPACECENTER && API.API.enabledInSPC))
                 {
                     FindPath(s, commandStations);
                 }
@@ -219,7 +236,7 @@ namespace RemoteTech
     {
         /* Config Node parameters */
         [Persistent] private String Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488").ToString();
-        [Persistent] private String Name = "Mission Control";
+        [Persistent] private String Name = Localizer.Format("#RT_MissionControl");//"Mission Control"
         [Persistent] private double Latitude = -0.1313315f;
         [Persistent] private double Longitude = -74.59484f;
         [Persistent] private double Height = 75.0f;
@@ -229,7 +246,7 @@ namespace RemoteTech
 
         private bool AntennaActivated = true;
 
-        bool ISatellite.Powered { get { return this.AntennaActivated; } }
+        bool ISatellite.Powered { get { return PowerShutdownFlag ? false : this.AntennaActivated; } }
         bool ISatellite.Visible { get { return true; } }
         String ISatellite.Name { get { return Name; } set { Name = value; } }
         Guid ISatellite.Guid { get { return mGuid; } }
@@ -241,7 +258,12 @@ namespace RemoteTech
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         Color ISatellite.MarkColor { get { return MarkColor; } }
         IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
+        bool ISatellite.CanRelaySignal { get { return true; } } //not sure if should relay signal. Mission Control can "do" everything isnt it?
+        
         public Guid mGuid { get; private set; }
+        public IEnumerable<IAntenna> MissionControlAntennas { get { return Antennas; } }
+        public bool IsInRadioBlackout { get; set; } // could be EMP
+        public bool PowerShutdownFlag { get; set; } // flag for third-party realism mods
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 
@@ -280,6 +302,16 @@ namespace RemoteTech
         public String GetName()
         {
             return this.Name;
+        }
+
+        public CelestialBody GetBody()
+        {
+            return FlightGlobals.Bodies[this.Body];
+        }
+
+        public void SetBodyIndex(int index)
+        {
+            this.Body = index;
         }
 
         void IPersistenceLoad.PersistenceLoad()

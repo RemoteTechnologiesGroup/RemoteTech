@@ -24,7 +24,7 @@ namespace RemoteTech.Modules
 
         public ISatellite Parent { get; set; }
 
-        float IAntenna.Omni { get { return Omni; } }
+        float IAntenna.Omni { get { return Omni * MissionControlRangeMultiplier; } }
         Guid IAntenna.Guid { get { return Parent.Guid; } }
         String IAntenna.Name { get { return "Dummy Antenna"; } }
         bool IAntenna.Powered { get { return true; } }
@@ -33,9 +33,10 @@ namespace RemoteTech.Modules
         float IAntenna.Consumption { get { return 0.0f; } }
         bool IAntenna.CanTarget { get { return false; } }
         Guid IAntenna.Target { get { return new Guid(RTSettings.Instance.ActiveVesselGuid); } set { return; } }
-        float IAntenna.Dish { get { return Dish; } }
+        float IAntenna.Dish { get { return Dish * MissionControlRangeMultiplier; } }
         double IAntenna.CosAngle { get { return CosAngle; } }
-        
+        private float MissionControlRangeMultiplier { get { return RTSettings.Instance.MissionControlRangeMultiplier; } }
+
         public void reloadUpgradeableAntennas(int techlvl = 0)
         {
             if (this.UpgradeableCosAngle != String.Empty && this.UpgradeableDish != String.Empty && this.UpgradeableOmni != String.Empty)
@@ -70,7 +71,7 @@ namespace RemoteTech.Modules
             if (this.UpgradeableDish != String.Empty)
             {
                 int missionControlTechLevelForDish = missionControlTechLevel;
-                string[] dishRanges = this.UpgradeableOmni.Split(';');
+                string[] dishRanges = this.UpgradeableDish.Split(';');
                 if (missionControlTechLevelForDish > dishRanges.Count())
                 {
                     missionControlTechLevelForDish = dishRanges.Count();
@@ -82,7 +83,7 @@ namespace RemoteTech.Modules
             if (this.UpgradeableCosAngle != String.Empty)
             {
                 int missionControlTechLevelForCAngle = missionControlTechLevel;
-                string[] cAngleRanges = this.UpgradeableOmni.Split(';');
+                string[] cAngleRanges = this.UpgradeableCosAngle.Split(';');
                 if (missionControlTechLevelForCAngle > cAngleRanges.Count())
                 {
                     missionControlTechLevelForCAngle = cAngleRanges.Count();
@@ -97,6 +98,11 @@ namespace RemoteTech.Modules
         public int CompareTo(IAntenna antenna)
         {
             return ((IAntenna)this).Consumption.CompareTo(antenna.Consumption);
+        }
+
+        public void SetOmniAntennaRange(float range)
+        {
+            this.Omni = range;
         }
     }
 }

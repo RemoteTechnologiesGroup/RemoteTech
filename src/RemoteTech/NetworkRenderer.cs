@@ -6,6 +6,7 @@ using RemoteTech.UI;
 using UnityEngine;
 
 using Debug = System.Diagnostics.Debug;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -19,9 +20,13 @@ namespace RemoteTech
         Cone   = 8,
         Planet = 8,     // For backward compatibility with RemoteTech 1.4 and earlier
                         // Cone should be first, so that it's the one that appears in settings file
-        Path   = 16
+        Path   = 16,
+        MultiPath = 32
     }
 
+    /// <summary>
+    /// RemoteTech UI network render in charre of drawing connection links in tracking station or flight map scenes.
+    /// </summary>
     public class NetworkRenderer : MonoBehaviour
     {
         public MapFilter Filter { 
@@ -40,10 +45,12 @@ namespace RemoteTech
         private readonly HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();
         private readonly List<NetworkLine> mLines = new List<NetworkLine>();
         private readonly List<NetworkCone> mCones = new List<NetworkCone>();
+        private static float mLineWidth = 1f;
 
         public bool ShowOmni  { get { return (Filter & MapFilter.Omni)   == MapFilter.Omni; } }
         public bool ShowDish  { get { return (Filter & MapFilter.Dish)   == MapFilter.Dish; } }
         public bool ShowPath  { get { return (Filter & MapFilter.Path)   == MapFilter.Path; } }
+        public bool ShowMultiPath { get { return (Filter & MapFilter.MultiPath) == MapFilter.MultiPath; } }
         public bool ShowRange { get { return (Filter & MapFilter.Sphere) == MapFilter.Sphere; } }
         public bool ShowCone  { get { return (Filter & MapFilter.Cone)   == MapFilter.Cone; } }
 
@@ -53,6 +60,19 @@ namespace RemoteTech
         static NetworkRenderer()
         {
             RTUtil.LoadImage(out mTexMark, "mark");
+
+            if(Versioning.version_major == 1)
+            {
+                switch(Versioning.version_minor)
+                {
+                    case 4:
+                        mLineWidth = 1f; //1f is matching to CommNet's line width
+                        break;
+                    default:
+                        mLineWidth = 3f;
+                        break;
+                }
+            }
         }
 
         public static NetworkRenderer CreateAndAttach()
@@ -142,11 +162,11 @@ namespace RemoteTech
                             {
                                 if(antenna.Omni > 0)
                                 {
-                                    antennaRanges += "Omni: "+ RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;
+                                    antennaRanges += Localizer.Format("#RT_NetworkFB_Omni") + RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;//"Omni: "
                                 }
                                 if (antenna.Dish > 0)
                                 {
-                                    antennaRanges += "Dish: " + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;
+                                    antennaRanges +=  Localizer.Format("#RT_NetworkFB_Dish") + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;//"Dish: "
                                 }
                             }
 
@@ -232,8 +252,7 @@ namespace RemoteTech
                 if (!center.HasValue) continue;
 
                 mCones[i] = mCones[i] ?? NetworkCone.Instantiate();
-                mCones[i].Material = MapView.fetch.orbitLinesMaterial;
-                mCones[i].LineWidth = 2.0f;
+                mCones[i].LineWidth = mLineWidth;
                 mCones[i].Antenna = antennas[i];
                 mCones[i].Color = Color.gray;
                 mCones[i].Active = ShowCone;
@@ -262,8 +281,7 @@ namespace RemoteTech
             {
                 it.MoveNext();
                 mLines[i] = mLines[i] ?? NetworkLine.Instantiate();
-                mLines[i].Material = MapView.fetch.orbitLinesMaterial;
-                mLines[i].LineWidth = 3.0f;
+                mLines[i].LineWidth = mLineWidth;
                 mLines[i].Edge = it.Current;
                 mLines[i].Color = CheckColor(it.Current);
                 mLines[i].Active = true;
@@ -279,6 +297,16 @@ namespace RemoteTech
                 var connections = RTCore.Instance.Network[satellite];
                 if (connections.Any() && connections[0].Contains(edge))
                     return true;
+            }
+            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
+            {
+                var satellites = RTCore.Instance.Network.ToArray();
+                for (int i = 0; i < satellites.Length; i++)
+                {
+                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
+                    if (connections.Any() && connections[0].Contains(edge))
+                        return true;
+                }
             }
             if (edge.Type == LinkType.Omni && !ShowOmni)
                 return false;
@@ -299,6 +327,25 @@ namespace RemoteTech
                 if (connections.Any() && connections[0].Contains(edge))
                     return RTSettings.Instance.ActiveConnectionColor;
             }
+            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
+            {
+                var satellites = RTCore.Instance.Network.ToArray();
+                for (int i = 0; i < satellites.Length; i++)
+                {
+                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
+                    if (connections.Any() && connections[0].Contains(edge))
+                        return RTSettings.Instance.ActiveConnectionColor;
+                }
+            }
+
+            if (RTSettings.Instance.SignalRelayEnabled)
+            {
+                var satA = RTCore.Instance.Satellites[edge.A.Guid];
+                var satB = RTCore.Instance.Satellites[edge.B.Guid];
+                if ((satA != null && !satA.CanRelaySignal) || (satB != null && !satB.CanRelaySignal))
+                    return RTSettings.Instance.DirectConnectionColor;
+            }
+
             if (edge.Type == LinkType.Omni)
                 return RTSettings.Instance.OmniConnectionColor;
             if (edge.Type == LinkType.Dish)

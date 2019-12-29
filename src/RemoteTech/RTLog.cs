@@ -51,7 +51,10 @@ namespace RemoteTech
         /// <param name="logLevel">Loglevel for debugging</param>
         public static void Notify(string message, RTLogLevel logLevel = RTLogLevel.LVL1)
         {
-            UnityEngine.Debug.Log("RemoteTech: " + message);
+#if !DEBUG
+            if (logLevel != RTLogLevel.API && logLevel != RTLogLevel.Assembly)
+#endif
+                UnityEngine.Debug.Log("[RemoteTech] " + message);
 
             #region ON-DEBUGMODE
 #if DEBUG

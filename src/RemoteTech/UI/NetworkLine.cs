@@ -6,6 +6,8 @@ namespace RemoteTech.UI
 {
     public class NetworkLine : MonoBehaviour
     {
+        private static Material CommNetMaterial = null;
+
         public BidirectionalEdge<ISatellite> Edge
         {
             set
@@ -53,11 +55,13 @@ namespace RemoteTech.UI
 
         public void Awake()
         {
+            if (CommNetMaterial == null) { CommNetMaterial = Resources.Load<Material>("Telemetry/TelemetryMaterial"); }
+
             SetupMesh();
             gameObject.layer = 31;
             LineWidth = 1.0f;
             Color = Color.white;
-            Material = new Material("Shader \"Vertex Colors/Alpha\" {Category{Tags {\"Queue\"=\"Transparent\" \"IgnoreProjector\"=\"True\" \"RenderType\"=\"Transparent\"}SubShader {Cull Off ZWrite On Blend SrcAlpha OneMinusSrcAlpha Pass {BindChannels {Bind \"Color\", color Bind \"Vertex\", vertex}}}}}");
+            Material = CommNetMaterial;
         }
 
         private void UpdateMesh(BidirectionalEdge<ISatellite> edge)
@@ -71,21 +75,27 @@ namespace RemoteTech.UI
 
             if (!MapView.Draw3DLines)
             {
+                //if position is behind camera 
+                if (start.z < 0) { start = NetworkLine.FlipDirection(start, end); } 
+                else if (end.z < 0) { end = NetworkLine.FlipDirection(end, start); }
+
                 var dist = Screen.height / 2 + 0.01f;
                 start.z = start.z >= 0.15f ? dist : -dist;
                 end.z = end.z >= 0.15f ? dist : -dist;
+
+                mPoints2D[0] = (start - segment);
+                mPoints2D[1] = (start + segment);
+                mPoints2D[2] = (end - segment);
+                mPoints2D[3] = (end + segment);
             }
-
-            mPoints2D[0] = (start - segment);
-            mPoints2D[1] = (start + segment);
-            mPoints2D[2] = (end - segment);
-            mPoints2D[3] = (end + segment);
-
-            mPoints3D[0] = camera.ScreenToWorldPoint(mPoints2D[0]);
-            mPoints3D[1] = camera.ScreenToWorldPoint(mPoints2D[1]);
-            mPoints3D[2] = camera.ScreenToWorldPoint(mPoints2D[2]);
-            mPoints3D[3] = camera.ScreenToWorldPoint(mPoints2D[3]);
-
+            else
+            {
+                mPoints3D[0] = camera.ScreenToWorldPoint(start - segment);
+                mPoints3D[1] = camera.ScreenToWorldPoint(start + segment);
+                mPoints3D[2] = camera.ScreenToWorldPoint(end - segment);
+                mPoints3D[3] = camera.ScreenToWorldPoint(end + segment);
+            }
+            
             mMeshFilter.mesh.vertices = MapView.Draw3DLines ? mPoints3D : mPoints2D;
             mMeshFilter.mesh.RecalculateBounds();
             mMeshFilter.mesh.MarkDynamic();
@@ -108,6 +118,17 @@ namespace RemoteTech.UI
             Active = false;
             Destroy(mMeshFilter);
             Destroy(mRenderer);
+        }
+
+        public static Vector3 FlipDirection(Vector3 point, Vector3 pivot)
+        {
+            point -= pivot; //translate to origin
+            point.x *= -1; //flip
+            point.y *= -1;
+            point.z *= -1;
+            point += pivot; //undo translate
+
+            return point;
         }
     }
 }

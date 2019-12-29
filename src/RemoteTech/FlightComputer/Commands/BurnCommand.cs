@@ -7,7 +7,7 @@ namespace RemoteTech.FlightComputer.Commands
         [Persistent] public float Throttle;
         [Persistent] public double Duration;
         [Persistent] public double DeltaV;
-        [Persistent] public string KaCItemId = String.Empty;
+        [Persistent] public string KaCItemId = string.Empty;
 
         public override int Priority { get { return 2; } }
 
@@ -115,23 +115,23 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flightcomputer</param>
         public override void CommandEnqueued(FlightComputer computer)
         {
-            string KaCAddonLabel = String.Empty;
-            double timetoexec = (this.TimeStamp + this.ExtraDelay) - 180;
+            var timetoexec = (TimeStamp + ExtraDelay) - 180;
 
-            // only insert if we've no negativ time and the option is set
-            if (timetoexec - RTUtil.GameTime > 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
-            {
-                KaCAddonLabel = "Burn " + computer.Vessel.vesselName + " for ";
+            // only insert if we've no negative time and the option is set
+            if (!(timetoexec - RTUtil.GameTime > 0) || !RTSettings.Instance.AutoInsertKaCAlerts)
+                return;
 
-                if (this.Duration > 0)
-                    KaCAddonLabel += RTUtil.FormatDuration(this.Duration);
-                else
-                    KaCAddonLabel += this.DeltaV;
+            // set kac alarm label
+            var kaCAddonLabel = "Burn " + computer.Vessel.vesselName + " for ";
+            if (Duration > 0)
+                kaCAddonLabel += RTUtil.FormatDuration(this.Duration);
+            else
+                kaCAddonLabel += this.DeltaV;
                 
-                if (RTCore.Instance != null && RTCore.Instance.kacAddon != null)
-                {
-                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Raw, KaCAddonLabel, timetoexec);
-                }
+            // create the alarm
+            if (RTCore.Instance != null && RTCore.Instance.KacAddon != null)
+            {
+                KaCItemId = RTCore.Instance.KacAddon.CreateAlarm(RemoteTech_KACWrapper.KACWrapper.KACAPI.AlarmTypeEnum.Raw, kaCAddonLabel, timetoexec, computer.Vessel.id);
             }
         }
 
@@ -141,12 +141,12 @@ namespace RemoteTech.FlightComputer.Commands
         /// <param name="computer">Current flight computer</param>
         public override void CommandCanceled(FlightComputer computer)
         {
+            if (KaCItemId == string.Empty || RTCore.Instance == null || RTCore.Instance.KacAddon == null)
+                return;
+
             // Cancel also the kac entry
-            if (this.KaCItemId != String.Empty && RTCore.Instance != null && RTCore.Instance.kacAddon != null)
-            {
-                RTCore.Instance.kacAddon.DeleteAlarm(this.KaCItemId);
-                this.KaCItemId = String.Empty;
-            }
+            RTCore.Instance.KacAddon.DeleteAlarm(KaCItemId);
+            KaCItemId = string.Empty;
         }
     }
 }

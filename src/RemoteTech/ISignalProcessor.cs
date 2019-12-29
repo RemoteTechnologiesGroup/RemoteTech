@@ -8,7 +8,7 @@ namespace RemoteTech
         String Name { get; }
         String VesselName { get; set; }
         bool VesselLoaded { get; }
-        Guid Guid { get; }
+        Guid VesselId { get; }
         Vector3 Position { get; }
         CelestialBody Body { get; }
 
@@ -16,6 +16,7 @@ namespace RemoteTech
         bool Powered { get; }
         bool IsCommandStation { get; }
         bool IsMaster { get; }
+        bool CanRelaySignal { get; }
 
         // Reserved for Flight Computer
         FlightComputer.FlightComputer FlightComputer { get; }

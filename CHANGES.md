@@ -1,3 +1,993 @@
+# Version 1.9.5
+**Released December 25, 2019**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.8.1
+* Updated ModuleManager to 4.1.3
+* Fixed issue of wobbling when holding Kill Rotation or Maneuver Node
+* Fixed issue of signal delay and control indicator not hidden in in-flight action group editor
+* Fixed issue of ReStocked-ed antennas auto-deploying in Editor
+* Minor improvements to Rover Computer
+* Introduced new flight computer interface of in-flight PID controller
+* Fixed issue of flight computer commands not saved persistently
+* Fixed issue of part configuration values being duplicated when saving and loading
+* Localized to en-us and zh-cn languages
+* Fixed issue of NullReferenceException when moving deployable science stations between 2 inventories
+* Fixed issue of missing science transmission button and information on antennas
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #797: Missing science transmission options and information on antennae [requested by: mindset-tk]
+* Issue #798: Antennas auto extend and can't retract [requested by: AndresHdzArv]
+* Issue #799: Control indicator obscures in-flight action group editor [requested by: BTAxis]
+* Issue #804: NullReferenceException when carrying deployable probodyne science in EVA [requested by: aidygus]
+* Issue #805: RTUtil.GetBool causes the values and sub-nodes in ProtoPartModuleSnapshot.moduleValues to duplicate [requested by: allista]
+* Issue #806: Flight computer command queue gets wiped unexpectedly [requested by: Ernesto-Alvarez]
+
+Pull Requests
+-------------
+
+* PR #802: Localization [PR by: tinygrox]
+* PR #807: Minor Chinese changes [PR by: tinygrox]
+
+***
+
+# Version 1.9.4
+**Released October 26, 2019**
+
+What's New?
+===========
+
+* Compiled for KSP 1.8
+* Updated ModuleManager to 4.1.0
+* Exposed two recent-introduced APIs, GetMaxRangeDistance and GetRangeDistance, in internal debug window
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.3.131
+**Released July 21, 2019**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.3 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.3
+**Released July 21, 2019**
+
+What's New?
+===========
+
+* Compiled for KSP 1.7.3
+* Applied MissionControlRangeMultiplier to unused Mission Control Dish Antennas
+* Fixed UpgradeableDish and UpgradeableCosAngle mistake
+* Minor update for Restock and RestockPlus support
+* Persistent position of Flight Computer window across play sessions
+* Improved PID Controller on torque forces
+* Added support for robotic parts and KSP Custom Axis Groups introduced by Breaking Ground expansion
+* Added limited support for deployable ground parts (Omni 400km range to control station only)
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #792: Request: Save Flight Computer window position across sessions [requested by: Galenmacil]
+* Issue #793: add whitelist for ReStock [requested by: Gordon-Dry]
+* Issue #794: The new KSPAxisGroup controls are not suppported [requested by: ncanceill]
+
+Pull Requests
+-------------
+
+* PR #789: Fix reading values for UpgradeableDish and UpgradeableCosAngle [PR by: ilmat192]
+* PR #790: Apply MissionControlRangeMultiplier to dish mission control antennas [PR by: ilmat192]
+
+***
+
+# Version 1.9.2
+**Released April 14, 2019**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.7
+* Updated ModuleManager to 4.0.2
+* Support for Restock and RestockPlus Antennas
+* Fixed Editor error of cross-section profiles on RemoteTech antennas
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+* PR #788: RestockPlus Antenna Support [PR by: xdreaper15]
+
+***
+
+# Version 1.9.1.131
+**Released December 24, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.1 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.1
+**Released December 24, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.6
+* Update ModuleManager to 3.1.1
+* Fixed critical bug of Flight Computer executing timed commands wrongly
+* Fixed syntax error in RemoteTech's MM patch for RLA Probes
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #781: Signal delay timer error when executing timed commands. [requested by: DrToonhattan]
+
+Pull Requests
+-------------
+
+* PR #779: RLA syntax error [PR by: Gordon-Dry]
+
+***
+
+# Version 1.9.0.145
+**Released October 29, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.0 for KSP 1.4.5
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.0.131
+**Released October 29, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.0 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.0
+**Released October 29, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.5.1
+* Updated ModuleManager to 3.1.0
+* Corrected network line direction flipping
+* Creation or editing of maneuveer nodes allowed for manned vessels in hiberation mode
+* More precision displaying of antennas' EC costs
+* Increased maximum range multiplier cap to 10
+* Added new 3 API methods - GetMaxRangeDistance, GetRangeDistance and GetControlPath
+* Updated few APIs against invalid GUIDs and ground stations
+* Fine-tuned Flight Computer's PID parameters
+* Added support for the new probe cores (*_v2)
+* Minor interface changes to Flight Computer's Rover and Power pages
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #540: Network line incorrect rendering [requested by: d4rksh4de]
+* Issue #711: Signal line points to the wrong direction when vessel is behind the camera (screen) [requested by: zhihengq]
+* Issue #756: Cannot add/edit maneuver nodes via local control of hibernate is set in flight computer [requested by: MechBFP]
+
+Pull Requests
+-------------
+
+* PR #757: Better precision display of EC when Kerbalism is installed [PR by: PiezPiedPy]
+* PR #764: Increase maximum multiplier [PR by: madman2003]
+* PR #766: API - Return float for Distance/MaxDistancer [PR by: HaullyGames]
+* PR #767: API - GetControlPath return List<Guid> [PR by: HaullyGames]
+* PR #768: KSP 1.5 Introduced new probes with "_v2" in the name [PR by: SlipstreamZA]
+* PR #772: API - Prevent IndexOutOfRangeException when invalid Guid be sent. [PR by: HaullyGames]
+* PR #774: API - API - Satellites wasn't return the GroundStation names, with NetWork I can get it. [PR by: HaullyGames]
+
+***
+
+# Version 1.8.13.131
+**Released August 19, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.8.13 for KSP 1.3.1 due to the significant number of players
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.13
+**Released August 19, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.5
+* Tightened the precision of Flight Computer commands' extra delay 
+* Resolved ambiguous wording of antenna deployment/retraction in Editor
+* Modernised and streamlined csproj
+* Switched to KSP's coloruful console message style
+* New API methods for connections and vessels
+* Resolved the material error on signal lines
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #661: RT-C tries to execute node too early? [requested by: WildLynxDev]
+* Issue #693: Error when signal lines are shown in a map or in the tracking station [requested by: jarosm]
+* Issue #752: Status near PAW buttons is not actually, is what happens when clicked [requested by: Gordon-Dry]
+
+Pull Requests
+-------------
+
+* PR #753: Building with Visual Studio [PR by: PiezPiedPy]
+* PR #754: API methods primarily to support Kerbalism but can be used by others [PR by: PiezPiedPy]
+
+***
+
+# Version 1.8.12
+**Released July 17, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.4
+* Automatic antenna shutdown and re-activation based on power thresholds (thanks to rsparkyc's AntennaPowerSaver)
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #451: Automatic hibernation when power low [requested by: ec429]
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.11.131
+**Released June 18, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.8.11 for KSP 1.3.1 due to the significant number of players
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.11
+**Released May 18, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.3
+* Eliminated the response delay in Part Action Menu buttons & sliders
+* Fixed the rare bug on symmetry parts' Part Action Menu in Editor
+* Resolved the inconsistent connectivity on non-loaded vessels
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #748: Tweakable sliders of parts are sluggish in vessels with connected probe cores even with signal delay disabled [requested by: ChippedChap]
+* Issue #749: PartAction Menu issues [requested by: inkognito1100]
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10.3
+**Released April 10, 2018**
+
+What's New?
+===========
+
+* Add modder API for radio blackout on a target RemoteTech vessel
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10.2
+**Released April 06, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.4.2
+* Changes to PID controller on the edge case of very low ratio of Torque to Moment of Inertia 
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10.1
+**Released March 18, 2018**
+
+What's New?
+===========
+
+* Hotfix to the botched fix to the zero-throttle bug (#744), affecting stock KSP
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.8.10
+**Released March 18, 2018**
+
+What's New?
+===========
+
+* Compiled for KSP 1.4.1
+* Update ModuleManager to 3.0.5
+* Upsize RT App icon dimensions
+* Add a new cheat for line of sight [PR #743]
+* Delay joystick inputs with signal delay enabled [Issue #742]
+* Fix zero-throttle bug in presence of Realism Overhaul mod [Issue #744]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #742: Joystick can bypass Signal delay [requested by: Domi1993]
+* Issue #744: Zero throttle bug when launching a probe rocket (RO mod) [requested by: multiple posters]
+
+Pull Requests
+-------------
+
+* PR #743: Add cheat option to ignore line-of-sight requirements [PR by: pianojosh]
+
+***
+
+# Version 1.8.9
+**Released November 11, 2017**
+
+What's New?
+===========
+
+* Functionality of relaying connection signals through a designated probe core (For third-party mods) [Issue #532]
+* Modernised the PID controller in both orbital and rover modes [Issue #674]
+* Added two new power commands to hibernate (probe hibernation and antenna shutdown) and wake up [Issue #739]
+* Added support for VDS Hullcam's probe core [PR #531]
+* Added support for the drone core of Mark IV Spaceplane System [PR #672]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #532: Request: Non-Relay ModuleSPU [requested by: NathanKell]
+* Issue #674: The rover steering and throttle PID's need work [requested by: mferrie]
+* Issue #739: Feature Request: Resource locking control [requested by: AkiraR]
+
+Pull Requests
+-------------
+
+* PR #531: VDS Hullcam Support [PR by: schnip]
+* PR #672: RemoteTech Compatibility Patch For Mark IV Spaceplane System [PR by: Sandriell]
+
+***
+
+# Version 1.8.8
+**Released September 03, 2017**
+
+What's New?
+===========
+
+* Improve the ManeuverNode detection on rising remaining dV
+* Enable Flight Computer to queue and execute a sequence of maneuver nodes at one go
+* Fix the issue of Flight Computer deleting wrong maneuver executions [Issue #729]
+* Add the missing right brace for the FASAMercruyCap2 part in RemoteTech_FAFA_Antennas.cfg [Issue #730]
+* Fix the issue of a science data transmission ignoring KSP's time wrap [PR #731]
+* Add the RT support for the Communotron 88-88-V of Vens Stock Revamp [PR #732]
+* Correct the triggered-flag usage at the end of a data transmission [PR #733]
+* Fix the issue of engine throttling ignoring the signal delay [Issue #734]
+* Fix the issue of the power consumption multiplier having no effect [Issue #735]
+* Fix the issue of Vens Stock Revamp antennas not working [PR #737]
+* Update ModuleManager DLL to 2.8.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #729: Flight Computer deletes wrong maneuver executions [requested by: Alshain01]
+* Issue #730: Missing Right Brace in RemoteTech_FASA_Antennas.cfg [requested by: CaesarVincens]
+* Issue #734: Engine Throttle Control has no Delay [requested by: Domi1993]
+* Issue #735: Power consumption multiplier setting doesn't change usage [requested by: DrTango]
+
+Pull Requests
+-------------
+
+* PR #731: Better timing for transmitter [PR by: YamoriYuki]
+* PR #732: Add RemoteTech config for the Communotron 88-88-V from Vens Stock Revamp [PR by: zmpeg]
+* PR #733: Update to use triggered flag on science data [PR by: DMagic1]
+* PR #737: Fix Ven's Stock Revamp Antennas [PR by: Fumblesneeze]
+
+***
+
+# Version 1.8.7
+**Released June 06, 2017**
+
+What's New?
+===========
+
+* RT mod can now be dynamically found [Issue #722]
+* Expose the clamp limits on omni and dish ranges in the setting cfg
+* Fix throttle loss when toggling SAS on a probe controlled craft [Issue #723]
+* Add few improvements in the interaction between Flight Computer and KSP's Autopilot
+* Update ModuleManager DLL for KSP 1.3
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #722: Fix issue on RT mod being on different directory in GameData. [requested by: Potato-God1]
+* Issue #723: Throttle lose when SAS on, on a probe controlled craft [requested by: Eckee]
+
+***
+
+# Version 1.8.6
+**Released March 05, 2017**
+
+This is a hotfix release :bug:
+
+What's New?
+===========
+
+* Fixed a problem when a not found Mission Control station would lead to a massive log spam  [Issue #719]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #719: Spam of "found and load save settings" that reduce performance. [requested b:y GonDragon]
+
+***
+
+# Version 1.8.5
+**Released March 03, 2017**
+
+Kudos to TaxiService and YamoriYuki for their help on maintaining RemoteTech! :heart:
+
+What's New?
+===========
+
+* Fixed a bug where science data wasn't completely transmitted in some circumstances [Issue #714 and PR #715]
+* Added a new visual filter of displaying all satellites' working connections
+* Reduced the verbose logging of RT's APIs [Issue #716]
+* Updated ModuleManager to 2.7.5 version
+* Fixed a problem where the Mission Control is not on Kerbin when using some Kopernicus maps [Issue #718]
+* Fixed a problem where commands from stock SAS were not delayed properly [Issue #663]
+* KSP's autopilot operates properly in presence of big signal delay
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #663: Commands from SAS are not delayed [requested by: dtondo]
+* Issue #714: Sending whole science amount at the end instead of just a small delta amount. [requested by: rsparkyc]
+* Issue #716: Logging connection state [requested by: diomeda]
+* Issue #718: Mission Control Origin Point not Located On Kerbin when using some Kopernicus maps [requested by: mikeloeven]
+
+Pull Requests
+-------------
+
+* PR #715: Sending whole science amount at the end instead of just a small delta amount [PR by: rsparkyc]
+
+***
+
+# Version 1.8.4
+**Released January 09, 2017**
+
+What's New?
+===========
+
+* Fix conflict for the extend / retract state of an antenna in editor. [#698]
+* Fix for flight computer keeps pointing to the orbital prograde when targeting a celestial body. [#710]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #698: Conflict of the extend/retract state of an antenna in editor. [requested by: sviat9440] [dev: YamoriYuki]
+* Issue #710: Flight Computer on a target-designated celestial body. [requested by: TaxiService ] [dev: TaxiService ]
+
+Pull Requests
+-------------
+
+* PR #679: Config for Ven's Stock Part Revamp Antennas [issuer: icedown] 
+    * Status: closed due to duplicate #662.
+
+***
+
+# Version 1.8.3
+**Released December 10, 2016**
+
+What's New?
+===========
+
+* Add a crew-control variable to SPU module [#558]
+* Simplified fix for science data transmission [#667]
+* Clarification of whole default settings [#700]
+    * Please see: http://remotetechnologiesgroup.github.io/RemoteTech/modders/settings/
+* Fix to the engineer report's electricity consumption [#707]
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #558: ModuleSPUPassive removes control from probe cores [requested by: Y3mo]
+* Issue #667: Antennas don't transmit science in 1.1.2 [requested by: Kyoyashi]
+* Issue #700: Rework Settings storage mechanism [requested by: YamoriYuki]
+* Issue #707: 1.8.2 Antenna Ec usage not displayed in VAB [requested by: muppet9876]
+
+
+Pull Requests
+-------------
+
+* PR #709: Rework fix for #667 [PR by: neitsa]
+
+Future
+======
+
+We are already moving to make the next RT major release.
+
+Issues and feedbacks are still welcome!
+
+***
+
+#Version 1.8.2
+**Released November 27, 2016**
+
+What's New?
+===========
+
+* Switch to MM-patched default-settings configuration instead of static settings file.
+    * Please see: http://remotetechnologiesgroup.github.io/RemoteTech/modders/settings/
+* Fixed a problem with contracts (requiring an antenna to be present on a vessel) that couldn't be fulfilled.
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #701: Power and Antenna parts not recognized for contract generation [requested by: symmeclept]
+* Issue #703: CommNet still disabled despite enabling CommNet in RT settings [requested by: diomedea, KSP-TaxiService]
+
+Pull Requests
+-------------
+
+* None
+
+Future
+======
+
+We are already moving to make the next RT major release.
+
+Issues and feedbacks are still welcome!
+
+Next Major Release
+------------------
+
+Dubbed RT v2.x
+
+* Currently implemented features will stay as is (probably with some tweaks) 
+  unless we receive different feedbacks from the community.
+  
+* We are currently gathering the feedbacks made on the forum and our bugtracker
+on github to add feature requests to the 2.x branch.
+    
+Planned features
+----------------
+
+* A call to vote will be made soon for features to be implemented in RT 2.0.
+
+***
+
+#Version 1.8.1
+**Released November 19, 2016**
+
+What's New?
+===========
+
+* Updated for KSP 1.2.1 (should work on KSP 1.2.0)
+* Removed "Addon controller" support (deprecated addon). [#237]
+* Flight computer can now issue an Attitude "Off" command after other commands. [#530]
+* Module fields are now delayed by RT (if delay is enabled). [#587]
+    * See Warning / Known issues
+* Completely reworked the way RT settings are loaded (added a new option to revert to the default settings). [#624]
+* Completely revised and beautified the RemoteTech wiki's antenna parts. [#635]
+    * See https://remotetechnologiesgroup.github.io/RemoteTech/guide/parts
+* USI Karibou Rover support for RemoteTech: many thanks to RoverDude, Vranir and Li0n-0 for making this patch. [#637]
+* Updated torque calculation in the flight computer. [#643]
+* Configuration file for station cores from Stockalike Station Parts Expansion. [#656]
+* Fixed an old bug when science didn't transmit correctly despite UI displaying that 100% was transmitted. [#667; #675]
+* Now possible to use "Jump to ship" in a KAC alarm set by RT. [#676]
+* "Aim Camera" advanced tweakable in no more delayed by RT. [#682]
+* Setting a maneuver node doesn't result in NRE spamming. [#685]
+* Fixed a problem with RT and dmagic / Universal Storage parts. [#686]
+* The RT debug window doesn't spam NRE under some circumstances. [#688]
+* All stock antennas can be used with RT. [#690]
+* Internal code cleanup.
+
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #237: Removed "Addon controller" support (deprecated Addon) [request by: Starstrider42]
+* Issue #530: Inability to switch "mode" to "off" [requested by: rsparkyc]
+* Issue #587: gimbal and thrust 'tweakables' available in flight with no connection [requested by: gnivler]
+* Issue #603: Options window not blocking mouse wheel zooming at KSC [requested by: gnivler]
+* Issue #624: Adding Ground Stations in the config file doesn't work [multiple requests]
+* Issue #635: Communotron HG-55 is not listed on the RemoteTech wiki [requested by: ttencate]
+* Issue #637: Karibou radial probe needs SPU [requested by: toric55]
+* Issue #643: FC is overcompensating or even spinning out with RCS enabled but ports set to ignore rotation [requested by: jdmj]
+* Issue #667: Antennas don't transmit science in 1.1.2 [requested by: Kyoyashi]
+* Issue #675: Science often fails to transmit from L-Tech's Skylab [requested by: scatterlogical]
+* Issue #676: Cannot use the "Jump to ship" in KAC alarms [requested by: petersohn]
+* Issue #682: Aim camera action delayed [requested by: YamoriYuki]
+* Issue #685: NRE spamming when setting a maneuver node [requested by: Torih]
+* Issue #686: NRE Spam with Universal Storage or dmagic parts [requested by: Torih]
+* Issue #688: GUIClips spam from the debug-tool window at KSC scene [requested by: KSP-TaxiService]
+* Issue #690: Not all antennas work [requested by: esseivan]
+
+Pull Requests
+-------------
+
+* PR #656: Stockalike Station Parts Expansion support [PR by: Darkenator]
+* PR #689: Fixed the issue of the GUIClips spam [PR by: KSP-TaxiService]
+* PR #691: RT config for new stock antennas [PR by: YamoriYuki]
+* PR #694: Fixed the issue of any changes in RemoteTech_Settings.cfg being ignored [PR by: KSP-TaxiService]
+* PR #695: Added the mechanism of preventing clicks and scrolling through various RT windows [PR by: KSP-TaxiService]
+* PR #697: Minor fix to patch for issue #667. [PR by: neitsa]
+
+Future
+======
+
+We are already moving to make the next RT major release. Issues and feedback are still welcome!
+
+Next Major Release
+------------------
+
+Dubbed RT v2.x
+
+* Current features will stay as is (probably with some tweaks) unless we receive
+  different feedback from the community.
+
+* We are currently gathering the feedback made on the forum and our bug tracker
+   on GitHub to add feature requests to the 2.x branch.
+
+Planned features
+----------------
+
+* More code cleanup: more speed, less garbage collection.
+
+* RT will be built on top of CommNet.
+
+* RT will be split into multiple packages (with compulsory RT-Core component), so players can choose what they want:
+    - RT-Antennas             [Antenna pack: models + configs only; No code]
+    - RT-FlightComputer  [Flight computer only]
+    - RT-Delay                   [Delay feature only]
+
+* Complete Flight Computer overhaul
+    * Complete rework of the attitude control
+    * New autopilot (on top of the stock autopilot)
+    * Player can build a queue of commands before transmitting to a vessel (see CommandPlanner section below)
+    * New trigger conditions (altitude, height, speed, etc) for commands
+
+* Sub-components are still being discussed (Work in progress!)
+    * ModularCommNetManipulator - APIs for third-party mods to add their codes to manipulate CommNet (eg 
+       OnNetworkPreUpdate or OnNetWorkPostUpdate)
+    * TimedCommandManager - backend module to handle a queue of planned/sent commands
+    * CommandPlanner: user interface for command objects
+        1) schedule commands for a vessel by selecting from a list of vessel's parts and their actions
+        2) build and edit the queue of commands before sending to the vessel (one delay for multiple commands)
+        3) replace the existing queue with new queue transmitted
+        4) attach an optional trigger condition to each command like extend landing gears only when terrain-altitude=10m
+        5) timed and trigger (passive) commands
+    * FlightComputer - allow player to instruct a vessel over a working connection (same but enhanced functionality)
+        1) allow player to precisely control vessel's attitude in real time by clicking NODE/TARGET/NORMAL buttons etc
+        2) strictly closed platform with a public APIs for internal RT calls and third-party mods to prevent an
+            eventual scenario of FC being wired undesirably to everything in RT
+        3) contain a queue of commands uploaded to read and execute accordingly (not editable?)
+    * DelayManager - calculate information about signal delay between a vessel and KSC or another vessel
+    * ModuleRTDeployableAntenna - subclass of KSP's ModuleDeployableAntenna module to
+        add EC cost for active (stock and RT) antennas
+
+* A new module:
+    * RT-Viz  [Antenna range visualization, satellite groups, sorting, etc.]
+    * An interface for the module's functions is yet to be determined. Add to the
+       RT 4-button bar or as a launcher button?
+
+Warning / Known issues
+======================
+
+* CommNet is disabled by default if RemoteTech is enabled.
+    - CommNet can still be enabled alongside RemoteTech in the RT option window
+    but this has not been tested.
+
+* A word about module fields:
+    * There's a known problem with some module (PartModule) fields.
+
+    - Quick problem overview:
+        - When in flight if you right click a part it opens a context menu to
+          change some part behaviors (technically fields or events in the part
+          PartModule) for that part. The visual display of the change is also
+          delayed, so players don't get a visual cue of what's happening
+          directly and this might seem strange to have no visual feedback for
+          the action that was requested.
+
+    - Example: sliding a slider on the contextual menu of a part with a big
+    delay will not move the slider although the slide is actually taken care
+    of internally by RT (the sliding action will be visible *once* the command
+    delay is over).
+
+    - Technical explanation:
+        - If RT delay is ON, getting a visual cue on the change is not possible
+        directly as setting the value to be visible in the context menu will
+        actually, set that value (immediately, without delay) thus defeating the
+        purpose of the RT delay feature. Our current implementation takes care
+        if the internal change but can't update the visual elements.
+
+    - Fix:
+        We might be able to make something better, but only after the complete
+        overhaul in RT 2.x branch.
+
+    Workarounds:
+
+    - Sliders:
+    If you want to set a slider value on a part (in Flight), the best you can do
+    is to click on the desired location on the slider rather than sliding it
+    (i.e. clicking in the middle of the slider will set it to 50%: you won't see
+    the change immediately if the delay is big enough, just wait for the delay to
+    expire.).  You can still slide the slider, but it will set a massive amount
+    of commands in the flight computer.
+
+    - Cycle buttons (buttons that cycle though at least 3 options):
+    Cycle buttons are delayed properly but the text on the context menu doesn't
+    change. Close the menu and reopen it (after RT command has been executed) to
+    see the change.
+
+***
+
+
+
+Version 1.8.0
+=============
+Released October 15, 2016
+
+KSP 1.2 update
+
+What's New?
+===========
+
+* Ported the RemoteTech code base to KSP 1.2. [#678]
+* Updated ModuleManager to the lastest 2.7.1 version (Nyan Cat ftw!).
+* Prevent parsing objects that have no chance (Asteroid, Unknown objects and flags) of being RT controlled.
+* Add and option to enable / disable CommNet alongside RemoteTech.
+* Moved all RT antennas to the new Communication category in VAB / SPH.
+* Added RemoteTech RLA config file. [#469]
+* Antenna info in VAB /SPH indicate "range" or "power" depending on the chosen RangeModel ("range" is technically wrong when in Root model). [#471]
+* Fixed an issue when the "RTAntennaTarget" field was empty in a save file. [#506]
+* Exception bubbling up from KSP or other mods are now caught in RT when staging. [#525]
+* Flight Computer window is now closed when switching to another vessel or leaving the flight scene.[#578]
+* Added a new API to change the range of ground stations. [#589]
+* Antenna range multiplier option slider is no longer snapped to 0 or 1. [#594]
+* Antenna range multiplier has now a maximum value of 5 (previously 2).
+* "World Scale" option sliders are now using 2 decimal places instead of 6. [#601]
+* Added a new option slider: range multiplier for ground stations / mission control. [#602]
+* Fixed a NRE spamming issue while transmitting science. [#613]
+* Fixed various issues with the connection indicator and various UI scales. [#618 & #668]
+* Kerbals can now transfer themselves even if there's no connection and they are not in a command module (this also bypass any signal delay). [#626]
+* Fixed an issue when a craft with an uncrewed ModuleCommand but with a ModuleSPU was deemed non controllable. [#628]
+* Flight Computer can be switched to "Off" instead of "KillRot" after maneuver execution or abort (configurable through settings file). [#631]
+* Added a new "LeadTime" field (in settings fileà to control how much time attitude control is queued ahead of the maneuver (default 3 minutes like the previous hardocded value). [#631]
+* Command Stations can now control themselves (if properly crewed and with the right SPU module) even if there's no one in a command module. [#633]
+* Fixed various problems with the github readme and the user manual. [#669, #670, #680]
+* Added current vessel name to flight computer (when UI is deployed). [#673]
+
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #469: Updated RLA config. Work made by kitoma [requested by: @marosciacchitano]
+* Issue #471: Handling GetInfo()'s "range" display when in rangemodel Root [reported by: @NathanKell]
+* Issue #506: Blank RTAntennaTarget, Exception stopping the registrations. [reported by: @OzoneGrif]
+* Issue #525: Missing parts in staging cause NRE spam, lock staging. [reported by: @NathanKell]
+* Issue #578: Flight Computer doesn't close when going back to Space center view. [requested by: @d4rksh4de  & @petersohn (in #673)]
+* Issue #589: API - Changing range of GroundStations [requested by: @AlphaAsh]
+* Issue #594: MultipleAntennaMultiplier is snapped to 0 or 1. [reported by: @WazWaz]
+* Issue #601: World Scale sliders under options are too granular. [reported by: @gnivler]
+* Issue #602: Mission Control not affected by Range Multiplier option. [requested by: @gnivler]
+* Issue #613: NRE Spamming when transmitting science (RT + other mods) [reported by: @lamont-granquist]
+* Issue #618: The connection indicator does not scale properly. [reported by: @tomekpiotrowski]
+* Issue #626: "Transfer crew" button in context popup menu should be always available. [reported by: @mscg82]
+* Issue #628: ModuleSPU on a crewed-command part with no crew = no control [reported by: @NathanKell]
+* Issue #633: Command Station has no local control. [reported by: @FancyMouse]
+* Issue #668: UI Scale Not Configurable. [reported by: @evan2645]
+* Issue #669: Player's Guide contains dead link to Advanced Settings [reported by: @HupfderFloh; PR #670 by @ahmedcharles]
+* Issue #673: Add vessel name to flight computer. [requested by: @krenshala]
+
+
+Pull Requests
+-------------
+
+* PR #631: Various FlightComputer improvements [PR by: @gnivler]
+* PR #670: Fix issue #669 (broken links on user manual) [PR by: @ahmedcharles]
+* PR #678: Port RT base code to KSP 1.2 [PR by: @neitsa]
+* PR #680: Various Readme.md updates [PR by: @keyspace]
+
+Warning
+=======
+
+* CommNet is disabled by default if RemoteTech is enabled.
+    - CommNet can still be enabled alongside RemoteTech in the RT option window but this has not been tested.
+* If you enable CommNet, consider using 2 types of satellites:
+    - Satellites with only RT antennas.
+    - Satellites with only CommNet antennas.
+    - Do not try to mix both: we won't fix these problems with *this* version of RemoteTech.
+
+
+Version 1.7.1
+========================================
+Released July 2, 2016
+
+KSP 1.1.3 update
+
+General
+--------------------
+
+- Updated to work with KSP 1.1.3
+- Updated ModuleManager
+- Fixed tracking station dish button
+- Support for Procedural Probe Cores
+- Wording/typo fixes
+
+
 Version 1.7.0
 ========================================
 Released May 6, 2016
@@ -223,21 +1213,21 @@ Features:
 * Added a new button to every queued command to set the manual delay right after the queued one.
 * Added a new button to the manual delay field to set the manual delay.
 * The altitude buttons are no longer toggle buttons. To deactivate the current mode please use the small 'X' on the queue-window by the activated command.
-    
+
 ##General:
 * Added a mouse over tooltip to the antenna target window to show distance, status to the target
 * Added configs for AIES, Lack Luster Labs, Near-Future Spacecraft, and NovaPunch
 * Possibility to hide ground stations with the new property `HideGroundStationsBehindBody`
 * Hide RemoteTech windows,overlays and buttons when the GUI is hidden
 * Window positions for Flightcomputer and AntennaWindow will now be saved for the current ksp instance
-    
+
 ##Contributors:
 * We removed the dependency to the task extensions
 
 ##Modders:
 **Info** We refactored the namespace definitions of RemoteTech. The API class is no longer on the `RemoteTech` namespace. Please use `RemoteTech.API` for now.
-* RTSettings now reads settings from the GameDatabase to tweak settings for specific mods   
-* Possibility to tint groundstations with the property `MarkColor` `Syntax is R,G,B,A`         
+* RTSettings now reads settings from the GameDatabase to tweak settings for specific mods
+* Possibility to tint groundstations with the property `MarkColor` `Syntax is R,G,B,A`
 
 Bug Fixes:
 --------------------

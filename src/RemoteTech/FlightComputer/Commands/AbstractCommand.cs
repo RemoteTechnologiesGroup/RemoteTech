@@ -1,10 +1,11 @@
 ﻿using System;
-
+using KSP.Localization;
 namespace RemoteTech.FlightComputer.Commands
 {
     public abstract class AbstractCommand : ICommand
     {
         public double TimeStamp { get; set; }
+        public double ExtraDelayScheduledTimeStamp { get; set; }
         public Guid CmdGuid { get; private set; }
         public virtual double ExtraDelay { get; set; }
         public virtual double Delay { get { return Math.Max(TimeStamp - RTUtil.GameTime, 0); } }
@@ -16,7 +17,7 @@ namespace RemoteTech.FlightComputer.Commands
                 {
                     var extra = ExtraDelay > 0 ? String.Format("{0} + {1}", RTUtil.FormatDuration(delay), RTUtil.FormatDuration(ExtraDelay)) 
                                                : RTUtil.FormatDuration(delay);
-                    return "Signal delay: " + extra;
+                    return  Localizer.Format("#RT_Command_Signaldelay") + " " + extra;//"Signal delay: "
                 }
                 return "";
             }
@@ -67,6 +68,7 @@ namespace RemoteTech.FlightComputer.Commands
             }
 
             node.AddValue("TimeStamp", this.TimeStamp);
+            node.AddValue("ExtraDelayScheduledTimeStamp", this.ExtraDelayScheduledTimeStamp);
             node.AddValue("ExtraDelay", this.ExtraDelay);
             node.AddValue("CmdGuid", this.CmdGuid);
         }
@@ -83,6 +85,10 @@ namespace RemoteTech.FlightComputer.Commands
             if (n.HasValue("TimeStamp"))
             {
                 TimeStamp = double.Parse(n.GetValue("TimeStamp"));
+            }
+            if (n.HasValue("ExtraDelayScheduledTimeStamp"))
+            {
+                ExtraDelayScheduledTimeStamp = double.Parse(n.GetValue("ExtraDelayScheduledTimeStamp"));
             }
             if (n.HasValue("ExtraDelay"))
             {
@@ -109,15 +115,20 @@ namespace RemoteTech.FlightComputer.Commands
             // switch the different commands
             switch (n.name)
             {
-                case "AttitudeCommand":     { command = new AttitudeCommand(); break; }
-                case "ActionGroupCommand":  { command = new ActionGroupCommand(); break; }
-                case "BurnCommand":         { command = new BurnCommand(); break; }
-                case "ManeuverCommand":     { command = new ManeuverCommand(); break; }
-                case "CancelCommand":       { command = new CancelCommand(); break; }
-                case "TargetCommand":       { command = new TargetCommand(); break; }
-                case "EventCommand":        { command = new EventCommand(); break; }
-                case "DriveCommand":        { command = new DriveCommand(); break; }
-                case "ExternalAPICommand":  { command = new ExternalAPICommand(); break; }
+                case "AttitudeCommand":       { command = new AttitudeCommand(); break; }
+                case "ActionGroupCommand":    { command = new ActionGroupCommand(); break; }
+                case "BurnCommand":           { command = new BurnCommand(); break; }
+                case "ManeuverCommand":       { command = new ManeuverCommand(); break; }
+                case "CancelCommand":         { command = new CancelCommand(); break; }
+                case "TargetCommand":         { command = new TargetCommand(); break; }
+                case "EventCommand":          { command = new EventCommand(); break; }
+                case "DriveCommand":          { command = new DriveCommand(); break; }
+                case "ExternalAPICommand":    { command = new ExternalAPICommand(); break; }
+                case "PartActionCommand":     { command = new PartActionCommand(); break; }
+                case "StockAutopilotCommand": { command = new StockAutopilotCommand(); break; }
+                case "HibernationCommand":    { command = new HibernationCommand(); break; }
+                case "AxisGroupCommand":      { command = new AxisGroupCommand(); break; }
+                case "PIDCommand":            { command = new PIDCommand(); break; }
             }
 
             if (command != null)

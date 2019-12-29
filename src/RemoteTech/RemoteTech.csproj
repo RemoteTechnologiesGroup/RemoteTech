@@ -1,84 +1,134 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
+    <ProjectGuid>{42155D82-1F25-4E59-9F65-64ABC583F420}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{42155D82-1F25-4E59-9F65-64ABC583F420}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RemoteTech</RootNamespace>
     <AssemblyName>RemoteTech</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\GameData\RemoteTech\Plugins\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <OutputPath Condition="Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">$(KSPDEVDIR)\GameData\RemoteTech\Plugins\</OutputPath>
+    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">obj\RemoteTech\Plugins\</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>default</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\GameData\RemoteTech\Plugins\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath Condition="Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">$(KSPDEVDIR)\GameData\RemoteTech\Plugins\</OutputPath>
+    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">..\..\GameData\RemoteTech\Plugins\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <LangVersion>default</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release131|AnyCPU'">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath Condition="Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">$(KSPDEVDIR)\GameData\RemoteTech\Plugins\</OutputPath>
+    <OutputPath Condition="!Exists('$(KSPDEVDIR)\GameData\RemoteTech\Plugins\')">..\..\GameData\RemoteTech\Plugins\</OutputPath>
+    <DefineConstants>KSP131</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <LangVersion>default</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp.dll')">Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KSPUtil">
-      <HintPath>KSPUtil.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll')">Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.dll')">UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.UI.dll')">UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AnimationModule.dll')">UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.AudioModule.dll')">UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.CoreModule.dll')">UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.ImageConversionModule.dll')">UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.IMGUIModule.dll')">UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.InputLegacyModule.dll')">UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.TextRenderingModule.dll')">UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath Condition="Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll')">$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath Condition="!Exists('$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine.PhysicsModule.dll')">UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddOns\ControlLockAPI.cs" />
     <Compile Include="AddOns\KerbalAlarmClockAPI.cs" />
+    <Compile Include="AddOns\Kerbalism.cs" />
     <Compile Include="API\API.cs" />
     <Compile Include="FlightComputer\Commands\AbstractCommand.cs" />
+    <Compile Include="FlightComputer\Commands\AxisGroupCommand.cs" />
+    <Compile Include="FlightComputer\Commands\EventCommand.cs" />
     <Compile Include="FlightComputer\Commands\ExternalAPICommand.cs" />
     <Compile Include="FlightComputer\Commands\ActionGroupCommand.cs" />
     <Compile Include="FlightComputer\Commands\AttitudeCommand.cs" />
     <Compile Include="FlightComputer\Commands\BurnCommand.cs" />
     <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
     <Compile Include="FlightComputer\Commands\DriveCommand.cs" />
+    <Compile Include="FlightComputer\Commands\HibernationCommand.cs" />
     <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
+    <Compile Include="FlightComputer\Commands\PartActionCommand.cs" />
+    <Compile Include="FlightComputer\Commands\PIDCommand.cs" />
+    <Compile Include="FlightComputer\Commands\StockAutopilotCommand.cs" />
     <Compile Include="FlightComputer\RoverComputer.cs" />
-    <Compile Include="FlightComputer\RoverPIDController.cs" />
-    <Compile Include="FlightComputer\EventCommand.cs" />
     <Compile Include="FlightComputer\FlightCore.cs" />
     <Compile Include="FlightComputer\Commands\ICommand.cs" />
     <Compile Include="FlightComputer\Commands\TargetCommand.cs" />
-    <Compile Include="FlightComputer\PIDControllerV3.cs" />
+    <Compile Include="FlightComputer\PIDController.cs" />
     <Compile Include="Modules\MissionControlAntenna.cs" />
     <Compile Include="Modules\ProtoSignalProcessor.cs" />
     <Compile Include="RangeModel\RangeModel.cs" />
@@ -126,6 +176,8 @@
     <Compile Include="UI\AntennaWindow.cs" />
     <Compile Include="UI\AttitudeFragment.cs" />
     <Compile Include="UI\DebugWindow.cs" />
+    <Compile Include="UI\PIDControllerFragment.cs" />
+    <Compile Include="UI\PowerFragment.cs" />
     <Compile Include="UI\FocusOverlay.cs" />
     <Compile Include="UI\FocusFragment.cs" />
     <Compile Include="UI\FlightComputerWindow.cs" />
@@ -148,4 +200,22 @@
     <Compile Include="NetworkFeedback.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+  </Target>
+  <PropertyGroup>
+    <PostBuildEventDependsOn>
+    $(PostBuildEventDependsOn);
+    PostBuildMacros;
+  </PostBuildEventDependsOn>
+    <PostBuildEvent>
+      <!--if "$(ConfigurationName)"=="Release" (call "$(ProjectDir)..\..\buildscripts\ZipPack\build-package.bat" $(TargetName) -v@(VersionNumber) KSP1.4.5)-->
+if "$(ConfigurationName)"=="Debug" (call "$(ProjectDir)..\..\buildscripts\UnityDebug_2019\prepare-debug.bat" $(TargetName))
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
