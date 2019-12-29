@@ -270,7 +270,7 @@ namespace RemoteTech.FlightComputer
             Delta = Vector3.Distance(mVessel.CoM, TargetPos);
             DeltaT = Delta / RoverSpeed;
 
-            if (Delta >= 0.1f) //zero is inpractical due to float nature
+            if (!TargetOvershoot()) // keep driving until we are starting to pass the target.
             {
                 fs.wheelThrottle = (float)throttlePID.Update(RoverSpeed, dc.speed, -1.0, 1.0);
                 if (ForwardAxis != Vector3.zero)
@@ -296,6 +296,14 @@ namespace RemoteTech.FlightComputer
                 dc.mode = RemoteTech.FlightComputer.Commands.DriveCommand.DriveMode.Off;
                 return true;
             }
+        }
+
+        private bool TargetOvershoot()
+        {
+            if (Delta > 1) // if we are more than one meter away from the target, do not check for overshoot.
+                return false;
+            else
+                return RTUtil.AngleBetween(RoverHDG, TargetHDG) < 90; // if we are less than 1 meter from the target and the error angle between target and rover HDG is > 90, we can assume that we are overshooting the target and should stop.
         }
 
         private float SmoothenWheelSteering(float angleBetweenHDGs, float outputSteer, float maxLeftSteerLimit, float maxRightSteerLimit)
