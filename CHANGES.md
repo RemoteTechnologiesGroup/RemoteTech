@@ -1,3 +1,22 @@
+# Version 1.9.6
+**Released February 15, 2020**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.9
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
 # Version 1.9.5
 **Released December 25, 2019**
 

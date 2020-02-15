@@ -13,7 +13,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.5
+  version: 1.9.6
 
   # branches
   branches:
@@ -218,7 +218,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.5-{build}-{branch}
+  version: 1.9.6-{build}-{branch}
 
   # branches
   branches:
