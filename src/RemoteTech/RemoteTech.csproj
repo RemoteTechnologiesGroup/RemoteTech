@@ -136,6 +136,7 @@
     <Compile Include="RangeModel\RangeModelRoot.cs" />
     <Compile Include="RangeModel\RangeModelExtensions.cs" />
     <Compile Include="RTDebugUnit.cs" />
+    <Compile Include="RTEditor.cs" />
     <Compile Include="RTLog.cs" />
     <Compile Include="FlightComputer\DelayedCommand.cs" />
     <Compile Include="FlightComputer\FlightComputer.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="UI\AbstractWindow.cs" />
     <Compile Include="UI\AntennaFragment.cs" />
     <Compile Include="UI\AntennaWindow.cs" />
+    <Compile Include="UI\AntennaWindowStandalone.cs" />
     <Compile Include="UI\AttitudeFragment.cs" />
     <Compile Include="UI\DebugWindow.cs" />
     <Compile Include="UI\PIDControllerFragment.cs" />

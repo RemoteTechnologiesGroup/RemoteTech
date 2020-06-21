@@ -185,24 +185,40 @@ namespace RemoteTech
 
         public static String TargetName(Guid guid)
         {
+            if (guid == System.Guid.Empty)
+            {
+                return Localizer.Format("#RT_ModuleUI_NoTarget");//"No Target"
+            }
             if (RTCore.Instance != null && RTCore.Instance.Network != null && RTCore.Instance.Satellites != null)
             {
-                if (guid == System.Guid.Empty)
-                {
-                    return Localizer.Format("#RT_ModuleUI_NoTarget");//"No Target"
-                }
                 if (RTCore.Instance.Network.Planets.ContainsKey(guid))
                 {
                     return RTCore.Instance.Network.Planets[guid].name;
-                }
-                if (guid == NetworkManager.ActiveVesselGuid)
-                {
-                    return Localizer.Format("#RT_ModuleUI_ActiveVessel");//"Active Vessel"
                 }
                 ISatellite sat;
                 if ((sat = RTCore.Instance.Network[guid]) != null)
                 {
                     return sat.Name;
+                }
+            }
+            if(HighLogic.LoadedScene == GameScenes.EDITOR)
+            {
+                var result = FlightGlobals.Bodies.Find(x => x.Guid() == guid);
+                if (result != null)
+                {
+                    return result.name; // Name of Celestial body
+                }
+            }
+            if (guid == NetworkManager.ActiveVesselGuid)
+            {
+                return Localizer.Format("#RT_ModuleUI_ActiveVessel");//"Active Vessel"
+            }
+            if (RTSettings.Instance != null)
+            {
+                var result2 = RTSettings.Instance.GroundStations.Find(x => x.mGuid == guid);
+                if (result2 != null)
+                {
+                    return result2.GetName(); // Name of Misson Control
                 }
             }
             return Localizer.Format("#RT_ModuleUI_UnknownTarget");//"Unknown Target"

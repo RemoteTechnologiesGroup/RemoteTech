@@ -7,6 +7,7 @@ using System.Text;
 using RemoteTech.UI;
 using UnityEngine;
 using KSP.Localization;
+using KSP.UI.Screens;
 
 namespace RemoteTech.Modules
 {
@@ -283,8 +284,11 @@ namespace RemoteTech.Modules
         [KSPEvent(name = "EventToggle", guiActive = false)]
         public void EventToggle() { if (Animating) return; if (IsRTActive) { EventClose(); } else { EventOpen(); } }
 
-        [KSPEvent(name = "EventTarget", guiActive = false, guiName = "#RT_ModuleUI_Target", category = "skip_delay")]//Target
-        public void EventTarget() { (new AntennaWindow(this)).Show(); }
+        [KSPEvent(name = "EventTarget", guiActive = false, guiActiveEditor = false, guiName = "#RT_ModuleUI_Target", category = "skip_delay")]//Target
+        public void EventTarget() {
+            if (HighLogic.LoadedScene == GameScenes.EDITOR) { (new AntennaWindowStandalone(this)).Show(); }
+            else { (new AntennaWindow(this)).Show(); }
+        }
 
         [KSPEvent(name = "EventEditorOpen", guiActive = false, guiName = "#RT_ModuleUI_DeployAntenna")]//Deploy Antenna
         public void EventEditorOpen() { SetState(true); }
@@ -472,6 +476,7 @@ namespace RemoteTech.Modules
             Events["EventClose"].guiName = ActionMode0Name;
             Events["EventToggle"].guiName = ActionToggleName;
             Events["EventTarget"].guiActive = (Mode1DishRange > 0);
+            Events["EventTarget"].guiActiveEditor = Events["EventTarget"].guiActive;
             Events["EventTarget"].active = Events["EventTarget"].guiActive;
 
             // deactivate action close and toggle if this antenna is non retractable
