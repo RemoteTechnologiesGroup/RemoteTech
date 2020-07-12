@@ -35,8 +35,6 @@ namespace RemoteTech.Modules
             {
                 scienceDataQueue.Add(new ScienceData(data));
             }
-
-            var antennas = part.FindModulesImplementing<ModuleRTAntenna>();
             GUIStatus = Localizer.Format("#RT_ModuleUI_Comms_Status");//"Idle"
         }
 
