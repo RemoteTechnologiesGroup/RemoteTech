@@ -1,3 +1,34 @@
+# Version 1.9.7
+**Released July 20, 2020**
+
+What's New?
+===========
+
+* Compiled for KSP 1.10
+* Updated ModuleManager to 4.1.4
+* Added support for 2 new probe core parts of KSP 1.10
+* Added support for NearFuture Exploration (minimum 1.0.7)
+* Added support for Universal Storage 2
+* Supported pre-targeting of a dish antenna in VAB and SPH
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #257: Request: pre-target antennae in VAB/SPH [requested by: cerebrate]
+* Issue #725: VAB/SPH dish target allocation (feature request) [requested by: Khormin]
+* Issue #811: Set Antenna Tracking in VAB [requested by: dimitriye98]
+
+Pull Requests
+-------------
+
+* PR #724: VAB and SPH target button [PR by: drunkeNNN]
+* PR #815: Support for Universal Storage 2 [PR by: NullSnapshot]
+
+***
+
 # Version 1.9.6
 **Released February 15, 2020**
 
