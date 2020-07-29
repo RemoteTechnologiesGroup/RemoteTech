@@ -270,7 +270,7 @@ namespace RemoteTech.FlightComputer
                         cs.GetPotentialTorque(out ctrlTorquePos, out ctrlTorqueNeg);
 
                         torqueControlSurface.Add(ctrlTorquePos);
-                        torqueControlSurface.Add(ctrlTorqueNeg);
+                        torqueControlSurface.Add(-ctrlTorqueNeg);
 
                         torqueReactionSpeed6.Add(Mathf.Abs(cs.ctrlSurfaceRange) / cs.actuatorSpeed * Vector3d.Max(ctrlTorquePos.Abs(), ctrlTorqueNeg.Abs()));
                     }
@@ -303,7 +303,7 @@ namespace RemoteTech.FlightComputer
                         tp.GetPotentialTorque(out pos, out neg);
 
                         torqueOthers.Add(pos);
-                        torqueOthers.Add(neg);
+                        torqueOthers.Add(-neg);
                     }
                 }
             }

@@ -423,7 +423,7 @@ namespace RemoteTech.FlightComputer
         public MovingAverage()
         {
             Reset();
-            SampleLimit = 2;
+            SampleLimit = 10;
         }
 
         public void Reset()
