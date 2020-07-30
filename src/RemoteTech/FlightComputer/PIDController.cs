@@ -13,6 +13,9 @@ namespace RemoteTech.FlightComputer
     //and https://github.com/KSP-KOS/KOS/blob/master/src/kOS/Control/SteeringManager.cs
     public class PIDController
     {
+        private const double MaxStoppingTime = 10.0; // upper limit to artifically raise the torque amount by factor
+        private const double Phi1FStoppingTime = 0.1; // phi threshold to target orientation, where stopping time will be 1 factor
+        private const double OmegaThreshold = 0.1; // threshold ratio of torque to MoI to apply MaxStoppingTime or not (useful for huge rocket with tiny torque)
         public const double EPSILON = 1e-16;
 
         /* error */
@@ -22,6 +25,8 @@ namespace RemoteTech.FlightComputer
         private Vector3d TargetOmega = Vector3d.zero;
         /* max angular rotation */
         private Vector3d MaxOmega = Vector3d.zero;
+
+        private float StoppingTime;
 
         private Vector3d Actuation = Vector3d.zero;
         private Vector3d TargetTorque = Vector3d.zero;
@@ -115,7 +120,12 @@ namespace RemoteTech.FlightComputer
 
                 for (int i = 0; i < 3; i++)
                 {
-                    MaxOmega[i] = Mathf.Max(Torque[i] / MoI[i], 0.0001f);
+                    //Edge case: Very low (torque/MoI) (like 0.0078!) rate so need to rise max acceleration artifically
+                    StoppingTime = (OmegaThreshold <= (Torque[i] / MoI[i])) ?
+                                    1.0f :
+                                    (float)RTUtil.Clamp((1.0 / (Torque[i] / MoI[i])) * (Math.Abs(phiVector[i]) - Phi1FStoppingTime), 1.0, MaxStoppingTime);
+
+                    MaxOmega[i] = Mathf.Max((Torque[i] * StoppingTime) / MoI[i], 0.0001f);
                 }
 
                 TargetOmega[0] = pitchRatePI.Update(-phiVector[0], 0, MaxOmega[0]);
