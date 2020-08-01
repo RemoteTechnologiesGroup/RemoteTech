@@ -1,3 +1,26 @@
+# Version 1.9.8
+**Released August 1, 2020**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.10.1
+* Fixed PID issue of wobbling vessel with very low ratio of torque to mass
+* Added new Flight Computer command to ignore pitch/heading/roll flight controls
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #759: Request: possibility to only set roll / pitch / heading - not all at once [requested by: Gordon-Dry]
+
+Pull Requests
+-------------
+
+***
+
 # Version 1.9.7
 **Released July 20, 2020**
 
