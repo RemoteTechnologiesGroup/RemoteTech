@@ -3,6 +3,8 @@ using System.Collections;
 using RemoteTech.FlightComputer.Commands;
 using UnityEngine;
 using KSP.Localization;
+using static RemoteTech.FlightComputer.SteeringHelper;
+using RemoteTech.FlightComputer;
 
 namespace RemoteTech.UI
 {
@@ -82,14 +84,13 @@ namespace RemoteTech.UI
             }
         }
 
-        private FlightAttitude Attitude { get { return mAttitude; } }
-
         private FlightComputer.FlightComputer mFlightComputer;
         private Action mOnClickQueue;
 
         private ComputerMode mMode;
         private FlightAttitude mAttitude;
         private float mThrottle;
+        private FlightControlOutput mControlOutputMask = 0;
 
         private String mPitch = "90";
         private String mRoll = "90";
@@ -190,6 +191,16 @@ namespace RemoteTech.UI
                     RTUtil.MouseWheelTriggerField(ref mRoll, "rt_phr3", () => { Roll++; }, () => { Roll--; }, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
+                GUILayout.Space(5);
+
+                GUILayout.BeginHorizontal();
+                {
+                    RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_AttitudeFragment_IgnorePit"), Localizer.Format("#RT_AttitudeFragment_IgnorePit_desc")), () => RTCore.Instance.StartCoroutine(OnControlClick(FlightControlOutput.IgnorePitch)), (int)(mControlOutputMask & FlightControlOutput.IgnorePitch), (int)FlightControlOutput.IgnorePitch, GUILayout.Width(width3));//"IGN\nPIT", "Ignore pitch control."
+                    RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_AttitudeFragment_IgnoreHdr"), Localizer.Format("#RT_AttitudeFragment_IgnoreHdr_desc")), () => RTCore.Instance.StartCoroutine(OnControlClick(FlightControlOutput.IgnoreHeading)), (int)(mControlOutputMask & FlightControlOutput.IgnoreHeading), (int)FlightControlOutput.IgnoreHeading, GUILayout.Width(width3));//"IGN\nHDR", "Ignore heading control."
+                    RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_AttitudeFragment_IgnoreRll"), Localizer.Format("#RT_AttitudeFragment_IgnoreRll_desc")), () => RTCore.Instance.StartCoroutine(OnControlClick(FlightControlOutput.IgnoreRoll)), (int)(mControlOutputMask & FlightControlOutput.IgnoreRoll), (int)FlightControlOutput.IgnoreRoll, GUILayout.Width(width3));//"IGN\nRLL", "Ignore roll control."
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(5);
 
                 GUILayout.BeginHorizontal();
                 {
@@ -243,6 +254,43 @@ namespace RemoteTech.UI
             }
         }
 
+        private IEnumerator OnControlClick(FlightControlOutput output)
+        {
+            yield return null;
+            if (mFlightComputer.InputAllowed)
+            {
+                switch(output)
+                {
+                    case FlightControlOutput.IgnorePitch:
+                        if ((mControlOutputMask & FlightControlOutput.IgnorePitch) == FlightControlOutput.IgnorePitch)
+                            mControlOutputMask &= ~FlightControlOutput.IgnorePitch;
+                        else
+                            mControlOutputMask |= FlightControlOutput.IgnorePitch;
+                        break;
+
+                    case FlightControlOutput.IgnoreHeading:
+                        if ((mControlOutputMask & FlightControlOutput.IgnoreHeading) == FlightControlOutput.IgnoreHeading)
+                            mControlOutputMask &= ~FlightControlOutput.IgnoreHeading;
+                        else
+                            mControlOutputMask |= FlightControlOutput.IgnoreHeading;
+                        break;
+
+                    case FlightControlOutput.IgnoreRoll:
+                        if ((mControlOutputMask & FlightControlOutput.IgnoreRoll) == FlightControlOutput.IgnoreRoll)
+                            mControlOutputMask &= ~FlightControlOutput.IgnoreRoll;
+                        else
+                            mControlOutputMask |= FlightControlOutput.IgnoreRoll;
+                        break;
+                }
+
+                bool pitch = (mControlOutputMask & FlightControlOutput.IgnorePitch) == FlightControlOutput.IgnorePitch,
+                     heading = (mControlOutputMask & FlightControlOutput.IgnoreHeading) == FlightControlOutput.IgnoreHeading,
+                     roll = (mControlOutputMask & FlightControlOutput.IgnoreRoll) == FlightControlOutput.IgnoreRoll;
+
+                mFlightComputer.Enqueue(FlightControlCommand.WithPHR(pitch, heading, roll));
+            }
+        }
+
         private void Confirm()
         {
             ICommand newCommand;
@@ -264,22 +312,22 @@ namespace RemoteTech.UI
                 case ComputerMode.TargetPos:
                     mAttitude = (mAttitude == FlightAttitude.Null) ? FlightAttitude.Prograde : mAttitude;
                     newCommand =
-                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.TargetParallel);
+                        AttitudeCommand.WithAttitude(mAttitude, ReferenceFrame.TargetParallel);
                     break;
                 case ComputerMode.Orbital:
                     mAttitude = (mAttitude == FlightAttitude.Null) ? FlightAttitude.Prograde : mAttitude;
                     newCommand =
-                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Orbit);
+                        AttitudeCommand.WithAttitude(mAttitude, ReferenceFrame.Orbit);
                     break;
                 case ComputerMode.Surface:
                     mAttitude = (mAttitude == FlightAttitude.Null) ? FlightAttitude.Prograde : mAttitude;
                     newCommand =
-                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.Surface);
+                        AttitudeCommand.WithAttitude(mAttitude, ReferenceFrame.Surface);
                     break;
                 case ComputerMode.TargetVel:
                     mAttitude = (mAttitude == FlightAttitude.Null) ? FlightAttitude.Prograde : mAttitude;
                     newCommand =
-                        AttitudeCommand.WithAttitude(Attitude, ReferenceFrame.TargetVelocity);
+                        AttitudeCommand.WithAttitude(mAttitude, ReferenceFrame.TargetVelocity);
                     break;
                 case ComputerMode.Custom:
                     mAttitude = FlightAttitude.Null;
@@ -344,6 +392,15 @@ namespace RemoteTech.UI
 
             if(mMode == ComputerMode.Orbital || mMode == ComputerMode.Surface || mMode == ComputerMode.TargetPos || mMode == ComputerMode.TargetVel)
                 mAttitude = mappedCommand.computerAttitude;
+
+            var activeIgnoreCmd = FlightControlCommand.findActiveControlCmd(mFlightComputer);
+            if (activeIgnoreCmd != null)
+            {
+                mControlOutputMask = 0;
+                if (activeIgnoreCmd.ignorePitchOutput) { mControlOutputMask |= FlightControlOutput.IgnorePitch; }
+                if (activeIgnoreCmd.ignoreHeadingOutput) { mControlOutputMask |= FlightControlOutput.IgnoreHeading; }
+                if (activeIgnoreCmd.ignoreRollOutput) { mControlOutputMask |= FlightControlOutput.IgnoreRoll; }
+            }
         }
 
         /// <summary>
@@ -354,6 +411,7 @@ namespace RemoteTech.UI
             // get active command
             mMode = ComputerMode.Off;
             mAttitude = FlightAttitude.Null;
+            mControlOutputMask = 0;
         }
     }
 }

@@ -123,10 +123,10 @@ namespace RemoteTech.FlightComputer
         /// <summary>
         /// Single entry point of all Flight Computer orientation holding, including maneuver node.
         /// </summary>
-        public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target, bool ignoreRoll = false)
+        public static void HoldOrientation(FlightCtrlState fs, FlightComputer f, Quaternion target, bool ignoreRoll = false, bool ignorePitch = false, bool ignoreHeading = false)
         {
             f.Vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, false);
-            SteeringHelper.SteerShipToward(target, fs, f, ignoreRoll);
+            SteeringHelper.SteerShipToward(target, fs, f, ignoreRoll, ignorePitch, ignoreHeading);
         }
 
         /// <summary>
@@ -176,8 +176,22 @@ namespace RemoteTech.FlightComputer
 
     public static class SteeringHelper
     {
+        public enum FlightControlOutput
+        {
+            IgnorePitch = 1,
+            IgnoreHeading = 2,
+            IgnoreRoll = 4,
+        }
+
         private const double outputDeadband = 0.001;
         private const float driveLimit = 1.0f;
+
+        private static FlightControlOutput outputControlMask = 0;
+        public static FlightControlOutput FlightOutputControlMask
+        {
+            get { return outputControlMask; }
+            set { outputControlMask = value; }
+        }
 
         /* MechJeb2 torque variables */
         private static Vector6 torqueReactionWheel = new Vector6();
@@ -206,7 +220,7 @@ namespace RemoteTech.FlightComputer
         /// <param name="c">The FlightCtrlState for the current vessel.</param>
         /// <param name="fc">The flight computer carrying out the slew</param>
         /// <param name="ignoreRoll">[optional] to ignore the roll</param>
-        public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll)
+        public static void SteerShipToward(Quaternion target, FlightCtrlState c, FlightComputer fc, bool ignoreRoll, bool ignorePitch, bool ignoreHeading)
         {
             var actuation = fc.PIDController.GetActuation(target);
 
@@ -216,9 +230,9 @@ namespace RemoteTech.FlightComputer
             actuation.z = Math.Abs(actuation.z) >= outputDeadband ? actuation.z : 0.0;
 
             // update the flight controls
-            c.pitch = Mathf.Clamp((float) actuation.x, -driveLimit, driveLimit);
-            c.roll = !ignoreRoll ? Mathf.Clamp((float) actuation.y, -driveLimit, driveLimit) : 0.0f;
-            c.yaw = Mathf.Clamp((float) actuation.z, -driveLimit, driveLimit);
+            c.pitch = (ignorePitch || (FlightOutputControlMask & FlightControlOutput.IgnorePitch) == FlightControlOutput.IgnorePitch) ? 0.0f : Mathf.Clamp((float) actuation.x, -driveLimit, driveLimit);
+            c.roll = (ignoreRoll || (FlightOutputControlMask & FlightControlOutput.IgnoreRoll) == FlightControlOutput.IgnoreRoll) ? 0.0f : Mathf.Clamp((float) actuation.y, -driveLimit, driveLimit);
+            c.yaw = (ignoreHeading || (FlightOutputControlMask & FlightControlOutput.IgnoreHeading) == FlightControlOutput.IgnoreHeading) ? 0.0f : Mathf.Clamp((float) actuation.z, -driveLimit, driveLimit);
         }
 
         /// <summary>

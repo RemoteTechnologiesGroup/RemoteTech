@@ -120,6 +120,7 @@
     <Compile Include="FlightComputer\Commands\CancelCommand.cs" />
     <Compile Include="FlightComputer\Commands\DriveCommand.cs" />
     <Compile Include="FlightComputer\Commands\HibernationCommand.cs" />
+    <Compile Include="FlightComputer\Commands\FlightControlCommand.cs" />
     <Compile Include="FlightComputer\Commands\ManeuverCommand.cs" />
     <Compile Include="FlightComputer\Commands\PartActionCommand.cs" />
     <Compile Include="FlightComputer\Commands\PIDCommand.cs" />

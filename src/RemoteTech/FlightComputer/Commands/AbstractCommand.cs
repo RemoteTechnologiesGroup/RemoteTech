@@ -129,6 +129,7 @@ namespace RemoteTech.FlightComputer.Commands
                 case "HibernationCommand":    { command = new HibernationCommand(); break; }
                 case "AxisGroupCommand":      { command = new AxisGroupCommand(); break; }
                 case "PIDCommand":            { command = new PIDCommand(); break; }
+                case "FlightControlCommand":  { command = new FlightControlCommand(); break; }
             }
 
             if (command != null)
