@@ -5,7 +5,7 @@ baseurl: /RemoteTech
 excerpt_separator: ""
 
 permalink: pretty
-pygments: true
+highlighter: rouge
 markdown: kramdown
 
 kramdown:
