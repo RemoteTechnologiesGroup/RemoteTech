@@ -13,6 +13,10 @@ layout: content
 
 The flight computer lets you make deep-space maneuvers or schedule actions while dealing with signal delay or temporary breaks in communication. It is **not** a standalone autopilot, and cannot carry out launches, landings, dockings, or other complex maneuvers. KSP already has several excellent autopilot mods, including MechJeb and kOS, and we are working to make sure that these mods are compatible with RemoteTech.
 
+The flight computer can be accessed by clicking the calculator icon below the time warp indicator.
+
+![IMAGE: how to access the flight computer](location.png){: .left}
+
 The basic flight computer window shows only the controls for operating it; clicking ">>" will display the computer's current state as well as a queue of any "instant" commands sent to it. Instant commands are anything you normally do with a single click or key press, including right-click actions, staging commands, action groups, and anything with a toggle key (RCS, SAS, landing gear...). They do not include slewing, translation, changing the throttle (or cutting it with the "X" key), or anything else that might involve holding down a key.
 
 An instant command may be canceled by clicking the "X" button next to the command. Non-instant commands cannot be canceled.
