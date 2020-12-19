@@ -1,3 +1,29 @@
+# Version 1.9.9
+**Released December 19, 2020**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.11
+* Fixed UI issue of missing signal delay and flight computer button
+* Added preventative measure for scenario of a vessel/part exiting simulation range
+* Readded data protection for saved flight computer commands during loading
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #821: Flight UI not visible in KSP 1.11 [requested by: gjulianm]
+* Issue #820: Order's queue lost when switching vessels (or going SC) [requested by: Jacchus]
+* Issue #817: Severe disruption in simulation when parts disappear because they go out of simulation range [requested by: Ernesto-Alvarez]
+
+Pull Requests
+-------------
+
+***
+
 # Version 1.9.8
 **Released August 1, 2020**
 
