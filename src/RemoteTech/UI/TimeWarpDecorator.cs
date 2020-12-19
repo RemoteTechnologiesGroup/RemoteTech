@@ -3,7 +3,6 @@ using System.Linq;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 using KSP.UI;
-using KSP.UI.Screens.Flight;
 using KSP.Localization;
 
 namespace RemoteTech.UI
@@ -17,7 +16,7 @@ namespace RemoteTech.UI
         /// <summary>
         /// Image for position access
         /// </summary>
-        private UnityEngine.UI.Image mTimewarpImage;
+        private UnityEngine.RectTransform mTimewarpTransform;
         /// <summary>
         /// Delay-Text style
         /// </summary>
@@ -115,11 +114,11 @@ namespace RemoteTech.UI
             GameObject go = GameObject.Find("TimeQuadrant");
             if (go)
             {
-                mTimewarpImage = go.GetComponent<UnityEngine.UI.Image>();
+                mTimewarpTransform = go.GetComponent<UnityEngine.RectTransform>();
             }
 
             // objects on this scene?
-            if (mTimewarpImage == null || TimeWarp.fetch == null)
+            if (mTimewarpTransform == null || TimeWarp.fetch == null)
             {
                 return;
             }
@@ -138,17 +137,21 @@ namespace RemoteTech.UI
         public void Draw()
         {
             // no drawing without timewarp object
-            if (mTimewarpImage == null)
+            if (mTimewarpTransform == null)
                 return;
 
-            // no drawing with in-flight action group panel is opened
+            // no drawing if in-flight action group panel is opened
             if(ActionGroupsFlightController.Instance != null && ActionGroupsFlightController.Instance.IsOpen)
                 return;
 
-            Vector2 timeWarpImageScreenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpImage.rectTransform.position);
+            // no drawing if in-flight construction panel is opened
+            if (EVAConstructionModeController.Instance != null && EVAConstructionModeController.Instance.IsOpen)
+                return;
+
+            Vector2 timeWarpImageScreenCoord = UIMainCamera.Camera.WorldToScreenPoint(mTimewarpTransform.position);
 
             float scale = GameSettings.UI_SCALE_TIME * GameSettings.UI_SCALE;
-            float topLeftTotimeQuadrant = Screen.height - (timeWarpImageScreenCoord.y - (mTimewarpImage.preferredHeight * scale));
+            float topLeftTotimeQuadrant = Screen.height - (timeWarpImageScreenCoord.y - (mTimewarpTransform.rect.height * scale));
             float texBackgroundHeight = (mTexBackground.height * 0.7f) * scale;
             float texBackgroundWidth = (mTexBackground.width * 0.8111f) * scale;
 
