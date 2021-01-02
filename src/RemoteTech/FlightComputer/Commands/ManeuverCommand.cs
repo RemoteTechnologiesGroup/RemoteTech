@@ -53,7 +53,15 @@ namespace RemoteTech.FlightComputer.Commands
             }
 
             if (this.Node.solver == null) // need to repair (due to the scenario of 2 vessels within phyical range)
+            {
+                if (f.Vessel.patchedConicSolver.maneuverNodes.Count < 1) // no nodes
+                {
+                    RTUtil.ScreenMessage("[Flight Computer]: No maneuver node to execute.");
+                    return false;
+                }
+                
                 this.Node = f.Vessel.patchedConicSolver.maneuverNodes.Find(x => x.UT == this.Node.UT);
+            }
 
             var burn = f.ActiveCommands.FirstOrDefault(c => c is BurnCommand);
             if (burn != null) {
