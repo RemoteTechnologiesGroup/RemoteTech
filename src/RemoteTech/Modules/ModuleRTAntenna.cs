@@ -784,7 +784,7 @@ namespace RemoteTech.Modules
 
         private void OnVesselModified(Vessel v)
         {
-            if (RTCore.Instance != null && mRegisteredId != vessel.id)
+            if (RTCore.Instance != null && vessel != null && mRegisteredId != vessel.id)
             {
                 RTCore.Instance.Antennas.Unregister(mRegisteredId, this);
                 mRegisteredId = vessel.id;

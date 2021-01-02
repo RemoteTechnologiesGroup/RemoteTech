@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace RemoteTech.Modules
@@ -14,15 +12,15 @@ namespace RemoteTech.Modules
         public string Name => $"ModuleSPUPassive({VesselName})";
         public string VesselName
         {
-            get { return vessel.vesselName; }
-            set { vessel.vesselName = value; }
+            get { return vessel != null ? vessel.vesselName : "vessel-null"; }
+            set { if(vessel != null) vessel.vesselName = value; }
         }
-        public bool VesselLoaded => vessel.loaded;
+        public bool VesselLoaded => vessel != null && vessel.loaded;
         public Guid VesselId { get; private set; }
-        public Vector3 Position => vessel.GetWorldPos3D();
-        public CelestialBody Body => vessel.mainBody;
+        public Vector3 Position { get { return vessel != null ? vessel.GetWorldPos3D() : new Vector3d(); } }
+        public CelestialBody Body { get { return vessel != null ? vessel.mainBody : null; } }
         public bool Visible => MapViewFiltering.CheckAgainstFilter(vessel);
-        public bool Powered => Vessel.IsControllable;
+        public bool Powered => vessel != null && vessel.IsControllable;
         public bool IsCommandStation => false;
         public FlightComputer.FlightComputer FlightComputer => null;
         public Vessel Vessel => vessel;
@@ -74,7 +72,7 @@ namespace RemoteTech.Modules
 
         public void OnVesselModified(Vessel v)
         {
-            if (RTCore.Instance != null && VesselId != vessel.id)
+            if (RTCore.Instance != null && vessel != null && VesselId != vessel.id)
             {
                 RTCore.Instance.Satellites.Unregister(VesselId, this);
                 VesselId = vessel.id; 

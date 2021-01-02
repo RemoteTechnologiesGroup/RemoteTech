@@ -164,11 +164,14 @@ namespace RemoteTech.FlightComputer
 
             // Add RT listeners from KSP Autopilot
             StockAutopilotCommand.UIreference = GameObject.FindObjectOfType<VesselAutopilotUI>();
-            for (var index = 0; index < StockAutopilotCommand.UIreference.modeButtons.Length; index++)
+            if (StockAutopilotCommand.UIreference != null)
             {
-                var buttonIndex = index; // prevent compiler optimisation from assigning static final index value
-                StockAutopilotCommand.UIreference.modeButtons[index].onClick.AddListener(delegate { StockAutopilotCommand.AutopilotButtonClick(buttonIndex, this); });
-                // bad idea to use RemoveAllListeners() since no easy way to re-add the original stock listener to onClick
+                for (var index = 0; index < StockAutopilotCommand.UIreference.modeButtons.Length; index++)
+                {
+                    var buttonIndex = index; // prevent compiler optimisation from assigning static final index value
+                    StockAutopilotCommand.UIreference.modeButtons[index].onClick.AddListener(delegate { StockAutopilotCommand.AutopilotButtonClick(buttonIndex, this); });
+                    // bad idea to use RemoveAllListeners() since no easy way to re-add the original stock listener to onClick
+                }
             }
         }
 

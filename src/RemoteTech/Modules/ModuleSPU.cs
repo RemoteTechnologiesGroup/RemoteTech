@@ -23,18 +23,18 @@ namespace RemoteTech.Modules
 
         public string VesselName
         {
-            get { return vessel.vesselName; }
-            set { vessel.vesselName = value; }
+            get { return vessel != null ? vessel.vesselName : "vessel-null"; }
+            set { if(vessel != null) vessel.vesselName = value; }
         }
-        public bool VesselLoaded => vessel.loaded;
+        public bool VesselLoaded => vessel != null && vessel.loaded;
         public Guid VesselId { get; private set; }
 
-        public Vector3 Position => vessel.GetWorldPos3D();
-        public CelestialBody Body => vessel.mainBody;
+        public Vector3 Position { get { return vessel != null ? vessel.GetWorldPos3D() : new Vector3d(); } }
+        public CelestialBody Body { get { return vessel != null ? vessel.mainBody : null; } }
         public bool Visible => MapViewFiltering.CheckAgainstFilter(vessel);
-        public bool Powered => IsRTPowered;
+        public bool Powered => vessel != null && IsRTPowered;
 
-        public bool IsCommandStation => IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
+        public bool IsCommandStation => IsRTPowered && IsRTCommandStation && vessel != null && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
         public FlightComputer.FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel => vessel;
         public bool IsMaster => Satellite != null && ReferenceEquals(Satellite.SignalProcessor, this);
@@ -279,7 +279,7 @@ namespace RemoteTech.Modules
 
         public void OnVesselModified(Vessel v)
         {
-            if (RTCore.Instance == null || VesselId == vessel.id)
+            if (RTCore.Instance == null || vessel == null || VesselId == vessel.id)
                 return;
 
             RTCore.Instance.Satellites.Unregister(VesselId, this);
