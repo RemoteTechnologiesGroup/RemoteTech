@@ -78,7 +78,10 @@ namespace RemoteTech.UI
                             mImg = obj.GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
                     }
 
-                    posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                    if (mImg != null)
+                    {
+                        posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                    }
                 }
 
                 return new Rect(posX, posY, mTextures.Background.width * GameSettings.UI_SCALE, mTextures.Background.height * GameSettings.UI_SCALE);
@@ -104,7 +107,11 @@ namespace RemoteTech.UI
                         if(obj != null)
                             mImg = obj.GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
                     }
-                    posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+
+                    if (mImg != null)
+                    {
+                        posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                    }
                 }
 
                 return new Rect(posX, Screen.height - height, width, height);
