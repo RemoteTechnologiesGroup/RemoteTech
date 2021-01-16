@@ -1,3 +1,30 @@
+# Version 1.9.10
+**Released January 16, 2021**
+
+What's New?
+===========
+
+* Add support for a renamed part of HG-5 High Gain Antenna
+* Add support for cargo storage of small RemoteTech antennas
+* Add new Flight Computer error message on no maneuver node to execute
+* Add multiple protections against the construction functionality introduced by KSP 1.11
+* Add preventative check of the filter UI against non-existent KSP interface components during loading
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #822: stock HG-5 High Gain Antenna renamed [requested by: mcortez]
+
+Pull Requests
+-------------
+
+* PR #824: Duplicate config for HighGainAntenna5 for 1.11 [PR by: doubleplush]
+
+***
+
 # Version 1.9.9
 **Released December 19, 2020**
 
