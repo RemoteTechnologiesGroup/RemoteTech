@@ -40,13 +40,18 @@ Screenshot (optional):
      * Instructions of the form "1. Load stock KSP. 2. Load this ship 3. Do this" are best. The easier we can make the bug happen on our end, the easier it is to fix it.
 
 * In `Logs`, provide your KSP log file:
-      * **Windows**: `KSP_win64\KSP_x64_Data\output_log.txt` (Up to KSP 1.3.1) or `C:\Users\%USERNAME%\AppData\LocalLow\Squad\Kerbal space Program\output_log.txt` (KSP 1.4 onwards)
-      * **Mac OS**: Open Console, on the left side of the window there is a menu that says 'files'. Scroll down the list and find the Unity drop down, under Unity there will be `Player.log` ( Files>`~/Library/Logs>Unity>Player.log` )
-      * **Linux**: `~/.config/unity3d/Squad/Kerbal Space Program/Player.log`     
+  * **Windows**: 
+    * 1.3.1 or older: `KSP_win\KSP_Data\output_log.txt` (32-bit) or `KSP_win64\KSP_x64_Data\output_log.txt` (64-bit)
+    * 1.7.3 or older: `%USERPROFILE%\AppData\LocalLow\Squad\Kerbal Space Program\output_log.txt`
+    * 1.8 or newer: `%USERPROFILE%\AppData\LocalLow\Squad\Kerbal Space Program\Player.log`
+
+  * **Mac OS**: Open Console, on the left side of the window there is a menu that says 'files'. Scroll down the list and find the Unity drop down, under Unity there will be `Player.log` ( Files>`~/Library/Logs>Unity>Player.log` )
+      
+  * **Linux**: `~/.config/unity3d/Squad/Kerbal Space Program/Player.log`     
 
 * In `Installed Mods`, list all installed mods (preferably WITH version number) 
-      * If you use `ckan` then use it to list your mods (`File` > `Export Installed mods`).
-      * Put the list either in the issue body, on [gist](https://gist.github.com/) (easier to edit later), [pastebin](http://pastebin.com/), or any similar site ([Fedora pastebin](http://fpaste.org)).
+  * If you use `ckan` then use it to list your mods (`File` > `Export Installed mods`).
+  * Put the list either in the issue body, on [gist](https://gist.github.com/) (easier to edit later), [pastebin](http://pastebin.com/), or any similar site ([Fedora pastebin](http://fpaste.org)).
 
 * In `Persistent Save`, provide a link to your current persistent save file. This should be ```Kerbal Space Program\saves\[yoursave]\persistent.sfs```, add it to your gist as a new file or as a separate pastebin(-esque).
 
