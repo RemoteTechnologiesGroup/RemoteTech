@@ -96,6 +96,11 @@ namespace RemoteTech.FlightComputer
         /// <summary>Returns the last known position of throttle prior to connection loss.</summary>
         public float LockedThrottlePositionNoConnect = 0f;
 
+        /// <summary>Returns true to set the time wrap factor to 1 upon a connection reestablished, otherwise false</summary>
+        public bool StopTimeWrapOnReconnect => RTSettings.Instance.StopTimeWrapOnReConnection;
+        /// <summary>Returns true to indicate whether a connection loss occurs</summary>
+        private bool TimeWrapConnectionLoss = false;
+
         /// <summary>Gets or sets the total delay which is the usual light speed delay + any manual delay.</summary>
         public double TotalDelay { get; set; }
         /// <summary>The target (<see cref="TargetCommand.Target"/>) of a <see cref="TargetCommand"/>.</summary>
@@ -290,6 +295,7 @@ namespace RemoteTech.FlightComputer
             if (RTCore.Instance == null) return;
             if (!SignalProcessor.IsMaster) return;
             PopCommand();
+            ExecuteConnectionStatusActions();
         }
 
         /// <summary>Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.</summary>
@@ -731,6 +737,32 @@ namespace RemoteTech.FlightComputer
                     // remove Node
                     Enqueue(CancelCommand.WithCommand(maneuverCmd));
                     return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Execute actions depending on connection status
+        /// </summary>
+        private void ExecuteConnectionStatusActions()
+        {
+            //stop time wrap if re-connection occurred
+            if (StopTimeWrapOnReconnect && TimeWarp.CurrentRate > 1.0f)
+            {
+                if (!RTCore.Instance.Satellites[SignalProcessor.VesselId].Connections.Any()) // no connection
+                {
+                    TimeWrapConnectionLoss = true;
+                }
+                else // working connection
+                {
+                    if (TimeWrapConnectionLoss)
+                    {
+                        TimeWrapConnectionLoss = false;
+
+                        var message = new ScreenMessage(Localizer.Format("#RT_FC_msg1"), 4.0f, ScreenMessageStyle.UPPER_LEFT);//"[Flight Computer]: Throttling back time warp..."
+                        TimeWarp.SetRate(0, false); //gentle stopping
+                        ScreenMessages.PostScreenMessage(message);
+                    }
                 }
             }
         }

@@ -56,6 +56,7 @@ namespace RemoteTech
         [Persistent] public double MultipleAntennaMultiplier;
         [Persistent] public bool ThrottleTimeWarp;
         [Persistent] public bool ThrottleZeroOnNoConnection;
+        [Persistent] public bool StopTimeWrapOnReConnection;
         [Persistent] public bool HideGroundStationsBehindBody;
         [Persistent] public bool ControlAntennaWithoutConnection;
         [Persistent] public bool UpgradeableMissionControlAntennas;
