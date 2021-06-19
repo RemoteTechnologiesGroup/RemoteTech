@@ -5,7 +5,7 @@ What's New?
 ===========
 
 * Increase the range of RA-15 antenna from 10 Gm to 20 Gm and decrease the power drain rate from 1.10 to 0.95 to be more comparable with Communotron HG-55
-* Increase the range of RA-110 antenna from 100 Gm to 250 Gm to be more comparable with CommTech-1
+* Increase the range of RA-100 antenna from 100 Gm to 250 Gm to be more comparable with CommTech-1
 * Add a new misc option of stopping time wrap upon reconnection 
 * Add support for a new restock-relay-radial-2_v2 antenna (4 HighGain5 antennae stuck together) for RestockPlus KSP 1.11 update
 
