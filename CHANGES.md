@@ -1,3 +1,23 @@
+# Version 1.9.12
+**Released July 10, 2021**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.12.1
+* Fixed the mispositon of the signal delay interface
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
 # Version 1.9.11
 **Released June 19, 2021**
 
