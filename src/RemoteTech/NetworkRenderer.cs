@@ -104,7 +104,7 @@ namespace RemoteTech
 
         public void OnPreCull()
         {
-            if (MapView.MapIsEnabled)
+            if (MapView.MapIsEnabled && (HighLogic.LoadedScene != GameScenes.SPACECENTER))
             {
                 UpdateNetworkEdges();
                 UpdateNetworkCones();
