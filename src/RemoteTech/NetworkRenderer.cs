@@ -113,7 +113,7 @@ namespace RemoteTech
 
         public void OnGUI()
         {
-            if (Event.current.type == EventType.Repaint && MapView.MapIsEnabled)
+            if (Event.current.type == EventType.Repaint && MapView.MapIsEnabled && (HighLogic.LoadedScene != GameScenes.SPACECENTER))
             {
                 foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations.Values))
                 {
