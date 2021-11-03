@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -39,12 +40,12 @@ namespace RemoteTech
                     var info = rtPart.moduleInfos[i];
 
                     var moduleName = info.moduleName;
-                    if (moduleName == "Technology Perk" || moduleName == "Antenna" || moduleName == "Signal Processor" )
+                    if (moduleName == Localizer.Format("#RT_Editor_TechnologyPerk") || moduleName == Localizer.Format("#RT_Editor_Antenna") || moduleName == Localizer.Format("#RT_Editor_SignalProcessor") )//"Technology Perk""Antenna""Signal Processor"
                     {
                         var moduleClassName = string.Empty;
-                        if (moduleName == "Technology Perk")  moduleClassName = "ModuleRTAntennaPassive";
-                        if (moduleName == "Antenna")          moduleClassName = "ModuleRTAntenna";
-                        if (moduleName == "Signal Processor") moduleClassName = "ModuleSPU";
+                        if (moduleName == Localizer.Format("#RT_Editor_TechnologyPerk"))  moduleClassName = "ModuleRTAntennaPassive";//"Technology Perk"
+                        if (moduleName == Localizer.Format("#RT_Editor_Antenna"))          moduleClassName = "ModuleRTAntenna";//"Antenna"
+                        if (moduleName == Localizer.Format("#RT_Editor_SignalProcessor")) moduleClassName = "ModuleSPU";//"Signal Processor"
 
                         // no moduleClassName found, skip to the next part
                         if (moduleClassName == string.Empty) continue;
@@ -53,7 +54,7 @@ namespace RemoteTech
                         var newInfos = RefreshPartInfo(rtPart.partPrefab, moduleClassName);
                         if (newInfos != string.Empty)
                         {
-                            if (moduleName == "Technology Perk")
+                            if (moduleName == Localizer.Format("#RT_Editor_TechnologyPerk"))//"Technology Perk"
                             {
                                 techPerkRefreshed = true;
                             }
@@ -113,7 +114,7 @@ namespace RemoteTech
             var newPerkInfo = new AvailablePart.ModuleInfo
             {
                 info = perkInfos,
-                moduleName = "Technology Perk"
+                moduleName = Localizer.Format("#RT_Editor_TechnologyPerk")//"Technology Perk"
             };
 
             return newPerkInfo;

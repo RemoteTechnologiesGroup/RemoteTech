@@ -6,6 +6,7 @@ using RemoteTech.UI;
 using UnityEngine;
 
 using Debug = System.Diagnostics.Debug;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -64,15 +65,11 @@ namespace RemoteTech
             {
                 switch(Versioning.version_minor)
                 {
-                    case 3:
-                    case 5:
-                        mLineWidth = 3f; //1f is too thin in 1.3 and 1.5
-                        break;
                     case 4:
                         mLineWidth = 1f; //1f is matching to CommNet's line width
                         break;
                     default:
-                        mLineWidth = 1f;
+                        mLineWidth = 3f;
                         break;
                 }
             }
@@ -165,11 +162,11 @@ namespace RemoteTech
                             {
                                 if(antenna.Omni > 0)
                                 {
-                                    antennaRanges += "Omni: "+ RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;
+                                    antennaRanges += Localizer.Format("#RT_NetworkFB_Omni") + RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;//"Omni: "
                                 }
                                 if (antenna.Dish > 0)
                                 {
-                                    antennaRanges += "Dish: " + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;
+                                    antennaRanges +=  Localizer.Format("#RT_NetworkFB_Dish") + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;//"Dish: "
                                 }
                             }
 

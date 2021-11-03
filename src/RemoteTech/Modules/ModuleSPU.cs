@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.FlightComputer;
 using UnityEngine;
+using KSP.Localization;
+#if !KSP131
+using Expansions.Serenity.DeployedScience.Runtime;
+#endif
 
 namespace RemoteTech.Modules
 {
@@ -12,25 +16,25 @@ namespace RemoteTech.Modules
     /// <para>Signal Processors are any part that can receive commands over a working connection (this include all stock probe cores).</para>
     /// <para>Thus, controlling a vessel is made only through the ModuleSPU unit. Players are only able to control a signal processor 5SPU) as long as they have a working connection (which by default is subject to signal delay).</para>
     /// </summary>
-    [KSPModule("Signal Processor")]
+    [KSPModule("#RT_Editor_SignalProcessor")]//Signal Processor
     public class ModuleSPU : PartModule, ISignalProcessor
     {
         public string Name => $"ModuleSPU({VesselName})";
 
         public string VesselName
         {
-            get { return vessel.vesselName; }
-            set { vessel.vesselName = value; }
+            get { return vessel != null ? vessel.vesselName : "vessel-null"; }
+            set { if(vessel != null) vessel.vesselName = value; }
         }
-        public bool VesselLoaded => vessel.loaded;
+        public bool VesselLoaded => vessel != null && vessel.loaded;
         public Guid VesselId { get; private set; }
 
-        public Vector3 Position => vessel.GetWorldPos3D();
-        public CelestialBody Body => vessel.mainBody;
+        public Vector3 Position { get { return vessel != null ? vessel.GetWorldPos3D() : new Vector3d(); } }
+        public CelestialBody Body { get { return vessel != null ? vessel.mainBody : null; } }
         public bool Visible => MapViewFiltering.CheckAgainstFilter(vessel);
-        public bool Powered => IsRTPowered;
+        public bool Powered => vessel != null && IsRTPowered;
 
-        public bool IsCommandStation => IsRTPowered && IsRTCommandStation && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
+        public bool IsCommandStation => IsRTPowered && IsRTCommandStation && vessel != null && vessel.GetVesselCrew().Count >= RTCommandMinCrew;
         public FlightComputer.FlightComputer FlightComputer { get; private set; }
         public Vessel Vessel => vessel;
         public bool IsMaster => Satellite != null && ReferenceEquals(Satellite.SignalProcessor, this);
@@ -47,7 +51,7 @@ namespace RemoteTech.Modules
         [KSPField] public bool ShowGUI_Status = true;
         [KSPField] public bool ShowEditor_Type = true;
 
-        [KSPField(guiName = "SPU", guiActive = true)] public string GUI_Status;
+        [KSPField(guiName = "#RT_ModuleUI_SPU", guiActive = true)] public string GUI_Status;//SPU
 
         private enum State
         {
@@ -87,9 +91,33 @@ namespace RemoteTech.Modules
 
             if (!IsRTPowered)
             {
+#if !KSP131
+                // check if the part is itself a Module
+                var moduleExpControlStation = part.Modules.GetModule<ModuleGroundExpControl>();
+#endif
                 // check if the part is itself a ModuleCommand
                 var moduleCommand = part.Modules.GetModule<ModuleCommand>();
+
+#if !KSP131
+                if (moduleExpControlStation != null)
+                {
+                    if (moduleExpControlStation.ScienceClusterData != null)
+                    {
+                        IsRTPowered = moduleExpControlStation.ScienceClusterData.IsPowered;
+                        // issue: ground science transmission and much of science cluster are not moddable
+                        // unwilling to spend large effort for low return
+                    }
+                    else
+                    {
+                        IsRTPowered = false;
+                    }
+                }
+#endif
+#if !KSP131
+                else if (moduleCommand != null)
+#else
                 if (moduleCommand != null)
+#endif
                 {
                     // it's a module command *and* a ModuleSPU, so in this case it's still RTPowered (controllable)!
                     // e.g. even if there's no crew in the pod, we should be able to control it because it's a SPU.
@@ -153,11 +181,11 @@ namespace RemoteTech.Modules
             switch (UpdateControlState())
             {
                 case State.Operational:
-                    GUI_Status = "Operational.";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_SPU_Status");//"Operational."
                     break;
                 case State.ParentDefect:
                 case State.NoConnection:
-                    GUI_Status = "No connection.";
+                    GUI_Status = Localizer.Format("#RT_ModuleUI_SPU_Status2");//"No connection."
                     break;
             }
         }
@@ -173,8 +201,8 @@ namespace RemoteTech.Modules
                 return string.Empty;
 
             return IsRTCommandStation
-                ? $"Remote Command capable <color=#00FFFF>({RTCommandMinCrew}+ crew)</color>"
-                : "Remote Control capable";
+                ? Localizer.Format("#RT_Editor_SignalProcessor_info1", "<color=#00FFFF>" + RTCommandMinCrew+ "</color>")//$"Remote Command capable ({}+ crew)"
+                : Localizer.Format("#RT_Editor_SignalProcessor_info2");//"Remote Control capable"
         }
 
         public override void OnSave(ConfigNode node)
@@ -251,7 +279,7 @@ namespace RemoteTech.Modules
 
         public void OnVesselModified(Vessel v)
         {
-            if (RTCore.Instance == null || VesselId == vessel.id)
+            if (RTCore.Instance == null || vessel == null || VesselId == vessel.id)
                 return;
 
             RTCore.Instance.Satellites.Unregister(VesselId, this);
@@ -333,7 +361,7 @@ namespace RemoteTech.Modules
             }
             else
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#RT_ModuleUI_SPU_Msg"), 4.0f, ScreenMessageStyle.UPPER_LEFT));//"No connection to send command on."
             }
         }
 
@@ -385,7 +413,7 @@ namespace RemoteTech.Modules
             }
             else
             {
-                ScreenMessages.PostScreenMessage(new ScreenMessage("No connection to send command on.", 4.0f, ScreenMessageStyle.UPPER_LEFT));
+                ScreenMessages.PostScreenMessage(new ScreenMessage(Localizer.Format("#RT_ModuleUI_SPU_Msg"), 4.0f, ScreenMessageStyle.UPPER_LEFT));//"No connection to send command on."
             }
         }
     }

@@ -6,6 +6,7 @@ using RemoteTech.FlightComputer.Commands;
 using RemoteTech.Modules;
 using RemoteTech.SimpleTypes;
 using RemoteTech.UI;
+using KSP.Localization;
 
 namespace RemoteTech.FlightComputer
 {
@@ -95,6 +96,11 @@ namespace RemoteTech.FlightComputer
         /// <summary>Returns the last known position of throttle prior to connection loss.</summary>
         public float LockedThrottlePositionNoConnect = 0f;
 
+        /// <summary>Returns true to set the time wrap factor to 1 upon a connection reestablished, otherwise false</summary>
+        public bool StopTimeWrapOnReconnect => RTSettings.Instance.StopTimeWrapOnReConnection;
+        /// <summary>Returns true to indicate whether a connection loss occurs</summary>
+        private bool TimeWrapConnectionLoss = false;
+
         /// <summary>Gets or sets the total delay which is the usual light speed delay + any manual delay.</summary>
         public double TotalDelay { get; set; }
         /// <summary>The target (<see cref="TargetCommand.Target"/>) of a <see cref="TargetCommand"/>.</summary>
@@ -122,7 +128,7 @@ namespace RemoteTech.FlightComputer
 
         /// <summary>Proportional Integral Derivative vessel controller.</summary>
         public PIDController PIDController;
-        public static readonly double PIDKp = 2.0, PIDKi = 0.8, PIDKd = 1.0;
+        public static double PIDKp = 2.0, PIDKi = 0.8, PIDKd = 1.0;
         public static readonly double RoverPIDKp = 1.0, RoverPIDKi = 0.0, RoverPIDKd = 0.0;
 
         /// <summary>The window of the flight computer.</summary>
@@ -163,11 +169,14 @@ namespace RemoteTech.FlightComputer
 
             // Add RT listeners from KSP Autopilot
             StockAutopilotCommand.UIreference = GameObject.FindObjectOfType<VesselAutopilotUI>();
-            for (var index = 0; index < StockAutopilotCommand.UIreference.modeButtons.Length; index++)
+            if (StockAutopilotCommand.UIreference != null)
             {
-                var buttonIndex = index; // prevent compiler optimisation from assigning static final index value
-                StockAutopilotCommand.UIreference.modeButtons[index].onClick.AddListener(delegate { StockAutopilotCommand.AutopilotButtonClick(buttonIndex, this); });
-                // bad idea to use RemoveAllListeners() since no easy way to re-add the original stock listener to onClick
+                for (var index = 0; index < StockAutopilotCommand.UIreference.modeButtons.Length; index++)
+                {
+                    var buttonIndex = index; // prevent compiler optimisation from assigning static final index value
+                    StockAutopilotCommand.UIreference.modeButtons[index].onClick.AddListener(delegate { StockAutopilotCommand.AutopilotButtonClick(buttonIndex, this); });
+                    // bad idea to use RemoveAllListeners() since no easy way to re-add the original stock listener to onClick
+                }
             }
         }
 
@@ -259,7 +268,7 @@ namespace RemoteTech.FlightComputer
             if (!ignoreExtra)
             {
                 cmd.ExtraDelay += Math.Max(0, TotalDelay - Delay);
-                cmd.ExtraDelayScheduledTimeStamp = RTUtil.GameTime + cmd.ExtraDelay;
+                cmd.ExtraDelayScheduledTimeStamp = cmd.TimeStamp + cmd.ExtraDelay;
             }
 
             var pos = _commandQueue.BinarySearch(cmd);
@@ -286,6 +295,7 @@ namespace RemoteTech.FlightComputer
             if (RTCore.Instance == null) return;
             if (!SignalProcessor.IsMaster) return;
             PopCommand();
+            ExecuteConnectionStatusActions();
         }
 
         /// <summary>Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.</summary>
@@ -426,8 +436,8 @@ namespace RemoteTech.FlightComputer
                 var time = TimeWarp.deltaTime;
                 foreach (var dc in _commandQueue.TakeWhile(c => c.TimeStamp <= RTUtil.GameTime + (2 * time + 1.0)))
                 {
-                    var message = new ScreenMessage("[Flight Computer]: Throttling back time warp...", 4.0f, ScreenMessageStyle.UPPER_LEFT);
-                    while ((2 * TimeWarp.deltaTime + 1.0) > (Math.Max(dc.TimeStamp - RTUtil.GameTime, 0) + dc.ExtraDelay) && TimeWarp.CurrentRate > 1.0f)
+                    var message = new ScreenMessage(Localizer.Format("#RT_FC_msg1"), 4.0f, ScreenMessageStyle.UPPER_LEFT);//"[Flight Computer]: Throttling back time warp..."
+                    while ((2 * TimeWarp.deltaTime + 1.0) > (Math.Max(dc.TimeStamp - RTUtil.GameTime, 0) + dc.ExtraDelay) && TimeWarp.CurrentRate > 1.0f)//
                     {
                         TimeWarp.SetRate(TimeWarp.CurrentRateIndex - 1, true);
                         ScreenMessages.PostScreenMessage(message);
@@ -468,7 +478,7 @@ namespace RemoteTech.FlightComputer
                     }
                     else
                     {
-                        string message = $"[Flight Computer]: Out of power, cannot run \"{dc.ShortName}\" on schedule.";
+                        string message = Localizer.Format("#RT_FC_msg2", dc.ShortName);//$"[Flight Computer]: Out of power, cannot run \"{}\" on schedule."
                         ScreenMessages.PostScreenMessage(new ScreenMessage(
                             message, 4.0f, ScreenMessageStyle.UPPER_LEFT));
                     }
@@ -566,7 +576,8 @@ namespace RemoteTech.FlightComputer
             if (Vessel.packed)
             {
                 RTLog.Notify("Save Flightconfig after unpacking");
-                _fcLoadedConfigs = configNode;
+                _fcLoadedConfigs = configNode.CreateCopy();
+                //Apparently, _fcLoadedConfigs (resided at memory pointer of configNode) is changed at 1 point before loading into FC. CreateCopy() duplicates the content to a separate memory space.
                 return;
             }
 
@@ -620,7 +631,7 @@ namespace RemoteTech.FlightComputer
                     {
                         if (cmd is ManeuverCommand)
                         {
-                            RTUtil.ScreenMessage("A maneuver burn is required");
+                            RTUtil.ScreenMessage(Localizer.Format("#RT_FC_msg3"));//"A maneuver burn is required"
                             continue;
                         }
 
@@ -635,7 +646,7 @@ namespace RemoteTech.FlightComputer
                             {
                                 if (cmd is BurnCommand)
                                 {
-                                    RTUtil.ScreenMessage("A burn command is required");
+                                    RTUtil.ScreenMessage(Localizer.Format("#RT_FC_msg4"));//"A burn command is required"
                                     continue;
                                 }
 
@@ -726,6 +737,32 @@ namespace RemoteTech.FlightComputer
                     // remove Node
                     Enqueue(CancelCommand.WithCommand(maneuverCmd));
                     return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Execute actions depending on connection status
+        /// </summary>
+        private void ExecuteConnectionStatusActions()
+        {
+            //stop time wrap if re-connection occurred
+            if (StopTimeWrapOnReconnect && TimeWarp.CurrentRate > 1.0f)
+            {
+                if (!RTCore.Instance.Satellites[SignalProcessor.VesselId].Connections.Any()) // no connection
+                {
+                    TimeWrapConnectionLoss = true;
+                }
+                else // working connection
+                {
+                    if (TimeWrapConnectionLoss)
+                    {
+                        TimeWrapConnectionLoss = false;
+
+                        var message = new ScreenMessage(Localizer.Format("#RT_FC_msg1"), 4.0f, ScreenMessageStyle.UPPER_LEFT);//"[Flight Computer]: Throttling back time warp..."
+                        TimeWarp.SetRate(0, false); //gentle stopping
+                        ScreenMessages.PostScreenMessage(message);
+                    }
                 }
             }
         }

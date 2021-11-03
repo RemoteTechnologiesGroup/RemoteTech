@@ -13,7 +13,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.0
+  version: 1.9.12
 
   # branches
   branches:
@@ -65,7 +65,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_5_1.zip
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_12_1.zip
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
@@ -102,7 +102,7 @@
     - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp.dll
     - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp-firstpass.dll
     - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.dll
-    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.UI.dll
+    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.*.dll
     - cmd: cd %ASSEMBLY_FOLDER% & dir
     - cmd: echo done!
 
@@ -218,7 +218,7 @@
   #---------------------------------#
 
   # version format (you need to bump it when changing version)
-  version: 1.9.0-{build}-{branch}
+  version: 1.9.12-{build}-{branch}
 
   # branches
   branches:
@@ -270,7 +270,7 @@
     - cmd: set GAMEDATA_FOLDER=%APPVEYOR_BUILD_FOLDER%\GameData
     - cmd: set ASSEMBLY_FOLDER=%GAMEDATA_FOLDER%\RemoteTech\Plugins
     # download required KSP DLLs
-    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_5_1.zip
+    - cmd: curl -fsS -o%DOWNLOAD_FOLDER%\dlls.7z https://d237kiopfuf7h0.cloudfront.net/download/KSPDLL_1_12_1.zip
     # extract them
     - cmd: cd %DOWNLOAD_FOLDER% & dir
     - cmd: 7z.exe e -p%DLL_ARCH_PASS% -o%ASSEMBLY_FOLDER% %DOWNLOAD_FOLDER%\dlls.7z
@@ -308,7 +308,7 @@
     - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp.dll
     - cmd: del %ASSEMBLY_FOLDER%\Assembly-CSharp-firstpass.dll
     - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.dll
-    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.UI.dll
+    - cmd: del %ASSEMBLY_FOLDER%\UnityEngine.*.dll
     - cmd: cd %ASSEMBLY_FOLDER% & dir
     - cmd: echo done!
 

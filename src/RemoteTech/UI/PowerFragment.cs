@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using static RemoteTech.FlightComputer.Commands.HibernationCommand;
+using KSP.Localization;
 
 namespace RemoteTech.UI
 {
@@ -27,20 +28,16 @@ namespace RemoteTech.UI
             {
                 GUILayout.BeginHorizontal();
                 {
-                    GUIStyle guiTableRow = new GUIStyle(HighLogic.Skin.label);
-                    guiTableRow.normal.textColor = Color.white;
-
-                    RTUtil.FakeStateButton(new GUIContent("HBNT", "Ultra-low power hibernation with all active antennas shut down."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Hibernate)), (int)mPowerMode, (int)PowerModes.Hibernate, GUILayout.Width(width3));
-                    RTUtil.FakeStateButton(new GUIContent("THLD", "Optimally adaptive power-saving threshold control on all antennas"), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.AntennaSaver)), (int)mPowerMode, (int)PowerModes.AntennaSaver, GUILayout.Width(width3));
-                    RTUtil.Button(new GUIContent("WAKE", "Terminate any power-saving state."), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Wake)), GUILayout.Width(width3));
+                    RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_PowerFragment_HBNT"), Localizer.Format("#RT_PowerFragment_HBNT_desc")), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Hibernate)), (int)mPowerMode, (int)PowerModes.Hibernate, GUILayout.Width(width3));//"HBNT", "Ultra-low power hibernation with all active antennas shut down."
+                    RTUtil.FakeStateButton(new GUIContent(Localizer.Format("#RT_PowerFragment_THLD"), Localizer.Format("#RT_PowerFragment_THLD_desc")), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.AntennaSaver)), (int)mPowerMode, (int)PowerModes.AntennaSaver, GUILayout.Width(width3));//"THLD", "Optimally adaptive power-saving threshold control on all antennas"
+                    RTUtil.Button(new GUIContent(Localizer.Format("#RT_PowerFragment_WAKE"), Localizer.Format("#RT_PowerFragment_WAKE_desc")), () => RTCore.Instance.StartCoroutine(OnPowerClick(PowerModes.Wake)), GUILayout.Width(width3));//"WAKE", "Terminate any power-saving state."
                 }
                 GUILayout.EndHorizontal();
                 GUILayout.Space(200);
 
                 GUILayout.BeginHorizontal();
                 {
-                    GUILayout.FlexibleSpace();
-                    RTUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
+                    RTUtil.Button(new GUIContent(">>", Localizer.Format("#RT_PowerFragment_Queue_desc")),//"Toggles the queue and delay functionality."
                         mOnClickQueue, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Text;
 using System.Linq;
-
 using RemoteTech.FlightComputer.Commands;
 using static RemoteTech.FlightComputer.UIPartActionMenuPatcher;
+#if !KSP131
+using Expansions.Serenity;
+#endif
 
 namespace RemoteTech.FlightComputer
 {
@@ -65,7 +67,7 @@ namespace RemoteTech.FlightComputer
                 {
                     var field = (BaseField as WrappedField);
                     if (field == null) // we lost the Wrapped field instance, this is due to the fact that the command was loaded from a save
-                    {                        
+                    {
                         if (NewValue != null)
                         {
                             var newfield = new WrappedField(BaseField, WrappedField.KspFieldFromBaseField(BaseField));
@@ -83,6 +85,21 @@ namespace RemoteTech.FlightComputer
 
                     if (UIPartActionController.Instance != null)
                         UIPartActionController.Instance.UpdateFlight();
+
+#if !KSP131
+                    for (int i = 0; i < f.Vessel.parts.Count; i++)
+                    {
+                        for (int j = 0; j < f.Vessel.parts[i].Modules.Count; j++)
+                        {
+                            if (f.Vessel.parts[i].Modules[j] is ModuleRoboticServoPiston)
+                            {
+                                // stock bug: targetExtension set by player in PartActionMenu is not passed to targetPosition unlike other robotic parts like hinge
+                                var agModule = f.Vessel.parts[i].Modules[j] as ModuleRoboticServoPiston;
+                                RTUtil.SetInstanceField(typeof(ModuleRoboticServoPiston), agModule, "targetPosition", agModule.targetExtension);
+                            }
+                        }
+                    }
+#endif
                 }
                 catch (Exception invokeException)
                 {

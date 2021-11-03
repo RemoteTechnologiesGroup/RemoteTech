@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using RemoteTech.FlightComputer.Commands;
+using KSP.Localization;
 
 namespace RemoteTech.UI
 {
@@ -122,9 +123,9 @@ namespace RemoteTech.UI
 
         private int selectedModeIndex = 0;
         private bool MouseClick = false;
-        private readonly GUIContent[] Tabs = { new GUIContent("TGT", "Drive to the latitude and longitude of a body or towards vessel target."),
-                                               new GUIContent("HDG", "Drive with specific heading and distance."),
-                                               new GUIContent("FINE", "Drive with specific turning or distance.") };
+        private readonly GUIContent[] Tabs = { new GUIContent(Localizer.Format("#RT_RoverFragment_TGT"), Localizer.Format("#RT_RoverFragment_TGT_desc")),//"TGT", "Drive to the latitude and longitude of a body or towards vessel target."
+                                               new GUIContent(Localizer.Format("#RT_RoverFragment_HDG"), Localizer.Format("#RT_RoverFragment_HDG_desc")),//"HDG", "Drive with specific heading and distance."
+                                               new GUIContent(Localizer.Format("#RT_RoverFragment_FINE"), Localizer.Format("#RT_RoverFragment_FINE_desc")) };//"FINE", "Drive with specific turning or distance."
         private enum RoverModes { TargetMode = 0,
                                   HeadingMode = 1,
                                   FineMode = 2 };
@@ -155,10 +156,10 @@ namespace RemoteTech.UI
 
                 GUILayout.BeginHorizontal();
                 {
-                    RTUtil.Button(new GUIContent("DRIVE", "Starts the automatic driving."),
+                    RTUtil.Button(new GUIContent(Localizer.Format("#RT_RoverFragment_DRIVE"), Localizer.Format("#RT_RoverFragment_DRIVE_desc")),//"DRIVE", "Starts the automatic driving."
                         delegate { OnExecClick(selectedModeIndex); }, GUILayout.Width(width3));
                     GUILayout.FlexibleSpace();
-                    RTUtil.Button(new GUIContent(">>", "Toggles the queue and delay functionality."),
+                    RTUtil.Button(new GUIContent(">>", Localizer.Format("#RT_RoverFragment_Queue_desc")),//"Toggles the queue and delay functionality."
                         mOnClickQueue, GUILayout.Width(width3));
                 }
                 GUILayout.EndHorizontal();
@@ -199,14 +200,14 @@ namespace RemoteTech.UI
         {
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Steer: ", "How much to turn"));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_FINESteer"), Localizer.Format("#RT_RoverFragment_FINESteer_desc")));//"Steer: ", "How much to turn"
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(new GUIContent(Math.Abs(mSteering).ToString("P"), ""));
                 if (mSteering != 0) {
                     if (mSteering < 0)
-                        GUILayout.Label(new GUIContent("right", ""), GUILayout.Width(40));
+                        GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_right"), ""), GUILayout.Width(40));//"right"
                     else
-                        GUILayout.Label(new GUIContent("left", ""), GUILayout.Width(40));
+                        GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_left"),  ""), GUILayout.Width(40));//"left"
                 } else
                     GUILayout.Label(new GUIContent("", ""), GUILayout.Width(40));
             }
@@ -216,28 +217,28 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Turn", "How many degrees to turn"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_Turn"), Localizer.Format("#RT_RoverFragment_Turn_desc")), GUILayout.Width(50));//"Turn", "How many degrees to turn"
                 GUI.SetNextControlName("RC1");
                 RTUtil.TextField(ref mTurn, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(°)", "How many degrees to turn"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(°)", Localizer.Format("#RT_RoverFragment_Turn_desc")), GUI.skin.textField, GUILayout.Width(40));//, "How many degrees to turn"
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Dist", "Distance to drive"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_Dist"), Localizer.Format("#RT_RoverFragment_Dist_desc")),GUILayout.Width(50));//"Dist", "Distance to drive"
                 GUI.SetNextControlName("RC2");
                 RTUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(m)", "Distance to drive"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(m)", Localizer.Format("#RT_RoverFragment_Dist_desc")), GUI.skin.textField, GUILayout.Width(40));//"Distance to drive"
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Speed", "Speed to maintain, negative for reverse"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_Speed"), Localizer.Format("#RT_RoverFragment_Speed_desc")), GUILayout.Width(50));//"Speed", "Speed to maintain, negative for reverse"
                 GUI.SetNextControlName("RC3");
                 RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(m/s)", "Speed to maintain, negative for reverse"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(m/s)", Localizer.Format("#RT_RoverFragment_Speed_desc")), GUI.skin.textField, GUILayout.Width(40));//"Speed to maintain, negative for reverse"
             }
             GUILayout.EndHorizontal();
 
@@ -260,10 +261,10 @@ namespace RemoteTech.UI
         {
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Steer: ", "How sharp to turn at max"));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_HDGSteer"), Localizer.Format("#RT_RoverFragment_HDGSteer_desc")));//"Steer: ", "How sharp to turn at max"
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(new GUIContent(mSteerClamp.ToString("P"), "How sharp to turn at max"));
-                GUILayout.Label(new GUIContent("max", "How sharp to turn at max"), GUILayout.Width(40));
+                GUILayout.Label(new GUIContent(mSteerClamp.ToString("P"), Localizer.Format("#RT_RoverFragment_HDGSteer_desc")));//"How sharp to turn at max"
+                GUILayout.Label(new GUIContent("max",  Localizer.Format("#RT_RoverFragment_HDGSteer_desc")), GUILayout.Width(40));//"How sharp to turn at max"
             }
             GUILayout.EndHorizontal();
 
@@ -271,7 +272,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Hdg", "Heading to maintain"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_mHdg"), Localizer.Format("#RT_RoverFragment_mHdg_desc")), GUILayout.Width(50));//"Hdg", "Heading to maintain"
                 GUI.SetNextControlName("RC1");
                 RTUtil.TextField(ref mHeading, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label("(°)", GUI.skin.textField, GUILayout.Width(40));
@@ -280,7 +281,7 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Dist", "Distance to drive"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_Dist"), Localizer.Format("#RT_RoverFragment_Dist_desc")), GUILayout.Width(50));//"Dist", "Distance to drive"
                 GUI.SetNextControlName("RC2");
                 RTUtil.TextField(ref mDist, GUILayout.Width(50), GUILayout.ExpandWidth(false));
                 GUILayout.Label("(m)", GUI.skin.textField, GUILayout.Width(40));
@@ -289,10 +290,10 @@ namespace RemoteTech.UI
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Speed", "Speed to maintain"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_Speed"), Localizer.Format("#RT_RoverFragment_HDGSpeed_desc")), GUILayout.Width(50));//"Speed", "Speed to maintain"
                 GUI.SetNextControlName("RC3");
                 RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(m/s)", "Speed to maintain"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(m/s)", Localizer.Format("")), GUI.skin.textField, GUILayout.Width(40));//"Speed to maintain"
             }
             GUILayout.EndHorizontal();
 
@@ -303,8 +304,8 @@ namespace RemoteTech.UI
 
         private void DrawTargetContent()
         {
-            string targetTypeString = "Body coordinations";
-            string tooltip = "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates";
+            string targetTypeString = Localizer.Format("#RT_RoverFragment_coordinations");//"Body coordinations"
+            string tooltip = Localizer.Format("#RT_RoverFragment_coordinations_desc", GameSettings.MODIFIER_KEY.name);//"Hold " +  + " and click on ground to input coordinates"
             ITargetable Target = mFlightComputer.Vessel.targetObject;
 
             if (GameSettings.MODIFIER_KEY.GetKey() && ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) != MouseClick)) // on lookout for mouse click on body
@@ -324,48 +325,48 @@ namespace RemoteTech.UI
                     Vessel TargetVessel = Target as Vessel;
                     Latitude = (float) TargetVessel.latitude;
                     Longitude = (float) TargetVessel.longitude;
-                    targetTypeString = "Designated Vessel";
-                    tooltip = "Drive to this vessel";
+                    targetTypeString = Localizer.Format("#RT_RoverFragment_TargetVessel");//"Designated Vessel"
+                    tooltip = Localizer.Format("#RT_RoverFragment_TargetVessel_desc");//"Drive to this vessel"
                 }
             }
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Steer: ", "How sharp to turn at max"));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_HDGSteer"), Localizer.Format("#RT_RoverFragment_HDGSteer_desc")));//"Steer: ", "How sharp to turn at max"
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(new GUIContent(mSteerClamp.ToString("P"), "How sharp to turn at max"));
-                GUILayout.Label(new GUIContent("max", "How sharp to turn at max"), GUILayout.Width(40));
+                GUILayout.Label(new GUIContent(mSteerClamp.ToString("P"), Localizer.Format("#RT_RoverFragment_HDGSteer_desc")));//"How sharp to turn at max"
+                GUILayout.Label(new GUIContent("max", Localizer.Format("#RT_RoverFragment_HDGSteer_desc")), GUILayout.Width(40));// "How sharp to turn at max"
             }
             GUILayout.EndHorizontal();
 
             RTUtil.HorizontalSlider(ref mSteerClamp, 0, 1);
 
-            GUILayout.Label(new GUIContent("Mode: "+targetTypeString, tooltip));
+            GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_ModeLabel",targetTypeString), tooltip));//"Mode: "
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("LAT", "Latitude to drive to"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_LAT"), Localizer.Format("#RT_RoverFragment_LAT_desc")), GUILayout.Width(50));//"LAT", "Latitude to drive to"
                 GUI.SetNextControlName("RC1");
                 RTUtil.TextField(ref mLatitude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(°)", "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(°)", Localizer.Format("#RT_RoverFragment_coordinations_desc", GameSettings.MODIFIER_KEY.name)), GUI.skin.textField, GUILayout.Width(40));//"Hold " +  + " and click on ground to input coordinates"
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("LON", "Longitude to drive to"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_LON"), Localizer.Format("#RT_RoverFragment_LON_desc")), GUILayout.Width(50));//"LON", "Longitude to drive to"
                 GUI.SetNextControlName("RC2");
                 RTUtil.TextField(ref mLongditude, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(°)", "Hold " + GameSettings.MODIFIER_KEY.name + " and click on ground to input coordinates"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(°)", Localizer.Format("#RT_RoverFragment_coordinations_desc", GameSettings.MODIFIER_KEY.name)), GUI.skin.textField, GUILayout.Width(40));//"Hold " +  + " and click on ground to input coordinates"
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(new GUIContent("Speed", "Speed to maintain"), GUILayout.Width(50));
+                GUILayout.Label(new GUIContent(Localizer.Format("#RT_RoverFragment_Speed"), Localizer.Format("#RT_RoverFragment_HDGSpeed_desc")), GUILayout.Width(50));//"Speed", "Speed to maintain"
                 GUI.SetNextControlName("RC3");
                 RTUtil.TextField(ref mSpeed, GUILayout.Width(50), GUILayout.ExpandWidth(false));
-                GUILayout.Label(new GUIContent("(m/s)", "Speed to maintain"), GUI.skin.textField, GUILayout.Width(40));
+                GUILayout.Label(new GUIContent("(m/s)", Localizer.Format("#RT_RoverFragment_HDGSpeed_desc")), GUI.skin.textField, GUILayout.Width(40));//"Speed to maintain"
             }
             GUILayout.EndHorizontal();
 

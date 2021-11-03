@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
+using KSP.Localization;
 
 namespace RemoteTech
 {
@@ -184,19 +185,15 @@ namespace RemoteTech
 
         public static String TargetName(Guid guid)
         {
+            if (guid == System.Guid.Empty)
+            {
+                return Localizer.Format("#RT_ModuleUI_NoTarget");//"No Target"
+            }
             if (RTCore.Instance != null && RTCore.Instance.Network != null && RTCore.Instance.Satellites != null)
             {
-                if (guid == System.Guid.Empty)
-                {
-                    return "No Target";
-                }
                 if (RTCore.Instance.Network.Planets.ContainsKey(guid))
                 {
                     return RTCore.Instance.Network.Planets[guid].name;
-                }
-                if (guid == NetworkManager.ActiveVesselGuid)
-                {
-                    return "Active Vessel";
                 }
                 ISatellite sat;
                 if ((sat = RTCore.Instance.Network[guid]) != null)
@@ -204,7 +201,27 @@ namespace RemoteTech
                     return sat.Name;
                 }
             }
-            return "Unknown Target";
+            if(HighLogic.LoadedScene == GameScenes.EDITOR)
+            {
+                var result = FlightGlobals.Bodies.Find(x => x.Guid() == guid);
+                if (result != null)
+                {
+                    return result.name; // Name of Celestial body
+                }
+            }
+            if (guid == NetworkManager.ActiveVesselGuid)
+            {
+                return Localizer.Format("#RT_ModuleUI_ActiveVessel");//"Active Vessel"
+            }
+            if (RTSettings.Instance != null)
+            {
+                var result2 = RTSettings.Instance.GroundStations.Find(x => x.mGuid == guid);
+                if (result2 != null)
+                {
+                    return result2.GetName(); // Name of Misson Control
+                }
+            }
+            return Localizer.Format("#RT_ModuleUI_UnknownTarget");//"Unknown Target"
         }
 
         public static Guid Guid(this CelestialBody cb)
@@ -220,17 +237,13 @@ namespace RemoteTech
 
         public static bool HasValue(this ProtoPartModuleSnapshot ppms, String name)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
-            return n.HasValue(name);
+            return ppms.moduleValues.HasValue(name);
         }
 
         public static bool GetBool(this ProtoPartModuleSnapshot ppms, String value)
         {
-            var n = new ConfigNode();
-            ppms.Save(n);
             bool result;
-            return Boolean.TryParse(n.GetValue(value) ?? "False", out result) && result;
+            return Boolean.TryParse(ppms.moduleValues.GetValue(value) ?? "False", out result) && result;
         }
 
         /// <summary>Searches a ProtoPartModuleSnapshot for an integer field.</summary>
@@ -264,6 +277,30 @@ namespace RemoteTech
                                            | BindingFlags.Static;
             var field = type.GetField(fieldName, bindFlags);
             return field?.GetValue(instance);
+        }
+
+        /// <summary>
+        /// Get a private field value from an object instance though reflection.
+        /// </summary>
+        /// <param name="type">The type of the object instance from which to obtain the private field.</param>
+        /// <param name="instance">The object instance</param>
+        /// <param name="fieldName">The field name in the object instance, from which to obtain the value.</param>
+        /// <returns>The value of the <paramref name="fieldName"/> instance or null if no such field exist in the instance.</returns>
+        internal static bool SetInstanceField(Type type, object instance, string fieldName, object newValue)
+        {
+            const BindingFlags bindFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic
+                                           | BindingFlags.Static;
+
+            try
+            {
+                var field = type.GetField(fieldName, bindFlags);
+                field.SetValue(instance, newValue);
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
         }
 
         public static void Button(Texture2D icon, Action onClick, params GUILayoutOption[] options)

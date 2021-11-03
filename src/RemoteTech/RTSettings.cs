@@ -56,6 +56,7 @@ namespace RemoteTech
         [Persistent] public double MultipleAntennaMultiplier;
         [Persistent] public bool ThrottleTimeWarp;
         [Persistent] public bool ThrottleZeroOnNoConnection;
+        [Persistent] public bool StopTimeWrapOnReConnection;
         [Persistent] public bool HideGroundStationsBehindBody;
         [Persistent] public bool ControlAntennaWithoutConnection;
         [Persistent] public bool UpgradeableMissionControlAntennas;
@@ -69,9 +70,14 @@ namespace RemoteTech
         [Persistent] public Color OmniConnectionColor;
         [Persistent] public Color ActiveConnectionColor;
         [Persistent] public Color RemoteStationColorDot;
-        [Persistent] public Color DirectConnectionColor = new Color(0, 0.749f, 0.952f, 1); //TODO: remove two new values after some significant time - 7 Nov 2017
-        [Persistent] public bool SignalRelayEnabled = false;
+        [Persistent] public Color DirectConnectionColor;
+        [Persistent] public bool SignalRelayEnabled;
         [Persistent] public bool IgnoreLineOfSight;
+        [Persistent] public float FCWinPosX;
+        [Persistent] public float FCWinPosY;
+        [Persistent] public double FlightTermP;
+        [Persistent] public double FlightTermI;
+        [Persistent] public double FlightTermD;
         [Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;
         [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
 

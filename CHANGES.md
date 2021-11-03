@@ -1,3 +1,357 @@
+# Version 1.9.12
+**Released July 10, 2021**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.12.1
+* Fixed the mispositon of the signal delay interface
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.11
+**Released June 19, 2021**
+
+What's New?
+===========
+
+* Increase the range of RA-15 antenna from 10 Gm to 20 Gm and decrease the power drain rate from 1.10 to 0.95 to be more comparable with Communotron HG-55
+* Increase the range of RA-100 antenna from 100 Gm to 250 Gm to be more comparable with CommTech-1
+* Add a new misc option of stopping time wrap upon reconnection 
+* Add support for a new restock-relay-radial-2_v2 antenna (4 HighGain5 antennae stuck together) for RestockPlus KSP 1.11 update
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #827: Balance: Deployable/Relay Antennas [requested by: dbackstr]
+
+Pull Requests
+-------------
+
+* PR #825: RestockPlus antenna name fix KSP 1.11 update [PR by: Wombatlord]
+
+***
+
+# Version 1.9.10
+**Released January 16, 2021**
+
+What's New?
+===========
+
+* Add support for a renamed part of HG-5 High Gain Antenna
+* Add support for cargo storage of small RemoteTech antennas
+* Add new Flight Computer error message on no maneuver node to execute
+* Add multiple protections against the construction functionality introduced by KSP 1.11
+* Add preventative check of the filter UI against non-existent KSP interface components during loading
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #822: stock HG-5 High Gain Antenna renamed [requested by: mcortez]
+
+Pull Requests
+-------------
+
+* PR #824: Duplicate config for HighGainAntenna5 for 1.11 [PR by: doubleplush]
+
+***
+
+# Version 1.9.9
+**Released December 19, 2020**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.11
+* Fixed UI issue of missing signal delay and flight computer button
+* Added preventative measure for scenario of a vessel/part exiting simulation range
+* Readded data protection for saved flight computer commands during loading
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #821: Flight UI not visible in KSP 1.11 [requested by: gjulianm]
+* Issue #820: Order's queue lost when switching vessels (or going SC) [requested by: Jacchus]
+* Issue #817: Severe disruption in simulation when parts disappear because they go out of simulation range [requested by: Ernesto-Alvarez]
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.8
+**Released August 1, 2020**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.10.1
+* Fixed PID issue of wobbling vessel with very low ratio of torque to mass
+* Added new Flight Computer command to ignore pitch/heading/roll flight controls
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #759: Request: possibility to only set roll / pitch / heading - not all at once [requested by: Gordon-Dry]
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.7
+**Released July 20, 2020**
+
+What's New?
+===========
+
+* Compiled for KSP 1.10
+* Updated ModuleManager to 4.1.4
+* Added support for 2 new probe core parts of KSP 1.10
+* Added support for NearFuture Exploration (minimum 1.0.7)
+* Added support for Universal Storage 2
+* Supported pre-targeting of a dish antenna in VAB and SPH
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #257: Request: pre-target antennae in VAB/SPH [requested by: cerebrate]
+* Issue #725: VAB/SPH dish target allocation (feature request) [requested by: Khormin]
+* Issue #811: Set Antenna Tracking in VAB [requested by: dimitriye98]
+
+Pull Requests
+-------------
+
+* PR #724: VAB and SPH target button [PR by: drunkeNNN]
+* PR #815: Support for Universal Storage 2 [PR by: NullSnapshot]
+
+***
+
+# Version 1.9.6
+**Released February 15, 2020**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.9
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.5
+**Released December 25, 2019**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.8.1
+* Updated ModuleManager to 4.1.3
+* Fixed issue of wobbling when holding Kill Rotation or Maneuver Node
+* Fixed issue of signal delay and control indicator not hidden in in-flight action group editor
+* Fixed issue of ReStocked-ed antennas auto-deploying in Editor
+* Minor improvements to Rover Computer
+* Introduced new flight computer interface of in-flight PID controller
+* Fixed issue of flight computer commands not saved persistently
+* Fixed issue of part configuration values being duplicated when saving and loading
+* Localized to en-us and zh-cn languages
+* Fixed issue of NullReferenceException when moving deployable science stations between 2 inventories
+* Fixed issue of missing science transmission button and information on antennas
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #797: Missing science transmission options and information on antennae [requested by: mindset-tk]
+* Issue #798: Antennas auto extend and can't retract [requested by: AndresHdzArv]
+* Issue #799: Control indicator obscures in-flight action group editor [requested by: BTAxis]
+* Issue #804: NullReferenceException when carrying deployable probodyne science in EVA [requested by: aidygus]
+* Issue #805: RTUtil.GetBool causes the values and sub-nodes in ProtoPartModuleSnapshot.moduleValues to duplicate [requested by: allista]
+* Issue #806: Flight computer command queue gets wiped unexpectedly [requested by: Ernesto-Alvarez]
+
+Pull Requests
+-------------
+
+* PR #802: Localization [PR by: tinygrox]
+* PR #807: Minor Chinese changes [PR by: tinygrox]
+
+***
+
+# Version 1.9.4
+**Released October 26, 2019**
+
+What's New?
+===========
+
+* Compiled for KSP 1.8
+* Updated ModuleManager to 4.1.0
+* Exposed two recent-introduced APIs, GetMaxRangeDistance and GetRangeDistance, in internal debug window
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.3.131
+**Released July 21, 2019**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.3 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.3
+**Released July 21, 2019**
+
+What's New?
+===========
+
+* Compiled for KSP 1.7.3
+* Applied MissionControlRangeMultiplier to unused Mission Control Dish Antennas
+* Fixed UpgradeableDish and UpgradeableCosAngle mistake
+* Minor update for Restock and RestockPlus support
+* Persistent position of Flight Computer window across play sessions
+* Improved PID Controller on torque forces
+* Added support for robotic parts and KSP Custom Axis Groups introduced by Breaking Ground expansion
+* Added limited support for deployable ground parts (Omni 400km range to control station only)
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #792: Request: Save Flight Computer window position across sessions [requested by: Galenmacil]
+* Issue #793: add whitelist for ReStock [requested by: Gordon-Dry]
+* Issue #794: The new KSPAxisGroup controls are not suppported [requested by: ncanceill]
+
+Pull Requests
+-------------
+
+* PR #789: Fix reading values for UpgradeableDish and UpgradeableCosAngle [PR by: ilmat192]
+* PR #790: Apply MissionControlRangeMultiplier to dish mission control antennas [PR by: ilmat192]
+
+***
+
+# Version 1.9.2
+**Released April 14, 2019**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.7
+* Updated ModuleManager to 4.0.2
+* Support for Restock and RestockPlus Antennas
+* Fixed Editor error of cross-section profiles on RemoteTech antennas
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+* PR #788: RestockPlus Antenna Support [PR by: xdreaper15]
+
+***
+
+# Version 1.9.1.131
+**Released December 24, 2018**
+
+What's New?
+===========
+
+* Recompiled RemoteTech 1.9.1 for KSP 1.3.1
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
+# Version 1.9.1
+**Released December 24, 2018**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.6
+* Update ModuleManager to 3.1.1
+* Fixed critical bug of Flight Computer executing timed commands wrongly
+* Fixed syntax error in RemoteTech's MM patch for RLA Probes
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+* Issue #781: Signal delay timer error when executing timed commands. [requested by: DrToonhattan]
+
+Pull Requests
+-------------
+
+* PR #779: RLA syntax error [PR by: Gordon-Dry]
+
+***
+
 # Version 1.9.0.145
 **Released October 29, 2018**
 

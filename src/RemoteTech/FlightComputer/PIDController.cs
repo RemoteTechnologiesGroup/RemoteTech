@@ -13,9 +13,9 @@ namespace RemoteTech.FlightComputer
     //and https://github.com/KSP-KOS/KOS/blob/master/src/kOS/Control/SteeringManager.cs
     public class PIDController
     {
-        private const double MaxStoppingTime = 5.0; // upper limit to artifically raise the torque amount by factor
+        private const double MaxStoppingTime = 10.0; // upper limit to artifically raise the torque amount by factor
         private const double Phi1FStoppingTime = 0.1; // phi threshold to target orientation, where stopping time will be 1 factor
-        private const double OmegaThreshold = 0.7; // threshold ratio of torque to MoI to apply MaxStoppingTime or not (useful for huge rocket with tiny torque)
+        private const double OmegaThreshold = 0.1; // threshold ratio of torque to MoI to apply MaxStoppingTime or not (useful for huge rocket with tiny torque)
         public const double EPSILON = 1e-16;
 
         /* error */
@@ -50,7 +50,12 @@ namespace RemoteTech.FlightComputer
         private Vector3d vesselStarboard;
         private Vector3d targetForward;
         private Vector3d targetTop;
-        //private Vector3d targetStarboard;        
+        //private Vector3d targetStarboard;
+
+        public Vector3d getDeviationErrors()
+        {
+            return phiVector;
+        }
 
         private double rollControlRange;
         public double RollControlRange
@@ -104,20 +109,21 @@ namespace RemoteTech.FlightComputer
             if (Vessel != null)
             {
                 UpdateStateVectors(Vessel, Target);
+                SteeringHelper.AnalyzeParts(Vessel);
 
-                Vector3 Torque = SteeringHelper.GetVesselTorque(Vessel);
+                Vector3 Torque = SteeringHelper.TorqueAvailable;
                 var CoM = Vessel.CoM;
                 var MoI = Vessel.MOI;
 
-                phiTotal = PhiTotal();
-                phiVector = PhiVector();//deviation errors from orientation target
+                phiTotal = calculatePhiTotal();
+                phiVector = calculatePhiVector();//deviation errors from orientation target
 
                 for (int i = 0; i < 3; i++)
                 {
                     //Edge case: Very low (torque/MoI) (like 0.0078!) rate so need to rise max acceleration artifically
-                    StoppingTime = (OmegaThreshold <= (Torque[i] / MoI[i])) ? 
+                    StoppingTime = (OmegaThreshold <= (Torque[i] / MoI[i])) ?
                                     1.0f :
-                                    (float) RTUtil.Clamp((1.0 / (Torque[i] / MoI[i])) * (Math.Abs(phiVector[i]) - Phi1FStoppingTime), 1.0, MaxStoppingTime);
+                                    (float)RTUtil.Clamp((1.0 / (Torque[i] / MoI[i])) * (Math.Abs(phiVector[i]) - Phi1FStoppingTime), 1.0, MaxStoppingTime);
 
                     MaxOmega[i] = Mathf.Max((Torque[i] * StoppingTime) / MoI[i], 0.0001f);
                 }
@@ -141,20 +147,24 @@ namespace RemoteTech.FlightComputer
         public Vector3d GetActuation(Quaternion thisTarget)
         {
             Target = thisTarget;
-            UpdateStateVectors(Vessel, Target);
 
-            Vector3 Torque = SteeringHelper.GetVesselTorque(Vessel);
+            UpdateStateVectors(Vessel, Target);
+            SteeringHelper.UpdateRCSThrustAndTorque(Vessel);
+            Vector3 Torque = SteeringHelper.TorqueAvailable;
 
             for (int i = 0; i < 3; i++)
             {
-                Actuation[i] = (Torque[i] == 0.0) ? 0.0 :TargetTorque[i] / Torque[i];
-                //removed the value modifications/clamps as the raw output is desired and can be post-processed.
+                Actuation[i] = TargetTorque[i] / Torque[i];
+                if (Math.Abs(Actuation[i]) < EPSILON || double.IsNaN(Actuation[i]) || double.IsInfinity(Actuation[i]))
+                {
+                    Actuation[i] = 0;
+                }
             }
 
             return Actuation;
         }
 
-        public Vector3d PhiVector()
+        public Vector3d calculatePhiVector()
         {
             Vector3d Phi = Vector3d.zero;
 
@@ -173,7 +183,7 @@ namespace RemoteTech.FlightComputer
             return Phi;
         }
 
-        public double PhiTotal()
+        public double calculatePhiTotal()
         {
             double PhiTotal = Vector3d.Angle(vesselForward, targetForward) * Mathf.Deg2Rad;
             if (Vector3d.Angle(vesselTop, targetForward) > 90)
@@ -423,7 +433,7 @@ namespace RemoteTech.FlightComputer
         public MovingAverage()
         {
             Reset();
-            SampleLimit = 3;
+            SampleLimit = 10;
         }
 
         public void Reset()
@@ -493,6 +503,116 @@ namespace RemoteTech.FlightComputer
             }
             Mean = sum / count;
             return Mean;
+        }
+    }
+
+    /// <summary>
+    /// Imported from MechJeb2 for torque calculations
+    /// 17 June 2019
+    /// </summary>
+    public class Vector6
+    {
+        public Vector3d positive = Vector3d.zero, negative = Vector3d.zero;
+        public enum Direction { FORWARD = 0, BACK = 1, UP = 2, DOWN = 3, RIGHT = 4, LEFT = 5 };
+        public static readonly Vector3d[] directions = { Vector3d.forward, Vector3d.back, Vector3d.up, Vector3d.down, Vector3d.right, Vector3d.left };
+        public static readonly Direction[] Values = (Direction[])Enum.GetValues(typeof(Direction));
+
+        public double forward { get { return positive.z; } set { positive.z = value; } }
+        public double back { get { return negative.z; } set { negative.z = value; } }
+        public double up { get { return positive.y; } set { positive.y = value; } }
+        public double down { get { return negative.y; } set { negative.y = value; } }
+        public double right { get { return positive.x; } set { positive.x = value; } }
+        public double left { get { return negative.x; } set { negative.x = value; } }
+
+        public double this[Direction index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case Direction.FORWARD:
+                        return forward;
+                    case Direction.BACK:
+                        return back;
+                    case Direction.UP:
+                        return up;
+                    case Direction.DOWN:
+                        return down;
+                    case Direction.RIGHT:
+                        return right;
+                    case Direction.LEFT:
+                        return left;
+                }
+                return 0;
+            }
+            set
+            {
+                switch (index)
+                {
+                    case Direction.FORWARD:
+                        forward = value;
+                        break;
+                    case Direction.BACK:
+                        back = value;
+                        break;
+                    case Direction.UP:
+                        up = value;
+                        break;
+                    case Direction.DOWN:
+                        down = value;
+                        break;
+                    case Direction.RIGHT:
+                        right = value;
+                        break;
+                    case Direction.LEFT:
+                        left = value;
+                        break;
+                }
+            }
+        }
+
+        public Vector6()
+        {
+        }
+
+        public Vector6(Vector3d positive, Vector3d negative)
+        {
+            this.positive = positive;
+            this.negative = negative;
+        }
+
+        public void Reset()
+        {
+            positive = Vector3d.zero;
+            negative = Vector3d.zero;
+        }
+
+        public void Add(Vector3d vector)
+        {
+            for (int i = 0; i < Values.Length; i++)
+            {
+                Direction d = Values[i];
+                double projection = Vector3d.Dot(vector, directions[(int)d]);
+                if (projection > 0)
+                {
+                    this[d] += projection;
+                }
+            }
+        }
+
+        public double GetMagnitude(Vector3d direction)
+        {
+            double sqrMagnitude = 0;
+            for (int i = 0; i < Values.Length; i++)
+            {
+                Direction d = Values[i];
+                double projection = Vector3d.Dot(direction.normalized, directions[(int)d]);
+                if (projection > 0)
+                {
+                    sqrMagnitude += Math.Pow(projection * this[d], 2);
+                }
+            }
+            return Math.Sqrt(sqrMagnitude);
         }
     }
 }

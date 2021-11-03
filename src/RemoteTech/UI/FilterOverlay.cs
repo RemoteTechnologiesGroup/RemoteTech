@@ -72,9 +72,16 @@ namespace RemoteTech.UI
                 {
                     // New side bar location checking... if someone finds a better method for this please fix
                     if (mImg == null)
-                        mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
+                    {
+                        var obj = GameObject.Find("Side Bar");
+                        if (obj != null)
+                            mImg = obj.GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
+                    }
 
-                    posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                    if (mImg != null)
+                    {
+                        posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                    }
                 }
 
                 return new Rect(posX, posY, mTextures.Background.width * GameSettings.UI_SCALE, mTextures.Background.height * GameSettings.UI_SCALE);
@@ -95,8 +102,16 @@ namespace RemoteTech.UI
 
                     // Same new side bar checking... if someone finds a better method for this please fix
                     if (mImg == null)
-                        mImg = GameObject.Find("Side Bar").GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
-                    posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                    {
+                        var obj = GameObject.Find("Side Bar");
+                        if(obj != null)
+                            mImg = obj.GetChild("bg (stretch)").GetComponent<UnityEngine.UI.Image>();
+                    }
+
+                    if (mImg != null)
+                    {
+                        posX = mImg.rectTransform.rect.width * GameSettings.UI_SCALE;
+                    }
                 }
 
                 return new Rect(posX, Screen.height - height, width, height);

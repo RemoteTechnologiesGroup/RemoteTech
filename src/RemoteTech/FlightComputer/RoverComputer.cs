@@ -270,7 +270,7 @@ namespace RemoteTech.FlightComputer
             Delta = Vector3.Distance(mVessel.CoM, TargetPos);
             DeltaT = Delta / RoverSpeed;
 
-            if (Delta > 0)
+            if (Delta >= 0.1f) //zero is inpractical due to float nature
             {
                 fs.wheelThrottle = (float)throttlePID.Update(RoverSpeed, dc.speed, -1.0, 1.0);
                 if (ForwardAxis != Vector3.zero)
@@ -302,7 +302,11 @@ namespace RemoteTech.FlightComputer
         {
             angleBetweenHDGs = Math.Abs(angleBetweenHDGs);
 
-            if (angleBetweenHDGs <= 3)
+            if (angleBetweenHDGs <= 1)
+            {
+                outputSteer = Mathf.Clamp(outputSteer, -0.005f, 0.005f);
+            }
+            else if (angleBetweenHDGs <= 3)
             {
                 outputSteer = Mathf.Clamp(outputSteer, -0.01f, 0.01f);
             }
