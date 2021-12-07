@@ -81,7 +81,7 @@ namespace RemoteTech.FlightComputer
 
         public RoverComputer(FlightComputer fc, double kp, double ki, double kd)
         {
-            throttlePID = new PIDLoop(1, 0, 0);
+            throttlePID = new PIDLoop(1, 0.5, 0);
             steerPID = new PIDLoop(1, 0, 0);
 
             pidController = fc.PIDController; //don't think of putting second copy of PID here
