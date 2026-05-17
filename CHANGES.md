@@ -1,3 +1,22 @@
+# Version 1.9.13
+**Released TBD**
+
+What's New?
+===========
+
+* Recompiled for KSP 1.12.5
+
+Detailed Changelog
+==================
+
+Fixed Issues
+------------
+
+Pull Requests
+-------------
+
+***
+
 # Version 1.9.12
 **Released July 10, 2021**
 
