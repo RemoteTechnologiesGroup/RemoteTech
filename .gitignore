@@ -162,5 +162,8 @@ $RECYCLE.BIN/
 src/RemoteTech/*.dll
 *.zip
 GameData/RemoteTech/Plugins/RemoteTech.dll
+GameData/RemoteTech/Plugins/RemoteTech.pdb
+GameData/RemoteTech/Plugins/RemoteTech.xml
+GameData/RemoteTech/Versioning/RemoteTech.version
 GameData/build.txt
 src/RemoteTech/RemoteTech.sln.ide/

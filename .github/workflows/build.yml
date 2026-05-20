@@ -1,0 +1,32 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: KSPModdingLibs/KSPBuildTools/.github/actions/setup-ckan@1.1.1
+
+      - uses: KSPModdingLibs/KSPBuildTools/.github/actions/compile@1.1.1
+      - uses: KSPModdingLibs/KSPBuildTools/.github/actions/assemble-release@1.1.1
+        with:
+          output-file-name: RemoteTech
+          # The build step already copies the relevant files into GameData so we
+          # don't need to include the defaults here
+          artifacts: GameData
+          artifacts-exclude: dont-exclude-anything
+
+      - run: tree
+      - uses: actions/upload-artifact@v4
+        with:
+          path: /tmp/release/RemoteTech
+          name: RemoteTech
+      - uses: actions/upload-artifact@v4
+        with:
+          path: GameData/RemoteTech/Versioning/RemoteTech.version
+          name: RemoteTech.version
