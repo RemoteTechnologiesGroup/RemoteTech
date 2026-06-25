@@ -1,0 +1,12 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="CHANGES.md" />
+    <File Path="CONTRIBUTING.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/RemoteTech/RemoteTech.csproj" />
+</Solution>
