@@ -21,8 +21,6 @@ namespace RemoteTech
         public ArrayMap<Guid, CelestialBody> Planets { get; private set; } = new();
         public ArrayMap<Guid, ISatellite> GroundStations { get; private set; } = new();
 
-        public int Count => RTCore.Instance.Satellites.Count + GroundStations.Count;
-
         public static Guid ActiveVesselGuid => RTSettings.Instance.ActiveVesselGuidParsed;
 
         public ISatellite this[Guid guid]
@@ -111,8 +109,6 @@ namespace RemoteTech
         internal IEnumerable<KeyValuePair<Guid, List<NetworkLink<ISatellite>>>> EnumerateLinks() =>
             current?.EnumerateLinks() ?? Enumerable.Empty<KeyValuePair<Guid, List<NetworkLink<ISatellite>>>>();
 
-        internal Dictionary<ISatellite, List<NetworkRoute<ISatellite>>> ConnectionCache => mConnectionCache;
-
         /// <summary>
         /// This tick's state — freshest positions, but not yet completed; callers pay for <see cref="NetworkState.Complete"/> if it's still running.
         /// </summary>
@@ -160,20 +156,6 @@ namespace RemoteTech
             }
             current?.Dispose();
             next?.Dispose();
-        }
-
-        /// <summary>
-        /// Powered (and, when signal relay is on, relay-capable) neighbours of
-        /// <paramref name="s"/>, resolved from the current state's adjacency. Used
-        /// by the on-demand A* path query exposed through the public API.
-        /// </summary>
-        public IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
-        {
-            if (s == null || !s.Powered || current == null) return Enumerable.Empty<NetworkLink<ISatellite>>();
-            var links = current.GetLinks(s);
-            if (RTSettings.Instance.SignalRelayEnabled)
-                return links.Where(l => l.Target.Powered && l.Target.CanRelaySignal);
-            return links.Where(l => l.Target.Powered);
         }
 
         public static NetworkLink<ISatellite>? GetLink(ISatellite sat_a, ISatellite sat_b)

@@ -190,11 +190,6 @@ namespace RemoteTech
          */
 
         /// <summary>
-        /// List of network routes for the satellite.
-        /// </summary>
-        public List<NetworkRoute<ISatellite>> Connections => RTCore.Instance.Network[this];
-
-        /// <summary>
         /// Called on connection refresh to update the connections.
         /// </summary>
         /// <param name="routes">List of network routes.</param>

@@ -554,20 +554,6 @@ internal class NetworkState : IDisposable
         return new SatelliteMarkData { marks = marks, handle = h };
     }
 
-    /// <summary>
-    /// Get the distance between the requested satellite and its control point.
-    /// </summary>
-    /// <param name="sat"></param>
-    /// <param name="groundOnly">Only consider ground stations, not vessels.</param>
-    /// <returns>The length of network route, in meters.</returns>
-    public double GetRouteLength(ISatellite sat, bool groundOnly)
-    {
-        if (!satmap.TryGetValue(sat.Guid, out int index))
-            return double.PositiveInfinity;
-
-        return RouteLength(index, groundOnly);
-    }
-
     internal double RouteLength(int node, bool groundOnly)
     {
         var origin = GetOrigin(node, groundOnly);
@@ -599,19 +585,6 @@ internal class NetworkState : IDisposable
     {
         var origin = GetOrigin(node, groundOnly);
         return origin >= 0 && origin != node;
-    }
-
-    /// <summary>
-    /// Get the control station that is currently controlling this satellite.
-    /// </summary>
-    /// <param name="sat"></param>
-    /// <param name="groundOnly">Only consider ground stations, not vessels.</param>
-    public ISatellite GetRouteOrigin(ISatellite sat, bool groundOnly)
-    {
-        if (!satmap.TryGetValue(sat.Guid, out int index))
-            return null;
-
-        return RouteGoalSat(index, groundOnly);
     }
 
     internal ISatellite RouteGoalSat(int node, bool groundOnly)
