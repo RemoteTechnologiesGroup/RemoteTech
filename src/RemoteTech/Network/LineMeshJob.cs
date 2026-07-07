@@ -74,6 +74,19 @@ internal struct BuildDrawEdgesJob : IJob
             for (int cur = p.targetNode; cur >= 0; cur = parent[cur])
                 onPath.Set(cur, true);
         }
+        // A route back to the command station is only worth drawing if a visible
+        // vessel actually sits at its far end; a path rooted at a filtered-out
+        // vessel stays hidden even though its edges still exist in the forest.
+        if (p.showMultiPath != 0)
+        {
+            for (int i = 0; i < p.nodeCount; i++)
+            {
+                if (nodes[i].kind != NodeKind.Vessel || (nodes[i].flags & NodeFlags.Visible) == 0)
+                    continue;
+                for (int cur = i; cur >= 0; cur = parent[cur])
+                    onPath.Set(cur, true);
+            }
+        }
 
         outEdges.Capacity = math.max(p.nodeCount, 16);
         outEdges.Clear();
@@ -84,8 +97,7 @@ internal struct BuildDrawEdgesJob : IJob
                 continue;
 
             bool tree = parent[r.aIdx] == r.bIdx || parent[r.bIdx] == r.aIdx;
-            bool onP = (p.showPath != 0 && tree && onPath.IsSet(r.aIdx) && onPath.IsSet(r.bIdx))
-                    || (p.showMultiPath != 0 && tree);
+            bool onP = tree && onPath.IsSet(r.aIdx) && onPath.IsSet(r.bIdx);
 
             bool visA = (nodes[r.aIdx].flags & NodeFlags.Visible) != 0;
             bool visB = (nodes[r.bIdx].flags & NodeFlags.Visible) != 0;
