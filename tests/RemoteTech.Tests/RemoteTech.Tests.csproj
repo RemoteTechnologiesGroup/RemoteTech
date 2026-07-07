@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pull in ReferencePath (the local KSP install dir) the same way the main project does. -->
+  <Import Project="$(ProjectRootDir)RemoteTech.props.user" Condition="Exists('$(ProjectRootDir)RemoteTech.props.user')" />
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>12</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- This is a test harness, not a KSP plugin: opt out of KSPBuildTools' mod packaging. -->
+    <KSPBT_Disable>true</KSPBT_Disable>
+
+    <KSPGameRoot Condition="'$(KSPGameRoot)' == ''">$(ReferencePath)</KSPGameRoot>
+    <KSPBurstPlugins>$(KSPGameRoot)\GameData\000_KSPBurst\Plugins</KSPBurstPlugins>
+    <KSPManaged>$(KSPGameRoot)\KSP_x64_Data\Managed</KSPManaged>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RemoteTech\RemoteTech.csproj" />
+  </ItemGroup>
+
+  <!--
+    Unity DLLs needed to compile/run the Burst-path code under test.
+    UnityEngine.CoreModule defines NativeArray / Allocator / NativeArrayUnsafeUtility;
+    the rest come from KSPBurst. Private=true so they land in the test output for the runner.
+    We never allocate via UnsafeUtility.Malloc (which is a native ECall unavailable here) —
+    NativeArenas wrap Marshal.AllocHGlobal instead.
+  -->
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(KSPManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>$(KSPBurstPlugins)\Unity.Collections.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>$(KSPBurstPlugins)\Unity.Mathematics.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>$(KSPBurstPlugins)\Unity.Burst.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
