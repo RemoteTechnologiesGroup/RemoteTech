@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using KSP.Localization;
+using RemoteTech.SimpleTypes;
 
 namespace RemoteTech.Modules
 {
@@ -15,7 +16,7 @@ namespace RemoteTech.Modules
         public String Name { get { return part.partInfo.title; } }
         public Guid Guid { get { return vessel.id; } }
         public bool Powered { get { return Activated; } }
-        public bool Connected { get { return (RTCore.Instance != null && RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this))); } }
+        public bool Connected { get { return RTCore.Instance != null && RTCore.Instance.Network.IsAntennaConnected(this); } }
         public bool Activated { get { return Unlocked; } set { return; } }
         public bool Animating { get { return false; } }
 
@@ -50,12 +51,11 @@ namespace RemoteTech.Modules
         [KSPField(isPersistant = true)]
         public bool
             IsRTAntenna = true,
-            IsRTActive = true,
-            IsRTPowered = false,
             IsRTBroken = false;
 
-        [KSPField(isPersistant = true)]
-        public double RTDishCosAngle = 1.0f;
+        public bool IsRTActive { get => mState.Activated; set => mState.Activated = value; }
+        public bool IsRTPowered { get => mState.Powered; set => mState.Powered = value; }
+        public double RTDishCosAngle { get => mState.CosAngle; set => mState.CosAngle = value; }
 
         [KSPField(isPersistant = true)]
         public float
@@ -75,8 +75,9 @@ namespace RemoteTech.Modules
         public int[] mDeployFxModuleIndices, mProgressFxModuleIndices;
         public ConfigNode mTransmitterConfig;
         private IScienceDataTransmitter mTransmitter;
+        private readonly AntennaState mState = new() { Activated = true };
 
-        private Guid mRegisteredId;
+        private Guid mRegisteredId { get => mState.Guid; set => mState.Guid = value; }
 
         public override string GetInfo()
         {
@@ -95,7 +96,8 @@ namespace RemoteTech.Modules
             if(RTCore.Instance != null)
             {
                 var satellite = RTCore.Instance.Network[Guid];
-                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+                bool route_home = (Omni > 0 || Dish > 0)
+                    && RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
                 if (mTransmitter == null && route_home)
                 {
                     AddTransmitter();
@@ -115,6 +117,19 @@ namespace RemoteTech.Modules
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
+
+            bool isRTActive = IsRTActive;
+            node.TryGetValue("IsRTActive", ref isRTActive);
+            IsRTActive = isRTActive;
+
+            bool isRTPowered = IsRTPowered;
+            node.TryGetValue("IsRTPowered", ref isRTPowered);
+            IsRTPowered = isRTPowered;
+
+            double rtDishCosAngle = RTDishCosAngle;
+            node.TryGetValue("RTDishCosAngle", ref rtDishCosAngle);
+            RTDishCosAngle = rtDishCosAngle;
+
             if (node.HasNode("TRANSMITTER"))
             {
                 RTLog.Notify("ModuleRTAntennaPassive: Found TRANSMITTER block.");
@@ -133,8 +148,21 @@ namespace RemoteTech.Modules
             }
         }
 
+        public override void OnSave(ConfigNode node)
+        {
+            base.OnSave(node);
+
+            node.SetValue("IsRTActive", IsRTActive, createIfNotFound: true);
+            node.SetValue("IsRTPowered", IsRTPowered, createIfNotFound: true);
+            node.SetValue("RTDishCosAngle", RTDishCosAngle, createIfNotFound: true);
+        }
+
         public override void OnStart(StartState state)
         {
+            // Registered here rather than OnAwake: OnAwake also fires on part
+            // prefabs during compilation, whose state is invalid to register.
+            mState.Register();
+
             // workarround for ksp 1.0
             if (mTransmitterConfig == null)
             {
@@ -162,6 +190,12 @@ namespace RemoteTech.Modules
             RTDishRange = Dish;
             IsRTPowered = Powered;
             Fields["GUI_OmniRange"].guiActive = Activated && ShowGUI_OmniRange;
+
+            mState.Dish = Dish;
+            mState.Omni = Omni;
+            mState.Consumption = Consumption;
+            mState.CanTarget = CanTarget;
+            mState.Connected = Connected;
         }
 
         private void AddTransmitter()
@@ -218,6 +252,7 @@ namespace RemoteTech.Modules
         private void OnDestroy()
         {
             RTLog.Notify("ModuleRTAntennaPassive: OnDestroy");
+            mState.Dispose();
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null && mRegisteredId != Guid.Empty)

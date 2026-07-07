@@ -7,14 +7,22 @@ namespace RemoteTech.SimpleTypes
 {
     public abstract class AddOn
     {
-        /// <summary>Holds the current assembly type</summary>
+        /// <summary>
+        /// Holds the current assembly type
+        /// </summary>
         protected Type AssemblyType;
-        /// <summary>Binding flags for invoking the methods</summary>
+        /// <summary>
+        /// Binding flags for invoking the methods
+        /// </summary>
         protected BindingFlags BindFlags = BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static;
-        /// <summary>Instance object for invoking instance methods</summary>
+        /// <summary>
+        /// Instance object for invoking instance methods
+        /// </summary>
         protected object Instance;
 
-        /// <summary>Assembly loaded?</summary>
+        /// <summary>
+        /// Assembly loaded?
+        /// </summary>
         public bool AssemblyLoaded { get; }
 
 

@@ -1,394 +1,389 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
+using RemoteTech.Collections;
+using RemoteTech.Network;
 using RemoteTech.SimpleTypes;
-using RemoteTech.UI;
+using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering;
 
-using Debug = System.Diagnostics.Debug;
 using KSP.Localization;
+using System.Text;
 
-namespace RemoteTech
+namespace RemoteTech;
+
+[Flags]
+public enum MapFilter
 {
-    [Flags]
-    public enum MapFilter
+    None   = 0,
+    Omni   = 1,
+    Dish   = 2,
+    Sphere = 4,
+    Cone   = 8,
+    Planet = 8,     // For backward compatibility with RemoteTech 1.4 and earlier
+                    // Cone should be first, so that it's the one that appears in settings file
+    Path   = 16,
+    MultiPath = 32
+}
+
+/// <summary>
+/// RemoteTech UI network render in charre of drawing connection links in tracking station or flight map scenes.
+/// </summary>
+// ScaledSpace.LateUpdate runs at execution order 9000, we need to run after that.
+[DefaultExecutionOrder(30000)]
+public class NetworkRenderer : MonoBehaviour
+{
+    public MapFilter Filter
     {
-        None   = 0,
-        Omni   = 1,
-        Dish   = 2,
-        Sphere = 4,
-        Cone   = 8,
-        Planet = 8,     // For backward compatibility with RemoteTech 1.4 and earlier
-                        // Cone should be first, so that it's the one that appears in settings file
-        Path   = 16,
-        MultiPath = 32
+        get => RTSettings.Instance.MapFilter;
+        set
+        {
+            RTSettings.Instance.MapFilter = value;
+            RTSettings.Instance.Save();
+        }
     }
 
-    /// <summary>
-    /// RemoteTech UI network render in charre of drawing connection links in tracking station or flight map scenes.
-    /// </summary>
-    public class NetworkRenderer : MonoBehaviour
+    private static readonly Texture2D mTexMark;
+    private static float mLineWidth = 1f;
+
+    // Connection lines and dish cones are each one dynamic mesh, built by a job
+    // chain in LateUpdate and drawn with a single Graphics.DrawMesh on the
+    // scaled-space camera in OnPreCull.
+    private static Material mLineMaterial;
+    private VertexAttributeDescriptor[] mVertexLayout;
+    private LineMesh mLine;
+    private ConeMesh mCone;
+
+    // Satellite marks are filtered and projected by a job in LateUpdate and drawn
+    // as GUI textures in OnGUI.
+    private SatelliteMarks mMarks;
+
+    public bool ShowOmni  { get { return (Filter & MapFilter.Omni)   == MapFilter.Omni; } }
+    public bool ShowDish  { get { return (Filter & MapFilter.Dish)   == MapFilter.Dish; } }
+    public bool ShowPath  { get { return (Filter & MapFilter.Path)   == MapFilter.Path; } }
+    public bool ShowMultiPath { get { return (Filter & MapFilter.MultiPath) == MapFilter.MultiPath; } }
+    public bool ShowRange { get { return (Filter & MapFilter.Sphere) == MapFilter.Sphere; } }
+    public bool ShowCone  { get { return (Filter & MapFilter.Cone)   == MapFilter.Cone; } }
+
+    public GUIStyle smallStationText;
+    public GUIStyle smallStationHead;
+
+    static NetworkRenderer()
     {
-        public MapFilter Filter { 
-            get 
-            {
-                return RTSettings.Instance.MapFilter;
-            } 
-            set 
-            {
-                RTSettings.Instance.MapFilter = value;
-                RTSettings.Instance.Save(); 
-            } 
-        }
+        RTUtil.LoadImage(out mTexMark, "mark");
 
-        private static readonly Texture2D mTexMark;
-        private readonly HashSet<BidirectionalEdge<ISatellite>> mEdges = new HashSet<BidirectionalEdge<ISatellite>>();
-        private readonly List<NetworkLine> mLines = new List<NetworkLine>();
-        private readonly List<NetworkCone> mCones = new List<NetworkCone>();
-        private static float mLineWidth = 1f;
-
-        public bool ShowOmni  { get { return (Filter & MapFilter.Omni)   == MapFilter.Omni; } }
-        public bool ShowDish  { get { return (Filter & MapFilter.Dish)   == MapFilter.Dish; } }
-        public bool ShowPath  { get { return (Filter & MapFilter.Path)   == MapFilter.Path; } }
-        public bool ShowMultiPath { get { return (Filter & MapFilter.MultiPath) == MapFilter.MultiPath; } }
-        public bool ShowRange { get { return (Filter & MapFilter.Sphere) == MapFilter.Sphere; } }
-        public bool ShowCone  { get { return (Filter & MapFilter.Cone)   == MapFilter.Cone; } }
-
-        public GUIStyle smallStationText;
-        public GUIStyle smallStationHead;
-
-        static NetworkRenderer()
+        if(Versioning.version_major == 1)
         {
-            RTUtil.LoadImage(out mTexMark, "mark");
-
-            if(Versioning.version_major == 1)
+            switch(Versioning.version_minor)
             {
-                switch(Versioning.version_minor)
-                {
-                    case 4:
-                        mLineWidth = 1f; //1f is matching to CommNet's line width
-                        break;
-                    default:
-                        mLineWidth = 3f;
-                        break;
-                }
+                case 4:
+                    mLineWidth = 1f; //1f is matching to CommNet's line width
+                    break;
+                default:
+                    mLineWidth = 3f;
+                    break;
             }
         }
+    }
 
-        public static NetworkRenderer CreateAndAttach()
+    public static NetworkRenderer CreateAndAttach()
+    {
+        var renderer = MapView.MapCamera.gameObject.GetComponent<NetworkRenderer>();
+        if (renderer)
         {
-            var renderer = MapView.MapCamera.gameObject.GetComponent<NetworkRenderer>();
-            if (renderer)
-            {
-                Destroy(renderer);
-            }
-
-            renderer = MapView.MapCamera.gameObject.AddComponent<NetworkRenderer>();
-            RTCore.Instance.Network.OnLinkAdd += renderer.OnLinkAdd;
-            RTCore.Instance.Network.OnLinkRemove += renderer.OnLinkRemove;
-            RTCore.Instance.Satellites.OnUnregister += renderer.OnSatelliteUnregister;
-
-            renderer.smallStationHead = new GUIStyle(HighLogic.Skin.label)
-            {
-                fontSize = 12
-            };
-
-            renderer.smallStationText = new GUIStyle(HighLogic.Skin.label)
-            {
-                fontSize = 10,
-                normal = { textColor = Color.white }
-            };
-
-            return renderer;
+            Destroy(renderer);
         }
 
-        public void OnPreCull()
+        renderer = MapView.MapCamera.gameObject.AddComponent<NetworkRenderer>();
+
+        renderer.smallStationHead = new GUIStyle(HighLogic.Skin.label)
+        {
+            fontSize = 12
+        };
+
+        renderer.smallStationText = new GUIStyle(HighLogic.Skin.label)
+        {
+            fontSize = 10,
+            normal = { textColor = Color.white }
+        };
+
+        return renderer;
+    }
+
+    public void LateUpdate()
+    {
+        // Defensive: a prior frame scheduled but OnPreCull/OnGUI never harvested it.
+        mLine.Drop();
+        mCone.Drop();
+        mMarks.Drop();
+
+        if (!MapView.MapIsEnabled && HighLogic.LoadedScene != GameScenes.TRACKSTATION) return;
+
+        // Next, not Current, to avoid a full physics tick of lag.
+        var state = RTCore.Instance.Network.Next;
+        if (state == null) return;
+        state.Complete();
+
+        EnsureMeshes();
+
+        if (state.NodeCount >= 2 && state.PairCount >= 1)
+        {
+            var p = CaptureDrawParams(state, state.NodeCount, state.PairCount);
+            var view = CaptureViewParams();
+            mLine.SetFrame(state.ScheduleLineMesh(p, view));
+        }
+
+        if (MapView.MapIsEnabled && ShowCone && state.ConeCandidateCount > 0)
+        {
+            var cp = CaptureConeViewParams();
+            mCone.SetFrame(state.ScheduleConeMesh(cp));
+        }
+
+        if (MapView.MapIsEnabled && state.MarkCandidateCount > 0)
+            mMarks.SetFrame(state.ScheduleSatelliteMarks(CaptureMarkViewParams()), state);
+
+        JobHandle.ScheduleBatchedJobs();
+    }
+
+    public void OnPreCull()
+    {
+        if (mLine.hasFrame)
+        {
+            if (MapView.MapIsEnabled || HighLogic.LoadedScene == GameScenes.TRACKSTATION)
+            {
+                float3 delta = (float3)(mLine.frame.builtOffset - CurrentTotalOffset());
+                mLine.CompleteAndDraw(mVertexLayout, mLineMaterial, PlanetariumCamera.Camera, delta);
+            }
+            else
+                mLine.Drop();
+        }
+
+        if (mCone.hasFrame)
         {
             if (MapView.MapIsEnabled)
             {
-                UpdateNetworkEdges();
-                UpdateNetworkCones();
+                float3 delta = (float3)(mCone.frame.builtOffset - CurrentTotalOffset());
+                mCone.CompleteAndDraw(mVertexLayout, mLineMaterial, PlanetariumCamera.Camera, delta);
             }
+            else
+                mCone.Drop();
         }
+    }
 
-        public void OnGUI()
+    private void EnsureMeshes()
+    {
+        if (mLineMaterial == null)
+            mLineMaterial = Resources.Load<Material>("Telemetry/TelemetryMaterial");
+        mLine.Ensure();
+        mCone.Ensure();
+        mVertexLayout ??=
+        [
+            new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3, 0),
+            new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4, 0),
+            new VertexAttributeDescriptor(VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2, 0),
+        ];
+    }
+
+    private DrawEdgeParams CaptureDrawParams(NetworkState state, int nodeCount, int pairCount)
+    {
+        var settings = RTSettings.Instance;
+        Vessel target = PlanetariumCamera.fetch != null && PlanetariumCamera.fetch.target != null
+            ? PlanetariumCamera.fetch.target.vessel : null;
+        ISatellite targetSat = target != null ? RTCore.Instance.Satellites[target] : null;
+        int targetNode = ShowPath && targetSat != null && state.TryGetNode(targetSat, out int tn) ? tn : -1;
+
+        return new DrawEdgeParams
         {
-            if (Event.current.type == EventType.Repaint && MapView.MapIsEnabled)
-            {
-                foreach (ISatellite s in RTCore.Instance.Satellites.FindCommandStations().Concat(RTCore.Instance.Network.GroundStations.Values))
-                {
-                    bool showOnMapview = true;
-                    var worldPos = ScaledSpace.LocalToScaledSpace(s.Position);
-                    if (MapView.MapCamera.transform.InverseTransformPoint(worldPos).z < 0f) continue;
-                    Vector3 pos = PlanetariumCamera.Camera.WorldToScreenPoint(worldPos);
-                    var screenRect = new Rect((pos.x - 8), (Screen.height - pos.y) - 8, 16, 16);
-                    
-                    // Hide the current ISatellite if it is behind its body
-                    if (RTSettings.Instance.HideGroundStationsBehindBody && IsOccluded(s.Position, s.Body))
-                        showOnMapview = false;
+            targetNode = targetNode,
+            nodeCount = nodeCount,
+            pairCount = pairCount,
+            showOmni = (byte)(ShowOmni ? 1 : 0),
+            showDish = (byte)(ShowDish ? 1 : 0),
+            showPath = (byte)(ShowPath ? 1 : 0),
+            showMultiPath = (byte)(ShowMultiPath ? 1 : 0),
+            signalRelay = (byte)(settings.SignalRelayEnabled ? 1 : 0),
+            active = settings.ActiveConnectionColor,
+            direct = settings.DirectConnectionColor,
+            omni = settings.OmniConnectionColor,
+            dish = settings.DishConnectionColor,
+            grey = (Color32)XKCDColors.Grey,
+        };
+    }
 
-                    if (RTSettings.Instance.HideGroundStationsOnDistance && !IsOccluded(s.Position, s.Body) && this.IsCamDistanceToWide(s.Position))
-                        showOnMapview = false;
+    // LocalToScaledSpace(p) = p*InverseScaleFactor - totalOffset (the exact float scale KSP uses).
+    private static double3 CurrentTotalOffset()
+    {
+        Vector3d originScaled = ScaledSpace.LocalToScaledSpace(Vector3d.zero); // == -totalOffset
+        return new double3(-originScaled.x, -originScaled.y, -originScaled.z);
+    }
 
-                    // orbiting remote stations are always shown
-                    if(s.isVessel && !s.parentVessel.Landed)
-                        showOnMapview = true;
-
-                    if (showOnMapview)
-                    {
-                        Color pushColor = GUI.color;
-                        // tint the white mark.png into the defined color
-                        GUI.color = s.MarkColor;
-                        // draw the mark.png
-                        GUI.DrawTexture(screenRect, mTexMark, ScaleMode.ScaleToFit, true);
-                        GUI.color = pushColor;
-
-                        // Show Mouse over informations to the ground station
-                        if (RTSettings.Instance.ShowMouseOverInfoGroundStations && s is MissionControlSatellite && screenRect.ContainsMouse())
-                        {
-                            Rect headline = screenRect;
-                            Vector2 nameDim = this.smallStationHead.CalcSize(new GUIContent(s.Name));
-
-                            headline.x -= nameDim.x + 10;
-                            headline.y -= 3;
-                            headline.width = nameDim.x;
-                            headline.height = 14;
-                            // draw headline of the station
-                            GUI.Label(headline, s.Name, this.smallStationHead);
-
-                            // loop antennas
-                            String antennaRanges = String.Empty;
-                            foreach (var antenna in s.Antennas)
-                            {
-                                if(antenna.Omni > 0)
-                                {
-                                    antennaRanges += Localizer.Format("#RT_NetworkFB_Omni") + RTUtil.FormatSI(antenna.Omni,"m") + Environment.NewLine;//"Omni: "
-                                }
-                                if (antenna.Dish > 0)
-                                {
-                                    antennaRanges +=  Localizer.Format("#RT_NetworkFB_Dish") + RTUtil.FormatSI(antenna.Dish, "m") + Environment.NewLine;//"Dish: "
-                                }
-                            }
-
-                            if(!antennaRanges.Equals(String.Empty))
-                            {
-                                Rect antennas = screenRect;
-                                GUIContent content = new GUIContent(antennaRanges);
-
-                                Vector2 antennaDim = this.smallStationText.CalcSize(content);
-                                float maxHeight = this.smallStationText.CalcHeight(content, antennaDim.x);
-
-                                antennas.y += headline.height - 3;
-                                antennas.x -= antennaDim.x + 10;
-                                antennas.width = antennaDim.x;
-                                antennas.height = maxHeight;
-
-                                // draw antenna infos of the station
-                                GUI.Label(antennas, antennaRanges, this.smallStationText);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Checks whether the location is behind the body
-        /// Original code by regex from https://github.com/NathanKell/RealSolarSystem/blob/master/Source/KSCSwitcher.cs
-        /// </summary>
-        private bool IsOccluded(Vector3d loc, CelestialBody body)
+    private LineMeshViewParams CaptureViewParams()
+    {
+        Camera cam = PlanetariumCamera.Camera;
+        return new LineMeshViewParams
         {
-            Vector3d camPos = ScaledSpace.ScaledToLocalSpace(PlanetariumCamera.Camera.transform.position);
+            invScale = ScaledSpace.InverseScaleFactor,
+            totalOffset = CurrentTotalOffset(),
+            view = ToFloat4x4(cam.worldToCameraMatrix),
+            proj = ToFloat4x4(cam.projectionMatrix),
+            invView = ToFloat4x4(cam.worldToCameraMatrix.inverse),
+            invProj = ToFloat4x4(cam.projectionMatrix.inverse),
+            pixelWidth = cam.pixelWidth,
+            pixelHeight = cam.pixelHeight,
+            halfWidth = mLineWidth * 0.5f,
+            mode = MapView.Draw3DLines ? 0 : 1,
+        };
+    }
 
-            if (Vector3d.Angle(camPos - loc, body.position - loc) > 90) { return false; }
-            return true;
-        }
+    private ConeViewParams CaptureConeViewParams()
+    {
+        Camera cam = PlanetariumCamera.Camera;
+        CelestialBody refFrame = MapView.MapCamera.target.vessel != null
+            ? MapView.MapCamera.target.vessel.mainBody
+            : MapView.MapCamera.target.celestialBody;
+        Vector3 up = refFrame != null ? refFrame.transform.up : Vector3.up;
 
-        /// <summary>
-        /// Calculates the distance between the camera position and the ground station, and
-        /// returns true if the distance is >= DistanceToHideGroundStations from the settings file.
-        /// </summary>
-        /// <param name="loc">Position of the ground station</param>
-        /// <returns>True if the distance is to wide, otherwise false</returns>
-        private bool IsCamDistanceToWide(Vector3d loc)
+        return new ConeViewParams
         {
-            Vector3d camPos = ScaledSpace.ScaledToLocalSpace(PlanetariumCamera.Camera.transform.position);
-            float distance = Vector3.Distance(camPos, loc);
-            
-            // distance to wide?
-            if(distance >= RTSettings.Instance.DistanceToHideGroundStations)
-                return true;
+            invScale = ScaledSpace.InverseScaleFactor,
+            totalOffset = CurrentTotalOffset(),
+            refUp = up,
+            view = ToFloat4x4(cam.worldToCameraMatrix),
+            proj = ToFloat4x4(cam.projectionMatrix),
+            invView = ToFloat4x4(cam.worldToCameraMatrix.inverse),
+            invProj = ToFloat4x4(cam.projectionMatrix.inverse),
+            pixelWidth = cam.pixelWidth,
+            pixelHeight = cam.pixelHeight,
+            halfWidth = mLineWidth * 0.5f,
+            mode = MapView.Draw3DLines ? 0 : 1,
+            color = Color.gray,
+        };
+    }
 
-            return false;
-        }
+    private SatelliteMarkViewParams CaptureMarkViewParams()
+    {
+        Camera cam = PlanetariumCamera.Camera;
+        var settings = RTSettings.Instance;
+        Vector3d camLocal = ScaledSpace.ScaledToLocalSpace(cam.transform.position);
 
-        private void UpdateNetworkCones()
+        return new SatelliteMarkViewParams
         {
-            List<IAntenna> antennas = (ShowCone ? RTCore.Instance.Antennas.Where(
-                                        ant => ant.Powered && ant.CanTarget && RTCore.Instance.Satellites[ant.Guid] != null 
-                                        && ant.Target != Guid.Empty)
-                                     : Enumerable.Empty<IAntenna>()).ToList();
-            int oldLength = mCones.Count;
-            int newLength = antennas.Count;
+            invScale = ScaledSpace.InverseScaleFactor,
+            totalOffset = CurrentTotalOffset(),
+            camPosLocal = new double3(camLocal.x, camLocal.y, camLocal.z),
+            view = ToFloat4x4(cam.worldToCameraMatrix),
+            proj = ToFloat4x4(cam.projectionMatrix),
+            pixelWidth = cam.pixelWidth,
+            pixelHeight = cam.pixelHeight,
+            screenHeight = Screen.height,
+            hideBehindBody = settings.HideGroundStationsBehindBody,
+            hideOnDistance = settings.HideGroundStationsOnDistance,
+            distanceThreshold = settings.DistanceToHideGroundStations,
+        };
+    }
 
-            // Free any unused lines
-            for (int i = newLength; i < oldLength; i++)
-            {
-                GameObject.Destroy(mCones[i]);
-                mCones[i] = null;
-            }
-            mCones.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
-            mCones.AddRange(Enumerable.Repeat((NetworkCone) null, Math.Max(newLength - oldLength, 0)));
+    private static float4x4 ToFloat4x4(Matrix4x4 m) => new float4x4(
+        m.m00, m.m01, m.m02, m.m03,
+        m.m10, m.m11, m.m12, m.m13,
+        m.m20, m.m21, m.m22, m.m23,
+        m.m30, m.m31, m.m32, m.m33);
 
-            for (int i = 0; i < newLength; i++)
-            {
-                var center = RTCore.Instance.Network.GetPositionFromGuid(antennas[i].Target);
-                Debug.Assert(center != null,
-                             "center != null",
-                             String.Format("GetPositionFromGuid returned a null value for the target {0}",
-                                           antennas[i].Target)
-                             );
+    public void OnGUI()
+    {
+        if (Event.current.type != EventType.Repaint || !MapView.MapIsEnabled || !mMarks.hasFrame)
+            return;
 
-                if (!center.HasValue) continue;
+        var marks = mMarks.Complete();
+        for (int i = 0; i < marks.Length; i++)
+            DrawSatelliteMark(marks[i]);
+    }
 
-                mCones[i] = mCones[i] ?? NetworkCone.Instantiate();
-                mCones[i].LineWidth = mLineWidth;
-                mCones[i].Antenna = antennas[i];
-                mCones[i].Color = Color.gray;
-                mCones[i].Active = ShowCone;
-                mCones[i].Center = center.Value;
-            }
-        }
+    private static readonly string NetworkFBOmni = Localizer.Format("#RT_NetworkFB_Omni");
+    private static readonly string NetworkFBDish = Localizer.Format("#RT_NetworkFB_Dish");
+    private void DrawSatelliteMark(in SatelliteMark mark)
+    {
+        var screenRect = new Rect(mark.screenPos.x - 8, mark.screenPos.y - 8, 16, 16);
 
-        private void UpdateNetworkEdges()
+        Color pushColor = GUI.color;
+        // tint the white mark.png into the defined color
+        GUI.color = mark.color;
+        // draw the mark.png
+        GUI.DrawTexture(screenRect, mTexMark, ScaleMode.ScaleToFit, true);
+        GUI.color = pushColor;
+
+        if (!RTSettings.Instance.ShowMouseOverInfoGroundStations)
+            return;
+
+        ISatellite s = mMarks.state.SatAt(mark.nodeIndex);
+        if (s is not MissionControlSatellite || !screenRect.ContainsMouse())
+            return;
+
+        // Show Mouse over informations to the ground station
+        Rect headline = screenRect;
+        Vector2 nameDim = this.smallStationHead.CalcSize(new GUIContent(s.Name));
+
+        headline.x -= nameDim.x + 10;
+        headline.y -= 3;
+        headline.width = nameDim.x;
+        headline.height = 14;
+        // draw headline of the station
+        GUI.Label(headline, s.Name, this.smallStationHead);
+
+        // loop antennas
+        var satelliteMarkBuilder = StringBuilderCache.Acquire();
+        foreach (var antenna in s.Antennas)
         {
-            var edges = mEdges.Where(CheckVisibility).ToList();
-            int oldLength = mLines.Count;
-            int newLength = edges.Count;
-
-            // Free any unused lines
-            for (int i = newLength; i < oldLength; i++)
+            if(antenna.Omni > 0)
             {
-                Destroy(mLines[i]);
-                mLines[i] = null;
+                // Omni:
+                satelliteMarkBuilder.AppendFormat(
+                    "{0}{1}{2}",
+                    NetworkFBOmni,
+                    RTUtil.FormatSI(antenna.Omni, "m"),
+                    Environment.NewLine
+                );
             }
-            mLines.RemoveRange(Math.Min(oldLength, newLength), Math.Max(oldLength - newLength, 0));
-            mLines.AddRange(Enumerable.Repeat<NetworkLine>(null, Math.Max(newLength - oldLength, 0)));
 
-            // Iterate over all satellites, updating or creating new lines.
-            var it = edges.GetEnumerator();
-            for (int i = 0; i < newLength; i++)
+            if (antenna.Dish > 0)
             {
-                it.MoveNext();
-                mLines[i] = mLines[i] ?? NetworkLine.Instantiate();
-                mLines[i].LineWidth = mLineWidth;
-                mLines[i].Edge = it.Current;
-                mLines[i].Color = CheckColor(it.Current);
-                mLines[i].Active = true;
+                // Dish: =
+                satelliteMarkBuilder.AppendFormat(
+                    "{0}{1}{2}",
+                    NetworkFBDish,
+                    RTUtil.FormatSI(antenna.Dish, "m"),
+                    Environment.NewLine
+                );
             }
         }
 
-        private bool CheckVisibility(BidirectionalEdge<ISatellite> edge)
-        {
-            var vessel = PlanetariumCamera.fetch.target.vessel;
-            var satellite = RTCore.Instance.Satellites[vessel];
-            if (satellite != null && ShowPath)
-            {
-                var connections = RTCore.Instance.Network[satellite];
-                if (connections.Any() && connections[0].Contains(edge))
-                    return true;
-            }
-            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
-            {
-                var satellites = RTCore.Instance.Network.ToArray();
-                for (int i = 0; i < satellites.Length; i++)
-                {
-                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
-                    if (connections.Any() && connections[0].Contains(edge))
-                        return true;
-                }
-            }
-            if (edge.Type == LinkType.Omni && !ShowOmni)
-                return false;
-            if (edge.Type == LinkType.Dish && !ShowDish)
-                return false;
-            if (!edge.A.Visible || !edge.B.Visible)
-                return false;
-            return true;
-        }
+        var antennaRanges = satelliteMarkBuilder.ToStringAndRelease();
+        if (string.IsNullOrEmpty(antennaRanges))
+            return;
 
-        private Color CheckColor(BidirectionalEdge<ISatellite> edge)
-        {
-            var vessel = PlanetariumCamera.fetch.target.vessel;
-            var satellite = RTCore.Instance.Satellites[vessel];
-            if (satellite != null && ShowPath)
-            {
-                var connections = RTCore.Instance.Network[satellite];
-                if (connections.Any() && connections[0].Contains(edge))
-                    return RTSettings.Instance.ActiveConnectionColor;
-            }
-            if (ShowMultiPath && edge.A.Visible && edge.B.Visible) // purpose of edge-visibility condition is to prevent unnecessary performance off-screen
-            {
-                var satellites = RTCore.Instance.Network.ToArray();
-                for (int i = 0; i < satellites.Length; i++)
-                {
-                    var connections = RTCore.Instance.Network[satellites[i]]; // get the working-connection path of every satellite
-                    if (connections.Any() && connections[0].Contains(edge))
-                        return RTSettings.Instance.ActiveConnectionColor;
-                }
-            }
+        Rect antennas = screenRect;
+        var content = new GUIContent(antennaRanges);
 
-            if (RTSettings.Instance.SignalRelayEnabled)
-            {
-                var satA = RTCore.Instance.Satellites[edge.A.Guid];
-                var satB = RTCore.Instance.Satellites[edge.B.Guid];
-                if ((satA != null && !satA.CanRelaySignal) || (satB != null && !satB.CanRelaySignal))
-                    return RTSettings.Instance.DirectConnectionColor;
-            }
+        Vector2 antennaDim = smallStationText.CalcSize(content);
+        float maxHeight = smallStationText.CalcHeight(content, antennaDim.x);
 
-            if (edge.Type == LinkType.Omni)
-                return RTSettings.Instance.OmniConnectionColor;
-            if (edge.Type == LinkType.Dish)
-                return RTSettings.Instance.DishConnectionColor;
+        antennas.y += headline.height - 3;
+        antennas.x -= antennaDim.x + 10;
+        antennas.width = antennaDim.x;
+        antennas.height = maxHeight;
 
-            return XKCDColors.Grey;
-        }
+        // draw antenna infos of the station
+        GUI.Label(antennas, antennaRanges, smallStationText);
+    }
 
-        private void OnSatelliteUnregister(ISatellite s)
-        {
-            mEdges.RemoveWhere(e => e.A == s || e.B == s);
-        }
+    public void Detach()
+    {
+        Destroy(this);
+    }
 
-        private void OnLinkAdd(ISatellite a, NetworkLink<ISatellite> link)
-        {
-            mEdges.Add(new BidirectionalEdge<ISatellite>(a, link.Target, link.Port));
-        }
-
-        private void OnLinkRemove(ISatellite a, NetworkLink<ISatellite> link)
-        {
-            mEdges.Remove(new BidirectionalEdge<ISatellite>(a, link.Target, link.Port));
-        }
-
-        public void Detach()
-        {
-            for (int i = 0; i < mLines.Count; i++)
-            {
-                GameObject.DestroyImmediate(mLines[i]);
-            }
-            mLines.Clear();
-            for (int i = 0; i < mCones.Count; i++)
-            {
-                GameObject.DestroyImmediate(mCones[i]);
-            }
-            mCones.Clear();
-            DestroyImmediate(this);
-        }
-
-        public void OnDestroy()
-        {
-            RTCore.Instance.Network.OnLinkAdd -= OnLinkAdd;
-            RTCore.Instance.Network.OnLinkRemove -= OnLinkRemove;
-            RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
-        }
+    public void OnDestroy()
+    {
+        mLine.Destroy();
+        mCone.Destroy();
+        mMarks.Destroy();
     }
 }

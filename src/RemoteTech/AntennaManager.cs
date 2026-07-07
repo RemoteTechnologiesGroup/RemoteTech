@@ -15,14 +15,14 @@ namespace RemoteTech
         public event Action<IAntenna> OnRegister = delegate { };
         public event Action<IAntenna> OnUnregister = delegate { };
 
-        public IEnumerable<IAntenna> this[ISatellite s] { get { return For(s.Guid); } }
-        public IEnumerable<IAntenna> this[Vessel v] { get { return For(v.id); } }
-        public IEnumerable<IAntenna> this[Guid g] { get { return For(g); } }
+        public IReadOnlyList<IAntenna> this[ISatellite s] { get { return For(s.Guid); } }
+        public IReadOnlyList<IAntenna> this[Vessel v] { get { return For(v.id); } }
+        public IReadOnlyList<IAntenna> this[Guid g] { get { return For(g); } }
 
         private readonly Dictionary<Guid, List<IAntenna>> mLoadedAntennaCache =
             new Dictionary<Guid, List<IAntenna>>();
-        private readonly Dictionary<Guid, List<IAntenna>> mProtoAntennaCache =
-            new Dictionary<Guid, List<IAntenna>>();
+        private readonly Dictionary<Guid, List<ProtoAntenna>> mProtoAntennaCache =
+            new Dictionary<Guid, List<ProtoAntenna>>();
 
         public AntennaManager()
         {
@@ -35,6 +35,15 @@ namespace RemoteTech
         public void Dispose()
         {
             GameEvents.onVesselGoOnRails.Remove(OnVesselGoOnRails);
+
+            foreach (List<ProtoAntenna> antennas in mProtoAntennaCache.Values)
+            {
+                foreach (ProtoAntenna antenna in antennas)
+                {
+                    antenna.Dispose();
+                }
+            }
+            mProtoAntennaCache.Clear();
         }
 
         public void Register(Guid key, IAntenna antenna)
@@ -98,7 +107,7 @@ namespace RemoteTech
                 {
                     if (!mProtoAntennaCache.ContainsKey(key))
                     {
-                        mProtoAntennaCache[key] = new List<IAntenna>();
+                        mProtoAntennaCache[key] = new List<ProtoAntenna>();
                     }
                     ProtoAntenna proto = new ProtoAntenna(v, pps, ppms);
                     mProtoAntennaCache[key].Add(proto);
@@ -113,25 +122,22 @@ namespace RemoteTech
 
             if (!mProtoAntennaCache.ContainsKey(key)) return;
 
-            foreach (IAntenna a in mProtoAntennaCache[key])
+            foreach (ProtoAntenna a in mProtoAntennaCache[key])
             {
                 OnUnregister.Invoke(a);
+                a.Dispose();
             }
 
             mProtoAntennaCache.Remove(key);
         }
 
-        private IEnumerable<IAntenna> For(Guid key)
+        private IReadOnlyList<IAntenna> For(Guid key)
         {
             if (mLoadedAntennaCache.ContainsKey(key))
-            {
                 return mLoadedAntennaCache[key];
-            }
             if (mProtoAntennaCache.ContainsKey(key))
-            {
                 return mProtoAntennaCache[key];
-            }
-            return Enumerable.Empty<IAntenna>();
+            return [];
         }
 
         private void OnVesselGoOnRails(Vessel v)
@@ -163,11 +169,6 @@ namespace RemoteTech
                    ppms.GetBool("IsRTActive");
         }
 
-        public static bool IsAntenna(this PartModule pm)
-        {
-            return pm.Fields.GetValue<bool>("IsRTAntenna") &&
-                   pm.Fields.GetValue<bool>("IsRTPowered") &&
-                   pm.Fields.GetValue<bool>("IsRTActive");
-        }
+        public static bool IsAntenna(this PartModule pm) => pm is IAntenna;
     }
 }

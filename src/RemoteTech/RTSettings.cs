@@ -36,62 +36,106 @@ namespace RemoteTech
         }
     }
 
-    public class Settings
+    public class Settings : IConfigNode
     {
         // Global settings of the RemoteTech add-on, whose default values are to be read from Default_Settings.cfg
         // Note: do not rename any of those fields here except if you change the name in the configuration file; be careful though: this will render all previous saves incompatible!!!
-        [Persistent] public bool RemoteTechEnabled;
-        [Persistent] public bool CommNetEnabled;
-        [Persistent] public float ConsumptionMultiplier;
-        [Persistent] public float RangeMultiplier;
-        [Persistent] public float MissionControlRangeMultiplier;
-        [Persistent] public double OmniRangeClampFactor;
-        [Persistent] public double DishRangeClampFactor;
-        [Persistent] public string ActiveVesselGuid;
-        [Persistent] public string NoTargetGuid;
-        [Persistent] public float SpeedOfLight;
-        [Persistent] public MapFilter MapFilter;
-        [Persistent] public bool EnableSignalDelay;
-        [Persistent] public RangeModel.RangeModel RangeModelType;
-        [Persistent] public double MultipleAntennaMultiplier;
-        [Persistent] public bool ThrottleTimeWarp;
-        [Persistent] public bool ThrottleZeroOnNoConnection;
-        [Persistent] public bool StopTimeWrapOnReConnection;
-        [Persistent] public bool HideGroundStationsBehindBody;
-        [Persistent] public bool ControlAntennaWithoutConnection;
-        [Persistent] public bool UpgradeableMissionControlAntennas;
-        [Persistent] public bool HideGroundStationsOnDistance;
-        [Persistent] public bool ShowMouseOverInfoGroundStations;
-        [Persistent] public bool AutoInsertKaCAlerts;
-        [Persistent] public int FCLeadTime;
-        [Persistent] public bool FCOffAfterExecute;
-        [Persistent] public float DistanceToHideGroundStations;
-        [Persistent] public Color DishConnectionColor;
-        [Persistent] public Color OmniConnectionColor;
-        [Persistent] public Color ActiveConnectionColor;
-        [Persistent] public Color RemoteStationColorDot;
-        [Persistent] public Color DirectConnectionColor;
-        [Persistent] public bool SignalRelayEnabled;
-        [Persistent] public bool IgnoreLineOfSight;
-        [Persistent] public float FCWinPosX;
-        [Persistent] public float FCWinPosY;
-        [Persistent] public double FlightTermP;
-        [Persistent] public double FlightTermI;
-        [Persistent] public double FlightTermD;
-        [Persistent(collectionIndex = "STATION")] public List<MissionControlSatellite> GroundStations;
-        [Persistent(collectionIndex = "PRESETS")] public List<string> PreSets;
+        public bool RemoteTechEnabled;
+        public bool CommNetEnabled;
+        public float ConsumptionMultiplier;
+        public float RangeMultiplier;
+        public float MissionControlRangeMultiplier;
+        public double OmniRangeClampFactor;
+        public double DishRangeClampFactor;
+        public string ActiveVesselGuid;
+        public string NoTargetGuid;
+        public float SpeedOfLight;
+        public MapFilter MapFilter;
+        public bool EnableSignalDelay;
+        public RangeModel.RangeModel RangeModelType;
+        public double MultipleAntennaMultiplier;
+        public bool ThrottleTimeWarp;
+        public bool ThrottleZeroOnNoConnection;
+        public bool StopTimeWrapOnReConnection;
+        public bool HideGroundStationsBehindBody;
+        public bool ControlAntennaWithoutConnection;
+        public bool UpgradeableMissionControlAntennas;
+        public bool HideGroundStationsOnDistance;
+        public bool ShowMouseOverInfoGroundStations;
+        public bool AutoInsertKaCAlerts;
+        public int FCLeadTime;
+        public bool FCOffAfterExecute;
+        public float DistanceToHideGroundStations;
+        public Color DishConnectionColor;
+        public Color OmniConnectionColor;
+        public Color ActiveConnectionColor;
+        public Color RemoteStationColorDot;
+        public Color DirectConnectionColor;
+        public bool SignalRelayEnabled;
+        public bool IgnoreLineOfSight;
+        public float FCWinPosX;
+        public float FCWinPosY;
+        public double FlightTermP;
+        public double FlightTermI;
+        public double FlightTermD;
+        public List<MissionControlSatellite> GroundStations = new List<MissionControlSatellite>();
+        public List<string> PreSets = new List<string>();
 
         public const string SaveFileName = "RemoteTech_Settings.cfg";
         public static readonly string DefaultSettingCfgURL = AssemblyLoader.loadedAssemblies.FirstOrDefault(a => a.assembly.GetName().Name.Equals("RemoteTech")).url.Replace("/Plugins", "") + "/Default_Settings/RemoteTechSettings";
 
-        /// <summary>Trigger to force a reloading of the settings if a selected save is running.</summary>
+        /// <summary>
+        /// Trigger to force a reloading of the settings if a selected save is running.
+        /// </summary>
         public bool SettingsLoaded;
 
-        /// <summary>True if its the first start of RemoteTech for this save, false otherwise.</summary>
+        /// <summary>
+        /// True if its the first start of RemoteTech for this save, false otherwise.
+        /// </summary>
         public bool FirstStart;
 
-        /// <summary>Temp Variable for all the Window Positions for each instance.</summary>
+        /// <summary>
+        /// Temp Variable for all the Window Positions for each instance.
+        /// </summary>
         public Dictionary<string, Rect> SavedWindowPositions = new Dictionary<string, Rect>();
+
+        private string _activeVesselGuidCacheSource;
+        private Guid _activeVesselGuidCache;
+
+        /// <summary>
+        /// Cached parse of <see cref="ActiveVesselGuid"/>, re-parsed only when the string changes.
+        /// </summary>
+        public Guid ActiveVesselGuidParsed
+        {
+            get
+            {
+                if (_activeVesselGuidCacheSource != ActiveVesselGuid)
+                {
+                    _activeVesselGuidCacheSource = ActiveVesselGuid;
+                    _activeVesselGuidCache = new Guid(ActiveVesselGuid);
+                }
+                return _activeVesselGuidCache;
+            }
+        }
+
+        private string _noTargetGuidCacheSource;
+        private Guid _noTargetGuidCache;
+
+        /// <summary>
+        /// Cached parse of <see cref="NoTargetGuid"/>, re-parsed only when the string changes.
+        /// </summary>
+        public Guid NoTargetGuidParsed
+        {
+            get
+            {
+                if (_noTargetGuidCacheSource != NoTargetGuid)
+                {
+                    _noTargetGuidCacheSource = NoTargetGuid;
+                    _noTargetGuidCache = new Guid(NoTargetGuid);
+                }
+                return _noTargetGuidCache;
+            }
+        }
 
         /// <summary>
         /// Returns the current RemoteTech_Settings of an existing save full path. The path will be empty
@@ -120,7 +164,7 @@ namespace RemoteTech
                     return;
 
                 var details = new ConfigNode("RemoteTechSettings");
-                ConfigNode.CreateConfigFromObject(this, 0, details);
+                Save(details);
                 var save = new ConfigNode();
                 save.AddNode(details);
                 save.Save(SaveSettingFile);
@@ -131,6 +175,136 @@ namespace RemoteTech
             {
                 RTLog.Notify("An error occurred while attempting to save: {0}", RTLogLevel.LVL1, e.Message);
             }
+        }
+
+        public void Load(ConfigNode node)
+        {
+            node.TryGetValue("RemoteTechEnabled", ref RemoteTechEnabled);
+            node.TryGetValue("CommNetEnabled", ref CommNetEnabled);
+            node.TryGetValue("ConsumptionMultiplier", ref ConsumptionMultiplier);
+            node.TryGetValue("RangeMultiplier", ref RangeMultiplier);
+            node.TryGetValue("MissionControlRangeMultiplier", ref MissionControlRangeMultiplier);
+            node.TryGetValue("OmniRangeClampFactor", ref OmniRangeClampFactor);
+            node.TryGetValue("DishRangeClampFactor", ref DishRangeClampFactor);
+            node.TryGetValue("ActiveVesselGuid", ref ActiveVesselGuid);
+            node.TryGetValue("NoTargetGuid", ref NoTargetGuid);
+            node.TryGetValue("SpeedOfLight", ref SpeedOfLight);
+            node.TryGetEnum("MapFilter", ref MapFilter, MapFilter);
+            node.TryGetValue("EnableSignalDelay", ref EnableSignalDelay);
+            node.TryGetEnum("RangeModelType", ref RangeModelType, RangeModelType);
+            node.TryGetValue("MultipleAntennaMultiplier", ref MultipleAntennaMultiplier);
+            node.TryGetValue("ThrottleTimeWarp", ref ThrottleTimeWarp);
+            node.TryGetValue("ThrottleZeroOnNoConnection", ref ThrottleZeroOnNoConnection);
+            node.TryGetValue("StopTimeWrapOnReConnection", ref StopTimeWrapOnReConnection);
+            node.TryGetValue("HideGroundStationsBehindBody", ref HideGroundStationsBehindBody);
+            node.TryGetValue("ControlAntennaWithoutConnection", ref ControlAntennaWithoutConnection);
+            node.TryGetValue("UpgradeableMissionControlAntennas", ref UpgradeableMissionControlAntennas);
+            node.TryGetValue("HideGroundStationsOnDistance", ref HideGroundStationsOnDistance);
+            node.TryGetValue("ShowMouseOverInfoGroundStations", ref ShowMouseOverInfoGroundStations);
+            node.TryGetValue("AutoInsertKaCAlerts", ref AutoInsertKaCAlerts);
+            node.TryGetValue("FCLeadTime", ref FCLeadTime);
+            node.TryGetValue("FCOffAfterExecute", ref FCOffAfterExecute);
+            node.TryGetValue("DistanceToHideGroundStations", ref DistanceToHideGroundStations);
+            node.TryGetValue("DishConnectionColor", ref DishConnectionColor);
+            node.TryGetValue("OmniConnectionColor", ref OmniConnectionColor);
+            node.TryGetValue("ActiveConnectionColor", ref ActiveConnectionColor);
+            node.TryGetValue("RemoteStationColorDot", ref RemoteStationColorDot);
+            node.TryGetValue("DirectConnectionColor", ref DirectConnectionColor);
+            node.TryGetValue("SignalRelayEnabled", ref SignalRelayEnabled);
+            node.TryGetValue("IgnoreLineOfSight", ref IgnoreLineOfSight);
+            node.TryGetValue("FCWinPosX", ref FCWinPosX);
+            node.TryGetValue("FCWinPosY", ref FCWinPosY);
+            node.TryGetValue("FlightTermP", ref FlightTermP);
+            node.TryGetValue("FlightTermI", ref FlightTermI);
+            node.TryGetValue("FlightTermD", ref FlightTermD);
+            LoadGroundStations(node);
+            LoadPreSets(node);
+        }
+
+        public void Save(ConfigNode node)
+        {
+            node.AddValue("RemoteTechEnabled", RemoteTechEnabled);
+            node.AddValue("CommNetEnabled", CommNetEnabled);
+            node.AddValue("ConsumptionMultiplier", ConsumptionMultiplier);
+            node.AddValue("RangeMultiplier", RangeMultiplier);
+            node.AddValue("MissionControlRangeMultiplier", MissionControlRangeMultiplier);
+            node.AddValue("OmniRangeClampFactor", OmniRangeClampFactor);
+            node.AddValue("DishRangeClampFactor", DishRangeClampFactor);
+            node.AddValue("ActiveVesselGuid", ActiveVesselGuid);
+            node.AddValue("NoTargetGuid", NoTargetGuid);
+            node.AddValue("SpeedOfLight", SpeedOfLight);
+            node.AddValue("MapFilter", MapFilter);
+            node.AddValue("EnableSignalDelay", EnableSignalDelay);
+            node.AddValue("RangeModelType", RangeModelType);
+            node.AddValue("MultipleAntennaMultiplier", MultipleAntennaMultiplier);
+            node.AddValue("ThrottleTimeWarp", ThrottleTimeWarp);
+            node.AddValue("ThrottleZeroOnNoConnection", ThrottleZeroOnNoConnection);
+            node.AddValue("StopTimeWrapOnReConnection", StopTimeWrapOnReConnection);
+            node.AddValue("HideGroundStationsBehindBody", HideGroundStationsBehindBody);
+            node.AddValue("ControlAntennaWithoutConnection", ControlAntennaWithoutConnection);
+            node.AddValue("UpgradeableMissionControlAntennas", UpgradeableMissionControlAntennas);
+            node.AddValue("HideGroundStationsOnDistance", HideGroundStationsOnDistance);
+            node.AddValue("ShowMouseOverInfoGroundStations", ShowMouseOverInfoGroundStations);
+            node.AddValue("AutoInsertKaCAlerts", AutoInsertKaCAlerts);
+            node.AddValue("FCLeadTime", FCLeadTime);
+            node.AddValue("FCOffAfterExecute", FCOffAfterExecute);
+            node.AddValue("DistanceToHideGroundStations", DistanceToHideGroundStations);
+            node.AddValue("DishConnectionColor", DishConnectionColor);
+            node.AddValue("OmniConnectionColor", OmniConnectionColor);
+            node.AddValue("ActiveConnectionColor", ActiveConnectionColor);
+            node.AddValue("RemoteStationColorDot", RemoteStationColorDot);
+            node.AddValue("DirectConnectionColor", DirectConnectionColor);
+            node.AddValue("SignalRelayEnabled", SignalRelayEnabled);
+            node.AddValue("IgnoreLineOfSight", IgnoreLineOfSight);
+            node.AddValue("FCWinPosX", FCWinPosX);
+            node.AddValue("FCWinPosY", FCWinPosY);
+            node.AddValue("FlightTermP", FlightTermP);
+            node.AddValue("FlightTermI", FlightTermI);
+            node.AddValue("FlightTermD", FlightTermD);
+            SaveGroundStations(node);
+            SavePreSets(node);
+        }
+
+        private void SaveGroundStations(ConfigNode node)
+        {
+            var stations = node.AddNode("GroundStations");
+            foreach (var station in GroundStations)
+            {
+                station.Save(stations.AddNode("STATION"));
+            }
+        }
+
+        private void LoadGroundStations(ConfigNode node)
+        {
+            var stations = node.GetNode("GroundStations");
+            if (stations == null)
+                return;
+
+            GroundStations = new List<MissionControlSatellite>();
+            foreach (var stationNode in stations.GetNodes("STATION"))
+            {
+                var station = new MissionControlSatellite();
+                station.Load(stationNode);
+                GroundStations.Add(station);
+            }
+        }
+
+        private void SavePreSets(ConfigNode node)
+        {
+            var preSets = node.AddNode("PreSets");
+            foreach (var preSet in PreSets)
+            {
+                preSets.AddValue("PRESETS", preSet);
+            }
+        }
+
+        private void LoadPreSets(ConfigNode node)
+        {
+            var preSets = node.GetNode("PreSets");
+            if (preSets == null)
+                return;
+
+            PreSets = preSets.GetValues("PRESETS").ToList();
         }
 
         /// <summary>
@@ -153,8 +327,9 @@ namespace RemoteTech
             {
                 if(cfgs[i].url.Equals(DefaultSettingCfgURL))
                 {
-                    defaultSuccess = ConfigNode.LoadObjectFromConfig(settings, cfgs[i].config);
-                    RTLog.Notify("Load default settings into object with {0}: LOADED {1}", cfgs[i].config, defaultSuccess ? "OK" : "FAIL");
+                    settings.Load(cfgs[i].config);
+                    defaultSuccess = true;
+                    RTLog.Notify("Load default settings into object with {0}: LOADED OK", cfgs[i].config);
                     break;
                 }
             }
@@ -196,8 +371,8 @@ namespace RemoteTech
                     load = load.GetNode("RemoteTechSettings");
                 
                 // replace the default settings with save-setting file
-                var success = ConfigNode.LoadObjectFromConfig(settings, load);
-                RTLog.Notify("Found and load save settings into object with {0}: LOADED {1}", load, success ? "OK" : "FAIL");
+                settings.Load(load);
+                RTLog.Notify("Found and load save settings into object with {0}: LOADED OK", load);
             }
 
             // find third-party mods' RemoteTech settings
@@ -273,11 +448,12 @@ namespace RemoteTech
                 importantInfoNode.AddValue("ActiveVesselGuid", previousSettings.ActiveVesselGuid);
                 importantInfoNode.AddValue("NoTargetGuid", previousSettings.NoTargetGuid);
 
-                successLoadPreSet = ConfigNode.LoadObjectFromConfig(newPreSetSettings, rtSettingCfg.config);
-                RTLog.Notify("Load the preset cfg into object with {0}: LOADED {1}", newPreSetSettings, successLoadPreSet ? "OK" : "FAIL");
+                newPreSetSettings.Load(rtSettingCfg.config);
+                successLoadPreSet = true;
+                RTLog.Notify("Load the preset cfg into object with {0}: LOADED OK", newPreSetSettings);
 
                 // Restore backups
-                ConfigNode.LoadObjectFromConfig(newPreSetSettings, importantInfoNode);
+                newPreSetSettings.Load(importantInfoNode);
                 break;
             }
 
@@ -314,7 +490,9 @@ namespace RemoteTech
             return newGroundStation.mGuid;
         }
 
-        /// <summary>Removes a ground station from the list by its unique <paramref name="stationid"/>.</summary>
+        /// <summary>
+        /// Removes a ground station from the list by its unique <paramref name="stationid"/>.
+        /// </summary>
         /// <param name="stationid">Unique ground station id</param>
         /// <returns>Returns true for a successful removed station, otherwise false.</returns>
         public bool RemoveGroundStation(Guid stationid)

@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using RemoteTech.Modules;
+using RemoteTech.Network;
 using RemoteTech.RangeModel;
 using RemoteTech.SimpleTypes;
 using UnityEngine;
 using KSP.Localization;
+using RemoteTech.Collections;
 
 namespace RemoteTech
 {
@@ -16,16 +18,12 @@ namespace RemoteTech
     /// </summary>
     public partial class NetworkManager : IEnumerable<ISatellite>
     {
-        public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkAdd = delegate { };
-        public event Action<ISatellite, NetworkLink<ISatellite>> OnLinkRemove = delegate { };
+        public ArrayMap<Guid, CelestialBody> Planets { get; private set; } = new();
+        public ArrayMap<Guid, ISatellite> GroundStations { get; private set; } = new();
 
-        public Dictionary<Guid, CelestialBody> Planets { get; private set; }
-        public Dictionary<Guid, ISatellite> GroundStations { get; private set; }
-        public Dictionary<Guid, List<NetworkLink<ISatellite>>> Graph { get; private set; }
+        public int Count => RTCore.Instance.Satellites.Count + GroundStations.Count;
 
-        public int Count { get { return RTCore.Instance.Satellites.Count + GroundStations.Count; } }
-
-        public static Guid ActiveVesselGuid = new Guid(RTSettings.Instance.ActiveVesselGuid);
+        public static Guid ActiveVesselGuid => RTSettings.Instance.ActiveVesselGuidParsed;
 
         public ISatellite this[Guid guid]
         {
@@ -46,40 +44,85 @@ namespace RemoteTech
         {
             get
             {
-                if (sat == null) return new List<NetworkRoute<ISatellite>>();
-                return mConnectionCache.ContainsKey(sat) ? mConnectionCache[sat] : new List<NetworkRoute<ISatellite>>();
+                if (sat == null || current == null) return new List<NetworkRoute<ISatellite>>();
+                // Cache is cleared whenever _current changes (see OnPhysicsUpdate).
+                if (mConnectionCache.TryGetValue(sat, out var cached)) return cached;
+                var built = current.BuildConnections(sat);
+                mConnectionCache[sat] = built;
+                return built;
             }
         }
 
-        private const int REFRESH_TICKS = 50;
+        private readonly Dictionary<ISatellite, List<NetworkRoute<ISatellite>>> mConnectionCache = new Dictionary<ISatellite, List<NetworkRoute<ISatellite>>>();
 
-        private int mTick;
-        private int mTickIndex;
-        private Dictionary<ISatellite, List<NetworkRoute<ISatellite>>> mConnectionCache = new Dictionary<ISatellite, List<NetworkRoute<ISatellite>>>();
+        private NetworkState current;
+        private NetworkState next;
+
+        private static readonly List<NetworkLink<ISatellite>> EmptyLinks = [];
+
+        // --- Read seam ------------------------------------------------------
+        // All consumers go through these accessors rather than touching Graph /
+        // the connection cache directly, so the backing representation can be
+        // swapped (toward native/burst-array storage) without touching callers.
+
+        /// <summary>
+        /// Direct links out of <paramref name="sat"/> (its adjacency row).
+        /// </summary>
+        public IReadOnlyList<NetworkLink<ISatellite>> GetLinks(ISatellite sat) => current?.GetLinks(sat) ?? EmptyLinks;
+
+        /// <summary>
+        /// Whether <paramref name="antenna"/> is an interface on any current link
+        /// of its owning satellite — i.e. the antenna's "connected" state.
+        /// </summary>
+        public bool IsAntennaConnected(IAntenna antenna) => current?.IsAntennaConnected(antenna) ?? false;
+
+        /// <summary>
+        /// O(1) "does <paramref name="sat"/> have a working connection" check
+        /// (optionally restricted to ground-station routes), served from the
+        /// current state without materializing any route. Equivalent to
+        /// <c>this[sat].Any()</c>.
+        /// </summary>
+        public bool IsConnected(ISatellite sat, bool groundOnly = false) => current?.GetRouteExists(sat, groundOnly) ?? false;
+
+        /// <summary>
+        /// O(1) shortest signal delay for <paramref name="sat"/> (optionally to a
+        /// ground station). +inf if unreachable, 0 if signal delay is disabled.
+        /// Equivalent to <c>this[sat].Min().Delay</c>.
+        /// </summary>
+        public double ShortestDelay(ISatellite sat, bool groundOnly = false) => current?.ShortestDelay(sat, groundOnly) ?? double.PositiveInfinity;
+
+        /// <summary>
+        /// Enumerates the whole adjacency graph (inspection/debug seam).
+        /// </summary>
+        internal IEnumerable<KeyValuePair<Guid, List<NetworkLink<ISatellite>>>> EnumerateLinks() =>
+            current?.EnumerateLinks() ?? Enumerable.Empty<KeyValuePair<Guid, List<NetworkLink<ISatellite>>>>();
+
+        internal Dictionary<ISatellite, List<NetworkRoute<ISatellite>>> ConnectionCache => mConnectionCache;
+
+        /// <summary>
+        /// This tick's state — freshest positions, but not yet completed; callers pay for <see cref="NetworkState.Complete"/> if it's still running.
+        /// </summary>
+        internal NetworkState Next => next;
 
         public NetworkManager()
         {
-            Graph = new Dictionary<Guid, List<NetworkLink<ISatellite>>>();
-
             // Load all planets into a dictionary;
-            Planets = new Dictionary<Guid, CelestialBody>();
             foreach (CelestialBody cb in FlightGlobals.Bodies)
-            {
-                Planets[cb.Guid()] = cb;
-            }
+                Planets.Add(cb.Guid(), cb);
 
             // Load all ground stations into a dictionary;
-            GroundStations = new Dictionary<Guid, ISatellite>();
-            foreach (ISatellite sat in RTSettings.Instance.GroundStations)
+            foreach (MissionControlSatellite station in RTSettings.Instance.GroundStations)
             {
                 try
                 {
+                    ISatellite sat = station;
                     GroundStations.Add(sat.Guid, sat);
                     OnSatelliteRegister(sat);
+                    station.RegisterAntennaStates();
                 }
                 catch (Exception e) // Already exists.
                 {
-					RTLog.Notify("A ground station cannot be loaded: " + e.Message, RTLogLevel.LVL1);
+                    RTLog.Notify("A ground station cannot be loaded: " + e.Message, RTLogLevel.LVL1);
                 }
             }
 
@@ -96,54 +139,30 @@ namespace RemoteTech
                 RTCore.Instance.Satellites.OnRegister -= OnSatelliteRegister;
                 RTCore.Instance.Satellites.OnUnregister -= OnSatelliteUnregister;
             }
-        }
-
-        public void FindPath(ISatellite start, IEnumerable<ISatellite> commandStations)
-        {
-            var paths = new List<NetworkRoute<ISatellite>>();
-            foreach (ISatellite root in commandStations.Concat(GroundStations.Values).Where(r => r != start))
+            foreach (ISatellite sat in GroundStations.Values)
             {
-                paths.Add(NetworkPathfinder.Solve(start, root, FindNeighbors, RangeModelExtensions.DistanceTo, RangeModelExtensions.DistanceTo));
+                if (sat is MissionControlSatellite station)
+                    station.UnregisterAntennaStates();
             }
-            mConnectionCache[start] = paths.Where(p => p.Exists).ToList();
-            mConnectionCache[start].Sort((a, b) => a.Length.CompareTo(b.Length));
-            start.OnConnectionRefresh(this[start]);
+            current?.Dispose();
+            next?.Dispose();
         }
 
+        /// <summary>
+        /// Powered (and, when signal relay is on, relay-capable) neighbours of
+        /// <paramref name="s"/>, resolved from the current state's adjacency. Used
+        /// by the on-demand A* path query exposed through the public API.
+        /// </summary>
         public IEnumerable<NetworkLink<ISatellite>> FindNeighbors(ISatellite s)
         {
-            if (!Graph.ContainsKey(s.Guid) || !s.Powered) return Enumerable.Empty<NetworkLink<ISatellite>>();
+            if (s == null || !s.Powered || current == null) return Enumerable.Empty<NetworkLink<ISatellite>>();
+            var links = current.GetLinks(s);
             if (RTSettings.Instance.SignalRelayEnabled)
-            {
-                return Graph[s.Guid].Where(l => l.Target.Powered && l.Target.CanRelaySignal);
-            }
-            else
-            {
-                return Graph[s.Guid].Where(l => l.Target.Powered);
-            }
+                return links.Where(l => l.Target.Powered && l.Target.CanRelaySignal);
+            return links.Where(l => l.Target.Powered);
         }
 
-        private void UpdateGraph(ISatellite a)
-        {
-            var result = this.Select(b => GetLink(a, b)).Where(link => link != null).ToList();
-
-            // Send events for removed edges
-            foreach (var link in Graph[a.Guid].Except(result))
-            {
-                OnLinkRemove(a, link);
-            }
-
-            Graph[a.Guid].Clear();
-
-            // Input new edges
-            foreach (var link in result)
-            {
-                Graph[a.Guid].Add(link);
-                OnLinkAdd(a, link);
-            }
-        }
-
-        public static NetworkLink<ISatellite> GetLink(ISatellite sat_a, ISatellite sat_b)
+        public static NetworkLink<ISatellite>? GetLink(ISatellite sat_a, ISatellite sat_b)
         {
             if (sat_a == null || sat_b == null || sat_a == sat_b) return null;
             if (sat_a.IsInRadioBlackout || sat_b.IsInRadioBlackout) return null;
@@ -161,48 +180,46 @@ namespace RemoteTech
 
         public void OnPhysicsUpdate()
         {
-            var count = RTCore.Instance.Satellites.Count;
-            if (count == 0) return;
-            int baseline = (count / REFRESH_TICKS);
-            int takeCount = baseline + (((mTick++ % REFRESH_TICKS) < (count - baseline * REFRESH_TICKS)) ? 1 : 0);
-            IEnumerable<ISatellite> commandStations = RTCore.Instance.Satellites.FindCommandStations();
-            foreach (VesselSatellite s in RTCore.Instance.Satellites.Concat(RTCore.Instance.Satellites).Skip(mTickIndex).Take(takeCount))
-            {
-                UpdateGraph(s);
-                //("{0} [ E: {1} ]", s.ToString(), Graph[s.Guid].ToDebugString());
+            if (RTCore.Instance.Satellites.Count == 0) return;
+            if (HighLogic.LoadedScene != GameScenes.TRACKSTATION &&
+                HighLogic.LoadedScene != GameScenes.FLIGHT &&
+                !(HighLogic.LoadedScene == GameScenes.SPACECENTER && API.API.enabledInSPC))
+                return;
 
-                // amend this optimisation due to inconsistent connectivity on non-active vessels (eg showing no connection when 3rd-party mods query)
-                //if (s.SignalProcessor.VesselLoaded || HighLogic.LoadedScene == GameScenes.TRACKSTATION || RTCore.Instance.Renderer.ShowMultiPath)
-                if (HighLogic.LoadedScene == GameScenes.TRACKSTATION || HighLogic.LoadedScene == GameScenes.FLIGHT ||
-                    (HighLogic.LoadedScene == GameScenes.SPACECENTER && API.API.enabledInSPC))
-                {
-                    FindPath(s, commandStations);
-                }
+            foreach (ISatellite sat in GroundStations.Values)
+            {
+                if (sat is MissionControlSatellite station)
+                    station.UpdateAntennaStates();
             }
-            mTickIndex += takeCount;
-            mTickIndex = mTickIndex % RTCore.Instance.Satellites.Count;
+
+            // Complete() runs last so _current's job has had a full tick to run in the background.
+            current?.Dispose();
+            current = next;
+            mConnectionCache.Clear();
+            next = NetworkState.ScheduleNetworkUpdate(this, current);
+            current?.Complete();
+            current?.FireConnectionRefresh(this);
         }
 
         private void OnSatelliteUnregister(ISatellite s)
         {
             RTLog.Notify("NetworkManager: SatelliteUnregister({0})", s);
-            Graph.Remove(s.Guid);
-            foreach (var list in Graph.Values)
-            {
-                list.RemoveAll(l => l.Target == s);
-            }
+            // The graph/routes are rebuilt wholesale each tick from the store, so
+            // we only need to drop the satellite's lazily-cached route list. The
+            // renderer clears its own edges via its OnSatelliteUnregister handler.
             mConnectionCache.Remove(s);
         }
 
         private void OnSatelliteRegister(ISatellite s)
         {
             RTLog.Notify("NetworkManager: SatelliteRegister({0})", s);
-            Graph[s.Guid] = new List<NetworkLink<ISatellite>>();
         }
 
         public IEnumerator<ISatellite> GetEnumerator()
         {
-            return RTCore.Instance.Satellites.Cast<ISatellite>().Concat(GroundStations.Values).GetEnumerator();
+            return RTCore.Instance.Satellites.Cast<ISatellite>()
+                .Concat(GroundStations.Values.ToArray())
+                .GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -210,7 +227,9 @@ namespace RemoteTech
             return GetEnumerator();
         }
 
-        /// <summary>Gets the position of a RemoteTech target from its id</summary>
+        /// <summary>
+        /// Gets the position of a RemoteTech target from its id
+        /// </summary>
         /// <returns>The absolute position or null if <paramref name="targetable"/> is neither 
         /// a satellite nor a celestial body.</returns>
         /// <param name="targetable">The id of the satellite or celestial body whose position is 
@@ -232,17 +251,17 @@ namespace RemoteTech
         }
     }
 
-    public sealed class MissionControlSatellite : ISatellite, IPersistenceLoad
+    public sealed class MissionControlSatellite : ISatellite, IConfigNode
     {
         /* Config Node parameters */
-        [Persistent] private String Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488").ToString();
-        [Persistent] private String Name = Localizer.Format("#RT_MissionControl");//"Mission Control"
-        [Persistent] private double Latitude = -0.1313315f;
-        [Persistent] private double Longitude = -74.59484f;
-        [Persistent] private double Height = 75.0f;
-        [Persistent] private int Body = 1;
-        [Persistent] private Color MarkColor = new Color(0.996078f, 0, 0, 1);
-        [Persistent(collectionIndex = "ANTENNA")] private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
+        private String Guid = new Guid("5105f5a9d62841c6ad4b21154e8fc488").ToString();
+        private String Name = Localizer.Format("#RT_MissionControl");//"Mission Control"
+        private double Latitude = -0.1313315f;
+        private double Longitude = -74.59484f;
+        private double Height = 75.0f;
+        private int Body = 1;
+        private Color MarkColor = new Color(0.996078f, 0, 0, 1);
+        private MissionControlAntenna[] Antennas = { new MissionControlAntenna() };
 
         private bool AntennaActivated = true;
 
@@ -257,7 +276,7 @@ namespace RemoteTech
         Vessel ISatellite.parentVessel { get { return null; } }
         CelestialBody ISatellite.Body { get { return FlightGlobals.Bodies[Body]; } }
         Color ISatellite.MarkColor { get { return MarkColor; } }
-        IEnumerable<IAntenna> ISatellite.Antennas { get { return Antennas; } }
+        IReadOnlyList<IAntenna> ISatellite.Antennas { get { return Antennas; } }
         bool ISatellite.CanRelaySignal { get { return true; } } //not sure if should relay signal. Mission Control can "do" everything isnt it?
         
         public Guid mGuid { get; private set; }
@@ -267,9 +286,52 @@ namespace RemoteTech
 
         void ISatellite.OnConnectionRefresh(List<NetworkRoute<ISatellite>> route) { }
 
+        SatelliteState ISatellite.GetState()
+        {
+            var self = (ISatellite)this;
+            return new SatelliteState
+            {
+                Guid = mGuid,
+                Body = RTUtil.Guid(self.Body),
+                Position = self.Position,
+                Powered = self.Powered,
+                IsCommandStation = true,
+                CanRelaySignal = true,
+                IsInRadioBlackout = IsInRadioBlackout,
+            };
+        }
+
         public MissionControlSatellite()
         {
             this.mGuid = new Guid(Guid);
+            foreach (var antenna in Antennas)
+            {
+                antenna.Parent = this;
+            }
+        }
+
+        internal void RegisterAntennaStates()
+        {
+            foreach (var antenna in Antennas)
+            {
+                antenna.RegisterState();
+            }
+        }
+
+        internal void UnregisterAntennaStates()
+        {
+            foreach (var antenna in Antennas)
+            {
+                antenna.UnregisterState();
+            }
+        }
+
+        internal void UpdateAntennaStates()
+        {
+            foreach (var antenna in Antennas)
+            {
+                antenna.UpdateState();
+            }
         }
 
         public void reloadUpgradeableAntennas(int techlvl = 0)
@@ -314,13 +376,46 @@ namespace RemoteTech
             this.Body = index;
         }
 
-        void IPersistenceLoad.PersistenceLoad()
+        public void Load(ConfigNode node)
         {
+            node.TryGetValue("Guid", ref Guid);
+            node.TryGetValue("Name", ref Name);
+            node.TryGetValue("Latitude", ref Latitude);
+            node.TryGetValue("Longitude", ref Longitude);
+            node.TryGetValue("Height", ref Height);
+            node.TryGetValue("Body", ref Body);
+            node.TryGetValue("MarkColor", ref MarkColor);
+
+            var antennas = node.GetNode("Antennas");
+            if (antennas != null)
+            {
+                var antennaNodes = antennas.GetNodes("ANTENNA");
+                Antennas = new MissionControlAntenna[antennaNodes.Length];
+                for (int i = 0; i < antennaNodes.Length; i++)
+                {
+                    Antennas[i] = new MissionControlAntenna { Parent = this };
+                    Antennas[i].Load(antennaNodes[i]);
+                }
+            }
+
+            mGuid = new Guid(Guid);
+        }
+
+        public void Save(ConfigNode node)
+        {
+            node.AddValue("Guid", Guid);
+            node.AddValue("Name", Name);
+            node.AddValue("Latitude", Latitude);
+            node.AddValue("Longitude", Longitude);
+            node.AddValue("Height", Height);
+            node.AddValue("Body", Body);
+            node.AddValue("MarkColor", MarkColor);
+
+            var antennas = node.AddNode("Antennas");
             foreach (var antenna in Antennas)
             {
-                antenna.Parent = this;
+                antenna.Save(antennas.AddNode("ANTENNA"));
             }
-            mGuid = new Guid(Guid);
         }
 
         public override String ToString()

@@ -16,49 +16,74 @@ namespace RemoteTech.FlightComputer
     /// </summary>
     public class FlightComputer : IDisposable
     {
-        /// <summary>Flight computer loaded configuration from persistent save.</summary>
+        /// <summary>
+        /// Flight computer loaded configuration from persistent save.
+        /// </summary>
         private ConfigNode _fcLoadedConfigs;
 
-        /// <summary>List of active commands in the flight computer.</summary>
+        /// <summary>
+        /// List of active commands in the flight computer.
+        /// </summary>
         private readonly SortedDictionary<int, ICommand> _activeCommands = new SortedDictionary<int, ICommand>();
 
-        /// <summary>List of commands queued in the flight computer.</summary>
+        /// <summary>
+        /// List of commands queued in the flight computer.
+        /// </summary>
         private readonly List<ICommand> _commandQueue = new List<ICommand>();
         
-        /// <summary>Flight control queue: this is a priority queue used to delay <see cref="FlightCtrlState"/>.</summary>
+        /// <summary>
+        /// Flight control queue: this is a priority queue used to delay <see cref="FlightCtrlState"/>.
+        /// </summary>
         private readonly PriorityQueue<DelayedFlightCtrlState> _flightCtrlQueue = new PriorityQueue<DelayedFlightCtrlState>();
 
-        /// <summary>The window of the flight computer.</summary>
+        /// <summary>
+        /// The window of the flight computer.
+        /// </summary>
         private FlightComputerWindow _flightComputerWindow;
 
-        /// <summary>Current state of the flight computer.</summary>
+        /// <summary>
+        /// Current state of the flight computer.
+        /// </summary>
         [Flags]
         public enum State
         {
-            /// <summary>Normal state.</summary>
+            /// <summary>
+            /// Normal state.
+            /// </summary>
             Normal = 0,
-            /// <summary>The flight computer (and its vessel) are packed: vessels are only packed when they come within about 300m of the active vessel.</summary>
+            /// <summary>
+            /// The flight computer (and its vessel) are packed: vessels are only packed when they come within about 300m of the active vessel.
+            /// </summary>
             Packed = 2,
-            /// <summary>The flight computer (and its vessel) are out of power.</summary>
+            /// <summary>
+            /// The flight computer (and its vessel) are out of power.
+            /// </summary>
             OutOfPower = 4,
-            /// <summary>The flight computer (and its vessel) have no connection.</summary>
+            /// <summary>
+            /// The flight computer (and its vessel) have no connection.
+            /// </summary>
             NoConnection = 8,
-            /// <summary>The flight computer signal processor is not the vessel main signal processor (see <see cref="ModuleSPU.IsMaster"/>).</summary>
+            /// <summary>
+            /// The flight computer signal processor is not the vessel main signal processor (see <see cref="ModuleSPU.IsMaster"/>).
+            /// </summary>
             NotMaster = 16,
         }
 
-        /// <summary>Gets whether or not it is possible to give input to the flight computer (and consequently, to the vessel).</summary>
+        /// <summary>
+        /// Gets whether or not it is possible to give input to the flight computer (and consequently, to the vessel).
+        /// </summary>
         public bool InputAllowed
         {
             get
             {
                 var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
-                var connection = RTCore.Instance.Network[satellite];
-                return (satellite != null && satellite.HasLocalControl) || (SignalProcessor.Powered && connection.Any());
+                return (satellite != null && satellite.HasLocalControl) || (SignalProcessor.Powered && RTCore.Instance.Network.IsConnected(satellite));
             }
         }
 
-        /// <summary>Gets the delay applied to a flight computer (and hence, its vessel).</summary>
+        /// <summary>
+        /// Gets the delay applied to a flight computer (and hence, its vessel).
+        /// </summary>
         public double Delay
         {
             get
@@ -68,70 +93,106 @@ namespace RemoteTech.FlightComputer
                 if (satellite != null && satellite.HasLocalControl)
                     return 0.0;
 
-                var connection = RTCore.Instance.Network[satellite];
-                return !connection.Any() ? double.PositiveInfinity : connection.Min().Delay;
+                return RTCore.Instance.Network.ShortestDelay(satellite);
             }
         }
 
-        /// <summary>Gets the current status of the flight computer.</summary>
+        /// <summary>
+        /// Gets the current status of the flight computer.
+        /// </summary>
         public State Status
         {
             get
             {
                 var satellite = RTCore.Instance.Network[SignalProcessor.VesselId];
-                var connection = RTCore.Instance.Network[satellite];
                 var status = State.Normal;
                 if (!SignalProcessor.Powered) status |= State.OutOfPower;
                 if (!SignalProcessor.IsMaster) status |= State.NotMaster;
-                if (!connection.Any()) status |= State.NoConnection;
+                if (!RTCore.Instance.Network.IsConnected(satellite)) status |= State.NoConnection;
                 if (Vessel.packed) status |= State.Packed;
                 return status;
             }
         }
 
-        /// <summary>Returns true to keep the throttle on the current position without a connection, otherwise false.</summary>
+        /// <summary>
+        /// Returns true to keep the throttle on the current position without a connection, otherwise false.
+        /// </summary>
         public bool KeepThrottleNoConnect => !RTSettings.Instance.ThrottleZeroOnNoConnection;
-        /// <summary>Returns true to lock the throttle on the current position without a connection, otherwise false.</summary>
+        /// <summary>
+        /// Returns true to lock the throttle on the current position without a connection, otherwise false.
+        /// </summary>
         public bool LockedThrottleNoConnect = false;
-        /// <summary>Returns the last known position of throttle prior to connection loss.</summary>
+        /// <summary>
+        /// Returns the last known position of throttle prior to connection loss.
+        /// </summary>
         public float LockedThrottlePositionNoConnect = 0f;
 
-        /// <summary>Returns true to set the time wrap factor to 1 upon a connection reestablished, otherwise false</summary>
+        /// <summary>
+        /// Returns true to set the time wrap factor to 1 upon a connection reestablished, otherwise false
+        /// </summary>
         public bool StopTimeWrapOnReconnect => RTSettings.Instance.StopTimeWrapOnReConnection;
-        /// <summary>Returns true to indicate whether a connection loss occurs</summary>
+        /// <summary>
+        /// Returns true to indicate whether a connection loss occurs
+        /// </summary>
         private bool TimeWrapConnectionLoss = false;
 
-        /// <summary>Gets or sets the total delay which is the usual light speed delay + any manual delay.</summary>
+        /// <summary>
+        /// Gets or sets the total delay which is the usual light speed delay + any manual delay.
+        /// </summary>
         public double TotalDelay { get; set; }
-        /// <summary>The target (<see cref="TargetCommand.Target"/>) of a <see cref="TargetCommand"/>.</summary>
+        /// <summary>
+        /// The target (<see cref="TargetCommand.Target"/>) of a <see cref="TargetCommand"/>.
+        /// </summary>
         public ITargetable DelayedTarget { get; set; }
-        /// <summary>The last <see cref="TargetCommand"/> used by the Flight Computer.</summary>
+        /// <summary>
+        /// The last <see cref="TargetCommand"/> used by the Flight Computer.
+        /// </summary>
         public TargetCommand LastTarget;
-        /// <summary>The vessel owning this flight computer.</summary>
+        /// <summary>
+        /// The vessel owning this flight computer.
+        /// </summary>
         public Vessel Vessel { get; private set; }
-        /// <summary>The signal processor (<see cref="ISignalProcessor"/>; <seealso cref="ModuleSPU"/>) used by this flight computer.</summary>
+        /// <summary>
+        /// The signal processor (<see cref="ISignalProcessor"/>; <seealso cref="ModuleSPU"/>) used by this flight computer.
+        /// </summary>
         public ISignalProcessor SignalProcessor { get; }
-        /// <summary>List of autopilots for this flight computer. Used by external mods to add their own autopilots (<see cref="RemoteTech.API"/> class).</summary>
+        /// <summary>
+        /// List of autopilots for this flight computer. Used by external mods to add their own autopilots (<see cref="RemoteTech.API"/> class).
+        /// </summary>
         public List<Action<FlightCtrlState>> SanctionedPilots { get; }
-        /// <summary>List of commands that are currently active (not queued).</summary>
+        /// <summary>
+        /// List of commands that are currently active (not queued).
+        /// </summary>
         public IEnumerable<ICommand> ActiveCommands => _activeCommands.Values;
-        /// <summary>List of queued commands in the flight computer.</summary>
+        /// <summary>
+        /// List of queued commands in the flight computer.
+        /// </summary>
         public IEnumerable<ICommand> QueuedCommands => _commandQueue;
 
-        /// <summary>Action triggered if the active command is aborted.</summary>
+        /// <summary>
+        /// Action triggered if the active command is aborted.
+        /// </summary>
         public Action OnActiveCommandAbort;
-        /// <summary>Action triggered if a new command popped to an active command.</summary>
+        /// <summary>
+        /// Action triggered if a new command popped to an active command.
+        /// </summary>
         public Action OnNewCommandPop;
-        /// <summary>Get the active Flight mode as an (<see cref="AttitudeCommand"/>).</summary>
+        /// <summary>
+        /// Get the active Flight mode as an (<see cref="AttitudeCommand"/>).
+        /// </summary>
         public AttitudeCommand CurrentFlightMode => _activeCommands[0] as AttitudeCommand;
 
 
-        /// <summary>Proportional Integral Derivative vessel controller.</summary>
+        /// <summary>
+        /// Proportional Integral Derivative vessel controller.
+        /// </summary>
         public PIDController PIDController;
         public static double PIDKp = 2.0, PIDKi = 0.8, PIDKd = 1.0;
         public static readonly double RoverPIDKp = 1.0, RoverPIDKi = 0.0, RoverPIDKd = 0.0;
 
-        /// <summary>The window of the flight computer.</summary>
+        /// <summary>
+        /// The window of the flight computer.
+        /// </summary>
         public FlightComputerWindow Window
         {
             get
@@ -141,10 +202,14 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Computer able to pilot a rover (part of the flight computer).</summary>
+        /// <summary>
+        /// Computer able to pilot a rover (part of the flight computer).
+        /// </summary>
         public RoverComputer RoverComputer { get; }
 
-        /// <summary>Flight Computer constructor.</summary>
+        /// <summary>
+        /// Flight Computer constructor.
+        /// </summary>
         /// <param name="s">A signal processor (most probably a <see cref="ModuleSPU"/> instance.)</param>
         public FlightComputer(ISignalProcessor s)
         {
@@ -180,7 +245,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Called when a game switch is requested: close the current computer.</summary>
+        /// <summary>
+        /// Called when a game switch is requested: close the current computer.
+        /// </summary>
         /// <param name="data">data with from and to scenes.</param>
         private void OnSceneSwitchRequested(GameEvents.FromToAction<GameScenes, GameScenes> data)
         {
@@ -188,7 +255,9 @@ namespace RemoteTech.FlightComputer
                 Dispose();            
         }
 
-        /// <summary>Called when there's a vessel switch, switching from `fromVessel` to `toVessel`.</summary>
+        /// <summary>
+        /// Called when there's a vessel switch, switching from `fromVessel` to `toVessel`.
+        /// </summary>
         /// <param name="fromVessel">The vessel we switch from.</param>
         /// <param name="toVessel">The vessel we're switching to.</param>
         private void OnVesselSwitching(Vessel fromVessel, Vessel toVessel)
@@ -205,7 +274,9 @@ namespace RemoteTech.FlightComputer
             _flightComputerWindow?.Hide();
         }
 
-        /// <summary>After switching the vessel hide the current flight computer UI.</summary>
+        /// <summary>
+        /// After switching the vessel hide the current flight computer UI.
+        /// </summary>
         /// <param name="vessel">The **new** vessel we are changing to.</param>
         public void OnVesselChange(Vessel vessel)
         {
@@ -214,7 +285,9 @@ namespace RemoteTech.FlightComputer
             _flightComputerWindow?.Hide();
         }
 
-        /// <summary>Called when the flight computer is disposed. This happens when the <see cref="ModuleSPU"/> is destroyed.</summary>
+        /// <summary>
+        /// Called when the flight computer is disposed. This happens when the <see cref="ModuleSPU"/> is destroyed.
+        /// </summary>
         public void Dispose()
         {
             RTLog.Notify("FlightComputer: Dispose");
@@ -244,7 +317,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Abort all active commands.</summary>
+        /// <summary>
+        /// Abort all active commands.
+        /// </summary>
         public void Reset()
         {
             foreach (var cmd in _activeCommands.Values)
@@ -255,7 +330,9 @@ namespace RemoteTech.FlightComputer
             OnActiveCommandAbort.Invoke();
         }
 
-        /// <summary>Enqueue a command in the flight computer command queue.</summary>
+        /// <summary>
+        /// Enqueue a command in the flight computer command queue.
+        /// </summary>
         /// <param name="cmd">The command to be enqueued.</param>
         /// <param name="ignoreControl">If true the command is not enqueued.</param>
         /// <param name="ignoreDelay">If true, the command is executed immediately, otherwise the light speed delay is applied.</param>
@@ -280,7 +357,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Remove a command from the flight computer command queue.</summary>
+        /// <summary>
+        /// Remove a command from the flight computer command queue.
+        /// </summary>
         /// <param name="cmd">The command to be removed from the command queue.</param>
         public void Remove(ICommand cmd)
         {
@@ -288,7 +367,9 @@ namespace RemoteTech.FlightComputer
             if (_activeCommands.ContainsValue(cmd)) _activeCommands.Remove(cmd.Priority);
         }
 
-        /// <summary>Called by the <see cref="ModuleSPU.Update"/> method during the Update() "Game Logic" engine phase.</summary>
+        /// <summary>
+        /// Called by the <see cref="ModuleSPU.Update"/> method during the Update() "Game Logic" engine phase.
+        /// </summary>
         /// <remarks>This checks if there are any commands that can be removed from the FC queue if their delay has elapsed.</remarks>
         public void OnUpdate()
         {
@@ -298,7 +379,9 @@ namespace RemoteTech.FlightComputer
             ExecuteConnectionStatusActions();
         }
 
-        /// <summary>Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.</summary>
+        /// <summary>
+        /// Called by the <see cref="ModuleSPU.OnFixedUpdate"/> method during the "Physics" engine phase.
+        /// </summary>
         public void OnFixedUpdate()
         {
             if (RTCore.Instance == null) return;
@@ -345,7 +428,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Updates the last target command used by the flight computer.</summary>
+        /// <summary>
+        /// Updates the last target command used by the flight computer.
+        /// </summary>
         private void UpdateLastTarget()
         {
             int lastTargetIndex = _commandQueue.FindLastIndex(c => (c is TargetCommand));
@@ -364,7 +449,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Enqueue a <see cref="FlightCtrlState"/> to the flight control queue.</summary>
+        /// <summary>
+        /// Enqueue a <see cref="FlightCtrlState"/> to the flight control queue.
+        /// </summary>
         /// <param name="fs">The <see cref="FlightCtrlState"/> to be queued.</param>
         private void Enqueue(FlightCtrlState fs)
         {
@@ -392,7 +479,9 @@ namespace RemoteTech.FlightComputer
             _flightCtrlQueue.Enqueue(dfs);
         }
 
-        /// <summary>Remove a <see cref="FlightCtrlState"/> from the flight control queue.</summary>
+        /// <summary>
+        /// Remove a <see cref="FlightCtrlState"/> from the flight control queue.
+        /// </summary>
         /// <param name="fcs">The <see cref="FlightCtrlState"/> to be removed from the queue.</param>
         /// <param name="sat">The satellite from which the <see cref="FlightCtrlState"/> should be removed.</param>
         private void PopFlightCtrl(FlightCtrlState fcs, ISatellite sat)
@@ -422,7 +511,9 @@ namespace RemoteTech.FlightComputer
             fcs.CopyFrom(delayed);
         }
 
-        /// <summary>Check whether there are commands that can be removed from the flight computer command queue (when their delay time has elapsed).</summary>
+        /// <summary>
+        /// Check whether there are commands that can be removed from the flight computer command queue (when their delay time has elapsed).
+        /// </summary>
         /// <remarks>This is done during the Update() phase of the game engine. <see cref="OnUpdate"/> method.</remarks>
         private void PopCommand()
         {
@@ -489,7 +580,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Control the flight. Called before the <see cref="Vessel.OnFlyByWire"/> method.</summary>
+        /// <summary>
+        /// Control the flight. Called before the <see cref="Vessel.OnFlyByWire"/> method.
+        /// </summary>
         /// <param name="fcs">The input flight control state.</param>
         private void OnFlyByWirePre(FlightCtrlState fcs)
         {
@@ -520,7 +613,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Control the flight. Called after the <see cref="Vessel.OnFlyByWire"/> method.</summary>
+        /// <summary>
+        /// Control the flight. Called after the <see cref="Vessel.OnFlyByWire"/> method.
+        /// </summary>
         /// <param name="fcs">The input flight control state.</param>
         private void OnFlyByWirePost(FlightCtrlState fcs)
         {
@@ -545,7 +640,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Orders the command queue to be chronological.</summary>
+        /// <summary>
+        /// Orders the command queue to be chronological.
+        /// </summary>
         public void OrderCommandList()
         {
             if (_commandQueue.Count <= 0) return;
@@ -563,7 +660,9 @@ namespace RemoteTech.FlightComputer
             }
         }
 
-        /// <summary>Restores the flight computer from the persistent save.</summary>
+        /// <summary>
+        /// Restores the flight computer from the persistent save.
+        /// </summary>
         /// <param name="configNode">Node with the informations for the flight computer</param>
         public void Load(ConfigNode configNode)
         {
@@ -663,7 +762,9 @@ namespace RemoteTech.FlightComputer
             UpdateLastTarget();
         }
 
-        /// <summary>Saves all values for the flight computer to the persistent.</summary>
+        /// <summary>
+        /// Saves all values for the flight computer to the persistent.
+        /// </summary>
         /// <param name="n">Node to save in</param>
         public void Save(ConfigNode n)
         {
@@ -699,7 +800,9 @@ namespace RemoteTech.FlightComputer
             n.AddNode(flightNode);
         }
 
-        /// <summary>Returns true if there's a least one <see cref="ManeuverCommand"/> on the queue.</summary>
+        /// <summary>
+        /// Returns true if there's a least one <see cref="ManeuverCommand"/> on the queue.
+        /// </summary>
         public bool HasManeuverCommands()
         {
             if (_commandQueue.Count <= 0)
@@ -710,7 +813,9 @@ namespace RemoteTech.FlightComputer
             return maneuverFound != null;
         }
 
-        /// <summary>Looks for the passed <paramref name="node"/> on the command queue and returns true if the node is already on the list.</summary>
+        /// <summary>
+        /// Looks for the passed <paramref name="node"/> on the command queue and returns true if the node is already on the list.
+        /// </summary>
         /// <param name="node">Node to search in the queued commands</param>
         public bool HasManeuverCommandByNode(ManeuverNode node)
         {
@@ -722,7 +827,9 @@ namespace RemoteTech.FlightComputer
             return maneuverFound != null;
         }
 
-        /// <summary>Triggers a <see cref="CancelCommand"/> for the given <paramref name="node"/></summary>
+        /// <summary>
+        /// Triggers a <see cref="CancelCommand"/> for the given <paramref name="node"/>
+        /// </summary>
         /// <param name="node">Node to cancel from the queue</param>
         public void RemoveManeuverCommandByNode(ManeuverNode node)
         {
@@ -749,7 +856,7 @@ namespace RemoteTech.FlightComputer
             //stop time wrap if re-connection occurred
             if (StopTimeWrapOnReconnect && TimeWarp.CurrentRate > 1.0f)
             {
-                if (!RTCore.Instance.Satellites[SignalProcessor.VesselId].Connections.Any()) // no connection
+                if (!RTCore.Instance.Network.IsConnected(RTCore.Instance.Satellites[SignalProcessor.VesselId])) // no connection
                 {
                     TimeWrapConnectionLoss = true;
                 }

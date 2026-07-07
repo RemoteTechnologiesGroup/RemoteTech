@@ -1,41 +1,72 @@
 ﻿using System;
 using System.Linq;
+using RemoteTech.SimpleTypes;
 
 namespace RemoteTech.Modules
 {
-    public sealed class MissionControlAntenna : IAntenna
+    public sealed class MissionControlAntenna : IAntenna, IConfigNode
     {
-        [Persistent] public float Omni = 75000000;
-        [Persistent] public float Dish = 0.0f;
-        [Persistent] public double CosAngle = 1.0;
+        public float Omni = 75000000;
+        public float Dish = 0.0f;
+        public double CosAngle = 1.0;
 
         /// <summary>
         /// Semicolon seperated list with omni ranges for each tech lvl of the tracking station
         /// </summary>
-        [Persistent] public string UpgradeableOmni = String.Empty;
+        public string UpgradeableOmni = String.Empty;
         /// <summary>
         /// Semicolon seperated list with dish ranges for each tech lvl of the tracking station
         /// </summary>
-        [Persistent] public string UpgradeableDish = String.Empty;
+        public string UpgradeableDish = String.Empty;
         /// <summary>
         /// Semicolon seperated list with CosAngle ranges for each tech lvl of the tracking station
         /// </summary>
-        [Persistent] public string UpgradeableCosAngle = String.Empty;
+        public string UpgradeableCosAngle = String.Empty;
+
+        public void Load(ConfigNode node)
+        {
+            node.TryGetValue("Omni", ref Omni);
+            node.TryGetValue("Dish", ref Dish);
+            node.TryGetValue("CosAngle", ref CosAngle);
+            node.TryGetValue("UpgradeableOmni", ref UpgradeableOmni);
+            node.TryGetValue("UpgradeableDish", ref UpgradeableDish);
+            node.TryGetValue("UpgradeableCosAngle", ref UpgradeableCosAngle);
+        }
+
+        public void Save(ConfigNode node)
+        {
+            node.AddValue("Omni", Omni);
+            node.AddValue("Dish", Dish);
+            node.AddValue("CosAngle", CosAngle);
+            node.AddValue("UpgradeableOmni", UpgradeableOmni);
+            node.AddValue("UpgradeableDish", UpgradeableDish);
+            node.AddValue("UpgradeableCosAngle", UpgradeableCosAngle);
+        }
 
         public ISatellite Parent { get; set; }
 
-        float IAntenna.Omni { get { return Omni * MissionControlRangeMultiplier; } }
-        Guid IAntenna.Guid { get { return Parent.Guid; } }
-        String IAntenna.Name { get { return "Dummy Antenna"; } }
-        bool IAntenna.Powered { get { return true; } }
-        public bool Connected { get { return RTCore.Instance.Network.Graph [((IAntenna)this).Guid].Any (l => l.Interfaces.Contains (this)); } }
-        bool IAntenna.Activated { get { return true; } set { return; } }
-        float IAntenna.Consumption { get { return 0.0f; } }
-        bool IAntenna.CanTarget { get { return false; } }
-        Guid IAntenna.Target { get { return new Guid(RTSettings.Instance.ActiveVesselGuid); } set { return; } }
-        float IAntenna.Dish { get { return Dish * MissionControlRangeMultiplier; } }
-        double IAntenna.CosAngle { get { return CosAngle; } }
-        private float MissionControlRangeMultiplier { get { return RTSettings.Instance.MissionControlRangeMultiplier; } }
+        private readonly AntennaState mState = new();
+
+        float IAntenna.Omni => Omni * MissionControlRangeMultiplier;
+        Guid IAntenna.Guid => Parent.Guid;
+        string IAntenna.Name => "Dummy Antenna";
+        bool IAntenna.Powered => true;
+        public bool Connected => RTCore.Instance.Network.IsAntennaConnected(this);
+        bool IAntenna.Activated
+        {
+            get => true;
+            set { }
+        }
+        float IAntenna.Consumption => 0.0f;
+        bool IAntenna.CanTarget => false;
+        Guid IAntenna.Target
+        {
+            get => RTSettings.Instance.ActiveVesselGuidParsed;
+            set { }
+        }
+        float IAntenna.Dish => Dish * MissionControlRangeMultiplier;
+        double IAntenna.CosAngle => CosAngle;
+        private float MissionControlRangeMultiplier => RTSettings.Instance.MissionControlRangeMultiplier;
 
         public void reloadUpgradeableAntennas(int techlvl = 0)
         {
@@ -91,6 +122,31 @@ namespace RemoteTech.Modules
 
                 double.TryParse(cAngleRanges[missionControlTechLevelForCAngle - 1], out this.CosAngle);
             }
+        }
+
+        internal void RegisterState()
+        {
+            UpdateState();
+            mState.Register();
+        }
+
+        internal void UnregisterState() => mState.Dispose();
+
+        internal void UpdateState()
+        {
+            IAntenna antenna = this;
+            mState.Guid = antenna.Guid;
+            mState.Target = antenna.Target;
+            mState.Activated = antenna.Activated;
+            mState.Powered = antenna.Powered;
+            mState.Connected = RTCore.Instance != null
+                && RTCore.Instance.Network != null
+                && RTCore.Instance.Network.IsAntennaConnected(this);
+            mState.CanTarget = antenna.CanTarget;
+            mState.Dish = antenna.Dish;
+            mState.CosAngle = antenna.CosAngle;
+            mState.Omni = antenna.Omni;
+            mState.Consumption = antenna.Consumption;
         }
 
         public void OnConnectionRefresh() { }

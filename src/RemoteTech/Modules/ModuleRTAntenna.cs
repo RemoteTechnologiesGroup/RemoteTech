@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using RemoteTech.SimpleTypes;
 using RemoteTech.UI;
 using UnityEngine;
 using KSP.Localization;
@@ -11,15 +12,17 @@ using KSP.UI.Screens;
 
 namespace RemoteTech.Modules
 {
-    /// <summary>This module represents a part that can receive control transmissions from another vessel or a ground station.</summary>
+    /// <summary>
+    /// This module represents a part that can receive control transmissions from another vessel or a ground station.
+    /// </summary>
     /// <remarks>You must remove any <see cref="ModuleDataTransmitter"/> modules from the antenna if using <see cref="ModuleRTAntenna"/>.</remarks>
     [KSPModule("#RT_Editor_Antenna")]//Antenna
     public class ModuleRTAntenna : PartModule, IAntenna, IContractObjectiveModule, IResourceConsumer
     {
         public String Name { get { return part.partInfo.title; } }
-        public Guid Guid { get { return mRegisteredId; } }
+        public Guid Guid { get { return mState.Guid; } }
         public bool Powered { get { return IsRTPowered; } }
-        public bool Connected { get { return (RTCore.Instance != null && RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this))); } }
+        public bool Connected { get { return RTCore.Instance != null && RTCore.Instance.Network.IsAntennaConnected(this); } }
         public bool Activated { get { return IsRTActive; } set { SetState(value); } }
         public bool CanAnimate { get { return mDeployFxModules.Count > 0; } }
         public bool AnimClosed { get { return mDeployFxModules.Any(fx => fx.GetScalar <= 0.1f                        ); } }
@@ -30,12 +33,12 @@ namespace RemoteTech.Modules
 
         public Guid Target
         {
-            get { return RTAntennaTarget; }
+            get => RTAntennaTarget;
             set
             {
                 RTAntennaTarget = value;
                 Events["EventTarget"].guiName = RTUtil.TargetName(Target);
-                foreach (UIPartActionWindow w in GameObject.FindObjectsOfType(typeof(UIPartActionWindow)).Where(w => ((UIPartActionWindow) w).part == part))
+                foreach (UIPartActionWindow w in GameObject.FindObjectsOfType(typeof(UIPartActionWindow)).Where(w => ((UIPartActionWindow)w).part == part))
                 {
                     w.displayDirty = true;
                 }
@@ -94,21 +97,19 @@ namespace RemoteTech.Modules
         [KSPField(isPersistant = true)]
         public bool
             IsRTAntenna = true,
-            IsRTActive = false,
-            IsRTPowered = false,
             IsRTBroken = false,
             IsNonRetractable = false;
 
-        [KSPField(isPersistant = true)]
-        public double RTDishCosAngle = 1.0f;
+        public bool IsRTActive { get => mState.Activated; set => mState.Activated = value; }
+        public bool IsRTPowered { get => mState.Powered; set => mState.Powered = value; }
+        public double RTDishCosAngle { get => mState.CosAngle; set => mState.CosAngle = value; }
 
         [KSPField(isPersistant = true)]
         public float
             RTOmniRange = 0.0f,
             RTDishRange = 0.0f;
 
-        [KSPField] // Persistence handled by Save()
-        public Guid RTAntennaTarget = Guid.Empty;
+        public Guid RTAntennaTarget { get => mState.Target; set => mState.Target = value; }
 
         [KSPField(guiName = "#RT_ModuleUI_Autothreshold")]//Auto threshold
         public String GUI_DeReactivation_Status = Localizer.Format("#RT_ModuleUI_Autothreshold_Off");//"Off"
@@ -143,6 +144,7 @@ namespace RemoteTech.Modules
         private bool isPartActionUIOpened;
         private UI_FloatRange deactivatePowerThresholdFloatRange;
         private UI_FloatRange activatePowerThresholdFloatRange;
+        private readonly AntennaState mState = new();
 
         private enum State
         {
@@ -153,7 +155,7 @@ namespace RemoteTech.Modules
             Malfunction,
         }
 
-        private Guid mRegisteredId;
+        private Guid mRegisteredId { get => mState.Guid; set => mState.Guid = value; }
 
         public override string GetInfo()
         {
@@ -251,7 +253,8 @@ namespace RemoteTech.Modules
             if (RTCore.Instance != null)
             {
                 var satellite = RTCore.Instance.Network[Guid];
-                bool route_home = RTCore.Instance.Network[satellite].Any(r => r.Links[0].Interfaces.Contains(this) && RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+                bool route_home = (Omni > 0 || Dish > 0)
+                    && RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
                 if (mTransmitter == null && route_home)
                 {
                     AddTransmitter();
@@ -374,6 +377,19 @@ namespace RemoteTech.Modules
         public override void OnLoad(ConfigNode node)
         {
             base.OnLoad(node);
+
+            bool isRTActive = IsRTActive;
+            node.TryGetValue("IsRTActive", ref isRTActive);
+            IsRTActive = isRTActive;
+
+            bool isRTPowered = IsRTPowered;
+            node.TryGetValue("IsRTPowered", ref isRTPowered);
+            IsRTPowered = isRTPowered;
+
+            double rtDishCosAngle = RTDishCosAngle;
+            node.TryGetValue("RTDishCosAngle", ref rtDishCosAngle);
+            RTDishCosAngle = rtDishCosAngle;
+
             if (node.HasValue("RTAntennaTarget"))
             {
                 try
@@ -444,6 +460,10 @@ namespace RemoteTech.Modules
             {
                 node.AddValue("RTAntennaTarget", RTAntennaTarget.ToString());
             }
+
+            node.SetValue("IsRTActive", IsRTActive, createIfNotFound: true);
+            node.SetValue("IsRTPowered", IsRTPowered, createIfNotFound: true);
+            node.SetValue("RTDishCosAngle", RTDishCosAngle, createIfNotFound: true);
         }
 
         public override void OnAwake()
@@ -465,6 +485,10 @@ namespace RemoteTech.Modules
         
         public override void OnStart(StartState state)
         {
+            // Registered here rather than OnAwake: OnAwake also fires on part
+            // prefabs during compilation, whose state is invalid to register.
+            mState.Register();
+
             Actions["ActionOpen"].guiName = ActionMode1Name;
             Actions["ActionOpen"].active = !IsRTBroken;
             Actions["ActionClose"].guiName = ActionMode0Name;
@@ -618,6 +642,12 @@ namespace RemoteTech.Modules
             HandleDynamicPressure();
             UpdateContext();
             ValidateAntennaThresholds();
+
+            mState.Dish = Dish;
+            mState.Omni = Omni;
+            mState.Consumption = Consumption;
+            mState.CanTarget = CanTarget;
+            mState.Connected = Connected;
         }
 
         private void UpdateContext()
@@ -765,6 +795,7 @@ namespace RemoteTech.Modules
         private void OnDestroy()
         {
             RTLog.Notify("ModuleRTAntenna: OnDestroy");
+            mState.Dispose();
             GameEvents.onVesselWasModified.Remove(OnVesselModified);
             GameEvents.onPartUndock.Remove(OnPartUndock);
             if (RTCore.Instance != null && mRegisteredId != Guid.Empty)

@@ -5,19 +5,31 @@ namespace RemoteTech.UI
 {
     public class TargetInfoWindow : AbstractWindow
     {
-        /// <summary>Initial Window width of the targetInfowWindow</summary>
+        /// <summary>
+        /// Initial Window width of the targetInfowWindow
+        /// </summary>
         private const float WINDOW_WIDTH = 180;
-        /// <summary>Initial Window width of the targetInfowWindow</summary>
+        /// <summary>
+        /// Initial Window width of the targetInfowWindow
+        /// </summary>
         private const float WINDOW_HEIGHT = 10;
         public static Guid Guid = new Guid("c6ba7467-7ecd-dcc4-5861-46bcc25d5f45");
 
-        /// <summary>The rearranged position based on the parent window or a fixed rect</summary>
+        /// <summary>
+        /// The rearranged position based on the parent window or a fixed rect
+        /// </summary>
         private Rect parentPos;
-        /// <summary>Holds the parent window to always get the current position of it</summary>
+        /// <summary>
+        /// Holds the parent window to always get the current position of it
+        /// </summary>
         public AbstractWindow ParentWindow { get; set; }
-        /// <summary>The alignment of this window</summary>
+        /// <summary>
+        /// The alignment of this window
+        /// </summary>
         private WindowAlign PopupAlignment { get; set; }
-        /// <summary>Trigger to get the position from the parent window or not</summary>
+        /// <summary>
+        /// Trigger to get the position from the parent window or not
+        /// </summary>
         private bool FixPosition { get; set; }
         ////////////////////////////
         TargetInfoFragment tif;

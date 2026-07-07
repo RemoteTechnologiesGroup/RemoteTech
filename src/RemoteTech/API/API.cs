@@ -1,5 +1,5 @@
 ﻿using RemoteTech.RangeModel;
-﻿using RemoteTech.Modules;
+using RemoteTech.Modules;
 using RemoteTech.SimpleTypes;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,9 @@ namespace RemoteTech.API
 {
     public static class API
     {
-        /// <summary>If true then RTCore will be available in the Space Center</summary>
+        /// <summary>
+        /// If true then RTCore will be available in the Space Center
+        /// </summary>
         internal static bool enabledInSPC = false;
 
         public static bool IsRemoteTechEnabled()
@@ -87,7 +89,7 @@ namespace RemoteTech.API
             var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
             if (satellite == null) return false;
 
-            var hasConnection = RTCore.Instance.Network[satellite].Any();
+            var hasConnection = RTCore.Instance.Network.IsConnected(satellite);
             RTLog.Verbose("Flight: {0} Has Connection: {1}", RTLogLevel.API, id, hasConnection);
             return hasConnection;
         }
@@ -98,12 +100,14 @@ namespace RemoteTech.API
             var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
             if (satellite == null) return false;
 
-            var connectedToKerbin = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid));
+            var connectedToKerbin = RTCore.Instance.Network.IsConnected(satellite, groundOnly: true);
             RTLog.Verbose("Flight: {0} Has Connection to Kerbin: {1}", RTLogLevel.API, id, connectedToKerbin);
             return connectedToKerbin;
         }
 
-        /// <summary> Determines if a satellite directly targets a ground station.</summary>
+        /// <summary>
+        /// Determines if a satellite directly targets a ground station.
+        /// </summary>
         /// <param name="id">The satellite id.</param>
         /// <returns>true if the satellite has an antenna with a ground station as its first link, false otherwise.</returns>
         public static bool HasDirectGroundStation(Guid id)
@@ -117,7 +121,9 @@ namespace RemoteTech.API
             return targetsGroundStation;
         }
 
-        /// <summary> Gets the name of the ground station directly targeted with the shortest link to the satellite.</summary>
+        /// <summary>
+        /// Gets the name of the ground station directly targeted with the shortest link to the satellite.
+        /// </summary>
         /// <param name="id">The satellite id.</param>
         /// <returns>name of the ground station if one is found, null otherwise.</returns>
         public static string GetClosestDirectGroundStation(Guid id)
@@ -132,7 +138,9 @@ namespace RemoteTech.API
             return namedGroundStation;
         }
 
-        /// <summary> Gets the name of the first hop satellite with the shortest link to KSC by the specified satellite.</summary>
+        /// <summary>
+        /// Gets the name of the first hop satellite with the shortest link to KSC by the specified satellite.
+        /// </summary>
         /// <param name="id">The satellite id.</param>
         /// <returns>name of the satellite if one is found, null otherwise.</returns>
         public static string GetFirstHopToKSC(Guid id)
@@ -166,7 +174,9 @@ namespace RemoteTech.API
             return module.Target;
         }
 
-        /// <summary> Gets Guids of all satellites in the control route</summary>
+        /// <summary>
+        /// Gets Guids of all satellites in the control route
+        /// </summary>
         /// <param name="id">The satellite id </param>
         /// <returns> Guid array of all satellite in ground station router</returns>
         public static Guid[] GetControlPath(Guid id)
@@ -178,7 +188,7 @@ namespace RemoteTech.API
 
             if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return new Guid[] { };
 
-            List<NetworkLink<ISatellite>> bestRouter = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links;
+            IReadOnlyList<NetworkLink<ISatellite>> bestRouter = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links;
             Guid[] guids = new Guid[bestRouter.Count];
 
             // Get all satellites till the ground station
@@ -218,7 +228,9 @@ namespace RemoteTech.API
             return groundStation.mGuid;
         }
 
-        /// <summary> Gets the name of a satellite.</summary>
+        /// <summary>
+        /// Gets the name of a satellite.
+        /// </summary>
         /// <param name="id">The satellite id.</param>
         /// <returns>name of the satellite with matching id if found, otherwise null</returns>
         public static string GetName(Guid id)
@@ -238,11 +250,11 @@ namespace RemoteTech.API
         }
 
         public static Guid GetNoTargetGuid() {
-            return new Guid(RTSettings.Instance.NoTargetGuid);
+            return RTSettings.Instance.NoTargetGuidParsed;
         }
 
         public static Guid GetActiveVesselGuid() {
-            return new Guid(RTSettings.Instance.ActiveVesselGuid);
+            return RTSettings.Instance.ActiveVesselGuidParsed;
         }
 
         public static double GetShortestSignalDelay(Guid id)
@@ -252,8 +264,7 @@ namespace RemoteTech.API
 
             if (satellite == null) return double.PositiveInfinity;
 
-            if (!RTCore.Instance.Network[satellite].Any()) return double.PositiveInfinity;
-            var shortestDelay = RTCore.Instance.Network[satellite].Min().Delay;
+            var shortestDelay = RTCore.Instance.Network.ShortestDelay(satellite);
             RTLog.Verbose("Flight: Shortest signal delay from {0} to {1}", RTLogLevel.API, id, shortestDelay);
             return shortestDelay;
         }
@@ -265,8 +276,7 @@ namespace RemoteTech.API
 
             if (satellite == null) return double.PositiveInfinity;
 
-            if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return double.PositiveInfinity;
-            var signalDelaytoKerbin = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Delay;
+            var signalDelaytoKerbin = RTCore.Instance.Network.ShortestDelay(satellite, groundOnly: true);
             RTLog.Verbose("Connection from {0} to Kerbin Delay: {1}", RTLogLevel.API, id, signalDelaytoKerbin);
             return signalDelaytoKerbin;
         }
@@ -481,30 +491,33 @@ namespace RemoteTech.API
             if (satelliteA == null || satelliteB == null) return 0.0;
 
             //get link object
-            NetworkLink<ISatellite> link = null;
+            NetworkLink<ISatellite>? maybeLink = null;
+            List<IAntenna> interfaces = null;
             switch (RTSettings.Instance.RangeModelType)
             {
                 case RangeModel.RangeModel.Additive:
-                    link = RangeModelRoot.GetLink(satelliteA, satelliteB);
+                    maybeLink = RangeModelRoot.GetLink(satelliteA, satelliteB);
+                    interfaces = RangeModelRoot.GetLinkInterfaces(satelliteA, satelliteB);
                     break;
                 default:
-                    link = RangeModelStandard.GetLink(satelliteA, satelliteB);
+                    maybeLink = RangeModelStandard.GetLink(satelliteA, satelliteB);
+                    interfaces = RangeModelStandard.GetLinkInterfaces(satelliteA, satelliteB);
                     break;
             }
-            if (link == null) return 0.0; //no connection possible
+            if (maybeLink == null) return 0.0; //no connection possible
 
             //get max distance out of multiple antenna connections
             var distance = 0.0;
             var maxDistance = 0.0;
-            for(int i=0; i < link.Interfaces.Count; i++)
+            for(int i=0; i < interfaces.Count; i++)
             {
                 switch (RTSettings.Instance.RangeModelType)
                 {
                     case RangeModel.RangeModel.Additive:
-                        distance = RangeModelRoot.GetRangeInContext(link.Interfaces[i], satelliteB, satelliteA);
+                        distance = RangeModelRoot.GetRangeInContext(interfaces[i], satelliteB, satelliteA);
                         break;
                     default:
-                        distance = RangeModelStandard.GetRangeInContext(link.Interfaces[i], satelliteB, satelliteA);
+                        distance = RangeModelStandard.GetRangeInContext(interfaces[i], satelliteB, satelliteA);
                         break;
                 }
                 maxDistance = Math.Max(maxDistance, Double.IsNaN(distance) ? 0.0 : distance);

@@ -16,7 +16,7 @@ namespace RemoteTech
             var nodeMap = new Dictionary<T, Node<NetworkLink<T>>>();
             var priorityQueue = new PriorityQueue<Node<NetworkLink<T>>>();
 
-            var nStart = new Node<NetworkLink<T>>(new NetworkLink<T>(start, null, LinkType.None), 0, heuristicFunction.Invoke(start, goal), null, false);
+            var nStart = new Node<NetworkLink<T>>(new NetworkLink<T>(start, LinkType.None), 0, heuristicFunction.Invoke(start, goal), null, false);
             nodeMap[start] = nStart;
             priorityQueue.Enqueue(nStart);
 

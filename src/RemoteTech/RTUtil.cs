@@ -14,7 +14,9 @@ namespace RemoteTech
     public static partial class RTUtil
     {
         public static double GameTime { get { return Planetarium.GetUniversalTime(); } }
-        /// <summary>This time member is needed to debounce the RepeatButton</summary>
+        /// <summary>
+        /// This time member is needed to debounce the RepeatButton
+        /// </summary>
         private static double TimeDebouncer = (HighLogic.LoadedSceneHasPlanetarium) ? RTUtil.GameTime : 0;
 
         /// <summary>
@@ -224,15 +226,29 @@ namespace RemoteTech
             return Localizer.Format("#RT_ModuleUI_UnknownTarget");//"Unknown Target"
         }
 
-        public static Guid Guid(this CelestialBody cb)
+        public static unsafe Guid Guid(this CelestialBody cb)
         {
-            char[] name = cb.GetName().ToCharArray();
-            var s = new StringBuilder();
-            for (int i = 0; i < 16; i++)
+            var name = cb.GetName();
+            var length = name.Length;
+            if (length == 0)
+                return default;
+
+            byte* bytes = stackalloc byte[16];
+            fixed (char* pname = name)
             {
-                s.Append(((short)name[i % name.Length]).ToString("x"));
+                for (int i = 0, j = 0; i < 16; ++i, ++j)
+                {
+                    if (j >= length)
+                        j = 0;
+
+                    bytes[i] = (byte)pname[j];
+                }
             }
-            return new Guid(s.ToString());
+
+            int a = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
+            short b = (short)((bytes[4] << 8) | bytes[5]);
+            short c = (short)((bytes[6] << 8) | bytes[7]);
+            return new Guid(a, b, c, bytes[8], bytes[9], bytes[10], bytes[11], bytes[12], bytes[13], bytes[14], bytes[15]);
         }
 
         public static bool HasValue(this ProtoPartModuleSnapshot ppms, String name)
@@ -246,7 +262,9 @@ namespace RemoteTech
             return Boolean.TryParse(ppms.moduleValues.GetValue(value) ?? "False", out result) && result;
         }
 
-        /// <summary>Searches a ProtoPartModuleSnapshot for an integer field.</summary>
+        /// <summary>
+        /// Searches a ProtoPartModuleSnapshot for an integer field.
+        /// </summary>
         /// <returns>True if the member <paramref name="valueName"/> exists, false otherwise.</returns>
         /// <param name="ppms">The <see cref="ProtoPartModuleSnapshot"/> to query.</param>
         /// <param name="valueName">The name of a member in the  ProtoPartModuleSnapshot.</param>
@@ -495,15 +513,14 @@ namespace RemoteTech
             }
         }
 
-        public static T CachePerFrame<T>(ref CachedField<T> cachedField, Func<T> getter)
+        internal static bool ShouldUpdateCache<T>(ref CachedField<T> field)
         {
-            if (cachedField.Frame == Time.frameCount)
-            {
-                return cachedField.Field;
-            }
+            var frame = Time.frameCount;
+            if (field.Frame == frame)
+                return false;
 
-            cachedField.Frame = Time.frameCount;
-            return cachedField.Field = getter();
+            field.Frame = frame;
+            return true;
         }
 
         

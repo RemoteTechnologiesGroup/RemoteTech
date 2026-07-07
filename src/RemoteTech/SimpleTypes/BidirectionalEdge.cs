@@ -2,20 +2,15 @@
 
 namespace RemoteTech.SimpleTypes
 {
-    public enum LinkType
+    public enum LinkType : byte
     {
         None,
         Dish,
         Omni,
     }
 
-    public class BidirectionalEdge<T> : IEquatable<BidirectionalEdge<T>>
+    public readonly struct BidirectionalEdge<T> : IEquatable<BidirectionalEdge<T>>
     {
-        public bool Equals(BidirectionalEdge<T> other)
-        {
-            return (A.Equals(other.A) || A.Equals(other.B)) &&
-                   (B.Equals(other.A) || B.Equals(other.B));
-        }
 
         public readonly T A;
         public readonly T B;
@@ -26,6 +21,12 @@ namespace RemoteTech.SimpleTypes
             A = a;
             B = b;
             Type = type;
+        }
+
+        public bool Equals(BidirectionalEdge<T> other)
+        {
+            return (A.Equals(other.A) || A.Equals(other.B)) &&
+                   (B.Equals(other.A) || B.Equals(other.B));
         }
 
         public override int GetHashCode()

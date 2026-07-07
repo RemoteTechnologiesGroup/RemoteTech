@@ -20,9 +20,13 @@ namespace RemoteTech
     public static class RTLog
     {
 
-        /// <summary>On true the verbose-Methods will notify their messages</summary>
+        /// <summary>
+        /// On true the verbose-Methods will notify their messages
+        /// </summary>
         private static readonly bool verboseLogging;
-        /// <summary>debug log list</summary>
+        /// <summary>
+        /// debug log list
+        /// </summary>
         public static readonly Dictionary<RTLogLevel, List<string>> RTLogList = new Dictionary<RTLogLevel, List<string>>();
 
         static RTLog()
