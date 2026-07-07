@@ -28,14 +28,22 @@ namespace RemoteTech.UI
         private double mTooltipTimer;
         private readonly Guid mGuid;
         public static Dictionary<Guid, AbstractWindow> Windows = new Dictionary<Guid, AbstractWindow>();
-        /// <summary>The initial width of this window</summary>
+        /// <summary>
+        /// The initial width of this window
+        /// </summary>
         public float mInitialWidth;
-        /// <summary>The initial height of this window</summary>
+        /// <summary>
+        /// The initial height of this window
+        /// </summary>
         public float mInitialHeight;
-        /// <summary>Callback trigger for the change in the posistion</summary>
+        /// <summary>
+        /// Callback trigger for the change in the posistion
+        /// </summary>
         public Action onPositionChanged = delegate { };
         public Rect backupPosition;
-        /// <summary>todo</summary>
+        /// <summary>
+        /// todo
+        /// </summary>
         protected bool mCloseButton = true;
 
         static AbstractWindow()

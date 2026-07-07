@@ -12,7 +12,7 @@
     <KSPBT_ModRoot>$(ProjectRootDir)GameData\RemoteTech</KSPBT_ModRoot>
     <KSPBT_ModPluginFolder>Plugins</KSPBT_ModPluginFolder>
 
-    <LangVersion>12</LangVersion>
+    <LangVersion>13</LangVersion>
     <DebugType>portable</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release</Configurations>
@@ -21,14 +21,65 @@
     <FileVersion>1.9.12</FileVersion>
     <!-- AssemblyVersion is pinned to major.minor so dependent DLLs don't break on every patch release. -->
     <AssemblyVersion>1.9.0.0</AssemblyVersion>
+
+    <!-- Installing the CKAN dependencies mutates the KSP install and needs the ckan
+         CLI, so restrict it to CI; local builds link against the already-installed DLLs. -->
+    <KSPBT_InstallCKANDependencies>false</KSPBT_InstallCKANDependencies>
+    <KSPBT_InstallCKANDependencies Condition="'$(GITHUB_ACTIONS)' == 'true'">true</KSPBT_InstallCKANDependencies>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Expose internal job/network types to the unit test assemblies. -->
+    <InternalsVisibleTo Include="RemoteTech.Tests" />
+    <InternalsVisibleTo Include="RemoteTech.InGameTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="KSPBuildTools" Version="1.1.1" />
+
+    <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_SerializationFix/Plugin/SerializationFix.dll">
+      <Private>false</Private>
+      <CKANIdentifier>SerializationFix</CKANIdentifier>
+      <KSPAssemblyName>SerializationFix</KSPAssemblyName>
+      <KSPAssemblyVersion>1.0</KSPAssemblyVersion>
+      <GenerateDependencyAttribute>true</GenerateDependencyAttribute>
+    </Reference>
+
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Burst.dll">
+      <Private>false</Private>
+      <CKANIdentifier>KSPBurst-Lite</CKANIdentifier>
+      <KSPAssemblyName>KSPBurst</KSPAssemblyName>
+      <KSPAssemblyVersion>1.7</KSPAssemblyVersion>
+      <GenerateDependencyAttribute>true</GenerateDependencyAttribute>
+    </Reference>
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Collections.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Mathematics.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Jobs.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Burst.Unsafe.dll">
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <AssemblyMetadata Include="HotReload" Value="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Used to implement fast and thread-safe IsNullOrDestroyed checks -->
+    <Publicize Include="UnityEngine.CoreModule:UnityEngine.Object.m_CachedPtr" />
+    <!-- We use this to implement a AsSpan helper for a list. -->
+    <Publicize Include="mscorlib:System.Collections.Generic.List`1._items" />
   </ItemGroup>
 
   <ItemGroup>

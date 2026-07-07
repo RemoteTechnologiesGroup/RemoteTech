@@ -3,7 +3,9 @@
 
 namespace RemoteTech.AddOns
 {
-    /// <summary> Simple class to detect if Kerbalism is loaded </summary>
+    /// <summary>
+    /// Simple class to detect if Kerbalism is loaded
+    /// </summary>
     public static class Kerbalism
     {
         private static readonly Type API;
@@ -21,7 +23,9 @@ namespace RemoteTech.AddOns
             }
         }
 
-        /// <summary> Returns true if Kerbalism is detected for the current game </summary>
+        /// <summary>
+        /// Returns true if Kerbalism is detected for the current game
+        /// </summary>
         public static bool Exists
         {
             get { return API != null; }

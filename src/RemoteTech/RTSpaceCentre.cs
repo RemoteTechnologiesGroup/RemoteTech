@@ -9,12 +9,18 @@ namespace RemoteTech
     [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
     public class RTSpaceCentre : MonoBehaviour
     {
-        /// <summary>Button for KSP Stock Tool bar</summary>
+        /// <summary>
+        /// Button for KSP Stock Tool bar
+        /// </summary>
         public static ApplicationLauncherButton LauncherButton = null;
 
-        /// <summary>OptionWindow</summary>
+        /// <summary>
+        /// OptionWindow
+        /// </summary>
         private OptionWindow _optionWindow;
-        /// <summary>Texture for the KSP Stock Tool-bar Button</summary>
+        /// <summary>
+        /// Texture for the KSP Stock Tool-bar Button
+        /// </summary>
         private Texture2D _rtOptionBtn;
 
         /// <summary>

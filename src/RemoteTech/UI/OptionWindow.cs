@@ -10,12 +10,18 @@ namespace RemoteTech.UI
     class OptionWindow : AbstractWindow
     {
         #region Member
-        /// <summary>Defines the option window width</summary>
+        /// <summary>
+        /// Defines the option window width
+        /// </summary>
         const uint WINDOW_WIDTH = 430;
-        /// <summary>Defines the option window height</summary>
+        /// <summary>
+        /// Defines the option window height
+        /// </summary>
         const uint WINDOW_HEIGHT = 320;
 
-        /// <summary>Option menu items</summary>
+        /// <summary>
+        /// Option menu items
+        /// </summary>
         public enum OPTION_MENUS
         {
             Start = 0,
@@ -27,37 +33,69 @@ namespace RemoteTech.UI
             Cheats
         }
         
-        /// <summary>Small gray hint text color</summary>
+        /// <summary>
+        /// Small gray hint text color
+        /// </summary>
         private GUIStyle mGuiHintText;
-        /// <summary>Small white running text color</summary>
+        /// <summary>
+        /// Small white running text color
+        /// </summary>
         private GUIStyle mGuiRunningText;
-        /// <summary>Textstyle for list entrys</summary>
+        /// <summary>
+        /// Textstyle for list entrys
+        /// </summary>
         private GUIStyle mGuiListText;
-        /// <summary>Button style for list entrys</summary>
+        /// <summary>
+        /// Button style for list entrys
+        /// </summary>
         private GUIStyle mGuiListButton;
-        /// <summary>Texture to represent the dish color</summary>
+        /// <summary>
+        /// Texture to represent the dish color
+        /// </summary>
         private Texture2D mVSColorDish;
-        /// <summary>Texture to represent the omni color</summary>
+        /// <summary>
+        /// Texture to represent the omni color
+        /// </summary>
         private Texture2D mVSColorOmni;
-        /// <summary>Texture to represent the active color</summary>
+        /// <summary>
+        /// Texture to represent the active color
+        /// </summary>
         private Texture2D mVSColorActive;
-        /// <summary>Texture to represent the remote station color</summary>
+        /// <summary>
+        /// Texture to represent the remote station color
+        /// </summary>
         private Texture2D mVSColorRemoteStation;
-        /// <summary>Toggles the color slider for the dish color</summary>
+        /// <summary>
+        /// Toggles the color slider for the dish color
+        /// </summary>
         private bool dishSlider = false;
-        /// <summary>Toggles the color slider for the omni color</summary>
+        /// <summary>
+        /// Toggles the color slider for the omni color
+        /// </summary>
         private bool omniSlider = false;
-        /// <summary>Toggles the color slider for the active color</summary>
+        /// <summary>
+        /// Toggles the color slider for the active color
+        /// </summary>
         private bool activeSlider = false;
-        /// <summary>Toggles the color slider for the remote station color</summary>
+        /// <summary>
+        /// Toggles the color slider for the remote station color
+        /// </summary>
         private bool remoteStationSlider = false;
-        /// <summary>HeadlineImage</summary>
+        /// <summary>
+        /// HeadlineImage
+        /// </summary>
         private Texture2D mTexHeadline;
-        /// <summary>Positionvector for the content scroller</summary>
+        /// <summary>
+        /// Positionvector for the content scroller
+        /// </summary>
         private Vector2 mOptionScrollPosition;
-        /// <summary>Reference to the RTSettings</summary>
+        /// <summary>
+        /// Reference to the RTSettings
+        /// </summary>
         private Settings mSettings { get { return RTSettings.Instance; } }
-        /// <summary>Current selected menu item</summary>
+        /// <summary>
+        /// Current selected menu item
+        /// </summary>
         private int mMenuValue;
         #endregion
 

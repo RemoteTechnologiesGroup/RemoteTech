@@ -7,20 +7,28 @@ namespace RemoteTech.RangeModel
 {
     public static class AbstractRangeModel
     {
-        /// <summary>Can't boost the range of an omni antenna by more than this factor, no matter what.</summary>
+        /// <summary>
+        /// Can't boost the range of an omni antenna by more than this factor, no matter what.
+        /// </summary>
         private static readonly double omniClamp = RTSettings.Instance.OmniRangeClampFactor;
-        /// <summary>Can't boost the range of a dish antenna by more than this factor, no matter what.</summary>
+        /// <summary>
+        /// Can't boost the range of a dish antenna by more than this factor, no matter what.
+        /// </summary>
         private static readonly double dishClamp = RTSettings.Instance.DishRangeClampFactor;
 
-        /// <summary>Finds the maximum range between an antenna and a specific target.</summary>
+        /// <summary>
+        /// Finds the maximum range between an antenna and a specific target.
+        /// </summary>
         /// <returns>The maximum distance at which the two spacecraft could communicate.</returns>
         /// <param name="antenna">The antenna attempting to target.</param>
         /// <param name="target">The satellite being targeted by <paramref name="antenna"/>.</param>
         /// <param name="antennaSat">The satellite on which <paramref name="antenna"/> is mounted.</param>
-        /// <param name="rangeFunc">A function that computes the maximum range between two 
-        /// satellites, given their individual ranges.</param>
-        public static double GetRangeInContext(IAntenna antenna, ISatellite target, ISatellite antennaSat,
-            Func<double, double, double> rangeFunc) {
+        /// <typeparam name="TRange">The range model to evaluate joint ranges with.</typeparam>
+        public static double GetRangeInContext<TRange>(IAntenna antenna, ISatellite target, ISatellite antennaSat)
+            where TRange : struct, IRangeModel
+        {
+            TRange model = default;
+
             // Which antennas on the other craft are capable of communication?
             IEnumerable<IAntenna>  omnisB = GetOmnis(target);
             IEnumerable<IAntenna> dishesB = GetDishesThatSee(target, antennaSat);
@@ -37,10 +45,10 @@ namespace RemoteTech.RangeModel
 
             // What is the range?
             // Note: IAntenna.Omni and IAntenna.Dish are zero for antennas of the other type
-            double maxOmni = Math.Max(CheckRange(rangeFunc, antenna.Omni + bonusA, omniClamp, maxOmniB + bonusB, omniClamp),
-                                      CheckRange(rangeFunc, antenna.Omni + bonusA, omniClamp, maxDishB         , dishClamp));
-            double maxDish = Math.Max(CheckRange(rangeFunc, antenna.Dish         , dishClamp, maxOmniB + bonusB, omniClamp), 
-                                      CheckRange(rangeFunc, antenna.Dish         , dishClamp, maxDishB         , dishClamp));
+            double maxOmni = Math.Max(CheckRange(model, antenna.Omni + bonusA, omniClamp, maxOmniB + bonusB, omniClamp),
+                                      CheckRange(model, antenna.Omni + bonusA, omniClamp, maxDishB         , dishClamp));
+            double maxDish = Math.Max(CheckRange(model, antenna.Dish         , dishClamp, maxOmniB + bonusB, omniClamp),
+                                      CheckRange(model, antenna.Dish         , dishClamp, maxDishB         , dishClamp));
 
             if (Double.IsNaN(maxOmni)) { maxOmni = 0.0; }
             if (Double.IsNaN(maxDish)) { maxDish = 0.0; }
@@ -48,12 +56,34 @@ namespace RemoteTech.RangeModel
             return Math.Max(maxOmni, maxDish);
         }
 
-        /// <summary>Constructs a link between two satellites, if one is possible.</summary>
+        /// <summary>
+        /// Constructs a link between two satellites, if one is possible.
+        /// </summary>
         /// <returns>The new link, or null if the two satellites cannot connect.</returns>
-        /// <param name="rangeFunc">A function that computes the maximum range between two 
-        /// satellites, given their individual ranges.</param>
-        public static NetworkLink<ISatellite> GetLink(ISatellite satA, ISatellite satB, 
-            Func<double, double, double> rangeFunc) {
+        /// <typeparam name="TRange">The range model to evaluate joint ranges with.</typeparam>
+        public static NetworkLink<ISatellite>? GetLink<TRange>(ISatellite satA, ISatellite satB)
+            where TRange : struct, IRangeModel {
+            return TryFindConnectionCandidates<TRange>(satA, satB, out _, out var type)
+                ? new NetworkLink<ISatellite>(satB, type)
+                : null;
+        }
+
+        /// <summary>The antennas on <paramref name="satA"/> individually capable of reaching
+        /// <paramref name="satB"/> — a superset of the one antenna <see cref="GetLink{TRange}"/>
+        /// picks. Empty if the two satellites cannot connect.</summary>
+        /// <typeparam name="TRange">The range model to evaluate joint ranges with.</typeparam>
+        public static List<IAntenna> GetLinkInterfaces<TRange>(ISatellite satA, ISatellite satB)
+            where TRange : struct, IRangeModel {
+            return TryFindConnectionCandidates<TRange>(satA, satB, out var candidatesA, out _)
+                ? candidatesA
+                : [];
+        }
+
+        private static bool TryFindConnectionCandidates<TRange>(ISatellite satA, ISatellite satB,
+            out List<IAntenna> candidatesA, out LinkType type)
+            where TRange : struct, IRangeModel {
+            TRange model = default;
+
             // Which antennas on either craft are capable of communication?
             IEnumerable<IAntenna>  omnisA = GetOmnis(satA);
             IEnumerable<IAntenna>  omnisB = GetOmnis(satB);
@@ -72,18 +102,18 @@ namespace RemoteTech.RangeModel
             double distance = satA.DistanceTo(satB);
 
             // Which antennas have the range to reach at least one antenna on the other satellite??
-            omnisA = omnisA.Where(ant => 
-                   CheckRange(rangeFunc, ant.Omni + bonusA, omniClamp, maxOmniB + bonusB, omniClamp) >= distance
-                || CheckRange(rangeFunc, ant.Omni + bonusA, omniClamp, maxDishB         , dishClamp) >= distance);
-            dishesA = dishesA.Where(ant => 
-                   CheckRange(rangeFunc, ant.Dish         , dishClamp, maxOmniB + bonusB, omniClamp) >= distance 
-                || CheckRange(rangeFunc, ant.Dish         , dishClamp, maxDishB         , dishClamp) >= distance);
-            omnisB = omnisB.Where(ant => 
-                   CheckRange(rangeFunc, ant.Omni + bonusB, omniClamp, maxOmniA + bonusA, omniClamp) >= distance
-                || CheckRange(rangeFunc, ant.Omni + bonusB, omniClamp, maxDishA         , dishClamp) >= distance);
-            dishesB = dishesB.Where(ant => 
-                   CheckRange(rangeFunc, ant.Dish         , dishClamp, maxOmniA + bonusA, omniClamp) >= distance 
-                || CheckRange(rangeFunc, ant.Dish         , dishClamp, maxDishA         , dishClamp) >= distance);
+            omnisA = omnisA.Where(ant =>
+                   CheckRange(model, ant.Omni + bonusA, omniClamp, maxOmniB + bonusB, omniClamp) >= distance
+                || CheckRange(model, ant.Omni + bonusA, omniClamp, maxDishB         , dishClamp) >= distance);
+            dishesA = dishesA.Where(ant =>
+                   CheckRange(model, ant.Dish         , dishClamp, maxOmniB + bonusB, omniClamp) >= distance
+                || CheckRange(model, ant.Dish         , dishClamp, maxDishB         , dishClamp) >= distance);
+            omnisB = omnisB.Where(ant =>
+                   CheckRange(model, ant.Omni + bonusB, omniClamp, maxOmniA + bonusA, omniClamp) >= distance
+                || CheckRange(model, ant.Omni + bonusB, omniClamp, maxDishA         , dishClamp) >= distance);
+            dishesB = dishesB.Where(ant =>
+                   CheckRange(model, ant.Dish         , dishClamp, maxOmniA + bonusA, omniClamp) >= distance
+                || CheckRange(model, ant.Dish         , dishClamp, maxDishA         , dishClamp) >= distance);
 
             // Just because an antenna is in `omnisA.Concat(dishesA)` doesn't mean it can connect to *any*
             //  antenna in `omnisB.Concat(dishesB)`, and vice versa. Pick the max to be safe.
@@ -92,33 +122,38 @@ namespace RemoteTech.RangeModel
             IAntenna selectedAntennaB = omnisB.Concat(dishesB)
                 .OrderByDescending(ant => Math.Max(ant.Omni, ant.Dish)).FirstOrDefault();
 
-            if (selectedAntennaA != null && selectedAntennaB != null)
+            if (selectedAntennaA == null || selectedAntennaB == null)
             {
-                List<IAntenna> interfaces = omnisA.Concat(dishesA).ToList();
-
-                LinkType type = (dishesA.Contains(selectedAntennaA) || dishesB.Contains(selectedAntennaB) 
-                    ? LinkType.Dish : LinkType.Omni);
-
-                return new NetworkLink<ISatellite>(satB, interfaces, type);
+                candidatesA = null;
+                type = LinkType.None;
+                return false;
             }
 
-            return null;
+            candidatesA = omnisA.Concat(dishesA).ToList();
+            type = dishesA.Contains(selectedAntennaA) || dishesB.Contains(selectedAntennaB)
+                ? LinkType.Dish : LinkType.Omni;
+            return true;
         }
 
-        /// <summary>Checks the maximum range achievable by two satellites.</summary>
+        /// <summary>
+        /// Checks the maximum range achievable by two satellites.
+        /// </summary>
         /// <returns>The maximum range, including sanity limits.</returns>
-        /// <param name="rangeFunc">A function that takes two antenna ranges and returns a joint range.</param>
+        /// <param name="model">The range model to evaluate the joint range with.</param>
         /// <param name="range1">The range of the first satellite.</param>
         /// <param name="range2">The range of the second satellite.</param>
         /// <param name="clamp1">The maximum factor by which the first range can be boosted.</param>
         /// <param name="clamp2">The maximum factor by which the second range can be boosted.</param>
-        private static double CheckRange(Func<double, double, double> rangeFunc, 
-                double range1, double clamp1, 
-                double range2, double clamp2) {
-            return Math.Min(Math.Min(rangeFunc.Invoke(range1, range2), range1*clamp1), range2*clamp2);
+        private static double CheckRange<TRange>(in TRange model,
+                double range1, double clamp1,
+                double range2, double clamp2)
+            where TRange : struct, IRangeModel {
+            return Math.Min(Math.Min(model.MaxDistance(range1, range2), range1*clamp1), range2*clamp2);
         }
 
-        /// <summary>Returns the bonus from having multiple antennas</summary>
+        /// <summary>
+        /// Returns the bonus from having multiple antennas
+        /// </summary>
         /// <returns>The boost to all omni antenna ranges, if MultipleAntennaMultiplier is enabled;
         /// otherwise zero.</returns>
         private static double GetMultipleAntennaBonus(IEnumerable<IAntenna> omniList, double maxOmni) {
@@ -130,7 +165,9 @@ namespace RemoteTech.RangeModel
             }
         }
 
-        /// <summary>Returns all omnidirectional antennas on a satellite.</summary>
+        /// <summary>
+        /// Returns all omnidirectional antennas on a satellite.
+        /// </summary>
         /// <returns>A possibly empty collection of omnis.</returns>
         private static IEnumerable<IAntenna> GetOmnis(ISatellite sat)
         {

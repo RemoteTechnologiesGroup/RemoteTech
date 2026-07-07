@@ -29,23 +29,39 @@ namespace RemoteTech.UI
         }
         private IAntenna mAntenna;
         private Vector2 mScrollPosition = Vector2.zero;
-        /// <summary>The tree of (real or virtual) targets displayed in this fragment.</summary>
+        /// <summary>
+        /// The tree of (real or virtual) targets displayed in this fragment.
+        /// </summary>
         /// <invariant>No Entry object appears in the tree pointed to by mRootEntry more than once.</invariant>
         private Entry mRootEntry = new Entry();
-        /// <summary>The Entry corresponding to the currently selected target, if any.</summary>
+        /// <summary>
+        /// The Entry corresponding to the currently selected target, if any.
+        /// </summary>
         private Entry mSelection;
-        /// <summary>The Entry corresponding to the currently selected target, if any.</summary>
+        /// <summary>
+        /// The Entry corresponding to the currently selected target, if any.
+        /// </summary>
         private Entry mCurrentMouseOverEntry = null;
-        /// <summary>Callback trigger for mouse over a list entry</summary>
+        /// <summary>
+        /// Callback trigger for mouse over a list entry
+        /// </summary>
         public Action onMouseOverListEntry = delegate { };
-        /// <summary>Callback trigger for mouse out of a list entry</summary>
+        /// <summary>
+        /// Callback trigger for mouse out of a list entry
+        /// </summary>
         public Action onMouseOutListEntry = delegate { };
-        /// <summary>Current entry of the mouse</summary>
+        /// <summary>
+        /// Current entry of the mouse
+        /// </summary>
         public Entry mouseOverEntry { get { return mCurrentMouseOverEntry; } private set { mCurrentMouseOverEntry = value; } }
-        /// <summary>Flag to trigger the onMouseover event</summary>
+        /// <summary>
+        /// Flag to trigger the onMouseover event
+        /// </summary>
         public bool triggerMouseOverListEntry = false;
 
-        /// <summary>The Entries corresponding to loaded celestial bodies.</summary>
+        /// <summary>
+        /// The Entries corresponding to loaded celestial bodies.
+        /// </summary>
         private Dictionary<CelestialBody, Entry> mEntries;      // Current planet list
         private int refreshCounter = 0;
 
@@ -157,12 +173,16 @@ namespace RemoteTech.UI
         }
 
         public void Refresh(IAntenna sat) { if (sat == Antenna) { Antenna = null; } }
-        /// <summary>Rebuilds list of target vessels</summary>
+        /// <summary>
+        /// Rebuilds list of target vessels
+        /// </summary>
         /// <description>Rebuilds the list of target vessels, preserving the rest of the target list state. Does 
         ///     not alter planets or special targets, call RefreshPlanets() for that.</description>
         /// <param name="sat">The satellite whose status has just changed.</param>
         public void Refresh(ISatellite sat) { Refresh(); }
-        /// <summary>Rebuilds list of target vessels</summary>
+        /// <summary>
+        /// Rebuilds list of target vessels
+        /// </summary>
         /// <description>Rebuilds the list of target vessels, preserving the rest of the target list state. Does 
         ///     not alter planets or special targets, call RefreshPlanets() for that.</description>
         public void Refresh()
@@ -213,7 +233,9 @@ namespace RemoteTech.UI
             }
         }
 
-        /// <summary>Full refresh of target list</summary>
+        /// <summary>
+        /// Full refresh of target list
+        /// </summary>
         /// <description>Rebuilds the list of target buttons from scratch, including special targets and 
         /// planets. Does not build vessel list, call Refresh() for that.</description>
         /// <remarks>Calling this function wipes all information about which submenus were open or closed.</remarks>
@@ -224,7 +246,7 @@ namespace RemoteTech.UI
             mSelection = new Entry()
             {
                 Text = Localizer.Format("#RT_ModuleUI_NoTarget"),//"No Target"
-                Guid = new Guid(RTSettings.Instance.NoTargetGuid),
+                Guid = RTSettings.Instance.NoTargetGuidParsed,
                 Color = Color.white,
                 Depth = 0,
             };

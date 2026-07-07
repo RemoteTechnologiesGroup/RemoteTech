@@ -24,15 +24,25 @@ namespace RemoteTech.UI
         #endregion
 
         #region Member
-        /// <summary>Scroll position of the debug log textarea</summary>
+        /// <summary>
+        /// Scroll position of the debug log textarea
+        /// </summary>
         private Vector2 debugLogScrollPosition;
-        /// <summary>Scroll position of the content area</summary>
+        /// <summary>
+        /// Scroll position of the content area
+        /// </summary>
         private Vector2 contentScrollPosition;
-        /// <summary>Current selected log level</summary>
+        /// <summary>
+        /// Current selected log level
+        /// </summary>
         private RTLogLevel currentLogLevel = RTLogLevel.LVL1;
-        /// <summary>Current selected menue item</summary>
+        /// <summary>
+        /// Current selected menue item
+        /// </summary>
         private int currentDebugMenue = 0;
-        /// <summary>List of all menue items</summary>
+        /// <summary>
+        /// List of all menue items
+        /// </summary>
         private List<string> debugMenueItems = new List<string>();
 
         private int deactivatedMissionControls = 0;

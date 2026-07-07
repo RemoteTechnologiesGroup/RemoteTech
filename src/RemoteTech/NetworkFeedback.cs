@@ -7,7 +7,9 @@ namespace RemoteTech
 {
     public class NetworkFeedback
     {
-        /// <summary>Returns the position of a target identified only by its Guid</summary>
+        /// <summary>
+        /// Returns the position of a target identified only by its Guid
+        /// </summary>
         /// <returns>An absolute world coordinate position.</returns>
         /// <param name="target">The item whose position is desired. May be either a satellite 
         /// or a celestial body</param>
@@ -29,7 +31,9 @@ namespace RemoteTech
             throw new System.ArgumentException("No such Guid found", "target");
         }
 
-        /// <summary>Returns the SoI of a target identified only by its Guid</summary>
+        /// <summary>
+        /// Returns the SoI of a target identified only by its Guid
+        /// </summary>
         /// <returns>If target refers to a celestial body, returns that body. If target refers 
         /// to an ISatellite, returns the body whose SoI currently contains the ISatellite.</returns>
         /// <param name="target">The item whose position is desired. May be either a satellite 
@@ -52,7 +56,9 @@ namespace RemoteTech
             throw new System.ArgumentException("No such Guid found", "target");
         }
 
-        /// <summary>Counts the number of ISatellites that are in the antenna cone and in range.</summary>
+        /// <summary>
+        /// Counts the number of ISatellites that are in the antenna cone and in range.
+        /// </summary>
         /// <returns>The number of reachable satellites.</returns>
         /// <remarks>If antenna does not have a cone, returns 0.</remarks>
         /// <param name="antenna">The antenna whose cone must be tested.</param>
@@ -85,7 +91,9 @@ namespace RemoteTech
             }
         }
 
-        /// <summary>Tests whether an antenna can connect to a target</summary>
+        /// <summary>
+        /// Tests whether an antenna can connect to a target
+        /// </summary>
         /// <returns>The range to the target, or a diagnostic error message. Returns the 
         /// empty string if target is invalid.</returns>
         /// <param name="antenna">The antenna attempting to make a connection.</param>

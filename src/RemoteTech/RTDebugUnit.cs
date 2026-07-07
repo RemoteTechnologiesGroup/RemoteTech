@@ -70,7 +70,7 @@ namespace RemoteTech
         {
             var data = new List<string> {"NetworkManager.Graph contents: "};
             var i = 0;
-            foreach (var edge in RTCore.Instance.Network.Graph)
+            foreach (var edge in RTCore.Instance.Network.EnumerateLinks())
             {
                 data.Add($"    {i++}: {edge.Key}");
                 var j = 0;

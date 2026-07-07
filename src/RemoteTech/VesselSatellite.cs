@@ -12,96 +12,186 @@ namespace RemoteTech
     /// </summary>
     public class VesselSatellite : ISatellite
     {
-        /// <summary>Gets whether or not the satellite if visible in the Tracking station or the Flight Map view.</summary>
-        public bool Visible => SignalProcessor.Visible;
+        public Vessel Vessel { get; private set; }
 
-        /// <summary>Gets or sets the name of the satellite.</summary>
+        /// <summary>
+        /// Gets whether or not the satellite is visible in the Tracking station or the Flight Map view.
+        /// </summary>
+        public bool Visible => MapViewFiltering.CheckAgainstFilter(Vessel);
+
+        /// <summary>
+        /// Gets or sets the name of the satellite.
+        /// </summary>
         public string Name
         {
-            get { return SignalProcessor.VesselName; }
-            set { SignalProcessor.VesselName = value; }
+            get => Vessel.vesselName;
+            set => Vessel.vesselName = value;
         }
 
-        /// <summary>Gets the satellite id.</summary>
-        public Guid Guid => SignalProcessor.VesselId;
+        /// <summary>
+        /// Gets the satellite id.
+        /// </summary>
+        public Guid Guid => Vessel.id;
 
-        /// <summary>Get a double precision vector for the vessel's world space position.</summary>
-        public Vector3d Position => SignalProcessor.Position;
+        /// <summary>
+        /// Get a double precision vector for the vessel's world space position.
+        /// </summary>
+        public Vector3d Position => Vessel.GetWorldPos3D();
 
-        /// <summary>Gets the celestial body around which the satellite is orbiting.</summary>
-        public CelestialBody Body => SignalProcessor.Body;
+        /// <summary>
+        /// Gets the celestial body around which the satellite is orbiting.
+        /// </summary>
+        public CelestialBody Body => Vessel.mainBody;
 
-        /// <summary>Gets the color of the ground station mark in Tracking station or Flight map view.</summary>
+        /// <summary>
+        /// Gets the color of the ground station mark in Tracking station or Flight map view.
+        /// </summary>
         public Color MarkColor => RTSettings.Instance.RemoteStationColorDot;
 
-        /// <summary>Gets or sets the list of signal processor (<see cref="ISignalProcessor"/>) for the satellite.</summary>
+        /// <summary>
+        /// Gets or sets the list of signal processor (<see cref="ISignalProcessor"/>) for the satellite.
+        /// </summary>
         public List<ISignalProcessor> SignalProcessors { get; set; }
 
-        /// <summary>Gets if the satellite is actually powered or not.</summary>
+        /// <summary>
+        /// Gets if the satellite is actually powered or not.
+        /// </summary>
         public bool Powered
         {
-            get { return (PowerShutdownFlag)? false : SignalProcessors.Any(s => s.Powered); }
+            get
+            {
+                if (PowerShutdownFlag)
+                    return false;
+
+                foreach (var s in SignalProcessors)
+                {
+                    if (s.Powered)
+                        return true;
+                }
+                
+                return false;
+            }
         }
 
-        /// <summary>Gets if the satellite is capable to forward other signals.</summary>
+        /// <summary>
+        /// Gets if the satellite is capable to forward other signals.
+        /// </summary>
         public bool CanRelaySignal
         {
-            get { return RTSettings.Instance.SignalRelayEnabled ? SignalProcessors.Any(s => s.CanRelaySignal && !(s is ModuleSPUPassive)) : true; }
+            get
+            {
+                if (!RTSettings.Instance.SignalRelayEnabled)
+                    return true;
+
+                foreach (var s in SignalProcessors)
+                {
+                    if (s is ModuleSPUPassive)
+                        continue;
+
+                    if (s.CanRelaySignal)
+                        return true;
+                }
+
+                return false;
+            }
         }
 
-        /// <summary>Indicates whether the satellite is in radio blackout.</summary>
+        /// <summary>
+        /// Indicates whether the satellite is in radio blackout.
+        /// </summary>
         public bool IsInRadioBlackout { get; set; }
 
-        /// <summary>Indicates whether the manual power override is engaged.</summary>
+        /// <summary>
+        /// Indicates whether the manual power override is engaged.
+        /// </summary>
         public bool PowerShutdownFlag { get; set; }
 
-        /// <summary>Gets if the satellite is a RemoteTech command station.</summary>
+        /// <summary>
+        /// Gets if the satellite is a RemoteTech command station.
+        /// </summary>
         public bool IsCommandStation
         {
-            get { return SignalProcessors.Any(s => s.IsCommandStation); }
+            get
+            {
+                foreach (var s in SignalProcessors)
+                {
+                    if (s.IsCommandStation)
+                        return true;
+                }
+
+                return false;
+            }
         }
 
-        /// <summary>Gets a signal processor.</summary>
+        /// <summary>
+        /// Gets a signal processor.
+        /// </summary>
         public ISignalProcessor SignalProcessor
         {
             get
             {
-                return SignalProcessors.FirstOrDefault(s => s.FlightComputer != null) ?? SignalProcessors[0];
+                foreach (var s in SignalProcessors)
+                {
+                    if (s.FlightComputer is not null)
+                        return s;
+                }
+
+                if (SignalProcessors.Count != 0)
+                    return SignalProcessors[0];
+
+                return null;
             }
         }
 
-        /// <summary>Gets whether the satellite has local control or not (that is, if it is locally controlled or not).</summary>
+        /// <summary>
+        /// Local control cache variable.
+        /// </summary>
+        private CachedField<bool> _localControl;
+
+        /// <summary>
+        /// Gets whether the satellite has local control or not (that is, if it is locally controlled or not).
+        /// </summary>
         public bool HasLocalControl
         {
             get
             {
-                return RTUtil.CachePerFrame(ref _localControl, () => SignalProcessor.Vessel.HasLocalControl());
+                if (RTUtil.ShouldUpdateCache(ref _localControl))
+                    _localControl.Field = Vessel.HasLocalControl();
+
+                return _localControl.Field;
             }
         }
 
-        /// <summary>Indicates whether the ISatellite corresponds to a vessel.</summary>
+        /// <summary>
+        /// Indicates whether the ISatellite corresponds to a vessel.
+        /// </summary>
         /// <value><c>true</c> if satellite is vessel or asteroid; otherwise (e.g. a ground station), <c>false</c>.</value>
         /// <remarks>Implementation note: always return true for a <see cref="VesselSatellite"/>.</remarks>
         public bool isVessel => true;
 
-        /// <summary>The vessel hosting the satellite.</summary>
+        /// <summary>
+        /// The vessel hosting the satellite.
+        /// </summary>
         /// <value>The vessel corresponding to this ISatellite. Returns null if !isVessel.</value>
-        public Vessel parentVessel => SignalProcessor.Vessel;
+        public Vessel parentVessel => Vessel;
 
-        /// <summary>Gets a list of antennas for this satellite.</summary>
-        public IEnumerable<IAntenna> Antennas => RTCore.Instance.Antennas[this];
+        /// <summary>
+        /// Gets a list of antennas for this satellite.
+        /// </summary>
+        public IReadOnlyList<IAntenna> Antennas => RTCore.Instance.Antennas[this];
 
-        /// <summary>Gets the flight computer for this satellite.</summary>
+        /// <summary>
+        /// Gets the flight computer for this satellite.
+        /// </summary>
         public FlightComputer.FlightComputer FlightComputer => SignalProcessor.FlightComputer;
 
         /*
          * Helpers
          */
 
-        /// <summary>List of network routes for the satellite.</summary>
-        public List<NetworkRoute<ISatellite>> Connections => RTCore.Instance.Network[this];
-
-        /// <summary>Called on connection refresh to update the connections.</summary>
+        /// <summary>
+        /// Called on connection refresh to update the connections.
+        /// </summary>
         /// <param name="routes">List of network routes.</param>
         public void OnConnectionRefresh(List<NetworkRoute<ISatellite>> routes)
         {
@@ -111,16 +201,15 @@ namespace RemoteTech
             }
         }
 
-        /// <summary>Local control cache variable.</summary>
-        private CachedField<bool> _localControl;
-
         /*
          * Methods
          */
 
-        /// <summary>Build a new instance of VesselSatellite.</summary>
+        /// <summary>
+        /// Build a new instance of VesselSatellite.
+        /// </summary>
         /// <param name="signalProcessors">List of signal processor for this satellites. Can't be null.</param>
-        public VesselSatellite(List<ISignalProcessor> signalProcessors)
+        public VesselSatellite(Vessel vessel, List<ISignalProcessor> signalProcessors)
         {
             if (signalProcessors == null)
             {
@@ -128,7 +217,22 @@ namespace RemoteTech
                 throw new ArgumentNullException();
             }
 
+            Vessel = vessel;
             SignalProcessors = signalProcessors;
+        }
+
+        public SatelliteState GetState()
+        {
+            return new SatelliteState
+            {
+                Guid = Guid,
+                Body = RTUtil.Guid(Body),
+                Position = Vessel.CoMD,
+                Powered = Powered,
+                IsCommandStation = IsCommandStation,
+                CanRelaySignal = CanRelaySignal,
+                IsInRadioBlackout = IsInRadioBlackout,
+            };
         }
 
         public override string ToString()

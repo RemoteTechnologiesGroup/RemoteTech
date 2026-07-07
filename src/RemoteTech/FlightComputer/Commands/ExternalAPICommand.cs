@@ -5,27 +5,49 @@ namespace RemoteTech.FlightComputer.Commands
 {
     public class ExternalAPICommand : AbstractCommand
     {
-        /// <summary>original ConfigNode object passed from the api</summary>
+        /// <summary>
+        /// original ConfigNode object passed from the api
+        /// </summary>
         private ConfigNode externalData;
-        /// <summary>Name of the mod who passed this command</summary>
+        /// <summary>
+        /// Name of the mod who passed this command
+        /// </summary>
         private string Executor;
-        /// <summary>Label for this command on the queue</summary>
+        /// <summary>
+        /// Label for this command on the queue
+        /// </summary>
         private string QueueLabel;
-        /// <summary>Label for this command if its active</summary>
+        /// <summary>
+        /// Label for this command if its active
+        /// </summary>
         private string ActiveLabel;
-        /// <summary>Label for alert on no power</summary>
+        /// <summary>
+        /// Label for alert on no power
+        /// </summary>
         private string ShortLabel;
-        /// <summary>The ReflectionType for the methods to invoke</summary>
+        /// <summary>
+        /// The ReflectionType for the methods to invoke
+        /// </summary>
         private string ReflectionType;
-        /// <summary>Name of the Pop-method on the ReflectionType</summary>
+        /// <summary>
+        /// Name of the Pop-method on the ReflectionType
+        /// </summary>
         private string ReflectionPopMethod = "";
-        /// <summary>Name of the Execution-method on the ReflectionType</summary>
+        /// <summary>
+        /// Name of the Execution-method on the ReflectionType
+        /// </summary>
         private string ReflectionExecuteMethod = "";
-        /// <summary>Name of the Abort-method on the ReflectionType</summary>
+        /// <summary>
+        /// Name of the Abort-method on the ReflectionType
+        /// </summary>
         private string ReflectionAbortMethod = "";
-        /// <summary>GUID of the vessel</summary>
+        /// <summary>
+        /// GUID of the vessel
+        /// </summary>
         private string GUIDString;
-        /// <summary>true - when this command will be aborted</summary>
+        /// <summary>
+        /// true - when this command will be aborted
+        /// </summary>
         private bool AbortCommand = false;
 
         public override int Priority { get { return 0; } }

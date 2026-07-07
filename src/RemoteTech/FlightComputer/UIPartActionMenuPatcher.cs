@@ -126,7 +126,9 @@ namespace RemoteTech.FlightComputer
             {   
             }
 
-            /// <summary>Gets or sets the future field value.</summary>
+            /// <summary>
+            /// Gets or sets the future field value.
+            /// </summary>
             public object NewValue { get; set; }
 
             public Type NewValueType => FieldInfo.FieldType;

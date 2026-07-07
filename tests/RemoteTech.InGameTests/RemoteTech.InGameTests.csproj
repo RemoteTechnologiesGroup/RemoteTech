@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>RemoteTech.InGameTests</AssemblyName>
+    <RootNamespace>RemoteTech.InGameTests</RootNamespace>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>12</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DebugType>portable</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Configurations>Debug;Release</Configurations>
+    <IsPackable>false</IsPackable>
+
+    <!--
+      Build as a standalone KSP plugin under its own GameData folder so it is
+      never shipped with the mod. KSP's stock KSP.Testing framework discovers
+      the UnitTest subclasses; TestRunnerUI runs them from a main-menu button.
+    -->
+    <KSPBT_ModRoot>$(ProjectRootDir)GameData\RemoteTech.Tests</KSPBT_ModRoot>
+    <KSPBT_ModPluginFolder>Plugins</KSPBT_ModPluginFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KSPBuildTools" Version="1.1.1" />
+
+    <!-- Same KSPBurst-provided Unity stack as the main project (jobs/NativeArray). -->
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Burst.dll">
+      <Private>false</Private>
+      <KSPAssemblyName>KSPBurst</KSPAssemblyName>
+      <KSPAssemblyVersion>1.7</KSPAssemblyVersion>
+      <GenerateDependencyAttribute>true</GenerateDependencyAttribute>
+    </Reference>
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Collections.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Mathematics.dll">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Jobs.dll">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RemoteTech\RemoteTech.csproj">
+      <Private>false</Private>
+      <KSPAssemblyName>RemoteTech</KSPAssemblyName>
+      <KSPAssemblyVersion>1.9</KSPAssemblyVersion>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

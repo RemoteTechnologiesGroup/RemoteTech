@@ -1,25 +1,26 @@
-﻿using System;
+using System;
 using System.Linq;
+using RemoteTech.SimpleTypes;
 
 namespace RemoteTech.Modules
 {
-    internal class ProtoAntenna : IAntenna
+    internal class ProtoAntenna : IAntenna, IDisposable
     {
         public String Name { get; private set; }
-        public Guid Guid { get; private set; }
-        public bool Powered { get; private set; }
-        public bool Activated { get; set; }
-        public bool Connected { get { return RTCore.Instance.Network.Graph [Guid].Any (l => l.Interfaces.Contains (this)); } }
-        public float Consumption { get; private set; }
+        public Guid Guid { get => mState.Guid; private set => mState.Guid = value; }
+        public bool Powered { get => mState.Powered; private set => mState.Powered = value; }
+        public bool Activated { get => mState.Activated; set => mState.Activated = value; }
+        public bool Connected { get { return RTCore.Instance.Network.IsAntennaConnected(this); } }
+        public float Consumption { get => mState.Consumption; private set => mState.Consumption = value; }
 
         public bool CanTarget { get { return Dish != -1; } }
 
         public Guid Target
         {
-            get { return mDishTarget; }
+            get { return mState.Target; }
             set
             {
-                mDishTarget = value;
+                mState.Target = value;
                 if (mProtoModule != null)
                 {
                     mProtoModule.moduleValues.SetValue("RTAntennaTarget", value.ToString());
@@ -33,14 +34,13 @@ namespace RemoteTech.Modules
             }
         }
 
-        public float Dish { get; private set; }
-        public double CosAngle { get; private set; }
-        public float Omni { get; private set; }
+        public float Dish { get => mState.Dish; private set => mState.Dish = value; }
+        public double CosAngle { get => mState.CosAngle; private set => mState.CosAngle = value; }
+        public float Omni { get => mState.Omni; private set => mState.Omni = value; }
 
         private readonly ProtoPartSnapshot mProtoPart;
         private readonly ProtoPartModuleSnapshot mProtoModule;
-
-        private Guid mDishTarget;
+        private readonly AntennaState mState = new();
 
         public ProtoAntenna(Vessel v, ProtoPartSnapshot p, ProtoPartModuleSnapshot ppms)
         {
@@ -49,22 +49,38 @@ namespace RemoteTech.Modules
             Guid = v.id;
             mProtoPart = p;
             mProtoModule = ppms;
+
             try
             {
-                mDishTarget = new Guid(ppms.moduleValues.GetValue("RTAntennaTarget"));
+                mState.Target = new Guid(ppms.moduleValues.GetValue("RTAntennaTarget"));
             }
             catch (Exception ex) when (ex is ArgumentNullException || ex is FormatException || ex is OverflowException)
             {
-                mDishTarget = Guid.Empty;
+                mState.Target = Guid.Empty;
             }
-            double temp_double;
-            float temp_float;
-            bool temp_bool;
-            Dish = Single.TryParse(ppms.moduleValues.GetValue("RTDishRange"), out temp_float) ? temp_float : 0.0f;
-            CosAngle = Double.TryParse(ppms.moduleValues.GetValue("RTDishCosAngle"), out temp_double) ? temp_double : 0.0;
-            Omni = Single.TryParse(ppms.moduleValues.GetValue("RTOmniRange"), out temp_float) ? temp_float : 0.0f;
-            Powered = Boolean.TryParse(ppms.moduleValues.GetValue("IsRTPowered"), out temp_bool) ? temp_bool : false;
-            Activated = Boolean.TryParse(ppms.moduleValues.GetValue("IsRTActive"), out temp_bool) ? temp_bool : false;
+
+            float dish = 0f;
+            if (ppms.moduleValues.TryGetValue("RTDishRange", ref dish))
+                Dish = dish;
+
+            double cosAngle = 0f;
+            if (ppms.moduleValues.TryGetValue("RTDishCosAngle", ref cosAngle))
+                CosAngle = cosAngle;
+
+            float omni = 0f;
+            if (ppms.moduleValues.TryGetValue("RTOmniRange", ref omni))
+                Omni = omni;
+
+            bool powered = false;
+            if (ppms.moduleValues.TryGetValue("IsRTPowered", ref powered))
+                Powered = powered;
+
+            bool activated = false;
+            if (ppms.moduleValues.TryGetValue("IsRTActive", ref activated))
+                Activated = activated;
+
+            mState.CanTarget = Dish != -1;
+            mState.Register();
 
             RTLog.Notify(ToString());
         }
@@ -79,11 +95,18 @@ namespace RemoteTech.Modules
             CosAngle = 1.0f;
             Activated = true;
             Powered = true;
+            mState.CanTarget = CanTarget;
+            mState.Register();
+        }
+
+        public void Dispose()
+        {
+            mState.Dispose();
         }
 
         public void OnConnectionRefresh()
         {
-            ;
+            mState.Connected = Connected;
         }
 
         public int CompareTo(IAntenna antenna)

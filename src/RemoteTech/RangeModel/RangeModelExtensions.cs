@@ -5,7 +5,9 @@ namespace RemoteTech.RangeModel
 {
     public static class RangeModelExtensions
     {
-        /// <summary>Determines if an antenna has a specific satellite as its target.</summary>
+        /// <summary>
+        /// Determines if an antenna has a specific satellite as its target.
+        /// </summary>
         /// <returns><c>true</c> if a's target is set to <paramref name="target"/>; false otherwise.</returns>
         /// <param name="dish">The antenna being queried.</param>
         /// <param name="target">The satellite being tested for being the antenna target.</param>
@@ -14,7 +16,9 @@ namespace RemoteTech.RangeModel
             return dish.Target == target.Guid;
         }
 
-        /// <summary>Determines if an antenna can connect to a target through active vessel targeting.</summary>
+        /// <summary>
+        /// Determines if an antenna can connect to a target through active vessel targeting.
+        /// </summary>
         /// <returns><c>true</c> if a's target is set to "Active Vessel" and <paramref name="target"/> is active; false otherwise.</returns>
         /// <param name="dish">The antenna being queried.</param>
         /// <param name="target">The satellite being tested for being the antenna target.</param>
@@ -30,7 +34,9 @@ namespace RemoteTech.RangeModel
                 && activeVessel != null && target.Guid == activeVessel.id;
         }
 
-        /// <summary>Determines if an antenna can connect to a target indirectly, using a cone.</summary>
+        /// <summary>
+        /// Determines if an antenna can connect to a target indirectly, using a cone.
+        /// </summary>
         /// <returns><c>true</c> if <paramref name="target"/> lies within the cone of <paramref name="dish"/>; 
         /// otherwise, <c>false</c>.</returns>
         /// <param name="dish">The antenna being queried.</param>
@@ -57,14 +63,18 @@ namespace RemoteTech.RangeModel
             return false;
         }
 
-        /// <summary>Finds the distance between two ISatellites</summary>
+        /// <summary>
+        /// Finds the distance between two ISatellites
+        /// </summary>
         /// <returns>The distance in meters.</returns>
         public static double DistanceTo(this ISatellite a, ISatellite b)
         {
             return Vector3d.Distance(a.Position, b.Position);
         }
 
-        /// <summary>Finds the distance between an ISatellite and the target of a connection</summary>
+        /// <summary>
+        /// Finds the distance between an ISatellite and the target of a connection
+        /// </summary>
         /// <returns>The distance in meters.</returns>
         /// <param name="sat">The satellite from which the distance is to be measured.</param>
         /// <param name="link">The network node to whose destination the distance is to be measured.</param>
@@ -73,7 +83,9 @@ namespace RemoteTech.RangeModel
             return Vector3d.Distance(sat.Position, link.Target.Position);
         }
 
-        /// <summary>Tests whether two satellites have line of sight to each other</summary>
+        /// <summary>
+        /// Tests whether two satellites have line of sight to each other
+        /// </summary>
         /// <returns><c>true</c> if a straight line from a to b is not blocked by any celestial body; 
         /// otherwise, <c>false</c>.</returns>
         public static bool HasLineOfSightWith(this ISatellite satA, ISatellite satB)

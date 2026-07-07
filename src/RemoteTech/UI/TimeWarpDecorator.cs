@@ -55,11 +55,11 @@ namespace RemoteTech.UI
                 {
                     return Localizer.Format("#RT_ConnectionStatus2");//"Local Control"
                 }
-                else if (vs.Connections.Any())
+                else if (RTCore.Instance.Network.IsConnected(vs))
                 {
                     if (RTSettings.Instance.EnableSignalDelay)
                     {
-                        return Localizer.Format("#RT_ConnectionStatus3",vs.Connections[0].Delay.ToString("F5"));//"D+ " +  + "s"
+                        return Localizer.Format("#RT_ConnectionStatus3",RTCore.Instance.Network.ShortestDelay(vs).ToString("F5"));//"D+ " +  + "s"
                     }
                     else
                     {
@@ -83,7 +83,7 @@ namespace RemoteTech.UI
                     return mFlightButtonRed;
                 }
 
-                else if (vs.Connections.Any())
+                else if (RTCore.Instance.Network.IsConnected(vs))
                 {
                     if (vs.HasLocalControl)
                         return mFlightButtonYellow;
@@ -167,7 +167,7 @@ namespace RemoteTech.UI
 
             // get color for the delay-text
             mTextStyle.normal.textColor = new Color(0.56078f, 0.10196f, 0.07450f);
-            if (this.mVessel != null && this.mVessel.Connections.Any())
+            if (this.mVessel != null && RTCore.Instance.Network.IsConnected(this.mVessel))
             {
                 mTextStyle.normal.textColor = XKCDColors.GreenApple;
             }

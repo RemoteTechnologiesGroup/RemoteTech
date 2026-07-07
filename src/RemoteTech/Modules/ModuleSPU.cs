@@ -129,7 +129,7 @@ namespace RemoteTech.Modules
                 }
             }
 
-            if (Satellite == null || !RTCore.Instance.Network[Satellite].Any())
+            if (Satellite == null || !RTCore.Instance.Network.IsConnected(Satellite))
             {
                 return State.NoConnection;
             }

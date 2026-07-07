@@ -6,7 +6,9 @@ namespace RemoteTech.FlightComputer.Commands
 {
     public class ManeuverCommand : AbstractCommand
     {
-        /// <summary>Index id of this maneuver node from patchedConicSolver.maneuverNodes list</summary>
+        /// <summary>
+        /// Index id of this maneuver node from patchedConicSolver.maneuverNodes list
+        /// </summary>
         [Persistent] public int NodeIndex;
         /// <summary></summary>
         [Persistent] public string KaCItemId = String.Empty;

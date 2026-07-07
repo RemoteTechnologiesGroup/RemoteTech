@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Local override for the KSP install location (a KSPBT_GameRoot candidate). -->
+  <Import Project="$(ProjectRootDir)RemoteTech.props.user" Condition="Exists('$(ProjectRootDir)RemoteTech.props.user')" />
+
+  <PropertyGroup>
+    <TargetFramework>net481</TargetFramework>
+    <LangVersion>12</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <!-- Suppress all automatic KSPBT references -->
+    <KSPBT_CopyDLLsToPluginFolder>false</KSPBT_CopyDLLsToPluginFolder>
+    <KSPBT_GenerateVersionFile>false</KSPBT_GenerateVersionFile>
+    <KSPBT_GenerateAssemblyAttribute>false</KSPBT_GenerateAssemblyAttribute>
+    <KSPBT_GenerateDependencyAttributes>false</KSPBT_GenerateDependencyAttributes>
+    <KSPBT_InstallCKANDependencies>false</KSPBT_InstallCKANDependencies>
+    <KSPBT_ReferenceSystemAssemblies>false</KSPBT_ReferenceSystemAssemblies>
+    <KSPBT_ReferenceUnityAssemblies>false</KSPBT_ReferenceUnityAssemblies>
+    <KSPBT_ReferenceGameAssemblies>false</KSPBT_ReferenceGameAssemblies>
+    <KSPBT_ReferenceModAssemblies>false</KSPBT_ReferenceModAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KSPBuildTools" Version="1.1.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RemoteTech\RemoteTech.csproj" />
+  </ItemGroup>
+
+  <!--
+    Unity DLLs needed to compile/run the Burst-path code under test.
+    UnityEngine.CoreModule defines NativeArray / Allocator / NativeArrayUnsafeUtility;
+    the rest come from KSPBurst. Private=true so they land in the test output for the runner.
+    We never allocate via UnsafeUtility.Malloc (which is a native ECall unavailable here) —
+    NativeArenas wrap Marshal.AllocHGlobal instead.
+  -->
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(KSPBT_ManagedPath)/UnityEngine.CoreModule.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Collections.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Mathematics.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Burst.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

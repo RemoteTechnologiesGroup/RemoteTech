@@ -25,11 +25,17 @@ namespace RemoteTech.UI
             }
         }
 
-        /// <summary>Current target infos</summary>
+        /// <summary>
+        /// Current target infos
+        /// </summary>
         private Target target;
-        /// <summary>Style set for each row on the target pop-up</summary>
+        /// <summary>
+        /// Style set for each row on the target pop-up
+        /// </summary>
         private GUIStyle guiTableRow;
-        /// <summary>Style set for the headline of the target pop-up</summary>
+        /// <summary>
+        /// Style set for the headline of the target pop-up
+        /// </summary>
         private GUIStyle guiHeadline;
 
         /// <summary>

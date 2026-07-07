@@ -126,7 +126,7 @@ namespace RemoteTech.UI
             selectedEntry = new Entry() // selected entry by default
             {
                 Text = Localizer.Format("#RT_ModuleUI_NoTarget"),//"No Target"
-                Guid = new Guid(RTSettings.Instance.NoTargetGuid),
+                Guid = RTSettings.Instance.NoTargetGuidParsed,
                 Color = Color.white,
                 Depth = 0,
             };
