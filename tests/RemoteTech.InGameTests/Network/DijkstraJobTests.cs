@@ -43,10 +43,14 @@ public class DijkstraJobTests : RTTestBase
         public NativeList<int> Origins;
     }
 
-    private static Result Run(int nodeCount, (int a, int b, double w)[] edges, int[] roots)
+    private static Result Run(int nodeCount, (int a, int b, double w)[] edges, int[] roots, bool[] canTransit = null)
     {
         var (ranges, adjacency, distances) = BuildCsr(nodeCount, edges);
         var rootArr = new NativeArray<int>(roots, Allocator.Temp);
+
+        var transit = new NativeBitArray(nodeCount, Allocator.Temp);
+        for (int i = 0; i < nodeCount; i++)
+            transit.Set(i, canTransit == null || canTransit[i]);
 
         // The job writes one entry per node, so the outputs must already be sized to
         // nodeCount (as NetworkState's nodeCount-length NativeArrays are).
@@ -63,6 +67,7 @@ public class DijkstraJobTests : RTTestBase
             adjacency = adjacency,
             distances = distances,
             roots = rootArr,
+            canTransit = transit,
             scores = scores,
             parents = parents,
             origins = origins,
@@ -133,5 +138,19 @@ public class DijkstraJobTests : RTTestBase
             Assert.IsTrue(double.IsPositiveInfinity(r.Scores[i]));
             Assert.AreEqual(-1, r.Origins[i]);
         }
+    }
+
+    [TestInfo("DijkstraJobTests_NonTransitNode_ReachableButBlocksDownstream")]
+    public void NonTransitNode_ReachableButBlocksDownstream()
+    {
+        // Line 0-1-2-3 rooted at 0; node 2 cannot transit -> it is still reached as
+        // an endpoint, but node 3 (only reachable through 2) is not.
+        var r = Run(4, new[] { (0, 1, 1.0), (1, 2, 1.0), (2, 3, 1.0) }, new[] { 0 },
+            canTransit: new[] { true, true, false, true });
+
+        Assert.AreEqual(2.0, r.Scores[2], 1e-9);
+        Assert.AreEqual(1, r.Parents[2]);
+        Assert.IsTrue(double.IsPositiveInfinity(r.Scores[3]));
+        Assert.AreEqual(-1, r.Parents[3]);
     }
 }

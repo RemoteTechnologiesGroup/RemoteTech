@@ -499,7 +499,6 @@ internal static class NetworkUpdate
 
     #region Compute Adjacency
     public static void ComputeAdjacencyLists(
-        in JobConfig config,
         NativeArray<JobNode> nodes,
         NativeArray<NetworkEdge> edges,
         NativeArray<IntRange> ranges,
@@ -519,7 +518,7 @@ internal static class NetworkUpdate
             var edge = edges[i];
             if (!edge.valid)
                 continue;
-            if (!IsEdgeTraversable(in config, nodes, edge.aIdx, edge.bIdx))
+            if (!nodes[edge.aIdx].Powered || !nodes[edge.bIdx].Powered)
                 continue;
 
             var idxA = cursors[edge.aIdx]++;
@@ -551,20 +550,21 @@ internal static class NetworkUpdate
         }
     }
     
-    static bool IsEdgeTraversable(
+    /// <summary>
+    /// Whether a node may carry a signal <em>through</em> it (serve as an
+    /// intermediate hop). The two ends of a route never need this — only transit
+    /// nodes do — so it gates path expansion, not edge existence.
+    /// </summary>
+    internal static bool CanTransit(in JobConfig config, JobNode node) =>
+        !config.signalRelayEnabled || node.CanRelay;
+
+    public static void ComputeCanTransit(
         in JobConfig config,
         NativeArray<JobNode> nodes,
-        int a,
-        int b)
+        NativeBitArray canTransit)
     {
-        JobNode na = nodes[a];
-        JobNode nb = nodes[b];
-
-        if (!na.Powered || !nb.Powered)
-            return false;
-        if (config.signalRelayEnabled && (!na.CanRelay || !nb.CanRelay))
-            return false;
-        return true;
+        for (int i = 0; i < nodes.Length; ++i)
+            canTransit.Set(i, CanTransit(in config, nodes[i]));
     }
     #endregion
 
@@ -735,6 +735,7 @@ struct NetworkAdjacencyJob : IJob
     public NativeList<int> adjacency;
     public NativeList<double> distances;
     public NativeBitArray connected;
+    public NativeBitArray canTransit;
 
     public NativeList<int> commandStations;
     public NativeList<int> groundStations;
@@ -744,13 +745,13 @@ struct NetworkAdjacencyJob : IJob
         ranges.ResizeUninitialized(nodes.Length);
 
         NetworkUpdate.ComputeAdjacencyLists(
-            in config,
             nodes,
             edges,
             ranges,
             adjacency,
             distances);
         NetworkUpdate.ComputeVesselConnected(ranges, connected);
+        NetworkUpdate.ComputeCanTransit(in config, nodes, canTransit);
         NetworkUpdate.ComputeNetworkRoots(nodes, commandStations, groundStations);
     }
 }

@@ -234,6 +234,7 @@ internal class NetworkState : IDisposable
 
         var commandStations = new NativeList<int>(Allocator.TempJob);
         var groundStations = new NativeList<int>(Allocator.TempJob);
+        var canTransit = new NativeBitArray(nodeCount, Allocator.TempJob);
 
         var update2 = new NetworkAdjacencyJob
         {
@@ -245,6 +246,7 @@ internal class NetworkState : IDisposable
             adjacency = adjacency,
             distances = distances,
             connected = connected,
+            canTransit = canTransit,
 
             commandStations = commandStations,
             groundStations = groundStations,
@@ -265,6 +267,7 @@ internal class NetworkState : IDisposable
             adjacency = adjacency.AsDeferredJobArray(),
             distances = distances.AsDeferredJobArray(),
             roots = commandStations.AsDeferredJobArray(),
+            canTransit = canTransit,
 
             scores = scoreCs,
             parents = parentCs,
@@ -276,6 +279,7 @@ internal class NetworkState : IDisposable
             adjacency = adjacency.AsDeferredJobArray(),
             distances = distances.AsDeferredJobArray(),
             roots = groundStations.AsDeferredJobArray(),
+            canTransit = canTransit,
 
             scores = scoreGs,
             parents = parentGs,
@@ -293,6 +297,7 @@ internal class NetworkState : IDisposable
             distances = distances,
             commandStations = commandStations,
             groundStations = groundStations,
+            canTransit = canTransit,
         }.Schedule(dijkstraAll));
 
         var fingerprints = new NativeList<Hash128>(0, Allocator.Persistent);
@@ -828,6 +833,7 @@ internal class NetworkState : IDisposable
         public NativeList<double> distances;
         public NativeList<int> commandStations;
         public NativeList<int> groundStations;
+        public NativeBitArray canTransit;
 
         public void Execute()
         {
@@ -839,6 +845,7 @@ internal class NetworkState : IDisposable
             distances.Dispose();
             commandStations.Dispose();
             groundStations.Dispose();
+            canTransit.Dispose();
         }
     }
 }

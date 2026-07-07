@@ -30,6 +30,10 @@ internal struct MultiSourceDijkstraJob : IJob
     [ReadOnly] public NativeArray<double> distances;
     [ReadOnly] public NativeArray<int> roots;
 
+    // Per-node "may forward a signal onward". Roots and destinations don't need it;
+    // only intermediate hops do (see NetworkUpdate.CanTransit).
+    [ReadOnly] public NativeBitArray canTransit;
+
     public NativeArray<double> scores;
     public NativeArray<int> parents;
     public NativeArray<int> origins;
@@ -69,6 +73,11 @@ internal struct MultiSourceDijkstraJob : IJob
                 origins[current.node] = current.node;
             else
                 origins[current.node] = origins[current.parent];
+
+            // A root (parent == -1) is a route endpoint and always forwards; any
+            // other node may only be relayed through if it can transit.
+            if (current.parent != -1 && !canTransit.IsSet(current.node))
+                continue;
 
             foreach (int edge in ranges[current.node])
             {

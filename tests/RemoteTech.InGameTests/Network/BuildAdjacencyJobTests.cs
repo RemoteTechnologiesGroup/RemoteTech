@@ -29,7 +29,7 @@ public class BuildAdjacencyJobTests : RTTestBase
         }
     }
 
-    private static Csr Build(JobNode[] nodes, NetworkEdge[] edges, bool relay = false)
+    private static Csr Build(JobNode[] nodes, NetworkEdge[] edges)
     {
         var nodeArr = new NativeArray<JobNode>(nodes, Allocator.Temp);
         var edgeArr = new NativeArray<NetworkEdge>(edges, Allocator.Temp);
@@ -39,8 +39,7 @@ public class BuildAdjacencyJobTests : RTTestBase
         var adjacency = new NativeList<int>(0, Allocator.Temp);
         var distances = new NativeList<double>(0, Allocator.Temp);
 
-        var config = new JobConfig { signalRelayEnabled = relay };
-        NetworkUpdate.ComputeAdjacencyLists(in config, nodeArr, edgeArr, ranges, adjacency, distances);
+        NetworkUpdate.ComputeAdjacencyLists(nodeArr, edgeArr, ranges, adjacency, distances);
 
         return new Csr { Ranges = ranges, Adjacency = adjacency, Distances = distances };
     }
@@ -83,23 +82,37 @@ public class BuildAdjacencyJobTests : RTTestBase
         Assert.AreEqual(0, csr.Row(1).Count);
     }
 
-    [TestInfo("BuildAdjacencyJobTests_RelayEnabled_RequiresBothEndpointsRelayCapable")]
-    public void RelayEnabled_RequiresBothEndpointsRelayCapable()
+    [TestInfo("BuildAdjacencyJobTests_RelayCapability_DoesNotGateAdjacency")]
+    public void RelayCapability_DoesNotGateAdjacency()
     {
-        // Node 1 is powered but not relay-capable.
-        var nodes = new[]
+        // Node 1 is powered but not relay-capable. The edge still exists — relay
+        // gates transit (in the Dijkstra), not whether the link is present.
+        var csr = Build(
+            new[] { Node(NodeFlags.Powered | NodeFlags.CanRelay), Node(NodeFlags.Powered) },
+            new[] { Edge(0, 1, 10.0) });
+
+        Assert.AreEqual(1, csr.Row(0).Count);
+        Assert.AreEqual(1, csr.Row(1).Count);
+    }
+
+    [TestInfo("BuildAdjacencyJobTests_CanTransit_GatesOnRelayCapabilityWhenEnabled")]
+    public void CanTransit_GatesOnRelayCapabilityWhenEnabled()
+    {
+        var nodes = new NativeArray<JobNode>(new[]
         {
             Node(NodeFlags.Powered | NodeFlags.CanRelay),
             Node(NodeFlags.Powered),
-        };
-        var edges = new[] { Edge(0, 1, 10.0) };
+        }, Allocator.Temp);
 
-        var off = Build(nodes, edges, relay: false);
-        Assert.AreEqual(1, off.Row(0).Count);
+        var off = new NativeBitArray(2, Allocator.Temp);
+        NetworkUpdate.ComputeCanTransit(new JobConfig { signalRelayEnabled = false }, nodes, off);
+        Assert.IsTrue(off.IsSet(0));
+        Assert.IsTrue(off.IsSet(1)); // relay disabled -> everyone can transit
 
-        var on = Build(nodes, edges, relay: true);
-        Assert.AreEqual(0, on.Row(0).Count);
-        Assert.AreEqual(0, on.Row(1).Count);
+        var on = new NativeBitArray(2, Allocator.Temp);
+        NetworkUpdate.ComputeCanTransit(new JobConfig { signalRelayEnabled = true }, nodes, on);
+        Assert.IsTrue(on.IsSet(0));
+        Assert.IsFalse(on.IsSet(1)); // relay enabled -> non-relay node cannot transit
     }
 
     [TestInfo("BuildAdjacencyJobTests_VesselConnected_FlagsOnlyNonEmptyRanges")]
