@@ -21,6 +21,11 @@
     <FileVersion>1.9.12</FileVersion>
     <!-- AssemblyVersion is pinned to major.minor so dependent DLLs don't break on every patch release. -->
     <AssemblyVersion>1.9.0.0</AssemblyVersion>
+
+    <!-- Installing the CKAN dependencies mutates the KSP install and needs the ckan
+         CLI, so restrict it to CI; local builds link against the already-installed DLLs. -->
+    <KSPBT_InstallCKANDependencies>false</KSPBT_InstallCKANDependencies>
+    <KSPBT_InstallCKANDependencies Condition="'$(GITHUB_ACTIONS)' == 'true'">true</KSPBT_InstallCKANDependencies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +44,7 @@
 
     <Reference Include="$(KSPBT_GameRoot)/GameData/000_SerializationFix/Plugin/SerializationFix.dll">
       <Private>false</Private>
+      <CKANIdentifier>SerializationFix</CKANIdentifier>
       <KSPAssemblyName>SerializationFix</KSPAssemblyName>
       <KSPAssemblyVersion>1.0</KSPAssemblyVersion>
       <GenerateDependencyAttribute>true</GenerateDependencyAttribute>
@@ -46,6 +52,7 @@
 
     <Reference Include="$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Burst.dll">
       <Private>false</Private>
+      <CKANIdentifier>KSPBurst-Lite</CKANIdentifier>
       <KSPAssemblyName>KSPBurst</KSPAssemblyName>
       <KSPAssemblyVersion>1.7</KSPAssemblyVersion>
       <GenerateDependencyAttribute>true</GenerateDependencyAttribute>
