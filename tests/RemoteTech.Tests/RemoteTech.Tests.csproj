@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Pull in ReferencePath (the local KSP install dir) the same way the main project does. -->
+  <!-- Local override for the KSP install location (a KSPBT_GameRoot candidate). -->
   <Import Project="$(ProjectRootDir)RemoteTech.props.user" Condition="Exists('$(ProjectRootDir)RemoteTech.props.user')" />
 
   <PropertyGroup>
@@ -9,15 +9,21 @@
     <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!-- This is a test harness, not a KSP plugin: opt out of KSPBuildTools' mod packaging. -->
-    <KSPBT_Disable>true</KSPBT_Disable>
 
-    <KSPGameRoot Condition="'$(KSPGameRoot)' == ''">$(ReferencePath)</KSPGameRoot>
-    <KSPBurstPlugins>$(KSPGameRoot)\GameData\000_KSPBurst\Plugins</KSPBurstPlugins>
-    <KSPManaged>$(KSPGameRoot)\KSP_x64_Data\Managed</KSPManaged>
+    <!-- Suppress all automatic KSPBT references -->
+    <KSPBT_CopyDLLsToPluginFolder>false</KSPBT_CopyDLLsToPluginFolder>
+    <KSPBT_GenerateVersionFile>false</KSPBT_GenerateVersionFile>
+    <KSPBT_GenerateAssemblyAttribute>false</KSPBT_GenerateAssemblyAttribute>
+    <KSPBT_GenerateDependencyAttributes>false</KSPBT_GenerateDependencyAttributes>
+    <KSPBT_InstallCKANDependencies>false</KSPBT_InstallCKANDependencies>
+    <KSPBT_ReferenceSystemAssemblies>false</KSPBT_ReferenceSystemAssemblies>
+    <KSPBT_ReferenceUnityAssemblies>false</KSPBT_ReferenceUnityAssemblies>
+    <KSPBT_ReferenceGameAssemblies>false</KSPBT_ReferenceGameAssemblies>
+    <KSPBT_ReferenceModAssemblies>false</KSPBT_ReferenceModAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="KSPBuildTools" Version="1.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
@@ -36,19 +42,19 @@
   -->
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(KSPManaged)\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(KSPBT_ManagedPath)/UnityEngine.CoreModule.dll</HintPath>
       <Private>true</Private>
     </Reference>
     <Reference Include="Unity.Collections">
-      <HintPath>$(KSPBurstPlugins)\Unity.Collections.dll</HintPath>
+      <HintPath>$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Collections.dll</HintPath>
       <Private>true</Private>
     </Reference>
     <Reference Include="Unity.Mathematics">
-      <HintPath>$(KSPBurstPlugins)\Unity.Mathematics.dll</HintPath>
+      <HintPath>$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Mathematics.dll</HintPath>
       <Private>true</Private>
     </Reference>
     <Reference Include="Unity.Burst">
-      <HintPath>$(KSPBurstPlugins)\Unity.Burst.dll</HintPath>
+      <HintPath>$(KSPBT_GameRoot)/GameData/000_KSPBurst/Plugins/Unity.Burst.dll</HintPath>
       <Private>true</Private>
     </Reference>
   </ItemGroup>
