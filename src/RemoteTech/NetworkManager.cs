@@ -92,6 +92,13 @@ namespace RemoteTech
         public double ShortestDelay(ISatellite sat, bool groundOnly = false) => current?.ShortestDelay(sat, groundOnly) ?? double.PositiveInfinity;
 
         /// <summary>
+        /// This tick's route from <paramref name="sat"/> to its controlling station
+        /// (optionally restricted to ground stations), ordered from the satellite
+        /// outward. Null if there is no such route.
+        /// </summary>
+        public IReadOnlyList<NetworkLink<ISatellite>> GetRoute(ISatellite sat, bool groundOnly = false) => current?.GetRoute(sat, groundOnly);
+
+        /// <summary>
         /// Enumerates the whole adjacency graph (inspection/debug seam).
         /// </summary>
         internal IEnumerable<KeyValuePair<Guid, List<NetworkLink<ISatellite>>>> EnumerateLinks() =>

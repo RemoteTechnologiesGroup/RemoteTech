@@ -45,7 +45,7 @@ namespace RemoteTech.API
         public static bool HasFlightComputer(Guid id)
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             var hasFlightComputer = satellite.FlightComputer != null;
@@ -57,7 +57,7 @@ namespace RemoteTech.API
         public static void AddSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
         {
             if (RTCore.Instance == null) return;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null || satellite.SignalProcessor == null) return;
 
             foreach (var spu in satellite.SignalProcessors)
@@ -72,7 +72,7 @@ namespace RemoteTech.API
         public static void RemoveSanctionedPilot(Guid id, Action<FlightCtrlState> autopilot)
         {
             if (RTCore.Instance == null) return;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null || satellite.SignalProcessor == null) return;
 
             foreach (var spu in satellite.SignalProcessors)
@@ -86,7 +86,7 @@ namespace RemoteTech.API
         public static bool HasAnyConnection(Guid id)
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             var hasConnection = RTCore.Instance.Network.IsConnected(satellite);
@@ -97,7 +97,7 @@ namespace RemoteTech.API
         public static bool HasConnectionToKSC(Guid id)
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             var connectedToKerbin = RTCore.Instance.Network.IsConnected(satellite, groundOnly: true);
@@ -113,10 +113,11 @@ namespace RemoteTech.API
         public static bool HasDirectGroundStation(Guid id)
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
-            var targetsGroundStation = RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid));
+            var targetsGroundStation = RTCore.Instance.Network.GetLinks(satellite)
+                .Any(link => RTCore.Instance.Network.GroundStations.ContainsKey(link.Target.Guid));
             RTLog.Verbose("Flight: {0} Directly targets a ground station: {1}", RTLogLevel.API, id, targetsGroundStation);
             return targetsGroundStation;
         }
@@ -129,11 +130,25 @@ namespace RemoteTech.API
         public static string GetClosestDirectGroundStation(Guid id)
         {
             if (RTCore.Instance == null) return null;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return null;
 
-            var namedGroundStation = RTCore.Instance.Network[satellite].Where
-                (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Links.FirstOrDefault().Target.Guid)).Min().Goal.Name;
+            ISatellite closest = null;
+            var bestDistance = double.PositiveInfinity;
+            foreach (var link in RTCore.Instance.Network.GetLinks(satellite))
+            {
+                if (!RTCore.Instance.Network.GroundStations.ContainsKey(link.Target.Guid)) continue;
+
+                var distance = RangeModelExtensions.DistanceTo(satellite, link.Target);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    closest = link.Target;
+                }
+            }
+            if (closest == null) return null;
+
+            var namedGroundStation = closest.Name;
             RTLog.Verbose("Flight: {0} Directly targets the closest ground station: {1}", RTLogLevel.API, id, namedGroundStation);
             return namedGroundStation;
         }
@@ -146,11 +161,13 @@ namespace RemoteTech.API
         public static string GetFirstHopToKSC(Guid id)
         {
             if (RTCore.Instance == null) return null;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return null;
 
-            var namedSatellite = RTCore.Instance.Network[satellite].Where
-                (r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links.FirstOrDefault().Target.Name;
+            var route = RTCore.Instance.Network.GetRoute(satellite, groundOnly: true);
+            if (route == null || route.Count == 0) return null;
+
+            var namedSatellite = route[0].Target.Name;
             RTLog.Verbose("Flight: {0} Has first hop satellite with shortest link to KSC: {1}", RTLogLevel.API, id, namedSatellite);
             return namedSatellite;
         }
@@ -183,18 +200,18 @@ namespace RemoteTech.API
         {
             if (RTCore.Instance == null) return new Guid[]{ };
 
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return new Guid[] { };
 
-            if (!RTCore.Instance.Network[satellite].Any(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid))) return new Guid[] { };
+            var route = RTCore.Instance.Network.GetRoute(satellite, groundOnly: true);
+            if (route == null) return new Guid[] { };
 
-            IReadOnlyList<NetworkLink<ISatellite>> bestRouter = RTCore.Instance.Network[satellite].Where(r => RTCore.Instance.Network.GroundStations.ContainsKey(r.Goal.Guid)).Min().Links;
-            Guid[] guids = new Guid[bestRouter.Count];
+            Guid[] guids = new Guid[route.Count];
 
             // Get all satellites till the ground station
-            for (int i = 0; i < bestRouter.Count; i++)
+            for (int i = 0; i < route.Count; i++)
             {
-                guids[i] = bestRouter[i].Target.Guid;
+                guids[i] = route[i].Target.Guid;
             }
 
             return guids;
@@ -236,7 +253,7 @@ namespace RemoteTech.API
         public static string GetName(Guid id)
         {
             if (RTCore.Instance == null) return null;
-            var satellite = RTCore.Instance.Network.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Network[id];
             if (satellite == null) return null;
 
             string satellitename = satellite.Name;
@@ -260,7 +277,7 @@ namespace RemoteTech.API
         public static double GetShortestSignalDelay(Guid id)
         {
             if (RTCore.Instance == null) return double.PositiveInfinity;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
 
             if (satellite == null) return double.PositiveInfinity;
 
@@ -272,7 +289,7 @@ namespace RemoteTech.API
         public static double GetSignalDelayToKSC(Guid id)
         {
             if (RTCore.Instance == null) return double.PositiveInfinity;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
 
             if (satellite == null) return double.PositiveInfinity;
 
@@ -420,7 +437,7 @@ namespace RemoteTech.API
         public static bool SetRadioBlackoutGuid(Guid id, bool flag, string reason = "")
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             satellite.IsInRadioBlackout = flag;
@@ -435,7 +452,7 @@ namespace RemoteTech.API
         public static bool GetRadioBlackoutGuid(Guid id)
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             var blackoutFlag = satellite.IsInRadioBlackout;
@@ -450,7 +467,7 @@ namespace RemoteTech.API
         public static bool SetPowerDownGuid(Guid id, bool flag, string reason = "")
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             satellite.PowerShutdownFlag = flag;
@@ -465,7 +482,7 @@ namespace RemoteTech.API
         public static bool GetPowerDownGuid(Guid id)
         {
             if (RTCore.Instance == null) return false;
-            var satellite = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(id)).FirstOrDefault();
+            var satellite = RTCore.Instance.Satellites[id];
             if (satellite == null) return false;
 
             var flag = satellite.PowerShutdownFlag;
@@ -537,8 +554,8 @@ namespace RemoteTech.API
             if (RTCore.Instance == null) return 0.0;
 
             //sanity check
-            var satelliteA = RTCore.Instance.Network.Where(sat => sat.Guid.Equals(sat_a)).FirstOrDefault();
-            var satelliteB = RTCore.Instance.Network.Where(sat => sat.Guid.Equals(sat_b)).FirstOrDefault();
+            var satelliteA = RTCore.Instance.Network[sat_a];
+            var satelliteB = RTCore.Instance.Network[sat_b];
 
             if (satelliteA == null || satelliteB == null) return 0.0;
 
