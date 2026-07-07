@@ -301,17 +301,12 @@ namespace RemoteTech.API
         public static double GetSignalDelayToSatellite(Guid a, Guid b)
         {
             if (RTCore.Instance == null) return double.PositiveInfinity;
-            var satelliteA = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(a)).FirstOrDefault();
-            var satelliteB = RTCore.Instance.Satellites.Where(sat => sat.Guid.Equals(b)).FirstOrDefault();
+            var satelliteA = RTCore.Instance.Satellites[a];
+            var satelliteB = RTCore.Instance.Satellites[b];
 
             if (satelliteA == null || satelliteB == null) return double.PositiveInfinity;
 
-            Func<ISatellite, IEnumerable<NetworkLink<ISatellite>>> neighbors = RTCore.Instance.Network.FindNeighbors;
-            Func<ISatellite, NetworkLink<ISatellite>, double> cost = RangeModelExtensions.DistanceTo;
-            Func<ISatellite, ISatellite, double> heuristic = RangeModelExtensions.DistanceTo;
-
-            var path = NetworkPathfinder.Solve(satelliteA, satelliteB, neighbors, cost, heuristic);
-            var delayBetween = path.Delay;
+            var delayBetween = RTCore.Instance.Network.ShortestDelayBetween(satelliteA, satelliteB);
             RTLog.Verbose("Connection from {0} to {1} Delay: {2}", RTLogLevel.API, a, b, delayBetween);
             return delayBetween;
         }

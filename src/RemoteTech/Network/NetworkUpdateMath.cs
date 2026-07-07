@@ -110,5 +110,16 @@ internal static class NetworkUpdateMath
         i = pairIdx - j * (j - 1) / 2;
     }
 
+    /// <summary>
+    /// Inverse of <see cref="DecodePairIndex"/>: the flat pair index for the
+    /// unordered pair <c>(a, b)</c>.
+    /// </summary>
+    public static int EncodePairIndex(int a, int b)
+    {
+        int lo = math.min(a, b);
+        int hi = math.max(a, b);
+        return hi * (hi - 1) / 2 + lo;
+    }
+
     public static int PairCount(int nodeCount) => nodeCount * (nodeCount - 1) / 2;
 }

@@ -41,6 +41,23 @@ public class NetworkUpdateMathTests
         }
     }
 
+    [Fact]
+    public void EncodePairIndex_InvertsDecodeAndIsOrderIndependent()
+    {
+        for (int n = 2; n <= 32; n++)
+        {
+            int k = 0;
+            for (int j = 1; j < n; j++)
+            {
+                for (int i = 0; i < j; i++, k++)
+                {
+                    Assert.Equal(k, NetworkUpdateMath.EncodePairIndex(i, j));
+                    Assert.Equal(k, NetworkUpdateMath.EncodePairIndex(j, i));
+                }
+            }
+        }
+    }
+
     [Theory]
     [InlineData(100, 100, 200, true)]   // sum exactly meets distance
     [InlineData(100, 99, 200, false)]   // just short

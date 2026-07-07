@@ -99,6 +99,13 @@ namespace RemoteTech
         public IReadOnlyList<NetworkLink<ISatellite>> GetRoute(ISatellite sat, bool groundOnly = false) => current?.GetRoute(sat, groundOnly);
 
         /// <summary>
+        /// Shortest signal delay between two specific satellites (a point-to-point
+        /// query), as opposed to <see cref="ShortestDelay"/> which routes to the
+        /// nearest station. +inf if unreachable, 0 if signal delay is disabled.
+        /// </summary>
+        public double ShortestDelayBetween(ISatellite a, ISatellite b) => current?.ShortestDelayBetween(a, b) ?? double.PositiveInfinity;
+
+        /// <summary>
         /// Enumerates the whole adjacency graph (inspection/debug seam).
         /// </summary>
         internal IEnumerable<KeyValuePair<Guid, List<NetworkLink<ISatellite>>>> EnumerateLinks() =>

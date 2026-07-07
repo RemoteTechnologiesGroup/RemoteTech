@@ -23,6 +23,10 @@ internal class NetworkState : IDisposable
 
     ISatellite[] satellites;
 
+    // The settings snapshot this state was built from; reused by point-to-point
+    // queries so they gate hops the same way the tick's routing did.
+    JobConfig config;
+
     // This maps guid to satellite index
     NativeHashMap<Guid, int> satmap;
     NativeArray<JobNode> nodes;
@@ -346,6 +350,7 @@ internal class NetworkState : IDisposable
         {
             handle = JobHandle.CombineDependencies(handles.AsArray()),
             satellites = satellites,
+            config = config,
 
             satmap = satmap,
             nodes = nodes,
@@ -751,6 +756,47 @@ internal class NetworkState : IDisposable
 
         var length = groundOnly ? scoreGs[index] : scoreCs[index];
         return length / RTSettings.Instance.SpeedOfLight;
+    }
+
+    /// <summary>
+    /// Shortest signal delay between two specific satellites. Unlike
+    /// <see cref="ShortestDelay"/> (which routes to the nearest station), this is
+    /// a point-to-point query solved on demand over the tick's link graph. +inf
+    /// if either is untracked or no route connects them, 0 if signal delay is
+    /// disabled.
+    /// </summary>
+    public double ShortestDelayBetween(ISatellite a, ISatellite b)
+    {
+        if (a is null || b is null)
+            return double.PositiveInfinity;
+        if (!satmap.TryGetValue(a.Guid, out int src) || !satmap.TryGetValue(b.Guid, out int dst))
+            return double.PositiveInfinity;
+
+        var length = RouteLengthBetween(src, dst);
+        if (double.IsPositiveInfinity(length))
+            return double.PositiveInfinity;
+        if (!RTSettings.Instance.EnableSignalDelay)
+            return 0.0;
+
+        return length / RTSettings.Instance.SpeedOfLight;
+    }
+
+    internal unsafe double RouteLengthBetween(int source, int target)
+    {
+        handle.Complete();
+
+        double length = double.PositiveInfinity;
+        new NetworkPathfindJob
+        {
+            config = config,
+            source = source,
+            target = target,
+            nodes = nodes,
+            edges = edges,
+            length = &length,
+        }.Run();
+
+        return length;
     }
 
     /// <summary>

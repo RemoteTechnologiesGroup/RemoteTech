@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using RemoteTech.Collections;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 
 namespace RemoteTech.Network;
@@ -101,6 +102,94 @@ internal struct MultiSourceDijkstraJob : IJob
         public double cost;
         public int node;
         public int parent;
+
+        public int CompareTo(HeapNode other) => cost.CompareTo(other.cost);
+    }
+}
+
+/// <summary>
+/// Single-pair shortest path over the persisted edge table: the minimum total
+/// link distance from <see cref="source"/> to <see cref="target"/>. Links exist
+/// between powered nodes; the relay constraint gates transit only, so the two
+/// endpoints need not be relay-capable (see <see cref="NetworkUpdate.CanTransit"/>).
+/// Writes +inf through <see cref="length"/> if the target is unreachable.
+/// </summary>
+[BurstCompile]
+internal unsafe struct NetworkPathfindJob : IJob
+{
+    public JobConfig config;
+    public int source;
+    public int target;
+
+    [ReadOnly] public NativeArray<JobNode> nodes;
+    [ReadOnly] public NativeArray<NetworkEdge> edges;
+
+    [NativeDisableUnsafePtrRestriction] public double* length;
+
+    public void Execute()
+    {
+        *length = double.PositiveInfinity;
+
+        int n = nodes.Length;
+        if ((uint)source >= (uint)n || (uint)target >= (uint)n)
+            return;
+        if (source == target)
+        {
+            *length = 0.0;
+            return;
+        }
+
+        var dist = new NativeArray<double>(n, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
+        for (int i = 0; i < n; ++i)
+            dist[i] = double.PositiveInfinity;
+
+        var heap = new ArrayMinHeap<HeapNode>(n, Allocator.Temp);
+        dist[source] = 0.0;
+        heap.Push(new HeapNode { cost = 0.0, node = source });
+
+        while (heap.TryPop(out var current))
+        {
+            if (current.cost > dist[current.node])
+                continue;
+            if (current.node == target)
+            {
+                *length = current.cost;
+                return;
+            }
+
+            int u = current.node;
+            if (!nodes[u].Powered)
+                continue;
+
+            // The source is a route endpoint; every other node may only be relayed
+            // through if it can transit. The target is exempt too — it returns above
+            // before ever reaching this expansion.
+            if (u != source && !NetworkUpdate.CanTransit(in config, nodes[u]))
+                continue;
+
+            for (int v = 0; v < n; ++v)
+            {
+                if (v == u)
+                    continue;
+
+                var edge = edges[NetworkUpdateMath.EncodePairIndex(u, v)];
+                if (!edge.valid || !nodes[v].Powered)
+                    continue;
+
+                double next = current.cost + edge.distance;
+                if (next < dist[v])
+                {
+                    dist[v] = next;
+                    heap.Push(new HeapNode { cost = next, node = v });
+                }
+            }
+        }
+    }
+
+    struct HeapNode : IComparable<HeapNode>
+    {
+        public double cost;
+        public int node;
 
         public int CompareTo(HeapNode other) => cost.CompareTo(other.cost);
     }
