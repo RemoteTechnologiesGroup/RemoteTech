@@ -21,6 +21,8 @@ internal class NetworkState : IDisposable
     /// </summary>
     JobHandle dependentHandle;
 
+    bool disposed;
+
     ISatellite[] satellites;
 
     // The settings snapshot this state was built from; reused by point-to-point
@@ -78,32 +80,32 @@ internal class NetworkState : IDisposable
 
     public JobHandle Dispose(JobHandle deps)
     {
-        var handle = new NetworkStateDisposeJob { state = new ObjectHandle<NetworkState>(this) }
-            .Schedule(JobHandle.CombineDependencies(deps, this.handle, dependentHandle));
-        return handle;
-    }
+        if (disposed)
+            return deps;
+        disposed = true;
 
-    void DisposeInternal()
-    {
-        satmap.Dispose();
-        nodes.Dispose();
-        edges.Dispose();
-        connected.Dispose();
+        return new NetworkStateDisposeJob
+        {
+            satmap = satmap,
+            nodes = nodes,
+            edges = edges,
+            connected = connected,
 
-        scoreGs.Dispose();
-        parentGs.Dispose();
-        originGs.Dispose();
+            scoreGs = scoreGs,
+            parentGs = parentGs,
+            originGs = originGs,
 
-        scoreCs.Dispose();
-        parentCs.Dispose();
-        originCs.Dispose();
+            scoreCs = scoreCs,
+            parentCs = parentCs,
+            originCs = originCs,
 
-        fingerprints.Dispose();
-        changedNodes.Dispose();
+            fingerprints = fingerprints,
+            changedNodes = changedNodes,
 
-        bodies.Dispose();
-        coneCandidates.Dispose();
-        markCandidates.Dispose();
+            bodies = bodies,
+            coneCandidates = coneCandidates,
+            markCandidates = markCandidates,
+        }.Schedule(JobHandle.CombineDependencies(deps, this.handle, dependentHandle));
     }
 
     void AddDependentHandle(JobHandle handle)
@@ -177,7 +179,7 @@ internal class NetworkState : IDisposable
         NetworkUpdate.VisibilityState visibility = new()
         {
             ActiveVessel = FlightGlobals.ActiveVessel?.id ?? default,
-            TargetVessel = FlightGlobals.fetch?.VesselTarget?.GetVessel().id ?? default,
+            TargetVessel = FlightGlobals.fetch?.VesselTarget?.GetVessel()?.id ?? default,
             filter = MapViewFiltering.Instance.IsNotNullOrDestroyed()
                 ? MapViewFiltering.vesselTypeFilter
                 : null
@@ -824,16 +826,48 @@ internal class NetworkState : IDisposable
         return false;
     }
 
-
-
+    [BurstCompile]
     struct NetworkStateDisposeJob : IJob
     {
-        public ObjectHandle<NetworkState> state;
+        public NativeHashMap<Guid, int> satmap;
+        [DeallocateOnJobCompletion]
+        public NativeArray<JobNode> nodes;
+        [DeallocateOnJobCompletion]
+        public NativeArray<NetworkEdge> edges;
+        public NativeBitArray connected;
+
+        [DeallocateOnJobCompletion]
+        public NativeArray<double> scoreGs;
+        [DeallocateOnJobCompletion]
+        public NativeArray<int> parentGs;
+        [DeallocateOnJobCompletion]
+        public NativeArray<int> originGs;
+
+        [DeallocateOnJobCompletion]
+        public NativeArray<double> scoreCs;
+        [DeallocateOnJobCompletion]
+        public NativeArray<int> parentCs;
+        [DeallocateOnJobCompletion]
+        public NativeArray<int> originCs;
+
+        public NativeList<Hash128> fingerprints;
+        public NativeList<int> changedNodes;
+
+        [DeallocateOnJobCompletion]
+        public NativeArray<JobBody> bodies;
+        public NativeList<ConeCandidate> coneCandidates;
+        public NativeList<SatelliteMarkCandidate> markCandidates;
 
         public void Execute()
         {
-            using var guard = state;
-            state.Target.DisposeInternal();
+            satmap.Dispose();
+            connected.Dispose();
+
+            fingerprints.Dispose();
+            changedNodes.Dispose();
+
+            coneCandidates.Dispose();
+            markCandidates.Dispose();
         }
     }
 
