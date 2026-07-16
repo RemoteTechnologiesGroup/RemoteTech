@@ -119,7 +119,7 @@ namespace RemoteTech
 
             _optionWindow = null;
 
-            if (LauncherButton != null)
+            if (LauncherButton != null && ApplicationLauncher.Instance != null)
             {
                 ApplicationLauncher.Instance.RemoveModApplication(LauncherButton);
             }

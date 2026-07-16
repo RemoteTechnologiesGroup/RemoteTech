@@ -107,7 +107,8 @@ namespace RemoteTech.UI
             }
 
             // Remove button on destroy
-            KSP.UI.Screens.ApplicationLauncher.Instance.RemoveModApplication(mButton);
+            if (mButton != null && KSP.UI.Screens.ApplicationLauncher.Instance != null)
+                KSP.UI.Screens.ApplicationLauncher.Instance.RemoveModApplication(mButton);
             RemoveTrackingListeners();
         }
 
