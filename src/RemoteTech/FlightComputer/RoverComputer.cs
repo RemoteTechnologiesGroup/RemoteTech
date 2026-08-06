@@ -270,7 +270,7 @@ namespace RemoteTech.FlightComputer
             Delta = Vector3.Distance(mVessel.CoM, TargetPos);
             DeltaT = Delta / RoverSpeed;
 
-            if (Delta >= 0.1f) //zero is inpractical due to float nature
+            if (Delta >= mVessel.radarAltitude + 1.0f) //zero is inpractical due to float nature
             {
                 fs.wheelThrottle = (float)throttlePID.Update(RoverSpeed, dc.speed, -1.0, 1.0);
                 if (ForwardAxis != Vector3.zero)
